@@ -1,17 +1,18 @@
 plot.traces <-
 function(outBS, tracename = "theta"){
-	require(RColorBrewer)
+   	Palette    = c("#A6CEE3", "#1F78B4", "#B2DF8A", "#33A02C", "#FB9A99", "#E31A1C", "#FDBF6F", "#FF7F00", "#CAB2D6", "#6A3D9A", "#FFFF99", "#B15928")
 	if(.Platform$OS.type=="unix") devtype=quartz else devtype=windows
 	plotname     = c("theta","gamma","pi", "post")
 	if(!is.element(tracename, plotname)) stop(paste("Wrong 'tracename' argument. Valid arguments are:", paste(paste("'",plotname,"'", sep=""), collapse=", "),".\n"), call.=FALSE)
 	
 	if(tracename=="gamma" & is.na(max(outBS$results$gamma))) stop("\nTrace plots cannot be drawn for 'gamma' parameters.\nNo proportional hazards arguments were evaluated.", call.=FALSE)
-
+	
 	# PLOTS:
 	# Trace plots for parameters:
 	p           = which(plotname == tracename)
 	nza         = ncol(outBS$data$Za)
 	nzc         = ncol(outBS$data$Zc)
+	Cols       = Palette[round(seq(1,12, length=nza))]
 	ydim        = c(sum(outBS$input$modm[outBS$input$idm,]), ceiling(nzc/2), ceiling((ncol(outBS$results$pi))/2), 2)
 	xdim        = c(nza, 2, 2, 2)
 
@@ -31,7 +32,7 @@ function(outBS, tracename = "theta"){
 		} else {
 			yl    = range(x[,i,], na.rm=TRUE)
 			plot(c(1,nrow(x)), yl, col=NA, xlab="Iteration", ylab="", main=Main[[p]][i], frame.plot=FALSE)
-			for(j in 1:dim(x)[3]) lines(x[,i,j], type='l', col=brewer.pal(12, "Paired")[j])
+			for(j in 1:dim(x)[3]) lines(x[,i,j], type='l', col=Cols[j])
 		}
 	}
 }
