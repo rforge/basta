@@ -1,87 +1,115 @@
 \name{bastaMCMCmulti}
 \alias{bastaMCMCmulti}
-%- Also NEED an '\alias' for EACH other topic documented here.
+
 \title{
-%%  ~~function to do ... ~~
+A function to perform multiple parametric Bayesian estimation of age-specific mortality and survival trends from capture-recapture/recovery data with a large proportion of truncated and censored records.
 }
 \description{
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
-}
+This function performs multiple Bayesian estimation of age-specific mortality and survival trends when a large proportion (or all) of records have unknown times of birth and/or death. Survival parameters and unknown (i.e. latent) birth and death times are estimated, with a choice of three mortality functions (i.e. Gompertz, Gompertz-Makeham and Siler), based on the model described by Colchero & Clark (2011). Categorical and continuous covariates can be included either within a proportional hazards framework or following Colchero and Clark's (2011) approach. Each simulation can then be used to evaluate convergence.}
 \usage{
 bastaMCMCmulti(Data, ststart, stend, model = "SI", niter = 50000, burnin = 5001, thinning = 50, rptp = ststart, ini.pars.mat = NULL, jumps = NULL, priors = NULL, Prop.Hazards = FALSE, cini.pars.mat = NULL, cjumps = NULL, cpriors = NULL, nsim = 5, parallel = FALSE, ncpus = 2)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{Data}{
-%%     ~~Describe \code{Data} here~~
+A \code{data.frame} to be used as an input data file for BaSTA. The first is a column of individual unique ID's, the second and third columns are birth and death years respectively. Columns 4-(nt-1) represent the observation window of nt years. This is followed (optionally) by columns for categorical and continous covariates (see details). The data can be formated using functions \code{\link{CensusToCaptHist}} to build the capture-recapture matrix and \code{\link{makecovm}} for the covariates matrix (or \code{\link{designmat}} in case an object of class \code{\link{"formula"}} is used).
 }
   \item{ststart}{
-%%     ~~Describe \code{ststart} here~~
+The first year of the study.
 }
   \item{stend}{
-%%     ~~Describe \code{stend} here~~
+The last year of the study.
 }
   \item{model}{
-%%     ~~Describe \code{model} here~~
-}
+The underlying mortality model to be used. "GO"= Gompertz, "GM" = Gompertz-Makeham and "SI" = Siler (see .}
   \item{niter}{
-%%     ~~Describe \code{niter} here~~
+The total number of MCMC steps (see details).
 }
   \item{burnin}{
-%%     ~~Describe \code{burnin} here~~
+Number of iterations for the burn in (see details).
 }
   \item{thinning}{
-%%     ~~Describe \code{thinning} here~~
+The thinning parameter.
 }
   \item{rptp}{
-%%     ~~Describe \code{rptp} here~~
+A vector (of length npi) defining the recapture probability transition times. These are points (years) where the recapture probability is thought to change.  The default setting is for the recapture probability to be constant throughout the study, so the \code{rptp} is simply defined as a single element vector of the first year of the observation period (e.g. c(1985)). If one wanted to set a different recapture probability for years after (say) 1990, the RPTP could be defined as c(1985, 1990) etc..
 }
   \item{ini.pars.mat}{
-%%     ~~Describe \code{ini.pars.mat} here~~
+A matrix defining the initial values for each parameter on the survival model with the number of rows equal to the number of simulations (\code{nsim}, see below) to be ran (see details). The number of parameters for each simulation, nth, which determines the number of columns, will depend on the model selected (see details): a) Gompertz includes nth = two parameters of the form [alpha, beta]; b) Gompertz-Makeham has nth = three parameters with vector [c, alpha, beta]; and c) Siler with nth = five parameters as [alpha1, beta1, c, alpha2, beta2]. If the number of parameters specified does not match the number of parameters inherent to the model selected, the function returns an error. If no ini.pars.mat argument is specified (i.e. default is NULL), the model assigns a matrix of randomly generated initial parameters.}
 }
   \item{jumps}{
-%%     ~~Describe \code{jumps} here~~
+A vector defining the size of jumps for each survival model parameter (standard error in the Metropolis step, see details). The number of parameters, nth, will depend on the model selected (see details).
 }
   \item{priors}{
-%%     ~~Describe \code{priors} here~~
+A vector defining the priors for each survival parameter. The vector takes the same format as described for \code{jumps}.}
 }
   \item{Prop.Hazards}{
-%%     ~~Describe \code{Prop.Hazards} here~~
+A logical argument that indicates if covariates should be evaluated under a proportional hazards framework. Default is FALSE. 
 }
-  \item{cini.pars.mat}{
-%%     ~~Describe \code{cini.pars.mat} here~~
+  \item{cini.pars}{
+A matrix of initial parameters for the proportional hazards section of the model with the number of rows equal to the number of simulations (\code{nsim}, see below) to be ran (see details). These can be specified when Prop.Hazards is TRUE or when continuous covariates are evaluated. As with \code{ini.pars.mat}, the default is set to NULL.
 }
   \item{cjumps}{
-%%     ~~Describe \code{cjumps} here~~
+ A vector of jump standard errors for the proportional hazards parameters. The number of jumps will be equal to the number of covariates when the argument \code{Prop.Hazards} is set to TRUE, or to the number of continuous covariates to be evaluated. In case any of these two conditions are met and the default is used (i.e. NULL), the model automatically assigns builtin jump values.
 }
   \item{cpriors}{
-%%     ~~Describe \code{cpriors} here~~
+ A vector of mean priors for the proportional hazards parameters. The specification follows the same rules as \code{cjumps}.
 }
   \item{nsim}{
-%%     ~~Describe \code{nsim} here~~
+A numerical value for the number of simulations to be ran.
 }
   \item{parallel}{
-%%     ~~Describe \code{parallel} here~~
+Logical; if TRUE package \pkg{snowfall} is called and multiple simulations are run in parallel. If \pkg{snowfall} is not installed, the model is ran in series.
 }
   \item{ncpus}{
-%%     ~~Describe \code{ncpus} here~~
+A numerical value that indicates the number of cpus to be used if \code{parallel} is TRUE and package \pkg{snowfall} is installed. The default is 2 cpus. 
 }
 }
 \details{
 %%  ~~ If necessary, more details than the description above ~~
 }
 \value{
-%%  ~Describe the value returned
-%%  If it is a LIST, use
-%%  \item{comp1 }{Description of 'comp1'}
-%%  \item{comp2 }{Description of 'comp2'}
-%% ...
+The output includes four main lists: a) data; b) input; c) results; and d) diagnost. These outputs are compatible with those from \code{\link{bastaMCMC}}. The values for list 'data' are:
+\item{bd }{Matrix with individual times of birth and death}
+\item{Y }{Capture-recapture matrix}
+\item{Za }{Matrix of categorical covariates. When no categorical covariates are included the model returns a one column matrix of 1's.}
+\item{Zc }{Matrix of continuous covariates. When no continuous covariates are included the model returns a one column matrix of 1's.}
+\item{ststart }{Starting year of the study}
+\item{stend }{Final study year}
+
+The values for list 'input' are:
+\item{niter }{Total number of MCMC iterations}
+\item{burnin }{Burn in sequence}
+\item{thinning }{Number of steps to be descarded to reduce serial autocorrelation}
+\item{model }{Character string specifying the mortality model used}
+\item{ini.pars.mat }{Matrix of initial parameters where each row corresponds to }
+\item{jumps }{Jump standard deviations for survival parameters}
+\item{priors }{Priors for survival parameters}
+\item{Prop.Hazards }{Logical for proportional hazards model}
+\item{cini.pars.mat }{Initial parameters for proportional hazards section}
+\item{cjumps }{Jump standard errors for proportional hazards parameters}
+\item{cpriors }{Priors for proportional hazards parameters}
+
+The values for list 'results' are:
+\item{theta }{An \code{niter} by nth * nza matrix of estimated survival parameters}
+\item{gamma }{An \code{niter} by nzc matrix of estimated proportional hazards parameters}
+\item{pi }{An \code{niter} by npi matrix of estimated recapture probabilities.}
+\item{bis }{An \code{niter} by n matrix of estimated times of birth}
+\item{xis }{An \code{niter} by n matrix of estimated ages at death}
+\item{post }{An \code{niter} by 3 matrix of posteriors. The first column includes conditional posterior values for survival and proportional hazard parameters, the second includes conditional posterior values for the estimated latent states (i.e. unknown times of birth and death) and last column if the full model posterior.}
+
+The values for list 'diagnost' are:
+\item{full.run }{An indicator variable that assigns 1 if the model ran though and 0 if the model stoped if it did not run until the \code{niter} step.}
+\item{last.step }{The last step ran in the model; if the model runs through the value assigned is equal to \code{niter}.}
+\item{ModSel }{Basic DIC calculations for model selection (Spiegelhalter \emph{et al.} 2002) These values need to be taken only as a reference (see comments to Spiegelhalter \emph{et al.} 2002). In the future the package will include routines for reversible jump Monte Carlo Markov Chain (RJMCMC, King & Brooks 2002).}
 }
 \references{
-%% ~put references to the literature/web site here ~
+Colchero, F. and Clark, J.S. (2011) Bayesian inference on age-specific survival from capture-recapture data for censored and truncated data. Journal of Animal Ecology. 
+Colchero, F., Jones, O.R. and Rebke, M. BaSTA - a package to estimate mortality parameters from incomplete mark-recapture data with covariates. Unpublished Manuscript.
+King, R. & Brooks, S.P. (2002) Bayesian model discrimination for multiple strata capture-recapture data. Biometrika, 89, 785–806. 
+Spiegelhalter, D.J., Best, N.G., Carlin, B.P., Van Der Linde, A. (2002) Bayesian measures of model complexity and fit. Journal of the Royal Statistical Society: Series B 64 (4), 583-639.
 }
 \author{
-%%  ~~who you are~~
+Fernando Colchero \email{colchero@mpg.demogr.de}
 }
 \note{
 %%  ~~further notes~~
