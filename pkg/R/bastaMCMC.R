@@ -77,6 +77,7 @@ function(Data, ststart, stend, model="SI", niter=50000, burnin=5001, thinning=50
 	pname       = paste(rep(colnames(modm),each=nza), "[",rep(colnames(Za), nth),"]", sep="")
 	idm         = which(rownames(modm)==model)
 	idth        = which(modm[rep(idm, nza),]==1)
+	idths       = which(modm[idm,]==1)
 	nthm        = sum(modm[idm,])
 	th.low      = matrix(-Inf, nrow(modm),nth, dimnames=dimnames(modm))
 	th.low["SI",c("beta1","beta2")] = 0
@@ -103,6 +104,7 @@ function(Data, ststart, stend, model="SI", niter=50000, burnin=5001, thinning=50
 		thj[,modm[idm,]==1] = matrix(t(jumps), nza, sum(modm[idm,]), byrow=TRUE)
 		if(nza==1) thj = t(thj)
 	}
+	thjini    = thj[,idths]
 
 	if(is.null(ini.pars)){
 		thg       = t(t(modm[rep(idm, nza),])*c(-1, 0.001, 0, -1, 0.001))
@@ -118,6 +120,7 @@ function(Data, ststart, stend, model="SI", niter=50000, burnin=5001, thinning=50
 		thg[,modm[idm,]==1] = matrix(t(ini.pars),nza, sum(modm[idm,]), byrow=TRUE)
 		if(nza==1) thg = t(thg)
 	}	
+	thgini    = thg[,idths]
 	
 	if(is.null(priors)){
 		thp       = t(t(modm[rep(idm, nza),])*c(-5,0.1,-1,0.001,0.005))
@@ -132,6 +135,7 @@ function(Data, ststart, stend, model="SI", niter=50000, burnin=5001, thinning=50
 		thp[,modm[idm,]==1] = matrix(t(priors),nza, sum(modm[idm,]), byrow=TRUE)
 		if(nza==1) thp = t(thp)
 	}
+	thpini    = thp[,idths]
 	
 	
 	# Define proportions hazards section:
@@ -148,6 +152,7 @@ function(Data, ststart, stend, model="SI", niter=50000, burnin=5001, thinning=50
 				names(gag) = colnames(Zc)
 			}
 		}
+		gagini   = gag
 		
 		if(is.null(cjumps)){
 			gaj     = rep(0.0001, nzc)
@@ -177,6 +182,7 @@ function(Data, ststart, stend, model="SI", niter=50000, burnin=5001, thinning=50
 		
 	} else {
 		gag    = 0
+		gagini = gag
 		gaj    = 0
 		gap    = 0
 	}
@@ -311,12 +317,8 @@ function(Data, ststart, stend, model="SI", niter=50000, burnin=5001, thinning=50
 		colnames(postm) = c("post.th", "post.X", "full.post")
 
 		# Run Gibbs sampler:
-#		if(.Platform$OS.type=="unix") devtype=quartz else devtype=windows
-#		devtype(width=2, height=0.5); progrpl = dev.cur()
-		if(!exists("Ypos")) Ypos = 0
-#		Ypos       = get(Ypos, pos=sys.frame(which=1))
-		if(!exists("sim")) Title = "Sim.1" else Title = paste("Sim.", sim, sep="")
-		x11(width=2, height=0.5, ypos = Ypos, xpos=0, title = Title); progrpl = dev.cur()
+		if(.Platform$OS.type=="unix") devtype=quartz else devtype=windows
+		devtype(width=2, height=0.5); progrpl = dev.cur()
 		par(mar=rep(0,4))
 
 		naflag     = FALSE
@@ -497,7 +499,7 @@ function(Data, ststart, stend, model="SI", niter=50000, burnin=5001, thinning=50
 	#Return a list object
 	output          = list()
 	output$data     = list(bd = bd,Y = Y,Za = Za,Zc = Zc, ststart=ststart, stend=stend)
-	output$input    = list(niter=niter, burnin = burnin, thinning = thinning, model=model, modm=modm, idm=idm, ini.pars=ini.pars, jumps=jumps, priors=priors, Prop.Hazards=Prop.Hazards, cini.pars=cini.pars, cjumps=cjumps, cpriors=cpriors)
+	output$input    = list(niter=niter, burnin = burnin, thinning = thinning, model=model, modm=modm, idm=idm, ini.pars=thgini, jumps=thjini, priors=thpini, Prop.Hazards=Prop.Hazards, cini.pars=gagini, cjumps=gaj, cpriors=gap)
 	output$results  = list(theta=thgibbs, gamma=gagibbs, pi = pigibbs, bis = bgibbs, xis = dgibbs-bgibbs, post=postm)
 	output$diagnost = list(full.run=full.run, last.step=g, ModSel = ModSel)
 	return(output)
