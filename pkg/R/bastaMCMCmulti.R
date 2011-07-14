@@ -68,7 +68,7 @@ function(Data, ststart, stend, model="SI", niter=50000, burnin=5001, thinning=50
 	paralBSM  = function(sim){
 		if(parallel) for(ii in 1:(sim*2)){}
 #		env     = new.env()
-		Ypos    = (75*sim) - 75
+#		Ypos    = (75*sim) - 75
 		outbsm  = bastaMCMC(Data=Data, ststart=ststart, stend=stend, model=model, niter=niter, burnin=burnin, thinning=thinning, rptp=rptp, ini.pars=ini.pars.mat[sim,], jumps=jumps, priors=priors, Prop.Hazards=Prop.Hazards, cini.pars=cini.pars.mat[sim,], cjumps=cjumps, cpriors=cpriors,  datacheck=FALSE)
 		return(outbsm)
 	}
@@ -101,11 +101,21 @@ function(Data, ststart, stend, model="SI", niter=50000, burnin=5001, thinning=50
 	cat(paste("\nMultiple MCMC computing time: ", round(as.numeric(julian(End)-julian(Start))*24*60, 2), " minutes\n", sep=""))
 
 	# Report if simo simulations failed:
+	simname    = paste("Sim.", (1:nsim), sep="")
 	full.runs  = rep(0,nsim)
 	last.steps = full.runs
+	Thgini     = array(NA, dim=c(ncol(outBSM[[1]]$data$Za), nthm, nsim))
+	dimnames(Thgini) = list(colnames(outBSM[[1]]$data$Za), colnames(outBSM[[1]]$input$ini.pars, simname))
+	Thjini     = Thgini
+	Thpini     = Thgini
+	Gagini     = matrix(NA, nsim, ncol(outBSM[[1]]$data$Zc), dimnames=list(simname, names(outBSM[[1]]$input$cini.pars)))
 	for(i in 1:nsim){
 		full.runs[i]  = ifelse(outBSM[[i]]$diagnost$full.run, 1, 0)
 		last.steps[i] = outBSM[[i]]$diagnost$last.step
+		Thgini[,,i]   = outBSM[[i]]$input$ini.pars
+		Thjini[,,i]   = outBSM[[i]]$input$jumps
+		Thpini[,,i]   = outBSM[[i]]$input$priors
+		Gagini[i,]    = outBSM[[i]]$input$cini.pars
 	} 
 	id.failed  = which(full.runs==0)
 	id.ran     = which(full.runs==1)
@@ -121,7 +131,6 @@ function(Data, ststart, stend, model="SI", niter=50000, burnin=5001, thinning=50
 	
 
 	# Collect results:
-	simname    = paste("Sim.", (1:nsim), sep="")
 	tnth       = sum(modm[idm,])*ncol(outBSM[[1]]$data$Za)
 	tnpi       = length(rptp)
 	tnni       = nrow(Data)
@@ -156,7 +165,7 @@ function(Data, ststart, stend, model="SI", niter=50000, burnin=5001, thinning=50
 	#Return a list object
 	output          = list()
 	output$data     = list(bd = outBSM[[1]]$data$bd,Y = outBSM[[1]]$data$Y,Za = outBSM[[1]]$data$Za,Zc = outBSM[[1]]$data$Zc, ststart=ststart, stend=stend)
-	output$input    = list(niter=niter, burnin = burnin, thinning = thinning, model=model, modm=modm, idm=idm, ini.pars=ini.pars.mat, jumps=jumps, priors=priors, Prop.Hazards=Prop.Hazards, cini.pars=cini.pars.mat, cjumps=cjumps, cpriors=cpriors)
+	output$input    = list(niter=niter, burnin = burnin, thinning = thinning, model=model, modm=modm, idm=idm, ini.pars=Thgini, jumps=Thjini, priors=Thpini, Prop.Hazards=Prop.Hazards, cini.pars=Gagini, cjumps=outBSM[[1]]$input$cjumps, cpriors=outBSM[[1]]$input$cpriors)
 	output$results  = list(theta=thmat, gamma=gamat, pi = pimat, bis = bimat, xis = ximat, post=pomat)
 	output$diagnost = list(full.run=full.run, last.step=last.steps, ModSel = DImat)
 	return(output)
