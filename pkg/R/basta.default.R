@@ -770,8 +770,9 @@ function(Data, ststart, stend, model="SI", niter=50000, burnin=5001, thinning=50
 	names(Settings)    = c("niter", "burnin", "thinning", "nsim") 
 	ModelSpecs         = c(model, Prop.Hazards)
 	names(ModelSpecs)  = c("model","Prop.Hazards")
-	JumpPriors         = cbind(c(thj,gaj), c(thp,gap))
-	dimnames(JumpPriors) = list(c(thname,ganame), c("Jump.sd", "Mean.priors"))
+	JumpPriors         = cbind(c(thj[idth],gaj), c(thp[idth],gap))
+	dimnames(JumpPriors) = list(c(thname[idth],ganame), c("Jump.sd", "Mean.priors"))
+	if(!Cont) JumpPriors = JumpPriors[-nrow(JumpPriors), ]
 	output             = list()
 	output$coefficients= coef
 	output$ModSel      = ModSel
