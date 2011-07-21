@@ -656,20 +656,13 @@ function(Data, ststart, stend, model="SI", niter=50000, burnin=5001, thinning=50
 		
 	# 7.2 Basic summary statistics for parameters:
 	pmat      = Pmat[idthin==1,-(c(ncol(Pmat)-c(2:0)))]
-	coef      = cbind(apply(pmat, 2, mean, na.rm=TRUE), apply(pmat, 2, sd, na.rm=TRUE), t(apply(pmat, 2, quantile, c(0.025, 0.975), na.rm=TRUE)))
-	colnames(coef) = c("Estimate", "StdErr", "Lower95%", "Upper95%")
-	if(length(id.failed) == nsim){
-		sercor     = rep(NA, nrow(coef))
-		update     = sercor
-	} else {
-		sercor     = apply(pmat,2, function(x) cor(x[-1],x[-length(x)], use="complete.obs"))
-		update     = apply(Pmat[,-c(ncol(Pmat)-c(2:0))], 2, function(x) length(which(diff(x[!is.na(x)])!=0))/length(x[!is.na(x)]))
+	coef      = cbind(apply(pmat, 2, mean, na.rm=TRUE), apply(pmat, 2, sd, na.rm=TRUE), t(apply(pmat, 2, quantile, c(0.025, 0.975), na.rm=TRUE)), NA, NA, NA)
+	colnames(coef) = c("Estimate", "StdErr", "Lower95%CI", "Upper95%CI", "SerAutocor", "UpdateRate", "PotScaleReduc")
+	if(length(id.failed) < nsim){
+		coef[,"SerAutocor"]  = apply(pmat,2, function(x) cor(x[-1],x[-length(x)], use="complete.obs"))
+		coef[,"UpdateRate"]  = apply(Pmat[,-c(ncol(Pmat)-c(2:0))], 2, function(x) length(which(diff(x[!is.na(x)])!=0))/length(x[!is.na(x)]))
 	} 
 	
-	coef      = cbind(coef, sercor)
-	coef      = cbind(coef, update)
-	coef      = cbind(coef, NA)
-	colnames(coef) = c(colnames(coef[,-ncol(coef)]), 'Rhat')
 	Pmat      = cbind(idthin, Pmat)
 
 	# 7.3 Convergence and model selection:
