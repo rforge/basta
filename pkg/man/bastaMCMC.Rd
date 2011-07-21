@@ -1,9 +1,9 @@
 \name{bastaMCMC}
 \alias{bastaMCMC}
 
-\title{A function to perform parametric Bayesian estimation of age-specific mortality and survival trends from capture-recapture/recovery data with a large proportion of truncated and censored records.}
+\title{Parametric Bayesian estimation of age-specific survival for truncated and censored capture-recapture records.}
 \description{
-This function performs Bayesian estimation of age-specific mortality and survival trends when a large proportion (or all) of records have unknown times of birth and/or death. Survival parameters and unknown (i.e. latent) birth and death times are estimated, with a choice of three mortality functions (i.e. Gompertz, Gompertz-Makeham and Siler), based on the model described by Colchero & Clark (2011). Categorical and continuous covariates can be included either within a proportional hazards framework or following Colchero and Clark's (2011) approach.
+This function performs a Monte Carlo Markov Chain (MCMC) algorithm for Bayesian estimation of age-specific mortality and survival trends when a large proportion of (or all) records have unknown times of birth and/or death. Survival parameters and unknown (i.e. latent) birth and death times are estimated, with a choice of three mortality functions (i.e. Gompertz, Gompertz-Makeham and Siler), based on the model described by Colchero & Clark (2011). Categorical and continuous covariates can be included either within a proportional hazards framework or following Colchero and Clark's (2011) approach.
 }
 \usage{
 bastaMCMC(Data, ststart, stend, model = "SI", niter = 50000, burnin = 5001, thinning = 50, rptp = ststart, ini.pars = NULL, jumps = NULL, priors = NULL, Prop.Hazards = FALSE, cini.pars = NULL, cjumps = NULL, cpriors = NULL, datacheck = TRUE)
@@ -99,10 +99,10 @@ The values for list 'diagnost' are:
 Colchero, F. and Clark, J.S. (2011) Bayesian inference on age-specific survival from capture-recapture data for censored and truncated data. Journal of Animal Ecology. 
 Colchero, F., Jones, O.R. and Rebke, M. BaSTA - a package to estimate mortality parameters from incomplete mark-recapture data with covariates. Unpublished Manuscript.
 King, R. & Brooks, S.P. (2002) Bayesian model discrimination for multiple strata capture-recapture data. Biometrika, 89, 785–806. 
-Spiegelhalter, D.J., Best, N.G., Carlin, B.P., Van Der Linde, A. (2002) Bayesian measures of model complexity and fit. Journal of the Royal Statistical Society: Series B 64 (4), 583-639.
+Spiegelhalter, D.J., Best, N.G., Carlin, B.P., Van Der Linde, A. (2002) Bayesian measures of model complexity and fit. Journal of the Royal Statistical Society: Series B 64, 583-639.
 }
 \author{
-Fernando Colchero \email{colchero@mpg.demogr.de}
+Fernando Colchero \email{colchero@demogr.mpg.de}
 }
 \note{
 %%  ~~further notes~~
