@@ -21,5 +21,7 @@ function(object, digits=3){
 	
 	cat("\nCoefficients:\n")
 	print.default(signif(object$coefficients, digits=digits))
+	if(is.null(object$ModSel)) cat("\nWarning: Convergence not reached for some parameters (i.e. 'PotScaleReduc' values larger than 1.2).\nThese estimates should not be used for inference.\n")
+
 }
 
