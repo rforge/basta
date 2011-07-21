@@ -29,7 +29,7 @@ function(object, digits=3){
 	print.default(object$coefficients, digits=digits)
 	
 	cat("\nModel Selection:\n")
-	print(object$ModSel)
+	if(!is.null(object$ModSel)) print(object$ModSel) else cat("DIC was not calculated since convergence was not reached for some parameters.\n")
 	
 }
 
