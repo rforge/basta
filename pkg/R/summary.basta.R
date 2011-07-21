@@ -14,12 +14,16 @@ function(object, digits=3){
 	cat("\nModel settings:\n")
 	print(object$set)
 
-	cat("\nJumps and priors:\n")
-	print(object$JumpP)
-
 	cat("\nRuns:\n")
 	id.failed    = which(object$finished==0)
-	if(sum(object$finished)==length(object$finished)) cat("All simulations finished.\n") else if(length(id.failed)==1) cat(paste("Simulation number ", id.failed, " failed.\n", sep="")) else cat(paste("Simulations number ", paste(id.failed, collapse=", "), " failed.\n", sep=""))
+	if(object$set['nsim'] == 1){
+		if(length(id.failed) == 0) cat("The simulation finished.\n") else cat("The simulation failed.\n")
+	} else {
+		if(sum(object$finished)==length(object$finished)) cat("All simulations finished.\n") else if(length(id.failed)==1) cat(paste("Simulation number ", id.failed, " failed.\n", sep="")) else cat(paste("Simulations number ", paste(id.failed[-length(id.failed)], collapse=", ")," and ", id.failed[length(id.failed)], " failed.\n", sep=""))
+	}
+	
+	cat("\nJumps and priors:\n")
+	print(object$JumpP)
 
 	cat("\nCoefficients:\n")
 	print.default(object$coefficients, digits=digits)
