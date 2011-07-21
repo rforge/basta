@@ -95,6 +95,7 @@ A numerical value that indicates the number of cpus to be used if \code{parallel
   \item{Zc }{If requested, the matrix of continuous covariates. When no continuous covariates are included the model returns a one column matrix of 1's.}
   \item{ststart }{If requested, the first year of the study}
   \item{stend }{If requested, the last year of the study}
+  \item{lifetable }{If requested and specified in the argument \code{lifetable}, a cohort life table calculated from the estimated ages at death.}
 }
 \references{
 Colchero, F. and Clark, J.S. (\emph{in press}) Bayesian inference on age-specific survival from capture-recapture data for censored and truncated data. Journal of Animal Ecology. 
