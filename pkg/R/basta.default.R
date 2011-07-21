@@ -1,5 +1,5 @@
 basta.default <-
-function(Data, ststart, stend, model="SI", niter=50000, burnin=5001, thinning=50, rptp = ststart, th.ini.pars=NULL, th.jumps=NULL, th.priors=NULL, Prop.Hazards = FALSE, ga.ini.pars=NULL, ga.jumps=NULL, ga.priors=NULL, nsim=1, parallel=FALSE, ncpus=2){
+function(Data, ststart, stend, model="SI", niter=50000, burnin=5001, thinning=50, rptp = ststart, th.ini.pars=NULL, th.jumps=NULL, th.priors=NULL, Prop.Hazards = FALSE, ga.ini.pars=NULL, ga.jumps=NULL, ga.priors=NULL, nsim=1, parallel=FALSE, ncpus=2, lifetable=TRUE){
 
 	# 0. Load package msm:
 	require(msm)
@@ -729,9 +729,9 @@ function(Data, ststart, stend, model="SI", niter=50000, burnin=5001, thinning=50
 		Sxq       = list()
 		mxq       = list()
 		xvec      = list()
+		zaname    = colnames(Za)
 		for(i in 1:nza){
 			idza    = which(Za[,i]==1)
-			zaname  = colnames(Za)
 			xv      = seq(0,ceiling(max(xq[1,idza])*1.1),0.1)
 			xvec[[zaname[i]]] = xv
 			for(j in 1:length(rzc)){
@@ -743,6 +743,18 @@ function(Data, ststart, stend, model="SI", niter=50000, burnin=5001, thinning=50
 				mxq[[zaname[i]]][[zcname[j]]] = apply(apply(thmat[,Cols],1,m.x),1, quantile, c(0.5,0.025,0.975))
 			}
 		}
+
+		# 7.3.5 Calculate life table from estimated ages at death:
+		if(lifetable){
+			LT     = list()
+			for(i in 1:nza){
+				idza    = which(Za[,i]==1 & bq[1,]>=ststart)
+				x       = xq[1,idza]
+				LT[[zaname[i]]] = CohortLT(x, ax=0.5, n=1)
+			}
+		} else {
+			LT     = NULL
+		}
 	} else {
 		conv       = NULL
 		ModSel     = NULL
@@ -751,7 +763,9 @@ function(Data, ststart, stend, model="SI", niter=50000, burnin=5001, thinning=50
 		Sxq        = NULL
 		mxq        = NULL
 		xvec       = NULL
+		if(lifetable) LT = NULL
 	}
+
 	
 	# Return a list object:
 	Settings           = c(niter, burnin, thinning, nsim)
@@ -781,6 +795,7 @@ function(Data, ststart, stend, model="SI", niter=50000, burnin=5001, thinning=50
 	output$Zc          = Zc
 	output$ststart     = ststart
 	output$stend       = stend
+	if(lifetable) output$lifetable = LT
 	class(output) = "basta"
 	return(output)
 }
