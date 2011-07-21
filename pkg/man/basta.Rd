@@ -66,6 +66,7 @@ Logical; if TRUE package \pkg{snowfall} is called and multiple simulations are r
   \item{ncpus}{
 A numerical value that indicates the number of cpus to be used if \code{parallel} is TRUE and package \pkg{snowfall} is installed. The default is 2 cpus. 
 }
+  \item{lifetable}{Logical, if \code{TRUE} a cohort life table is calculated using function \code{\link{CohortLT}}.}
   \item{...}{
   further arguments passed to method \code{basta}.
   }
