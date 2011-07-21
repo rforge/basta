@@ -154,14 +154,14 @@ function(outBSM, lifetable=TRUE){
 	}
 
 	output                 = list()
-	output$input           = list(modm = outBSM$i$modm, idm = outBSM$i$idm)
+	output$input           = list(model=outBSM$input$model, Prop.Hazards=outBSM$input$Prop.Hazards, modm = outBSM$i$modm, idm = outBSM$i$idm)
 	output$inference$theta = list(mat=thmat, quantiles=thq)
 	output$inference$gamma = list(mat=gamat, quantiles=gaq)
 	output$inference$pi    = list(mat=pimat, quantiles=piq)
 	output$inference$xq    = xq
 	output$inference$bq    = bq
 	output$qSuMo           = list(Sxsum = Sxq, mxsum = mxq, xza = xvec)
-	output$diagnost        = list(model=outBSM$input$model, Prop.Hazards=outBSM$input$Prop.Hazards, ModSel = outBSM$diagnost$ModSel, convergence=conv, lifetable=LT)
+	output$diagnost        = list(ModSel = outBSM$diagnost$ModSel, convergence=conv, lifetable=LT)
 	return(output)
 	
 }
