@@ -716,7 +716,7 @@ function(Data, ststart, stend, model="SI", niter=50000, burnin=5001, thinning=50
 
 		# 7.3.4 Summary Survival and mortality:
 		thmat      = matrix(0, length(thing)*nsim, nth * nza); colnames(thmat) = Pname
-		thmat[,thname] = pmat[,thname]
+		thmat[,thname[idth]] = pmat[,thname[idth]]
 		if(Cont){
 			rzc       = apply(Zc, 2, quantile, c(0.5, 0.025, 0.975))
 			gave      = apply(pmat[,(nth*nza) + 1:nzc],2,mean)
