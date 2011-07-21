@@ -27,9 +27,10 @@ function(object, digits=3){
 
 	cat("\nCoefficients:\n")
 	print.default(object$coefficients, digits=digits)
+	if(is.null(object$ModSel)) cat("\nWarning: Convergence not reached for some parameters (i.e. 'PotScaleReduc' values larger than 1.2).\nThese estimates should not be used for inference.\n")
 	
 	cat("\nModel Selection:\n")
-	if(!is.null(object$ModSel)) print(object$ModSel) else cat("DIC was not calculated since convergence was not reached for some parameters.\n")
+	if(!is.null(object$ModSel)) print(object$ModSel) else cat("DIC was not calculated due to lack of convergence.\n")
 	
 }
 
