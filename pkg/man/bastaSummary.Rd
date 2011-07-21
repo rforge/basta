@@ -2,38 +2,47 @@
 \alias{bastaSummary}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-%%  ~~function to do ... ~~
+Summary function for BaSTA objects.
 }
 \description{
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
-}
+This function takes output objects created with functions \code{\link{bastaMCMC}} and \code{\link{bastaMCMCmulti}} to calculate summary statistics on estimated parameters and latent values (i.e. unknown times of birth and death), predictive intervals on survival probabilities and mortality rates, and MCMC convergence diagnostics.}
 \usage{
 bastaSummary(outBSM, lifetable = TRUE)
 }
-%- maybe also 'usage' for other objects documented here.
+
 \arguments{
   \item{outBSM}{
-%%     ~~Describe \code{outBSM} here~~
+An output object created with \code{\link{bastaMCMC}} or \code{\link{bastaMCMCmulti}}.
 }
   \item{lifetable}{
-%%     ~~Describe \code{lifetable} here~~
+Logical; if TRUE a life table (or array of life tables) is created from the average estimated ages at death (see details).
 }
 }
 \details{
 %%  ~~ If necessary, more details than the description above ~~
 }
 \value{
+The output includes four main lists: a) input; b) inference; c) qSuMo; and d) diagnost. The values for list 'input' are:
+\item{model }{Character string specifying the mortality model used}
+\item{Prop.Hazards }{Logical indicating if covariates were evaluated under a proportional hazards framework}
 %%  ~Describe the value returned
 %%  If it is a LIST, use
 %%  \item{comp1 }{Description of 'comp1'}
 %%  \item{comp2 }{Description of 'comp2'}
-%% ...
+  output$input           = list(modm = outBSM$i$modm, idm = outBSM$i$idm)
+	output$inference$theta = list(mat=thmat, quantiles=thq)
+	output$inference$gamma = list(mat=gamat, quantiles=gaq)
+	output$inference$pi    = list(mat=pimat, quantiles=piq)
+	output$inference$xq    = xq
+	output$inference$bq    = bq
+	output$qSuMo           = list(Sxsum = Sxq, mxsum = mxq, xza = xvec)
+	output$diagnost        = list(model=outBSM$input$model, Prop.Hazards=outBSM$input$Prop.Hazards, ModSel = outBSM$diagnost$ModSel, convergence=conv, lifetable=LT)
 }
 \references{
-%% ~put references to the literature/web site here ~
+Gelman, A., Carlin, J.B., Stern, H.S. & Rubin, D.B. (2004) Bayesian data analysis. 2nd edn. Boca Raton: Chapman & Hall/CRC.
 }
 \author{
-%%  ~~who you are~~
+Fernando Colchero \email{colchero@demogr.mpg.de}
 }
 \note{
 %%  ~~further notes~~
