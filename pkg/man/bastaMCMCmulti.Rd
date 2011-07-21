@@ -2,10 +2,10 @@
 \alias{bastaMCMCmulti}
 
 \title{
-A function to perform multiple parametric Bayesian estimation of age-specific mortality and survival trends from capture-recapture/recovery data with a large proportion of truncated and censored records.
+Multiple parametric Bayesian estimations of age-specific survival for truncated and censored capture-recapture records.
 }
 \description{
-This function performs multiple Bayesian estimation of age-specific mortality and survival trends when a large proportion (or all) of records have unknown times of birth and/or death. Survival parameters and unknown (i.e. latent) birth and death times are estimated, with a choice of three mortality functions (i.e. Gompertz, Gompertz-Makeham and Siler), based on the model described by Colchero & Clark (2011). Categorical and continuous covariates can be included either within a proportional hazards framework or following Colchero and Clark's (2011) approach. Each simulation can then be used to evaluate convergence.}
+This function performs multiple Monte Carlo Markov Chain (MCMC) algorithms for Bayesian estimation of age-specific mortality and survival trends when a large proportion of (or all) records have unknown times of birth and/or death. Survival parameters and unknown (i.e. latent) birth and death times are estimated, with a choice of three mortality functions (i.e. Gompertz, Gompertz-Makeham and Siler), based on the model described by Colchero & Clark (2011). Categorical and continuous covariates can be included either within a proportional hazards framework or following Colchero and Clark's (2011) approach. Multiple simulations can then be used to evaluate convergence using \code{\link{bastaSummary}}.}
 \usage{
 bastaMCMCmulti(Data, ststart, stend, model = "SI", niter = 50000, burnin = 5001, thinning = 50, rptp = ststart, ini.pars.mat = NULL, jumps = NULL, priors = NULL, Prop.Hazards = FALSE, cini.pars.mat = NULL, cjumps = NULL, cpriors = NULL, nsim = 5, parallel = FALSE, ncpus = 2)
 }
@@ -37,7 +37,7 @@ A vector (of length npi) defining the recapture probability transition times. Th
 A matrix defining the initial values for each parameter on the survival model with the number of rows equal to the number of simulations (\code{nsim}, see below) to be ran (see details). The number of parameters for each simulation, nth, which determines the number of columns, will depend on the model selected (see details): a) Gompertz includes nth = two parameters of the form [alpha, beta]; b) Gompertz-Makeham has nth = three parameters with vector [c, alpha, beta]; and c) Siler with nth = five parameters as [alpha1, beta1, c, alpha2, beta2]. If the number of parameters specified does not match the number of parameters inherent to the model selected, the function returns an error. If no ini.pars.mat argument is specified (i.e. default is NULL), the model assigns a matrix of randomly generated initial parameters.}
 }
   \item{jumps}{
-A vector defining the size of jumps for each survival model parameter (standard error in the Metropolis step, see details). The number of parameters, nth, will depend on the model selected (see details).
+A vector defining the size of jumps for each survival model parameter (standard error in the Metropolis step, see details). The number of parameters, nth, will depend on the model selected.
 }
   \item{priors}{
 A vector defining the priors for each survival parameter. The vector takes the same format as described for \code{jumps}.}
@@ -65,9 +65,10 @@ A numerical value that indicates the number of cpus to be used if \code{parallel
 }
 }
 \details{
-%%  ~~ If necessary, more details than the description above ~~
+The model 
 }
 \value{
+\code{basta} returns an object of class '\code{basta}'. The function \code{\link{summary}} (i.e. \code{\link{summary.glm}}) can be used to obtain or print a summary of the results.
 The output includes four main lists: a) data; b) input; c) results; and d) diagnost. These outputs are compatible with those from \code{\link{bastaMCMC}}. The values for list 'data' are:
 \item{bd }{Matrix with individual times of birth and death}
 \item{Y }{Capture-recapture matrix}
@@ -100,16 +101,16 @@ The values for list 'results' are:
 The values for list 'diagnost' are:
 \item{full.run }{An indicator variable that assigns 1 if the model ran though and 0 if the model stoped if it did not run until the \code{niter} step.}
 \item{last.step }{The last step ran in the model; if the model runs through the value assigned is equal to \code{niter}.}
-\item{ModSel }{Basic DIC calculations for model selection (Spiegelhalter \emph{et al.} 2002) These values need to be taken only as a reference (see comments to Spiegelhalter \emph{et al.} 2002). In the future the package will include routines for reversible jump Monte Carlo Markov Chain (RJMCMC, King & Brooks 2002).}
+\item{ModSel }{Basic DIC calculations for model selection (Spiegelhalter \emph{et al.} 2002) These values need to be taken only as a reference (see comments to Spiegelhalter \emph{et al.} 2002). In the future the package will include routines for reversible jump Monte Carlo Markov Chain (RJMCMC, see King & Brooks 2002).}
 }
 \references{
 Colchero, F. and Clark, J.S. (2011) Bayesian inference on age-specific survival from capture-recapture data for censored and truncated data. Journal of Animal Ecology. 
 Colchero, F., Jones, O.R. and Rebke, M. BaSTA - a package to estimate mortality parameters from incomplete mark-recapture data with covariates. Unpublished Manuscript.
 King, R. & Brooks, S.P. (2002) Bayesian model discrimination for multiple strata capture-recapture data. Biometrika, 89, 785–806. 
-Spiegelhalter, D.J., Best, N.G., Carlin, B.P., Van Der Linde, A. (2002) Bayesian measures of model complexity and fit. Journal of the Royal Statistical Society: Series B 64 (4), 583-639.
+Spiegelhalter, D.J., Best, N.G., Carlin, B.P., Van Der Linde, A. (2002) Bayesian measures of model complexity and fit. Journal of the Royal Statistical Society: Series B 64, 583-639.
 }
 \author{
-Fernando Colchero \email{colchero@mpg.demogr.de}
+Fernando Colchero \email{colchero@demogr.mpg.de}
 }
 \note{
 %%  ~~further notes~~
