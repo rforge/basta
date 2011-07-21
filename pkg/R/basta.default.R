@@ -600,7 +600,7 @@ function(Data, ststart, stend, model="SI", niter=50000, burnin=5001, thinning=50
 	# Report if all simulations ran through:
 	simname    = paste("Sim.", (1:nsim), sep="")
 	names(object) = simname
-	full.runs  = rep(0,nsim)
+	full.runs  = rep(0,nsim); names(full.runs) = simname
 	last.steps = full.runs
 	for(i in 1:nsim){
 		last.steps[i] = object[[i]]$g		
@@ -658,8 +658,13 @@ function(Data, ststart, stend, model="SI", niter=50000, burnin=5001, thinning=50
 	pmat      = Pmat[idthin==1,-(c(ncol(Pmat)-c(2:0)))]
 	coef      = cbind(apply(pmat, 2, mean, na.rm=TRUE), apply(pmat, 2, sd, na.rm=TRUE), t(apply(pmat, 2, quantile, c(0.025, 0.975), na.rm=TRUE)))
 	colnames(coef) = c("Estimate", "StdErr", "Lower95%", "Upper95%")
-	sercor    = apply(pmat,2, function(x) cor(x[-1],x[-length(x)], use="complete.obs"))
-	update    = apply(Pmat[,-c(ncol(Pmat)-c(2:0))], 2, function(x) length(which(diff(x[!is.na(x)])!=0))/length(x[!is.na(x)]))
+	if(length(id.failed) == nsim){
+		sercor     = rep(NA, nrow(coef))
+		update     = sercor
+	} else {
+		sercor     = apply(pmat,2, function(x) cor(x[-1],x[-length(x)], use="complete.obs"))
+		update     = apply(Pmat[,-c(ncol(Pmat)-c(2:0))], 2, function(x) length(which(diff(x[!is.na(x)])!=0))/length(x[!is.na(x)]))
+	} 
 	
 	coef      = cbind(coef, sercor)
 	coef      = cbind(coef, update)
@@ -795,6 +800,7 @@ function(Data, ststart, stend, model="SI", niter=50000, burnin=5001, thinning=50
 	output$Zc          = Zc
 	output$ststart     = ststart
 	output$stend       = stend
+	output$finished    = full.runs
 	if(lifetable) output$lifetable = LT
 	class(output) = "basta"
 	return(output)
