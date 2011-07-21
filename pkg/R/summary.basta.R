@@ -15,10 +15,14 @@ function(object, digits=3){
 	print(object$set)
 
 	cat("\nJumps and priors:\n")
-	print(t(object$JumpP))
+	print(object$JumpP)
+
+	cat("\nRuns:\n")
+	id.failed    = which(object$finished==0)
+	if(sum(object$finished)==length(object$finished)) cat("All simulations finished.\n") else if(length(id.failed)==1) cat(paste("Simulation number ", id.failed, " failed.\n", sep="")) else cat(paste("Simulations number ", paste(id.failed, collapse=", "), " failed.\n", sep=""))
 
 	cat("\nCoefficients:\n")
-	print.default(object$coefficients, digits=3)
+	print.default(object$coefficients, digits=digits)
 	
 	cat("\nModel Selection:\n")
 	print(object$ModSel)
