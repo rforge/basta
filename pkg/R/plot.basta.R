@@ -31,13 +31,14 @@ function(object, plot.type="traces", tracename = "theta", ...){
 	xdim        = c(npars['th']/nthm, 2, 2, 2)
 	if(ydim[3]==1) xdim[3] = 1
 
-	par(mfrow=c(ydim[p], xdim[p]), mar=c(3,3,3,1))
+	op          = par(mfrow=c(ydim[p], xdim[p]), mar=c(3,3,3,1))
 	for(i in 1:npars[p]){
 		if(npars[p] > 1)x = X[,i] else x = X
 		yl          = range(x, na.rm=TRUE)
 			plot(c(1,ng), yl, col=NA, xlab="Iteration", ylab="", main=colnames(X)[i], frame.plot=FALSE)
 			for(j in 1:nsim) lines(x[which(names(x) == simname[j])], type='l', col=Cols[j], lwd=1.5)
 	}
+	par(op)
 
 	} else {
 		
@@ -50,7 +51,7 @@ function(object, plot.type="traces", tracename = "theta", ...){
 		Bord       = Palette[round(seq(1,12, length=nza))]
 		Cols       = adjustcolor(Bord, alpha.f=0.5)
 	
-		par(mfrow=c(2,1), mar=c(4,4,3,2))
+		op         = par(mfrow=c(2,1), mar=c(4,4,3,2))
 
 		# Plot survival probability:
 		mxv          = ceiling(max(unlist(object$xv))/5)*5
@@ -70,6 +71,7 @@ function(object, plot.type="traces", tracename = "theta", ...){
 			polygon(c(xv, rev(xv)), c(object$mx[[i]][[1]][2,], rev(object$mx[[i]][[1]][3,])), col=Cols[i], border=Bord[i])
 			lines(xv, object$mx[[i]][[1]][1,], col=Bord[i], lty=3)
 		} 
+		par(op)
 	}
 }
 
