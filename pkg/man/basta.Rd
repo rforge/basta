@@ -36,13 +36,13 @@ The thinning parameter.
 A vector (of length npi) defining the recapture probability transition times. These are points (years) where the recapture probability is thought to change.  The default setting is for the recapture probability to be constant throughout the study, so the \code{rptp} is simply defined as a single element vector of the first year of the observation period (e.g. c(1985)). If one wanted to set a different recapture probability for years after (say) 1990, the RPTP could be defined as c(1985, 1990) etc..
 }
   \item{th.ini.pars}{
-A vector or matrix defining the initial values for each parameter on the survival model with the number of rows equal to the number of simulations (\code{nsim}, see below) to be ran (see details). The number of parameters for each simulation, nth, which determines the number of columns, will depend on the model selected (see details): a) Gompertz includes nth = two parameters of the form [alpha, beta]; b) Gompertz-Makeham has nth = three parameters with vector [c, alpha, beta]; and c) Siler with nth = five parameters as [alpha1, beta1, c, alpha2, beta2]. If the number of parameters specified does not match the number of parameters inherent to the model selected, the function returns an error. If no ini.pars.mat argument is specified (i.e. default is NULL), the model assigns a matrix of randomly generated initial parameters.}
+A vector or matrix defining the initial values for each parameter on the survival model with the number of rows equal to the number of simulations (\code{nsim}, see below) to be ran (see details). The number of parameters for each simulation, nth, which determines the number of columns, will depend on the model selected (see details): a) Gompertz includes nth = two parameters of the form [alpha, beta]; b) Gompertz-Makeham has nth = three parameters with vector [c, alpha, beta]; and c) Siler with nth = five parameters as [alpha1, beta1, c, alpha2, beta2]. If the number of parameters specified does not match the number of parameters inherent to the model selected, the function returns an error. If no ini.pars.mat argument is specified (i.e. default is NULL), the model assigns a matrix of randomly generated initial parameters.
 }
   \item{th.jumps}{
 A vector or matrix defining the size of jumps for each survival model parameter (standard error in the Metropolis step, see details). The number of parameters, nth, will depend on the model selected.
 }
   \item{th.priors}{
-A vector or matrix defining the priors for each survival parameter. The vector takes the same format as described for \code{jumps}.}
+A vector or matrix defining the priors for each survival parameter. The vector takes the same format as described for \code{jumps}.
 }
   \item{Prop.Hazards}{
 A logical argument that indicates if covariates should be evaluated under a proportional hazards framework. Default is FALSE. 
