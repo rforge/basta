@@ -4,7 +4,7 @@
 
 \docType{package}
 \title{
-BaSTA: a package to estimate mortality parameters from capture-recapture data.
+BaSTA: a package for parametric Bayesian estimation of age-specific survival for truncated and censored capture-recapture/recovery records.
 }
 
 \description{
