@@ -27,10 +27,16 @@ function(object, digits=3){
 
 	cat("\nCoefficients:\n")
 	print.default(object$coefficients, digits=digits)
-	if(is.null(object$ModSel)) cat("\nWarning: Convergence not reached for some parameters (i.e. 'PotScaleReduc' values larger than 1.2).\nThese estimates should not be used for inference.\n")
+	if(is.null(object$ModSel)){
+		if(object$set['nsim'] == 1) cat("\nConvergence calculations require more than one run.\nTo estimate potential scale reduction run at least two simulations.\n") else cat("\nWarning: Convergence not reached for some parameters (i.e. 'PotScaleReduc' values larger than 1.2).\nThese estimates should not be used for inference.\n")
+		} 
 	
 	cat("\nModel Selection:\n")
-	if(!is.null(object$ModSel)) print(object$ModSel) else cat("DIC was not calculated due to lack of convergence.\n")
+	if(!is.null(object$ModSel)){
+		print(object$ModSel)
+	} else {
+		if(object$set['nsim'] == 1) cat("DIC was not calculated due to insufficient number of simulations to estimate convergence.\n") else cat("DIC was not calculated due to lack of convergence.\n")
+	}
 	
 }
 
