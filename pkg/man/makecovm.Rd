@@ -1,110 +1,38 @@
 \name{makecovm}
 \alias{makecovm}
-%- Also NEED an '\alias' for EACH other topic documented here.
+
 \title{
-%%  ~~function to do ... ~~
+Function to build a matrix of covariates (i.e. design matrix) for a BaSTA analysis.
 }
 \description{
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
+This function creates a matrix of covariates or design matrix appropriate for BaSTA from raw individual level covariate data. The function identifies categorical and continuous covariates and organizes them accordingly. 
 }
 \usage{
 makecovm(Data, covs)
 }
-%- maybe also 'usage' for other objects documented here.
+
 \arguments{
   \item{Data}{
-%%     ~~Describe \code{Data} here~~
+a matrix of n rows (n = number of individuals in dataset) and nz columns (number of general covariates) including categorical covariates as factors (e.g. sex with individual labels "f","m", or "u" for unknowns, location, etc.) and/or continuous individual covariates (e.g. weight at birth, general weather conditions at corresponding location, etc.).
 }
   \item{covs}{
-%%     ~~Describe \code{covs} here~~
+the column names in the \code{Data} matrix to be included in the analysis.
 }
 }
 \details{
-%%  ~~ If necessary, more details than the description above ~~
+under construction
 }
 \value{
-%%  ~Describe the value returned
-%%  If it is a LIST, use
-%%  \item{comp1 }{Description of 'comp1'}
-%%  \item{comp2 }{Description of 'comp2'}
-%% ...
-}
-\references{
-%% ~put references to the literature/web site here ~
-}
-\author{
-%%  ~~who you are~~
-}
-\note{
-%%  ~~further notes~~
+The function returns a new covariate matrix to be collated to a matrix that includes a column for individual ids, a column for time of birth and on for times of death, and the full recapture matrix.
 }
 
-%% ~Make other sections like Warning with \section{Warning }{....} ~
+\author{
+Owen R. Jones \email{jones@demogr.mpg.de}
+}
 
 \seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
+\code{\link{basta}}
 }
 \examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
-
-## The function is currently defined as
-function(Data,covs) {
-
-nd = data.frame(Data[,which(names(Data)\%in\%covs)])
-if(ncol(nd)==1) names(nd)=covs
-
-Cl = as.vector(sapply(nd,class))
-
-temp = c(Cl == "factor"|Cl == "numeric")
-if(sum(temp)<length(Cl)) stop("Data types for the covariates should be 'factor' or 'numeric'")
-
-factorCovs  = which(Cl=="factor")
-numericCovs = which(Cl=="numeric")
-
-if(length(factorCovs) >  1)  FactCovs = as.factor(apply(nd[,factorCovs],1,paste,collapse="."))
-if(length(factorCovs) == 1) FactCovs = nd[,factorCovs]
-if(length(factorCovs) == 0) FactCovs = NULL
-
-if(length(numericCovs) != 0) NumCovs = nd[,which(Cl=="numeric")]
-if(length(numericCovs) == 0) NumCovs = NULL
-
-if(is.null(FactCovs)) {tempCovs = data.frame(NumCovs)} 
-if(is.null(NumCovs)) {tempCovs = data.frame(FactCovs)}
-if(!is.null(NumCovs)&!is.null(FactCovs)) {tempCovs = data.frame(FactCovs,NumCovs)}
-
-Z=NULL
-
-for (x in 1:ncol(tempCovs)){
-    if(class(tempCovs[,x]) == "numeric"){
-        Z = cbind(Z,tempCovs[,x])
-        }
-    
-    if(class(tempCovs[,x]) == "factor"){
-        vL = length(tempCovs[,x])
-        nLevs = length(levels(tempCovs[,x]))
-        a = (vL * nLevs) - nLevs
-        sv = seq(0, a, nLevs) + as.numeric(tempCovs[,x])
-        MV = rep(0, vL * nLevs)
-        MV[sv] = 1
-        M = matrix(MV, ncol = nLevs, nrow = vL, byrow = TRUE)
-        colnames(M) = levels(tempCovs[,x])
-        
-        Z = cbind(Z,M)
-        }
-    }
-
-#Assign column names to the numeric variables (if there are any)
-if(length(numericCovs)!=0){
-    if(is.null(colnames(Z))) {colnames(Z) = rep("",length(numericCovs))}
-    colnames(Z)[colnames(Z)==""] = names(nd)[Cl=="numeric"]
-    }
-
-return(Z)
-  }
+##under construction
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
