@@ -287,7 +287,7 @@ function(Data, ststart, stend, model="SI", niter=50000, burnin=5001, thinning=50
 		
 		# c) Priors:
 		if(is.null(ga.priors)){
-			gap     = rep(1, nzc)
+			gap     = rep(0, nzc)
 			names(gap) = colnames(Zc)
 		} else {
 			lcpriors = length(ga.priors)
@@ -395,7 +395,7 @@ function(Data, ststart, stend, model="SI", niter=50000, burnin=5001, thinning=50
 	TestIniPJ   = TestParsJumps(thg, gag, thj, gaj, Za, Zc,xg, bg, Ti, idm, nza, nzc, Dx, low, nth, modm, Cont)
 
 	if(TestIniPJ$p) stop("\nInitial parameters produce pdf values equal to 0 for some individuals.\nModify initial parameters and run model again.\n", call.=FALSE)
-	if(TestIniPJ$j) stop("\nJumps produce pdf values equal to 0 for some individuals.\nReduce th.jumps and run model again.\n", call.=FALSE)
+	if(TestIniPJ$j) stop("\nJumps produce pdf values equal to 0 for some individuals.\nReduce jumps and run model again.\n", call.=FALSE)
 
 	# 5.  Multiple MCMC function:
 	multiMCMC  = function(sim){
@@ -576,7 +576,7 @@ function(Data, ststart, stend, model="SI", niter=50000, burnin=5001, thinning=50
 	if(nsim==1){
 		parallel = FALSE
 	}
-	if(nsim > 1) cat("Multiple simulations started...\n") else cat("Simulation started...\n")
+	if(nsim > 1) cat("Multiple simulations started...\n\n") else cat("Simulation started...\n\n")
 	Start      = Sys.time()
 	if(parallel){
 		availpkg     = available.packages()
@@ -614,7 +614,7 @@ function(Data, ststart, stend, model="SI", niter=50000, burnin=5001, thinning=50
 			cat(paste("Total MCMC computing time: ", round(as.numeric(julian(End)-julian(Start))*24*60, 2), " minutes\n\n", sep=""))
 			all.ran = TRUE
 		} else {
-			cat(paste("MCMC stopped at step ", object[[1]]$g,"\nPdf of ages at death equal to 0 for some individuals.\nModify starting parameters or th.jumps\n", sep=""))
+			cat(paste("MCMC stopped at step ", object[[1]]$g,"\nPdf of ages at death equal to 0 for some individuals.\nModify starting parameters or jumps\n", sep=""))
 		}
 	} else {
 	if(length(id.failed)>0 & length(id.failed)<nsim){
