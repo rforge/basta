@@ -273,7 +273,7 @@ function(Data, ststart, stend, model="SI", niter=50000, burnin=5001, thinning=50
 		
 		# b) Jumps:
 		if(is.null(ga.jumps)){
-			gaj     = rep(0.0001, nzc)
+			gaj     = rep(0.01, nzc)
 			names(gaj) = colnames(Zc)
 		} else {
 			lcjumps = length(ga.jumps)
@@ -469,9 +469,16 @@ function(Data, ststart, stend, model="SI", niter=50000, burnin=5001, thinning=50
 			Zgan        = Zc %*% gan
 			idtrg       = which(bg<Ti)
 
-			p.thg       = sum(fx.fun(xg + 0.5*Dx, Zthg, Zgag, idm=idm, log=TRUE)) - sum(Sx.fun(Ti-bg[idtrg] + 0.5*Dx, Zthg[idtrg,], Zgag[idtrg], idm=idm, log=TRUE)) + sum(dtnorm(c(thg), c(thp), thv, lower=c(low), log=TRUE)) + sum(dnorm(gag, gap, gav, log=TRUE))
+			p.thg       = sum(fx.fun(xg + 0.5*Dx, Zthg, Zgag, idm=idm, log=TRUE)) + sum(dtnorm(c(thg), c(thp), thv, lower=c(low), log=TRUE)) + sum(dnorm(gag, gap, gav, log=TRUE))
 
-			p.thn       = sum(fx.fun(xg + 0.5*Dx, Zthn, Zgan, idm=idm, log=TRUE)) - sum(Sx.fun(Ti-bg[idtrg] + 0.5*Dx, Zthn[idtrg,], Zgan[idtrg], idm=idm, log=TRUE)) + sum(dtnorm(c(thn), c(thp), thv, lower=c(low), log=TRUE)) + sum(dnorm(gan, gap, gav, log=TRUE))
+			p.thn       = sum(fx.fun(xg + 0.5*Dx, Zthn, Zgan, idm=idm, log=TRUE)) + sum(dtnorm(c(thn), c(thp), thv, lower=c(low), log=TRUE)) + sum(dnorm(gan, gap, gav, log=TRUE))
+
+			if(length(idtrg)>0){
+				p.thg      = p.thg - sum(Sx.fun(Ti-bg[idtrg] + 0.5*Dx, matrix(Zthg[idtrg,], length(idtrg), ncol(Zthg)), matrix(Zgag[idtrg], length(idtrg), ncol(Zthg)), idm=idm, log=TRUE)) 
+				
+				p.thn      = p.thn - sum(Sx.fun(Ti-bg[idtrg] + 0.5*Dx, matrix(Zthn[idtrg,], length(idtrg), ncol(Zthg)), matrix(Zgan[idtrg], length(idtrg), ncol(Zthg)), idm=idm, log=TRUE)) 
+			}
+
 
 			r           = exp(p.thn-p.thg)
 			z           = runif(1,0,1)
@@ -497,7 +504,6 @@ function(Data, ststart, stend, model="SI", niter=50000, burnin=5001, thinning=50
 			bn[bi0]     = bg[bi0] + sample(-1:1, length(bi0), replace=TRUE) 
 			bn[bi0]     = apply(cbind(bn[bi0],fi[bi0]-1),1,min)
 
-			idtrn       = which(bn<Ti)
 			dn          = dg 
 			dn[di0]     = dg[di0] + sample(-1:1, length(di0), replace=TRUE) 
 			dn[di0]     = apply(cbind(dn[di0],bn[di0],li[di0]+1),1,max) 
@@ -720,7 +726,7 @@ function(Data, ststart, stend, model="SI", niter=50000, burnin=5001, thinning=50
 			gave      = apply(pmat[,(nth*nza) + 1:nzc],2,mean)
 			zcname    = paste("Cont.",c("Med.","Lower","Upper")[i],sep="")
 		} else {
-			rzc       = 0
+			rzc       = matrix(0,1,1)
 			gave      = 0
 			zcname    = c("")
 		}
@@ -732,8 +738,8 @@ function(Data, ststart, stend, model="SI", niter=50000, burnin=5001, thinning=50
 			idza    = which(Za[,i]==1)
 			xv      = seq(0,ceiling(max(xq[1,idza])*1.1),0.1)
 			xvec[[zaname[i]]] = xv
-			for(j in 1:length(rzc)){
-				gaa    = sum(gave * rzc[j])
+			for(j in 1:nrow(rzc)){
+				gaa    = sum(gave * rzc[j,])
 				Cols   = paste(colnames(modm), "[",zaname[i],"]", sep="")
 				if(nza==1) Cols = colnames(modm)
 				Sxq[[zaname[i]]][[zcname[j]]] = apply(apply(thmat[,Cols],1,S.x),1, quantile, c(0.5,0.025,0.975))
