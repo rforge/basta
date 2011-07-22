@@ -112,16 +112,16 @@ Fernando Colchero \email{colchero@demogr.mpg.de}
 \code{\link{CensusToCaptureHistory}} and \code{\link{makecovm}} for raw data formatting.
 }
 \examples{
-# Load data:
+## Load data:
 data("basta.dat", package="basta")
 
-# Check data consistency:
+## Check data consistency:
 new.dat  <- DataCheck(basta.dat, ststart=100, stend=120, autofix=rep(1,7))
 
-# Run short version of BaSTA on the data:
+## Run short version of BaSTA on the data:
 out      <- basta(new.dat$newData, ststart=100, stend=120, niter=100, burnin=11, thinning=10)
 
-# Check results summary:
+## Check results summary:
 summary(out)
 }
 
