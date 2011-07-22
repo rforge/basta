@@ -20,8 +20,10 @@ function(object, digits=3){
 	
 	
 	cat("\nCoefficients:\n")
-	print.default(signif(object$coefficients, digits=digits))
-	if(is.null(object$ModSel)) cat("\nWarning: Convergence not reached for some parameters (i.e. 'PotScaleReduc' values larger than 1.2).\nThese estimates should not be used for inference.\n")
+	print.default(object$coefficients, digits=digits)
+	if(is.null(object$ModSel)){
+		if(object$set['nsim'] == 1) cat("\nConvergence calculations require more than one run.\nTo estimate potential scale reduction run at least two simulations.\n") else cat("\nWarning: Convergence not reached for some parameters (i.e. 'PotScaleReduc' values larger than 1.2).\nThese estimates should not be used for inference.\n")
+	} 
 
 }
 
