@@ -112,7 +112,10 @@ Fernando Colchero \email{colchero@demogr.mpg.de}
 \code{\link{CensusToCaptureHistory}} and \code{\link{makecovm}} for raw data formatting.
 }
 \examples{
-  print("under construction...")
+data("basta.dat", package="basta")
+new.dat  <- DataCheck(basta.dat, ststart=100, stend=120, autofix=rep(1,7))
+out      <- basta(new.dat$newData, ststart=100, stend=120, niter=100, burnin=11, thinning=10)
+summary(out)
 }
 
 \keyword{ methods }
