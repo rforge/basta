@@ -7,9 +7,7 @@ Parametric Bayesian estimation of age-specific survival for truncated and censor
 \description{
 This function performs multiple Monte Carlo Markov Chain (MCMC) algorithms for Bayesian estimation of age-specific mortality and survival trends when a large proportion of (or all) records have unknown times of birth and/or death. Survival parameters and unknown (i.e. latent) birth and death times are estimated, with a choice of three mortality functions (i.e. Gompertz, Gompertz-Makeham and Siler), based on the model described by Colchero & Clark (2011). Categorical and continuous covariates can be included either within a proportional hazards framework or following Colchero and Clark's (2011) approach.}
 \usage{
-basta(Data, ststart, stend, ...)
-
-basta.default(Data, ststart, stend, model = "SI", niter = 50000, burnin = 5001, thinning = 50, rptp = ststart, th.ini.pars = NULL, th.jumps = NULL, th.priors = NULL, Prop.Hazards = FALSE, ga.ini.pars = NULL, ga.jumps = NULL, ga.priors = NULL, nsim = 1, parallel = FALSE, ncpus = 2, lifetable=TRUE)
+\method{default}{basta}(Data, ststart, stend, model = "SI", niter = 50000, burnin = 5001, thinning = 50, rptp = ststart, th.ini.pars = NULL, th.jumps = NULL, th.priors = NULL, Prop.Hazards = FALSE, ga.ini.pars = NULL, ga.jumps = NULL, ga.priors = NULL, nsim = 1, parallel = FALSE, ncpus = 2, lifetable=TRUE)
 }
 \arguments{
   \item{Data}{
