@@ -7,7 +7,7 @@ A function to check the input data file for a BaSTA analysis.
 This function performs some basic error checking on the input files for a BaSTA analysis. A number of checks are performed including (1) individuals dying before the observation window starts; (2) birth date recorded as being after death date; (3) no observations of any kind (phantom individuals); (4) observations before birth; (5) observations after death; (6) years of birth and deaths must appear as 0 in the observation matrix.
 }
 \usage{
-DataCheck(Data, ststart, stend, autofix = FALSE, silent = TRUE)
+DataCheck(Data, ststart, stend, autofix = rep(0, 7), silent = TRUE)
 }
 \arguments{
   \item{Data}{
