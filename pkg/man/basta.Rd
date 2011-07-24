@@ -107,11 +107,11 @@ Fernando Colchero \email{colchero@demogr.mpg.de}
 
 \seealso{
 \code{\link{summary.basta}}, \code{\link{print.basta}}, \code{\link{plot.basta}} to visualized summary outputs for objects of class '\code{basta}'.
-\code{\link{CensusToCaptureHistory}} and \code{\link{makecovm}} for raw data formatting.
+\code{\link{CensusToCaptHist}} and \code{\link{makecovm}} for raw data formatting.
 }
 \examples{
 ## Load data:
-data("basta.dat", package="basta")
+data("basta.dat", package="BaSTA")
 
 ## Check data consistency:
 new.dat  <- DataCheck(basta.dat, ststart=100, stend=120, autofix=rep(1,7))
