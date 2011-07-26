@@ -12,13 +12,10 @@ makecovm(Data, covs)
 }
 
 \arguments{
-  \item{Data}{
-a matrix of n rows (n = number of individuals in dataset) and nz columns (number of general covariates) including categorical covariates as factors (e.g. sex with individual labels "f","m", or "u" for unknowns, location, etc.) and/or continuous individual covariates (e.g. weight at birth, general weather conditions at corresponding location, etc.).
-}
-  \item{covs}{
-the column names in the \code{Data} matrix to be included in the analysis.
-}
-}
+  \item{Data}{a matrix of n rows (n = number of individuals in dataset) and nz columns (number of general covariates) including categorical covariates as factors (e.g. sex with individual labels "f","m", or "u" for unknowns, location, etc.) and/or continuous individual covariates (e.g. weight at birth, general weather conditions at corresponding location, etc.).}
+  \item{covs}{the column names in the \code{Data} matrix to be included in the analysis.}
+  }
+
 \details{
 under construction
 }
