@@ -1,4 +1,5 @@
 \name{basta.dat}
+\alias{basta.dat}
 \docType{data}
 \title{Simulated dataset for BaSTA analysis}
 \description{
