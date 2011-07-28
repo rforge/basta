@@ -1,5 +1,5 @@
 print.basta <-
-function(x, digits=3){
+function(x, ...){
 	catcov    = paste(colnames(x$Za), collapse=", ")
 	if(length(colnames(x$Za))==1) catcov = "NULL"
 	concov    = paste(colnames(x$Zc), collapse=", ")
@@ -20,7 +20,7 @@ function(x, digits=3){
 	
 	
 	cat("\nCoefficients:\n")
-	print.default(x$coefficients, digits=digits)
+	print.default(x$coefficients, ...)
 	if(is.null(x$ModSel)){
 		if(x$set['nsim'] == 1) cat("\nConvergence calculations require more than one run.\nTo estimate potential scale reduction run at least two simulations.\n") else cat("\nWarning: Convergence not reached for some parameters (i.e. 'PotScaleReduc' values larger than 1.2).\nThese estimates should not be used for inference.\n")
 	} 
