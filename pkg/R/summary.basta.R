@@ -1,5 +1,5 @@
 summary.basta <-
-function(object, digits=3){
+function(object,...){
 	
 	catcov    = paste(colnames(object$Za), collapse=", ")
 	if(length(colnames(object$Za))==1) catcov = "NULL"
@@ -26,7 +26,7 @@ function(object, digits=3){
 	print(object$JumpP)
 
 	cat("\nCoefficients:\n")
-	print.default(object$coefficients, digits=digits)
+	print.default(object$coefficients, ...)
 	if(is.null(object$ModSel)){
 		if(object$set['nsim'] == 1) cat("\nConvergence calculations require more than one run.\nTo estimate potential scale reduction run at least two simulations.\n") else cat("\nWarning: Convergence not reached for some parameters (i.e. 'PotScaleReduc' values larger than 1.2).\nThese estimates should not be used for inference.\n")
 		} 
