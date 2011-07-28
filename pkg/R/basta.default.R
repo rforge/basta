@@ -694,10 +694,11 @@ function(Data, ststart, stend, model="SI", niter=50000, burnin=5001, thinning=50
 			if(length(idnconv)>0){
 				ModSel     = NULL
 				warning("Convergence not reached for some survival parameters.\nDIC could not be calculated.\n", call.=FALSE)
+
 			} else {
 				# 7.3.2 Model selection (DIC, if convergence was reached):
-				modepost   = pom[,3]
-				L          = nrow(pom)
+				modepost   = Pmat[,ncol(Pmat)]
+				L          = nrow(Pmat[,ncol(Pmat)])
 				Dm         = -2*modepost
 				Dmode      = -2*modepost[which(modepost==max(modepost))[1]]
 				Dave       = mean(Dm)
