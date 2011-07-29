@@ -2,8 +2,6 @@ plot.basta <-
 function(x, plot.type="traces", tracename = "theta", ...){
    	Palette    = c("#A6CEE3", "#1F78B4", "#B2DF8A", "#33A02C", "#FB9A99", "#E31A1C", "#FDBF6F", "#FF7F00", "#CAB2D6", "#6A3D9A", "#FFFF99", "#B15928")
 
-	if(.Platform$OS.type=="unix") devtype=quartz else devtype=windows
-	
 	if(plot.type=="traces"){
 	plotname     = c("theta","gamma","pi", "post")
 
