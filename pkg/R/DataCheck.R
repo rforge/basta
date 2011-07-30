@@ -1,5 +1,5 @@
 DataCheck <-
-function(Data, ststart, stend, autofix = rep(0,7), silent=TRUE) {
+function(object, ststart, stend, autofix = rep(0,7), silent=TRUE) {
 
 #ToDo: add code to specify variations on what to do with the autofix
 #Autofix = a vector that defines whether, and how, to fix a problematic dataset.
@@ -20,14 +20,14 @@ function(Data, ststart, stend, autofix = rep(0,7), silent=TRUE) {
 	Tf         = stend
 	st         = Ti:Tf
 	nt         = length(st)
-	idnames    = Data[,1]
-	n          = nrow(Data)
-	bd         = as.matrix(Data[,2:3])
-	Y          = as.matrix(Data[,1:nt+3]); colnames(Y) = st
+	idnames    = object[,1]
+	n          = nrow(object)
+	bd         = as.matrix(object[,2:3])
+	Y          = as.matrix(object[,1:nt+3]); colnames(Y) = st
 	Tm         = matrix(st, n, nt, byrow=TRUE)
 	
-	if(ncol(Data)>nt+3){
-		Z  = as.matrix(Data[,(nt+4):ncol(Data)])
+	if(ncol(object)>nt+3){
+		Z  = as.matrix(object[,(nt+4):ncol(object)])
 	} else {
 		Z  = matrix(1, n, 1)
 	}
@@ -53,7 +53,7 @@ function(Data, ststart, stend, autofix = rep(0,7), silent=TRUE) {
 # 2. No birth/death AND no obervations
     type2 = which(rowSums(bd) + rowSums(Y) == 0)
     if (length(type2) != 0) {
-        cat("The following rows have no Data (unknown birth, unknown death, and no observations):\n")
+        cat("The following rows have no object (unknown birth, unknown death, and no observations):\n")
         print(type2)
         
         #Actions - remove those rows from bd, Y and Z
@@ -172,7 +172,7 @@ function(Data, ststart, stend, autofix = rep(0,7), silent=TRUE) {
 #All OK
     if (length(c(type1, type2, type3, type4, type5, type6, type7)) == 
         0) {
-       cat("No problems were detected with the Data.\n\n")
+       cat("No problems were detected with the object.\n\n")
     }
     ok = length(c(type1, type2, type3, type4, type5, type6, type7)) == 
         0
@@ -193,7 +193,7 @@ function(Data, ststart, stend, autofix = rep(0,7), silent=TRUE) {
     cat(paste("Number with known birth AND death year =", sum(bd[, 2] != 0 & bd[, 1] != 0), "\n"))
 	}
 
-    if (ncol(Data)>nt+3) {
+    if (ncol(object)>nt+3) {
         return(list(ok=ok, newData=data.frame(idnames,bd,Y,Z), type1=type1, type2=type2, type3=type3, type4=type4, type5=type5, 
             type6=type6, type7=type7))
     } else {
