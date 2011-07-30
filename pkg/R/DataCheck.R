@@ -179,13 +179,6 @@ function(object, ststart, stend, autofix = rep(0,7), silent=TRUE) {
     
     
     if(!silent){
-    	idd  = which(bd[,2]> 0)
-    	ld   = max(bd[,2])
-    	fd   = min(bd[bd[,2]>0,2])
-
-    	idb  = which(bd[,1]> 0)
-    	lb   = max(bd[,1])
-    	fb   = min(bd[bd[,1]>0,1])
 
     cat(paste("*DataSummary*\n- Number of individuals            =",  format(n, big.mark=','), "\n"))
     cat(paste("- Total number of observations\n   in recapture matrix             =", format(sum(Y), big.mark=","), "\n"))
@@ -196,13 +189,13 @@ function(object, ststart, stend, autofix = rep(0,7), silent=TRUE) {
     cat(paste("- Number with known death year     =", format(sum(bd[, 2] != 0), big.mark=','), "\n"))
     cat(paste("- Number with known birth\n   AND death years                 =", format(sum(bd[, 2] != 0 & bd[, 1] != 0), big.mark=","), "\n\n"))
 
-    if(length(idb)>0){
-    cat(paste("- Earliest recorded birth year     =", fb, "\n"))
-    cat(paste("- Latest recorded birth year       =", lb, "\n"))
+    if(length(which(bd[,1]> 0))>0){
+    cat(paste("- Earliest recorded birth year     =", min(bd[bd[,1]>0,1]), "\n"))
+    cat(paste("- Latest recorded birth year       =", max(bd[,1]), "\n"))
     }
-    if(length(idd)>0){
-		cat(paste("- Earliest recorded death year     =", fd, "\n"))
-		cat(paste("- Latest recorded death year       =", ld, "\n"))
+    if(length(which(bd[,2]> 0))>0){
+		cat(paste("- Earliest recorded death year     =", min(bd[bd[,2]>0,2]), "\n"))
+		cat(paste("- Latest recorded death year       =", max(bd[,2]), "\n"))
     }
 	}
 
