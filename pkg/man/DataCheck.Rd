@@ -4,10 +4,10 @@
 
 \description{This function performs some basic error checking on the input files for a BaSTA analysis. A number of checks are performed including (1) individuals dying before the observation window starts; (2) birth date recorded as being after death date; (3) no observations of any kind (phantom individuals); (4) observations before birth; (5) observations after death; (6) years of birth and deaths must appear as 0 in the observation matrix.}
 
-\usage{DataCheck(Data, ststart, stend, autofix = rep(0, 7), silent = TRUE)}
+\usage{DataCheck(object, ststart, stend, autofix = rep(0, 7), silent = TRUE)}
 
 \arguments{
-  \item{Data }{A data.frame to be used as an input data file for BaSTA. The first column is the individual's ID, the second and third columns are birth and death years respectively. Columns 4 to (nt+3) represent the observation window of nt years. This is followed (optionally) by columns for covariate.}
+  \item{object }{A data.frame to be used as an input data file for BaSTA. The first column is the individual's ID, the second and third columns are birth and death years respectively. Columns 4 to (nt+3) represent the observation window of nt years. This is followed (optionally) by columns for covariate.}
   \item{ststart }{The start year of the observation window.}
   \item{stend }{The end year of the observation window.}
   \item{autofix }{A logical argument indicating whether to automatically fix any errors. This should be used with extreme caution. We recommend going back to the individual-based data and fixing each error "by hand".}
