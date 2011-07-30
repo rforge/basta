@@ -168,7 +168,7 @@ function(object, ststart, stend, autofix = rep(0,7), silent=TRUE) {
         if (autofix[7] == 1) Y[dpos] = 0
     }   
 
-    
+	n    = nrow(Y)   
 #All OK
     if (length(c(type1, type2, type3, type4, type5, type6, type7)) == 
         0) {
@@ -179,18 +179,30 @@ function(object, ststart, stend, autofix = rep(0,7), silent=TRUE) {
     
     
     if(!silent){
-    cat(paste("*DataSummary*\nNumber of individuals             =",  nrow(bd), "\n"))
-    cat(paste("Earliest observation in recapture matrix         =", min(ytemp), "\n"))
-    cat(paste("Latest observation in recapture matrix           =", max(ytemp[ytemp != Inf]), "\n"))
-    cat(paste("Total number of observations in recapture matrix =", sum(Y), "\n\n"))
+    	idd  = which(bd[,2]> 0)
+    	ld   = max(bd[,2])
+    	fd   = min(bd[,2])
+
+    	idb  = which(bd[,1]> 0)
+    	lb   = max(bd[,1])
+    	fb   = min(bd[,1])
+
+    cat(paste("*DataSummary*\n- Number of individuals            =",  nrow(bd), "\n"))
+    cat(paste("- Earliest detection time          =", min(ytemp), "\n"))
+    cat(paste("- Latest detection time            =", max(ytemp[ytemp != Inf]), "\n"))
+    cat(paste("- Total number of observations\n   in recapture matrix             =", sum(Y), "\n\n"))
     
-    cat(paste("Earliest recorded birth year     =", min(bd[, 1][bd[, 1] != 0]), "\n"))
-    cat(paste("Latest recorded birth year       =", max(bd[, 1][bd[, 1] != 0]), "\n"))
-    cat(paste("Earliest recorded death year     =", min(bd[, 2][bd[, 2] != 0]), "\n"))
-    cat(paste("Latest recorded death year       =", max(bd[, 2][bd[, 2] != 0]), "\n"))
-    cat(paste("Number with known birth year           =", sum(bd[, 1] != 0), "\n"))
-    cat(paste("Number with known death year           =", sum(bd[, 2] != 0), "\n"))
-    cat(paste("Number with known birth AND death year =", sum(bd[, 2] != 0 & bd[, 1] != 0), "\n"))
+    cat(paste("- Number with known birth year     =", sum(bd[, 1] != 0), "\n"))
+    cat(paste("- Number with known death year     =", sum(bd[, 2] != 0), "\n"))
+    cat(paste("- Number with known birth\n   AND death years                 =", sum(bd[, 2] != 0 & bd[, 1] != 0), "\n"))
+    if(length(idb)>0){
+    cat(paste("- Earliest recorded birth year     =", fb, "\n"))
+    cat(paste("- Latest recorded birth year       =", lb, "\n"))
+    }
+    if(length(idd)>0){
+		cat(paste("- Earliest recorded death year     =", fd, "\n"))
+		cat(paste("- Latest recorded death year       =", ld, "\n"))
+    }
 	}
 
     if (ncol(object)>nt+3) {
