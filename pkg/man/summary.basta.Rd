@@ -32,6 +32,10 @@ Function \code{summary} includes all the previous measures, but includes a summa
 
 Function \code{plot} takes objects of class \code{basta} to create trace plots or, if the argument for \code{plot.type} is set to \code{sumo}, plots estimated survival probability and mortality rate plots with their 95\% predictive intervals. 
 }
+\references{
+Gelman, A., Carlin, J.B., Stern, H.S. & Rubin, D.B. (2004) \emph{Bayesian data analysis}. 2nd edn. Chapman & Hall/CRC, Boca Raton, Florida, USA.
+Spiegelhalter, D.J., Best, N.G., Carlin, B.P., Van Der Linde, A. (2002) Bayesian measures of model complexity and fit. Journal of the Royal Statistical Society: Series B 64, 583-639.
+}
 \author{
 Fernando Colchero \email{colchero@demogr.mpg.de}
 }
