@@ -194,7 +194,7 @@ function(object, ststart, stend, autofix = rep(0,7), silent=TRUE) {
     
     cat(paste("- Number with known birth year     =", sum(bd[, 1] != 0), "\n"))
     cat(paste("- Number with known death year     =", sum(bd[, 2] != 0), "\n"))
-    cat(paste("- Number with known birth\n   AND death years                 =", sum(bd[, 2] != 0 & bd[, 1] != 0), "\n"))
+    cat(paste("- Number with known birth\n   AND death years                 =", sum(bd[, 2] != 0 & bd[, 1] != 0), "\n\n"))
     if(length(idb)>0){
     cat(paste("- Earliest recorded birth year     =", fb, "\n"))
     cat(paste("- Latest recorded birth year       =", lb, "\n"))
