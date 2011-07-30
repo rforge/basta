@@ -23,7 +23,9 @@ function(x, ...){
 	print.default(x$coefficients, ...)
 	if(is.null(x$ModSel)){
 		if(x$set['nsim'] == 1) cat("\nConvergence calculations require more than one run.\nTo estimate potential scale reduction run at least two simulations.\n") else cat("\nWarning: Convergence not reached for some parameters (i.e. 'PotScaleReduc' values larger than 1.2).\nThese estimates should not be used for inference.\n")
+	}  else {
+		cat("Appropriate convergence reached for all parameters.\n")
 	} 
-
+	
 }
 
