@@ -1,12 +1,12 @@
 basta.default <-
-function(Data, ststart, stend, model="SI", niter=50000, burnin=5001, thinning=50, rptp = ststart, th.ini.pars=NULL, th.jumps=NULL, th.priors=NULL, Prop.Hazards = FALSE, ga.ini.pars=NULL, ga.jumps=NULL, ga.priors=NULL, nsim=1, parallel=FALSE, ncpus=2, lifetable=TRUE){
+function(object, ststart, stend, model="SI", niter=50000, burnin=5001, thinning=50, rptp = ststart, th.ini.pars=NULL, th.jumps=NULL, th.priors=NULL, Prop.Hazards = FALSE, ga.ini.pars=NULL, ga.jumps=NULL, ga.priors=NULL, nsim=1, parallel=FALSE, ncpus=2, lifetable=TRUE){
 
 	# 0. Load package msm:
 	require(msm)
 
-	# 1. Data error checking:
-	tempcheck   = DataCheck(Data, ststart, stend, silent=TRUE)
-	if(tempcheck[[1]] == FALSE) stop("You have an error in Dataframe 'Data',\nplease use function 'DataCheck'\n", call.=FALSE)
+	# 1. object error checking:
+	tempcheck   = DataCheck(object, ststart, stend, silent=TRUE)
+	if(tempcheck[[1]] == FALSE) stop("You have an error in Dataframe 'object',\nplease use function 'DataCheck'\n", call.=FALSE)
 
     # 2. Check that niter, burnin, and thinning are compatible.
     if(burnin>niter) stop("\nObject 'burnin' larger than 'niter'.")
@@ -39,7 +39,7 @@ function(Data, ststart, stend, model="SI", niter=50000, burnin=5001, thinning=50
 	S.x         = function(th) Sx.fun(xv, matrix(th,1,nth), gaa, idm=idm)
 	m.x         = function(th) mx.fun(xv, matrix(th,1,nth), gaa, idm=idm)
 
-	# 3.2 Data processing:
+	# 3.2 object processing:
 	Ith.fun <- function(Z){
 		lu          = apply(Z, 2, function(x) length(unique(x)))
 		ru          = apply(Z, 2, range)
@@ -114,17 +114,17 @@ function(Data, ststart, stend, model="SI", niter=50000, burnin=5001, thinning=50
 	Tf          = stend
 	st          = Ti:Tf
 	nt          = length(st)
-	idnames     = Data[,1]
-	n           = nrow(Data)
-	bd          = as.matrix(Data[,2:3])
-	Y           = as.matrix(Data[,1:nt+3]); colnames(Y) = st
+	idnames     = object[,1]
+	n           = nrow(object)
+	bd          = as.matrix(object[,2:3])
+	Y           = as.matrix(object[,1:nt+3]); colnames(Y) = st
 
 	paralvars   = c("Ti","Tf","st","nt","n","bd","Y","rptp") 
 
 	# 3.2 Extract covariates:
 	# a) Find if there are covariates:
-	if(ncol(Data)>nt+3){
-		Z         = as.matrix(Data[,(nt+4):ncol(Data)])
+	if(ncol(object)>nt+3){
+		Z         = as.matrix(object[,(nt+4):ncol(object)])
 		Ith       = Ith.fun(Z)
 		Covars    = TRUE
 		
