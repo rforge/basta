@@ -27,9 +27,13 @@ function(object,...){
 
 	cat("\nCoefficients:\n")
 	print.default(object$coefficients, ...)
+	
+	cat("\nConvergence:\n")
 	if(is.null(object$ModSel)){
-		if(object$set['nsim'] == 1) cat("\nConvergence calculations require more than one run.\nTo estimate potential scale reduction run at least two simulations.\n") else cat("\nWarning: Convergence not reached for some parameters (i.e. 'PotScaleReduc' values larger than 1.2).\nThese estimates should not be used for inference.\n")
-		} 
+		if(object$set['nsim'] == 1) cat("Convergence calculations require more than one run.\nTo estimate potential scale reduction run at least two simulations.\n") else cat("Convergence not reached for some parameters (i.e. 'PotScaleReduc' values larger than 1.2).\nThese estimates should not be used for inference.\n")
+	} else {
+		cat("Appropriate convergence reached for all parameters.\n")
+	} 
 	
 	cat("\nModel Selection:\n")
 	if(!is.null(object$ModSel)){
