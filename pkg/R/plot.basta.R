@@ -60,7 +60,7 @@ function(x, plot.trace=TRUE, tracename = "theta", ...){
 			polygon(c(xv, rev(xv)), c(x$Sx[[i]][[1]][2,], rev(x$Sx[[i]][[1]][3,])), col=Cols[i], border=Bord[i])
 			lines(xv, x$Sx[[i]][[1]][1,], col=Bord[i], lty=3)
 		}
-		legend('topright', zname, pch=15, pt.cex=3, cex=1.5, col=Cols, bty='n')
+		if(nza>1) legend('topright', zname, pch=15, pt.cex=3, cex=1.5, col=Cols, bty='n')
 
 		# Plot mortality rates:
 		ylmx         = c(0, round(max(unlist(x$mx))))
