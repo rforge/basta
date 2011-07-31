@@ -181,7 +181,7 @@ function(object, ststart, stend, autofix = rep(0,7), silent=TRUE) {
     if(!silent){
 
     cat(paste("*DataSummary*\n- Number of individuals            =",  format(n, big.mark=','), "\n"))
-    cat(paste("- Total number of observations\n   in recapture matrix             =", format(sum(Y), big.mark=","), "\n"))
+    cat(paste("- Total number of detections       =", format(sum(Y), big.mark=","), "\n"))
     cat(paste("- Earliest detection time          =", min(ytemp), "\n"))
     cat(paste("- Latest detection time            =", max(ytemp[ytemp != Inf]), "\n\n"))
     
