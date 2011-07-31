@@ -180,22 +180,22 @@ function(object, ststart, stend, autofix = rep(0,7), silent=TRUE) {
     
     if(!silent){
 
-    cat(paste("*DataSummary*\n- Number of individuals            =",  format(n, big.mark=','), "\n"))
-    cat(paste("- Number with known birth year     =", format(sum(bd[, 1] != 0), big.mark=','), "\n"))
-    cat(paste("- Number with known death year     =", format(sum(bd[, 2] != 0), big.mark=','), "\n"))
-    cat(paste("- Number with known birth\n  AND death years                  =", format(sum(bd[, 2] != 0 & bd[, 1] != 0), big.mark=","), "\n\n"))
+    cat(paste("*DataSummary*\n- Number of individuals            =",  format(n, big.mark=',', width=6), "\n"))
+    cat(paste("- Number with known birth year     =", format(sum(bd[, 1] != 0), big.mark=',', width=6), "\n"))
+    cat(paste("- Number with known death year     =", format(sum(bd[, 2] != 0), big.mark=',', width=6), "\n"))
+    cat(paste("- Number with known birth\n  AND death years                  =", format(sum(bd[, 2] != 0 & bd[, 1] != 0), big.mark=",", width=6), "\n\n"))
 
-    cat(paste("- Total number of detections\n  in recapture matrix              =", format(sum(Y), big.mark=","), "\n\n"))
+    cat(paste("- Total number of detections\n  in recapture matrix              =", format(sum(Y), big.mark=",", width=6), "\n\n"))
 
-    cat(paste("- Earliest detection time          =", min(ytemp), "\n"))
-    cat(paste("- Latest detection time            =", max(ytemp[ytemp != Inf]), "\n"))
+    cat(paste("- Earliest detection time          =", format(min(ytemp),width=7), "\n"))
+    cat(paste("- Latest detection time            =", format(max(ytemp[ytemp != Inf]), width=7), "\n"))
     if(length(which(bd[,1]> 0))>0){
-    cat(paste("- Earliest recorded birth year     =", min(bd[bd[,1]>0,1]), "\n"))
-    cat(paste("- Latest recorded birth year       =", max(bd[,1]), "\n"))
+    cat(paste("- Earliest recorded birth year     =", format(min(bd[bd[,1]>0,1]), width=7), "\n"))
+    cat(paste("- Latest recorded birth year       =", format(max(bd[,1]), width=7), "\n"))
     }
     if(length(which(bd[,2]> 0))>0){
-		cat(paste("- Earliest recorded death year     =", min(bd[bd[,2]>0,2]), "\n"))
-		cat(paste("- Latest recorded death year       =", max(bd[,2]), "\n"))
+		cat(paste("- Earliest recorded death year     =", format(min(bd[bd[,2]>0,2]), width=7), "\n"))
+		cat(paste("- Latest recorded death year       =", format(max(bd[,2]),width=7), "\n"))
     }
 	}
 
