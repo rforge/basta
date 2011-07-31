@@ -15,7 +15,7 @@ function(x, plot.trace=TRUE, tracename = "theta", ...){
 	
 
 		# PLOTS:
-		# Trace plots for parameters:
+		# 1. Trace plots for parameters:
 		ng           = x$settings['niter']
 		nsim         = x$settings['nsim' ]
 		simname      = unique(rownames(x$Par))
@@ -39,6 +39,7 @@ function(x, plot.trace=TRUE, tracename = "theta", ...){
 		par(op)
 
 	} else {
+		# 2. Plot survival and mortality:
 		
 		if(is.null(x$Sx)){
 			stop("MCMC runs on BaSTA did not finish.\n Survival and mortality plots cannot be constructed, verify model input and run again.\n", call.=FALSE)
