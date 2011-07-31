@@ -1,5 +1,5 @@
 basta.default <-
-function(object, ststart, stend, model="SI", niter=50000, burnin=5001, thinning=50, rptp = ststart, th.ini.pars=NULL, th.jumps=NULL, th.priors=NULL, Prop.Hazards = FALSE, ga.ini.pars=NULL, ga.jumps=NULL, ga.priors=NULL, nsim=1, parallel=FALSE, ncpus=2, lifetable=TRUE){
+function(object, ststart, stend, model="SI", niter=50000, burnin=5001, thinning=50, rptp = ststart, th.ini.pars=NULL, th.jumps=NULL, th.priors=NULL, Prop.Hazards = FALSE, ga.ini.pars=NULL, ga.jumps=NULL, ga.priors=NULL, nsim=1, parallel=FALSE, ncpus=2, lifetable=TRUE, progr.plot=FALSE){
 
 	# 0. Load package msm:
 	require(msm)
@@ -119,7 +119,7 @@ function(object, ststart, stend, model="SI", niter=50000, burnin=5001, thinning=
 	bd          = as.matrix(object[,2:3])
 	Y           = as.matrix(object[,1:nt+3]); colnames(Y) = st
 
-	paralvars   = c("Ti","Tf","st","nt","n","bd","Y","rptp") 
+	paralvars   = c("Ti","Tf","st","nt","n","bd","Y","rptp","progr.plot") 
 
 	# 3.2 Extract covariates:
 	# a) Find if there are covariates:
@@ -445,9 +445,11 @@ function(object, ststart, stend, model="SI", niter=50000, burnin=5001, thinning=
 		g           = 2
 		gg          = 1
 		rownames(thg) = rownames(modm[rep(idm, nza), ])
-		if(.Platform$OS.type=="unix") devtype=quartz else devtype=windows
-		devtype(width=2, height=0.5); progrpl = dev.cur()
-		par(mar=rep(0,4))
+		if(progr.plot){
+			if(.Platform$OS.type=="unix") devtype=quartz else devtype=windows
+			devtype(width=2, height=0.5); progrpl = dev.cur()
+			par(mar=rep(0,4))
+		}
 		while(g <= ng & !naflag){
 			if(g==1){cat("MCMC is running...\n")}
 		
@@ -484,10 +486,10 @@ function(object, ststart, stend, model="SI", niter=50000, burnin=5001, thinning=
 			z           = runif(1,0,1)
 
 			if(is.na(r) & g==1){
-				dev.off(progrpl)
+				if(progr.plot) dev.off(progrpl)
 				naflag     = TRUE 
 			} else if(is.na(r) & g > 1){
-				dev.off(progrpl)
+				if(progr.plot) dev.off(progrpl)
 				naflag     = TRUE 
 			} else {
 				if(r>z){
@@ -520,7 +522,7 @@ function(object, ststart, stend, model="SI", niter=50000, burnin=5001, thinning=
 	
 			r           = exp(p.bdn-p.bdg)
 			if(length(which(is.na(r)))>0){
-				dev.off(progrpl) 
+				if(progr.plot) dev.off(progrpl) 
 				naflag      = TRUE 
 			} else {
 				z           = runif(n, 0, 1)
@@ -560,7 +562,7 @@ function(object, ststart, stend, model="SI", niter=50000, burnin=5001, thinning=
 			postm[g,]   = c(p.thg, sum(p.bdg), p.thg + sum((Og - lfi) %*% log(1-Pig) + log(v.x(xg + 0.5*Dx))))
   
 			# Progress plot:
-			if(g %in% round(seq(1,ng,length=100))){
+			if(g %in% round(seq(1,ng,length=100)) & progr.plot){
 				par(mar=rep(0,4))
 				plot(c(0,ng*1.1), c(0,1), axes=FALSE, col=NA, xlab="", ylab="")
 				polygon(c(0,ng,ng,0), c(0.35,0.35,0.65,0.65), col=NA, border='dark red')
@@ -571,7 +573,7 @@ function(object, ststart, stend, model="SI", niter=50000, burnin=5001, thinning=
 			g          = g+1
 		}
 		if(g == ng+1) g = ng
-		dev.off(progrpl)
+		if(progr.plot) dev.off(progrpl)
 		
 		# Calculate MCMC diagnostics:
 		return(list(theta=thgibbs, gamma=gagibbs, pi=pigibbs, bi=bgibbs, di=dgibbs, post=postm, g=g, naflag=naflag))
@@ -724,7 +726,7 @@ function(object, ststart, stend, model="SI", niter=50000, burnin=5001, thinning=
 		thmat[,thname[idth]] = pmat[,thname[idth]]
 		if(Cont){
 			rzc       = apply(Zc, 2, quantile, c(0.5, 0.025, 0.975))
-			gave      = apply(pmat[,(nth*nza) + 1:nzc],2,mean)
+			gave      = apply(pmat[,which(substr(colnames(pmat),1,2)=="ga")],2,mean)
 			zcname    = paste("Cont.",c("Med.","Lower","Upper")[i],sep="")
 		} else {
 			rzc       = matrix(0,1,1)
