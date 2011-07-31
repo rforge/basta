@@ -182,13 +182,13 @@ function(object, ststart, stend, autofix = rep(0,7), silent=TRUE) {
 
     cat(paste("*DataSummary*\n- Number of individuals            =",  format(n, big.mark=','), "\n"))
     cat(paste("- Total number of detections       =", format(sum(Y), big.mark=","), "\n"))
-    cat(paste("- Earliest detection time          =", min(ytemp), "\n"))
-    cat(paste("- Latest detection time            =", max(ytemp[ytemp != Inf]), "\n\n"))
     
     cat(paste("- Number with known birth year     =", format(sum(bd[, 1] != 0), big.mark=','), "\n"))
     cat(paste("- Number with known death year     =", format(sum(bd[, 2] != 0), big.mark=','), "\n"))
     cat(paste("- Number with known birth\n   AND death years                 =", format(sum(bd[, 2] != 0 & bd[, 1] != 0), big.mark=","), "\n\n"))
 
+    cat(paste("- Earliest detection time          =", min(ytemp), "\n"))
+    cat(paste("- Latest detection time            =", max(ytemp[ytemp != Inf]), "\n"))
     if(length(which(bd[,1]> 0))>0){
     cat(paste("- Earliest recorded birth year     =", min(bd[bd[,1]>0,1]), "\n"))
     cat(paste("- Latest recorded birth year       =", max(bd[,1]), "\n"))
