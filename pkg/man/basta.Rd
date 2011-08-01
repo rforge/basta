@@ -20,9 +20,9 @@ basta(object, \dots)
   \item{ststart }{the first year of the study.}
   \item{stend }{the last year of the study.}
   \item{model }{the underlying mortality model to be used. "GO"= Gompertz, "GM" = Gompertz Makeham and "SI" = Siler (see \code{details}).}
-  \item{niter }{the total number of MCMC steps (see details).}
+  \item{niter }{the total number of MCMC steps.}
   \item{burnin }{number of iterations for the burn in (see details).}
-  \item{thinning }{the thinning parameter.}
+  \item{thinning }{number of skipped MCMC steps to minimize serial autocorrelation (see details).}
   \item{rptp }{a vector (of length npi) defining the recapture probability transition times. These are points (years) where the recapture probability is thought to change.  The default setting is for the recapture probability to be constant throughout the study, so the \code{rptp} is simply defined as a single element vector of the first year of the observation period (e.g. c(1985)). If recapture probabilities were known to change at year say, 1990, the RPTP should be defined as c(1985, 1990).}
   \item{th.ini.pars }{a vector defining the initial values for each parameter on the survival model. The number of parameters should be: 2 for Gompertz, three for Gompertz-Makeham and 5 for Siler (see details). The default is set to \code{NULL} and thus a set of random parameters is generated for each simulation.}
   \item{th.jumps }{a vector defining the size of jumps for each survival model parameter (standard error in the Metropolis step). The number of parameters will depend on the model selected.}
@@ -40,6 +40,10 @@ basta(object, \dots)
 }
 \details{
 To construct the input data \code{object} the function \code{\link{CensusToCaptHist}} can be used to build the capture-recapture matrix, while function \code{\link{makecovm}} for the covariates (design) matrix.
+
+The \code{burnin} argument represents the number of steps at the begining of the MCMC run that should be discarded. This sequence commonly corresponds to the non-converged section of the MCMC sequence. Convergence and model selection measures are calculated from the remaining thinned parameter chains.
+
+The \code{thinning} arguments specifies the number of steps 
 
 The survival (mortality) part of the model includes two main sections: a) the actual survival section, defined by \code{model}; and b) a proportional hazards section, defined by the logical argument \code{Prop.Hazards}. Parameters associated with section a) belong to the generic parameters defined by \eqn{\theta}, while those in section b) belong to parameters \eqn{\Gamma}. The full model is defined as: 
 
