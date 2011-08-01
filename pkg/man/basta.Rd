@@ -43,7 +43,7 @@ To construct the input data \code{object} the function \code{\link{CensusToCaptH
 
 The \code{burnin} argument represents the number of steps at the begining of the MCMC run that should be discarded. This sequence commonly corresponds to the non-converged section of the MCMC sequence. Convergence and model selection measures are calculated from the remaining thinned parameter chains.
 
-The \code{thinning} arguments specifies the number of steps 
+The argument \code{thinning} specifies the number of steps to be skipped to reduce serial autocorrelation. The thinned sequence, which includes only steps after burnin is then used to calculated convergence statistics and model selection.
 
 The survival (mortality) part of the model includes two main sections: a) the actual survival section, defined by \code{model}; and b) a proportional hazards section, defined by the logical argument \code{Prop.Hazards}. Parameters associated with section a) belong to the generic parameters defined by \eqn{\theta}, while those in section b) belong to parameters \eqn{\Gamma}. The full model is defined as: 
 
@@ -104,7 +104,7 @@ Colchero, F., Jones, O.R. and Rebke, M. BaSTA - a package to estimate mortality 
 
 Gelman, A., Carlin, J.B., Stern, H.S. & Rubin, D.B. (2004) \emph{Bayesian data analysis}. 2nd edn. Chapman & Hall/CRC, Boca Raton, Florida, USA.
 
-King, R. & Brooks, S.P. (2002) Bayesian model discrimination for multiple strata capture-recapture data. Biometrika, 89, 785–806. 
+King, R. & Brooks, S.P. (2002) Bayesian model discrimination for multiple strata capture-recapture data. Biometrika, 89, 785-806. 
 
 Spiegelhalter, D.J., Best, N.G., Carlin, B.P., Van Der Linde, A. (2002) Bayesian measures of model complexity and fit. Journal of the Royal Statistical Society: Series B 64, 583-639.
 }
