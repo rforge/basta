@@ -20,7 +20,7 @@ basta(object, \dots)
   \item{thinning }{the thinning parameter.}
   \item{rptp }{a vector (of length npi) defining the recapture probability transition times. These are points (years) where the recapture probability is thought to change.  The default setting is for the recapture probability to be constant throughout the study, so the \code{rptp} is simply defined as a single element vector of the first year of the observation period (e.g. c(1985)). If recapture probabilities were known to change at year say, 1990, the RPTP should be defined as c(1985, 1990).}
   \item{th.ini.pars }{a vector defining the initial values for each parameter on the survival model. The number of parameters should be: 2 for Gompertz, three for Gompertz-Makeham and 5 for Siler (see details). The default is set to \code{NULL} and thus a set of random parameters is generated for each simulation.}
-  \item{th.jumps }{a vector defining the size of jumps for each survival model parameter (standard error in the Metropolis step, see details). The number of parameters will depend on the model selected.
+  \item{th.jumps }{a vector defining the size of jumps for each survival model parameter (standard error in the Metropolis step). The number of parameters will depend on the model selected.
 }
   \item{th.priors }{a vector defining the priors for each survival parameter. The vector takes the same format as described for \code{th.jumps}.}
   \item{Prop.Hazards }{a logical argument that indicates if covariates should be evaluated under a proportional hazards framework. Default is \code{FALSE}. However, if continuous covariates are included in the model, those will be evaluated using a proportional hazards framework (see details).}
@@ -56,11 +56,11 @@ The third model is Siler (\dQuote{\code{SI}}), with five parametes \eqn{\theta =
 \deqn{\mu(x | \theta)_0 = \exp{\alpha_1 - \beta_1 x} + c + \exp{\alpha_2 + \beta_2 x}}.
 with \eqn{-\infty < \alpha_1 < \infty} and \eqn{-\infty < \alpha_2 < \infty}, \eqn{\beta_1 > 0} and \eqn{\beta_2 > 0} and \eqn{c > - (\exp{\alpha_1 - \beta_1 x_m} + \exp{\alpha_2 - \beta_2 x_m}) where \eqn{x_m} is the age at which \eqn{\mu(x)} reaches the mininum vale, and is calculated as \eqn{x_m = (\alpha_1+\log(\beta_1) - \alpha_2-log(\beta_2))/(\beta_1 + \beta_2)}.
 
-
 The number of parameters in \code{th.ini.pars} is a vector defining the initial values for each parameter on the survival model of section a). The number of parameters will depend on the model chosen with \code{model}(see above). If the number of parameters specified does not match the number of parameters inherent to the model selected, the function returns an error. If no th.pars.mat argument is specified (i.e. default is NULL), the model randomly generates initial parameters.
  
 As described above, the number of parameters for argument \code{ga.ini.pars} (i.e. section b), namely the proportional hazards section, will be a function of the number of continuous covariates (+ 1 for the intercept) if argument \code{Prop.Hazards} is \dQuote{FALSE}, else the number of parameters needs to be equal to the total number of covariates.
- }
+}
+
 \value{
 \code{basta} returns an object of class \sQuote{\code{basta}}. Function \code{\link{summary}} can be used to obtain or print a summary of the results.
   \item{coefficients }{Matrix with estimated coefficients (i.e. mean values per parameter on the thinned sequences after burnin), which includes standard errors, upper and lower 95\% credible intervals, update rates per parameter (commonly the same for all survival and proportional hazards parameters), serial autocorrelation on the thinned sequences and potential scale reduction factor for convergence (see \code{Convergence} value below). }
