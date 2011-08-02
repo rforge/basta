@@ -133,9 +133,9 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 <table width="100%">
   <tbody>
     <tr>
-      <td style="vertical-align:middle" width="500px">
-	<p style="text-align:justify;font-family:verdana"><b>BaSTA</b> is an R package (R Development Core Team 2011) which allows drawing inference on age-specific survival and mortality patterns from capture-recapture/recovery data when a large number of individuals (or all) have missing age information (Colchero, Jones and Rebke <i>in prep</i>). <b>BaSTA</b> is based on a model developed by Colchero and Clark (<i>in press</i>), which extends inference from parameter estimates to the estimation of unknown (i.e. latent) times of birth and death. The package also allows testing the effect of categorical and continuous individual covariates on mortality and survival (for an example see Fig. 1). Although the package is still on a development phase, we will be able to launch it in a few weeks.<br><br>The core of the model is a Monte Carlo Markov Chain algorithm that combines Metropolis sampling for survival parameters and latent states (i.e. unknown times of birth and death) and direct sampling for recapture probabilities (Clark 2007, Colchero and Clark <i>in press</i>). The main function performs several diagnostics before running the model after which multiple MCMC simulations can be performed (Fig. 2). In case convergence is not acheived or some or all simulations failed, neither convergence nor model selection diagnostics are calculated. The current version of the package includes:</p>
-	<ul style="font-family:verdana">
+      <td style="vertical-align:top" width="500px">
+	<p style="text-align:justify;font-family:verdana"><b>BaSTA</b> is an R package (R Development Core Team 2011) which allows drawing inference on age-specific survival and mortality patterns from capture-recapture/recovery data when a large number of individuals (or all) have missing age information (Colchero, Jones and Rebke <i>in prep</i>). <b>BaSTA</b> is based on a model developed by Colchero and Clark (<i>in press</i>), which extends inference from parameter estimates to the estimation of unknown (i.e. latent) times of birth and death. The package also allows testing the effect of categorical and continuous individual covariates on mortality and survival (for an example see Fig. 1). Although the package is still on a development phase, we will be able to launch it in a few weeks.<br><br><b>BaSTA</b> requires conventional data input (equivalent to other common capture-recapture softwares) and minimum user input (Fig. 2). The core of the model is a Monte Carlo Markov Chain (MCMC) algorithm that combines Metropolis sampling for survival parameters and latent states (i.e. unknown times of birth and death) and direct sampling for recapture probabilities (Clark 2007, Colchero and Clark <i>in press</i>). The main function performs several diagnostics before running the model after which multiple MCMC simulations can be performed (Fig. 3). In case convergence is not acheived or some or all simulations failed, neither convergence nor model selection diagnostics are calculated. The current version of the package includes:</p>
+	<ul style="font-family:verdana;text-align:justify">
 	  <li>Functions for data formatting.</li>
 	  <li>Data checking and correction of common data errors.</li>
           <li>Estimates of age-specific survival parameters.</li>
@@ -149,12 +149,14 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 	  <li>Calculates basic measures for model selection (DIC; Spiegelhalter <i>et al.</i>2002).</li>
 	</ul>
 	<p style="text-align:justify;font-family:verdana">Future versions will include:</p>
-	<ul style="font-family:verdana">
+	<ul style="font-family:verdana;text-align:justify">
 	  <li>Time-dependent covariates.</li>
 	  <li>Covariates on recapture probabilities.</li>
 	  <li>Model selection through Reversible Jump MCMC (RJMCMC; King and Brooks 2002; Gimenez <i>et al.</i> 2009).</li>
 	  <li>Additional mortality models (i.e. logistic, Weibull, etc.).</li>
 	</ul>
+      </td>
+      <td width="20">
       </td>
       <td align="center" style="vertical-align:middle">
 	<table>
@@ -169,9 +171,17 @@ using a Gompertz survival model (Rebke <i>et al. in prep</i>).</p><br>
 	    </tr>
 	    <tr>
 	      <hr>
+	      <br>
+	      <p align="center"  style="font-size:10"><img height="400px" src="BastaGeneralChart.jpg?height=350px"><br>
+</p>
+	      <p align="center" style="font-size:12px;font-family:verdana">Fig. 2. <b>BaSTA</b> general package chart.</p><br>
+<p><br></p>
+	    </tr>
+	    <tr>
+	      <hr>
 	      <p align="center" style="font-size:10"><img height="500px" border="0" src="bastaChart.jpg?height=500px"><br>
 </p>
-	      <p align="center" style="font-size:12px;font-family:verdana">Fig. 2. <b>BaSTA</b> model chart.</p>
+	      <p align="center" style="font-size:12px;font-family:verdana">Fig. 3. <b>BaSTA</b> model chart.</p>
 	    </tr>
 	  </tbody>
 	</table>
