@@ -117,11 +117,11 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 
 <!-- 4.- BODY:-->
   
-<table align="left" bgcolor="#A3C586" style="border-top:1px solid rgb(192, 192, 192);border-bottom:1px solid rgb(192, 192, 192)" valign="middle" width="100%">
+<table align="left" bgcolor="#A3C586" valign="middle" width="100%">
 <tbody>
 <tr>
 <td>
-<h3 style="letter-spacing:0.2em;color:#38472A;font-family:verdana">Project description</h3>
+<p style="letter-spacing:0.2em;color:#38472A;font-family:verdana;font-size:24px;line-height:20%">Project description</p>
 </td>
 </tr>
 </tbody>
@@ -134,7 +134,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
   <tbody>
     <tr>
       <td style="vertical-align:middle" width="500px">
-	<p style="text-align:justify;font-family:verdana">BaSTA is an R package (R Development Core Team 2011) which allows drawing inference on age-specific survival and mortality patterns from capture-recapture/recovery data when a large number of individuals (or all) have missing age information (Colchero, Jones and Rebke <i>in prep</i>). BaSTA is based on a model developed by Colchero and Clark (<i>in press</i>), which extends inference from parameter estimates to the estimation of unknown (i.e. latent) times of birth and death. The package also allows testing the effect of categorical and continuous individual covariates on mortality and survival (for an example see Fig. 1). Although the package is still on a development phase, we will be able to launch it in a few weeks.<br><br>The core of the model is a Monte Carlo Markov Chain algorithm that combines Metropolis sampling for survival parameters and latent states (i.e. unknown times of birth and death) and direct sampling for recapture probabilities (Clark 2007, Colchero and Clark <i>in press</i>). The main function performs several diagnostics before running the model after which multiple MCMC simulations can be performed (Fig. 2). In case convergence is not acheived or some or all simulations failed, neither convergence nor model selection diagnostics are calculated. The current version of the package includes:</p>
+	<p style="text-align:justify;font-family:verdana"><b>BaSTA</b> is an R package (R Development Core Team 2011) which allows drawing inference on age-specific survival and mortality patterns from capture-recapture/recovery data when a large number of individuals (or all) have missing age information (Colchero, Jones and Rebke <i>in prep</i>). <b>BaSTA</b> is based on a model developed by Colchero and Clark (<i>in press</i>), which extends inference from parameter estimates to the estimation of unknown (i.e. latent) times of birth and death. The package also allows testing the effect of categorical and continuous individual covariates on mortality and survival (for an example see Fig. 1). Although the package is still on a development phase, we will be able to launch it in a few weeks.<br><br>The core of the model is a Monte Carlo Markov Chain algorithm that combines Metropolis sampling for survival parameters and latent states (i.e. unknown times of birth and death) and direct sampling for recapture probabilities (Clark 2007, Colchero and Clark <i>in press</i>). The main function performs several diagnostics before running the model after which multiple MCMC simulations can be performed (Fig. 2). In case convergence is not acheived or some or all simulations failed, neither convergence nor model selection diagnostics are calculated. The current version of the package includes:</p>
 	<ul style="font-family:verdana">
 	  <li>Functions for data formatting.</li>
 	  <li>Data checking and correction of common data errors.</li>
@@ -163,14 +163,15 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 	      <br><br>
 	      <p align="center"  style="font-size:10"><img height="350px" src="kestrelGO.png?height=350px"><br>
 </p>
-	      <p align="center" style="font-size:11px;font-family:verdana">Fig. 1. BaSTA model output for sex differences in Kestrel mortality<br>
+	      <p align="center" style="font-size:12px;font-family:verdana">Fig. 1. <b>BaSTA</b> model output for sex differences in Kestrel mortality<br>
 using a Gompertz survival model (Rebke <i>et al. in prep</i>).</p><br>
 <p><br></p>
 	    </tr>
 	    <tr>
-	      <p align="center" style="font-size:10"><img height="500px" border="1" src="bastaChart.jpg?height=500px"><br>
+	      <hr>
+	      <p align="center" style="font-size:10"><img height="500px" border="0" src="bastaChart.jpg?height=500px"><br>
 </p>
-	      <p align="center" style="font-size:11px;font-family:verdana">Fig. 2. BaSTA model chart.</p>
+	      <p align="center" style="font-size:12px;font-family:verdana">Fig. 2. <b>BaSTA</b> model chart.</p>
 	    </tr>
 	  </tbody>
 	</table>
@@ -187,11 +188,11 @@ using a Gompertz survival model (Rebke <i>et al. in prep</i>).</p><br>
 <p style="font-size:12px"><a href="#top" style="font-size:12px;color:#84002E;font-family:verdana">Back to top</a></p>
 
   
-<table align="left" bgcolor="#A3C586" style="border-top:1px solid rgb(192, 192, 192);border-bottom:1px solid rgb(192, 192, 192)" valign="middle" width="100%">
+<table align="left" bgcolor="#A3C586" valign="middle" width="100%">
 <tbody>
 <tr>
 <td>
-<h3 style="letter-spacing:0.2em;color:#38472A;font-family:verdana">References</h3>
+<p style="letter-spacing:0.2em;color:#38472A;font-family:verdana;font-size:24px;line-height:20%">References</p>
 </td>
 </tr>
 </tbody>
