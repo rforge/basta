@@ -136,8 +136,10 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 <td style="vertical-align:middle" width="500px">
 <p style="text-align:justify;font-family:verdana">BaSTA is an R package (R Development Core Team 2011) which allows drawing inference on age-specific survival and mortality patterns from capture-recapture/recovery data when a large number of individuals (or all) have missing age information (Colchero, Jones and Rebke <i>in prep</i>). BaSTA is based on a model developed by Colchero and Clark (<i>in press</i>), which extends inference from parameter estimates to the estimation of unknown (i.e. latent) times of birth and death. The package also allows testing the effect of categorical and continuous individual covariates on mortality and survival (see figure). Although the package is still on a development phase, we will be able to launch it in a few weeks.<br>
 <br>
-The model is based on a Monte Carlo Markov Chain algorithm that combines Metropolis sampling for survival parameters and latent states (i.e. unknown times of birth and death) and direct sampling for recapture probabilities (Clark 2007, Colchero and Clark <i>in press</i>). The current version of the package includes:</p>
+The model is a Monte Carlo Markov Chain algorithm that combines Metropolis sampling for survival parameters and latent states (i.e. unknown times of birth and death) and direct sampling for recapture probabilities (Clark 2007, Colchero and Clark <i>in press</i>). The current version of the package includes:</p>
 <ul style="font-family:verdana">
+    <li>Functions for data formatting.</li>
+    <li>Data checking and correction of common data errors.</li>
     <li>Estimates of age-specific survival parameters.</li>
     <li>Estimates of yearly recapture probabilities.</li>
     <li>Estimates latent (i.e. unknown) times of birth and death.</li>
