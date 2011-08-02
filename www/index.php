@@ -43,7 +43,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 <tr>
 <td width="10">&nbsp;</td>
 <td valign="middle" width="30px">
-<img alt="Fernando Colchero" border="0" height="100px" src="https://sites.google.com/site/fernandocolchero/ferlogo.jpg?height=100px" style="margin:5px">
+<img alt="Fernando Colchero" border="0" height="100px" src="bastalogo.jpg?height=100px" style="margin:5px">
 </td>
                 
 <td width="20">&nbsp;</td>
@@ -89,7 +89,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 <tr>
  
 <td align="center" valign="middle" width="290">
-    <img alt="Fernando Colchero" border="1" src="https://sites.google.com/site/fernandocolchero/sootyBand.jpg">
+    <img alt="Fernando Colchero" border="1" src="sootyBand.jpg">
   </td>
   
 <td width="20">&nbsp;</td>
@@ -163,7 +163,7 @@ The model is a Monte Carlo Markov Chain algorithm that combines Metropolis sampl
 <td align="center">
 
 
-<p align="center" style="font-size:10"><img height="350px" src="https://sites.google.com/site/fernandocolchero/kestrelGO.png?height=350px"><br>
+<p align="center" style="font-size:10"><img height="350px" src="kestrelGO.png?height=350px"><br>
 </p>
 <p align="center" style="font-size:11px;font-family:verdana">BaSTA model output for sex differences in Kestrel mortality<br>
 using a Gompertz survival model (Rebke <i>et al. in prep</i>).</p>
