@@ -198,7 +198,7 @@ using a Gompertz survival model (Rebke <i>et al. in prep</i>).</p>
 </p>
 
 <ul style="font-family:verdana">
-
+<br>
   <li>Clark, J.S. (2007) <b>Models for ecological data</b>. Princeton University Press, Princeton, New Jersey, USA.</li>
   <br>
   <li>Colchero, F. and J. S. Clark (<i>in press</i>) <b>Bayesian inference on age-specific survival for censored and truncated data.</b> <i>Journal of Animal Ecology</i>.
