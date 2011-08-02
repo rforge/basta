@@ -102,7 +102,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 <!--<p style="font-family:verdana"><b>Bayesian Survival Trajectory Analysis</b></p>-->
     
     
-<p style="font-family:verdana;font-size:14px;text-align:justify">Bayesian inference on age-specific survival for capture-recapture/recovery data with censored and truncated records</p>
+<p style="font-family:verdana;font-size:16px;text-align:justify"><i>Bayesian inference on age-specific survival for capture-recapture/recovery data with censored and truncated records</i></p>
 
 
 <p style="font-family:verdana;font-size:14px"><b>Authors:</b><br>Fernando Colchero <a href="mailto:Colchero@demogr.mpg.de" rel="nofollow" style="color:#84002E">Colchero@demogr.mpg.de</a><br>Owen R. Jones <a href="mailto:Colchero@demogr.mpg.de" rel="nofollow" style="color:#84002E">Jones@demogr.mpg.de</a><br>Maren Rebke <a href="mailto:Colchero@demogr.mpg.de" rel="nofollow" style="color:#84002E">Rebke@demogr.mpg.de</a></p>
