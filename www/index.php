@@ -144,6 +144,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
           <li>Allows testing three different mortality functions (Gompertz, Gompertz-Makeham and Siler)(Gompertz 1925, Pletcher 1999, Siler 1979).</li>
           <li>Evaluates the effects of time-independent categorical and continuous covariates on survival.</li>
           <li>Runs multiple simulations either in parallel (using package snowfall; Knaus 2010) or in series.</li>
+          <li>Calculates basic diagnostics on MCMC performance such as parameter update rates and serial autocorrelation.</li>
           <li>Uses multiple simulations to estimate convergence (i.e. potential scale reduction factor; Gelman <i>et al.</i>2004).</li>
 	  <li>Calculates basic measures for model selection (DIC; Spiegelhalter <i>et al.</i>2002).</li>
 	</ul>
