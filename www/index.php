@@ -121,7 +121,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 <tbody>
 <tr>
 <td>
-<p style="letter-spacing:0.2em;color:#38472A;font-family:verdana;font-size:24px;line-height:20%">Project description</p>
+<p style="letter-spacing:0.2em;color:#38472A;font-family:verdana;font-size:24px;line-height:20%;text-indent:20px">Project description</p>
 </td>
 </tr>
 </tbody>
@@ -134,7 +134,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
   <tbody>
     <tr>
       <td style="vertical-align:top" width="450px">
-	<p style="text-align:justify;font-family:verdana"><b>BaSTA</b> is an R package (R Development Core Team 2011) which allows drawing inference on age-specific survival and mortality patterns from capture-recapture/recovery data when a large number of individuals (or all) have missing age information (Colchero, Jones and Rebke <i>in prep</i>). <b>BaSTA</b> is based on a model developed by Colchero and Clark (<i>in press</i>), which extends inference from parameter estimates to the estimation of unknown (i.e. latent) times of birth and death. The package also allows testing the effect of categorical and continuous individual covariates on mortality and survival (for an example see Fig. 1). Although the package is still on a development phase, we will be able to launch it in a few weeks.<br><br><b>BaSTA</b> requires conventional data input (equivalent to other common capture-recapture softwares) and minimum user input (Fig. 2). The core of the model is a Monte Carlo Markov Chain (MCMC) algorithm that combines Metropolis sampling for survival parameters and latent states (i.e. unknown times of birth and death) and direct sampling for recapture probabilities (Clark 2007, Colchero and Clark <i>in press</i>). The main function performs several diagnostics before running the model after which multiple MCMC simulations can be performed (Fig. 3). In case convergence is not acheived or some or all simulations failed, neither convergence nor model selection diagnostics are calculated.<br><br>The current version of the package includes:</p>
+	<p style="text-align:justify;font-family:verdana"><b>BaSTA</b> is an R package (R Development Core Team 2011) which allows drawing inference on age-specific survival and mortality patterns from capture-recapture/recovery data when a large number of individuals (or all) have missing age information (Colchero, Jones and Rebke <i>in prep</i>). <b>BaSTA</b> is based on a model developed by Colchero and Clark (<i>in press</i>), which extends inference from parameter estimates to the estimation of unknown (i.e. latent) times of birth and death. The package also allows testing the effect of categorical and continuous individual covariates on mortality and survival (for an example see Fig. 1). Although the package is still on a development phase, we will be able to launch it in a few weeks.<br><br><b>BaSTA</b> requires conventional data input (equivalent to other common capture-recapture softwares) and minimum user input (Fig. 2). The core of the model is a Monte Carlo Markov Chain (MCMC) algorithm that combines Metropolis sampling for survival parameters and latent states (i.e. unknown times of birth and death) and direct sampling for recapture probabilities (Clark 2007, Colchero and Clark <i>in press</i>). The main function performs several diagnostics before running the model after which multiple MCMC simulations can be performed (Fig. 3). In case convergence is not acheived or some or all simulations failed, neither convergence nor model selection diagnostics are calculated.<br><br>The current version of <b>BaSTA</b> includes:</p>
 	<ul style="font-family:verdana;text-align:justify">
 	  <li>Functions for data formatting.</li>
 	  <li>Data checking and correction of common data errors.</li>
@@ -202,7 +202,7 @@ using a Gompertz survival model (Rebke <i>et al. in prep</i>).</p><br>
 <tbody>
 <tr>
 <td>
-<p style="letter-spacing:0.2em;color:#38472A;font-family:verdana;font-size:24px;line-height:20%">References</p>
+<p style="letter-spacing:0.2em;color:#38472A;font-family:verdana;font-size:24px;line-height:20%;text-indent:20px">References</p>
 </td>
 </tr>
 </tbody>
