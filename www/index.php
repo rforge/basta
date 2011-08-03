@@ -16,7 +16,7 @@ $themeroot='http://r-forge.r-project.org/themes/rforge/';
 
   <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	<title><BaSTA></title>
+	<title>BaSTA</title>
 	<link href="http://r-forge.r-project.org/themes/rforge/styles/estilo1.css" rel="stylesheet" type="text/css" /> 
   </head>
 
