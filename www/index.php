@@ -22,11 +22,14 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
   </head>
 
 <body>
-
+<div dir="ltr"><a name="top"> </a>
 <!-- R-Forge Logo -->
 <table border="0" width="100%" cellspacing="0" cellpadding="0">
-<tr><td>
-<a href="http://r-forge.r-project.org/"><img src="http://<?php echo $themeroot; ?>/images/logo.png" border="0" alt="R-Forge Logo" /> </a> </td> </tr>
+	<tr>
+		<td>
+			<a href="http://r-forge.r-project.org/"><img src="http://<?php echo $themeroot; ?>/images/logo.png" border="0" alt="R-Forge Logo" /> </a>
+		</td>
+	</tr>
 </table>
 
 
@@ -38,174 +41,185 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 
 <!-- 1.- HEADER:-->
 <table style="background-color:#47697E" width="100%">
-            
-<tbody>
-<tr>
-<td width="10">&nbsp;</td>
-<td valign="middle" width="30px">
-<img alt="Fernando Colchero" border="0" height="100px" src="bastalogo.jpg?height=100px" style="margin:5px">
-</td>
-                
-<td width="20">&nbsp;</td>
-<td style="vertical-align:middle">
-                    
-<p style="white-space:nowrap;vertical-align:middle;font-family:verdana;margin-top:0px;margin-bottom:0px;font-size:38px;letter-spacing:0.25em;color:#FFCC33">BaSTA</p>
-                    
-<p style="white-space:nowrap;vertical-align:middle;font-family:verdana;font-size:24px;color:#FCF1D1">Bayesian Survival Trajectory Analysis</p>
-                </td>
-            </tr>
-        </tbody>
+	<tbody>
+		<tr>
+			<td width="10">&nbsp;</td>
+			<td valign="middle" width="30px">
+				<img alt="BaSTA logo" border="0" height="100px" src="bastalogo.jpg?height=100px" style="margin:5px">
+			</td>
+			<td width="20">&nbsp;</td>
+			<td style="vertical-align:middle">
+				<p style="white-space:nowrap;vertical-align:middle;font-family:verdana;margin-top:0px;margin-bottom:0px;font-size:38px;letter-spacing:0.25em;color:#FFCC33">BaSTA</p>
+				<p style="white-space:nowrap;vertical-align:middle;font-family:verdana;font-size:24px;color:#FCF1D1">Bayesian Survival Trajectory Analysis</p>
+			</td>
+        </tr>
+    </tbody>
 </table>
  
 
 <!-- 2.- LINKS:-->
-<!--<table width="100%">
-<tbody>
-<tr valign="middle">
-<td style="text-align:center;vertical-align:middle;height:30px;background-color:#A3C586;width:200px">
-<a href="https://sites.google.com/site/fernandocolchero/home" style="color:#38472A;text-decoration:none;font-size:20px;font-family:verdana">HOME</a>
-</td>
-<td style="text-align:center;vertical-align:middle;height:30px;background-color:#A3C586;width:200px">
-<a href="https://sites.google.com/site/fernandocolchero/cv" style="color:#38472A;text-decoration:none;font-size:20px;font-family:verdana">CV</a>
-</td>
-<td style="text-align:center;vertical-align:middle;height:30px;background-color:#A3C586;width:200px">
-<a href="https://sites.google.com/site/fernandocolchero/projects" style="color:#38472A;text-decoration:none;font-size:20px;font-family:verdana">PROJECTS</a>
-</td>
-<td style="text-align:center;vertical-align:middle;height:30px;background-color:#A3C586;width:200px">
-<a href="https://sites.google.com/site/fernandocolchero/links" style="color:#38472A;text-decoration:none;font-size:20px;font-family:verdana">LINKS</a>
-</td>
-</tr>
-</tbody>
+<table width="100%">
+	<tbody>
+		<tr valign="middle">
+			<td style="text-align:center;vertical-align:middle;height:30px;background-color:#A3C586;width:200px">
+				<a href="#summary" style="color:#38472A;text-decoration:none;font-size:20px;font-family:verdana">SUMMARY</a>
+			</td>
+			<td style="text-align:center;vertical-align:middle;height:30px;background-color:#A3C586;width:200px">
+				<a href="#description" style="color:#38472A;text-decoration:none;font-size:20px;font-family:verdana">PACKAGE</a>
+			</td>
+			<td style="text-align:center;vertical-align:middle;height:30px;background-color:#A3C586;width:200px">
+				<a href="#model" style="color:#38472A;text-decoration:none;font-size:20px;font-family:verdana">MODEL</a>
+			</td>
+			<td style="text-align:center;vertical-align:middle;height:30px;background-color:#A3C586;width:200px">
+				<a href="#refs" style="color:#38472A;text-decoration:none;font-size:20px;font-family:verdana">REFERENCES</a>
+			</td>
+		</tr>
+	</tbody>
 </table>
 
-<p><br>
-</p>
--->
+
   
 <!-- 3.- LOCAL LINKS:-->
-<p><br></p>
 <table>
-<tbody>
-<tr>
- 
-<td align="center" valign="middle" width="290">
-    <img alt="Fernando Colchero" border="1" src="sootyBand.jpg">
-  </td>
-  
-<td width="20">&nbsp;</td>
-  
-<td width="400">
-    
-<h2 style="font-family:verdana;font-size:28px;color:#84002E;letter-spacing:0.2em">BaSTA</h2>
-    
-  
-<!--<p style="font-family:verdana"><b>Bayesian Survival Trajectory Analysis</b></p>-->
-    
-    
-<p style="font-family:verdana;font-size:16px;text-align:justify"><i>Bayesian inference on age-specific survival for capture-recapture/recovery data with censored and truncated records</i></p>
-
-
-<p style="font-family:verdana;font-size:14px"><b>Authors:</b><br>Fernando Colchero <a href="mailto:Colchero@demogr.mpg.de" rel="nofollow" style="color:#84002E">Colchero@demogr.mpg.de</a><br>Owen R. Jones <a href="mailto:Colchero@demogr.mpg.de" rel="nofollow" style="color:#84002E">Jones@demogr.mpg.de</a><br>Maren Rebke <a href="mailto:Colchero@demogr.mpg.de" rel="nofollow" style="color:#84002E">Rebke@demogr.mpg.de</a></p>
- 
-</td>
-</tr>
-</tbody>
+	<tbody>
+		<tr>
+			<td align="center" valign="middle" width="290">
+				<img alt="Sooty tern banding" border="1" src="sootyBand.jpg">
+			</td>
+			<td width="20">&nbsp;</td>
+			<td width="400">
+				<h2 style="font-family:verdana;font-size:28px;color:#84002E;letter-spacing:0.2em">BaSTA</h2>
+				<p style="font-family:verdana;font-size:16px;text-align:justify"><i>Bayesian inference on age-specific survival for capture-recapture/recovery data with censored and truncated records</i></p>
+				<p style="font-family:verdana;font-size:14px"><b>Authors:</b><br>Fernando Colchero <a href="mailto:Colchero@demogr.mpg.de" rel="nofollow" style="color:#84002E">Colchero@demogr.mpg.de</a><br>Owen R. Jones <a href="mailto:Colchero@demogr.mpg.de" rel="nofollow" style="color:#84002E">Jones@demogr.mpg.de</a><br>Maren Rebke <a href="mailto:Colchero@demogr.mpg.de" rel="nofollow" style="color:#84002E">Rebke@demogr.mpg.de</a></p>
+			</td>
+		</tr>
+	</tbody>
 </table>
 
-<p style="font-size:small"><br>
-</p>
+<p style="font-size:small"><br></p>
 
-<!-- 4.- BODY:-->
+<!-- 4.- SECTIONS:-->
+	<!-- 4.1- Summary:-->
   
 <table align="left" bgcolor="#A3C586" valign="middle" width="100%">
-<tbody>
-<tr>
-<td>
-<p style="letter-spacing:0.2em;color:#38472A;font-family:verdana;font-size:24px;line-height:20%;text-indent:20px">Project description</p>
-</td>
-</tr>
-</tbody>
+	<tbody>
+		<tr>
+			<td>
+				<p style="letter-spacing:0.2em;color:#38472A;font-family:verdana;font-size:24px;line-height:20%;text-indent:20px"><a name="summary">Project summary</a></p>
+			</td>
+		</tr>
+	</tbody>
 </table>
-<p><br>
-<br>
-</p>
+<p><br><br></p>
 
 <table width="100%">
   <tbody>
     <tr>
       <td style="vertical-align:top" width="450px">
-	<p style="text-align:justify;font-family:verdana"><b>BaSTA</b> is an R package (R Development Core Team 2011) which allows drawing inference on age-specific survival and mortality patterns from capture-recapture/recovery data when a large number of individuals (or all) have missing age information (Colchero, Jones and Rebke <i>in prep</i>). <b>BaSTA</b> is based on a model developed by Colchero and Clark (<i>in press</i>), which extends inference from parameter estimates to the estimation of unknown (i.e. latent) times of birth and death. The package also allows testing the effect of categorical and continuous individual covariates on mortality and survival (for an example see Fig. 1). Although the package is still on a development phase, we will be able to launch it in a few weeks.<br><br><b>BaSTA</b> requires conventional data input (equivalent to other common capture-recapture softwares) and minimum user input (Fig. 2). The core of the model is a Monte Carlo Markov Chain (MCMC) algorithm that combines Metropolis sampling for survival parameters and latent states (i.e. unknown times of birth and death) and direct sampling for recapture probabilities (Clark 2007, Colchero and Clark <i>in press</i>). The main function performs several diagnostics before running the model after which multiple MCMC simulations can be performed (Fig. 3). In case convergence is not acheived or some or all simulations failed, neither convergence nor model selection diagnostics are calculated.<br><br>The current version of <b>BaSTA</b> includes:</p>
-	<ul style="font-family:verdana;text-align:justify">
-	  <li>Functions for data formatting.</li>
-	  <li>Data checking and correction of common data errors.</li>
-          <li>Estimates of age-specific survival parameters.</li>
-          <li>Estimates of yearly recapture probabilities.</li>
-          <li>Estimates latent (i.e. unknown) times of birth and death.</li>
-          <li>Allows testing three different mortality functions (Gompertz, Gompertz-Makeham and Siler)(Gompertz 1925, Pletcher 1999, Siler 1979).</li>
-          <li>Evaluates the effects of time-independent categorical and continuous covariates on survival.</li>
-          <li>Runs multiple simulations either in parallel (using package snowfall; Knaus 2010) or in series.</li>
-          <li>Calculates basic diagnostics on MCMC performance such as parameter update rates and serial autocorrelation.</li>
-          <li>Uses multiple simulations to estimate convergence (i.e. potential scale reduction factor; Gelman <i>et al.</i>2004).</li>
-	  <li>Calculates basic measures for model selection (DIC; Spiegelhalter <i>et al.</i>2002).</li>
-	</ul>
-	<p style="text-align:justify;font-family:verdana">Future versions will include:</p>
-	<ul style="font-family:verdana;text-align:justify">
-	  <li>Time-dependent covariates.</li>
-	  <li>Covariates on recapture probabilities.</li>
-	  <li>Model selection through Reversible Jump MCMC (RJMCMC; King and Brooks 2002; Gimenez <i>et al.</i> 2009).</li>
-	  <li>Additional mortality models (i.e. logistic, Weibull, etc.).</li>
-	</ul>
-      </td>
-      <td width="20">
-      </td>
-      <td align="center" style="vertical-align:middle">
-	<table>
-	  <tbody>
-	    <tr>
-	      <br><br>
-	      <p align="center"  style="font-size:10"><img height="350px" src="kestrelGO.png?height=350px"><br>
+		<p style="text-align:justify;font-family:verdana"><b>BaSTA</b> is an R package (R Development Core Team 2011) which allows drawing inference on age-specific survival and mortality patterns from capture-recapture/recovery data when a large number of individuals (or all) have missing age information (Colchero, Jones and Rebke <i>in prep</i>). <b>BaSTA</b> is based on a model developed by Colchero and Clark (<i>in press</i>), which extends inference from parameter estimates to the estimation of unknown (i.e. latent) times of birth and death. The package also allows testing the effect of categorical and continuous individual covariates on mortality and survival (for an example see Fig. 1). Although the package is still on a development phase, we will be able to launch it in a few weeks.</p>
+	  </td>
+	  <td style="vertical-align:top" width="450px">
+		<p align="center"  style="font-size:10"><img height="300px" src="kestrelGO.png?height=300px"><br>
 </p>
-	      <p align="center" style="font-size:12px;font-family:verdana">Fig. 1. <b>BaSTA</b> model output for sex differences in Kestrel mortality<br>
-using a Gompertz survival model (Rebke <i>et al. in prep</i>).</p><br>
-<p><br></p>
-	    </tr>
-	    <tr>
-	      <hr>
-	      <br>
-	      <p align="center"  style="font-size:10"><img height="400px" src="BastaGeneralChart.jpg?height=350px"><br>
-</p>
-	      <p align="center" style="font-size:12px;font-family:verdana">Fig. 2. <b>BaSTA</b> general package chart.</p><br>
-<p><br></p>
-	    </tr>
-	    <tr>
-	      <hr>
-	      <p align="center" style="font-size:10"><img height="500px" border="0" src="bastaChart.jpg?height=500px"><br>
-</p>
-	      <p align="center" style="font-size:12px;font-family:verdana">Fig. 3. <b>BaSTA</b> model chart.</p>
-	    </tr>
-	  </tbody>
-	</table>
-      </td>
+		<p align="center" style="font-size:12px;font-family:verdana">Fig. 1. <b>BaSTA</b> model output for sex differences in Kestrel mortality<br>using a Gompertz survival model (Rebke <i>et al. in prep</i>).</p>
+	  </td>
     </tr>
   </tbody>
 </table>
 
+<p style="font-size:12px"><a href="#top" style="font-size:12px;color:#84002E;font-family:verdana">Back to top</a></p>
 
 
+	<!-- 4.2- Description:-->
 
+<table align="left" bgcolor="#A3C586" valign="middle" width="100%">
+	<tbody>
+		<tr>
+			<td>
+				<p style="letter-spacing:0.2em;color:#38472A;font-family:verdana;font-size:24px;line-height:20%;text-indent:20px"><a name="description">Package description</a></p>
+			</td>
+		</tr>
+	</tbody>
+</table>
+<p><br><br></p>
 
+<table width="100%">
+  <tbody>
+    <tr>
+      <td style="vertical-align:middle" width="450px">
+		<p style="text-align:justify;font-family:verdana"><b>BaSTA</b> requires conventional data input (equivalent to other common capture-recapture softwares) and minimum user input (Fig. 2). The current version includes:</p>
+		<ul style="font-family:verdana;text-align:justify">
+			<li>Functions for data formatting.</li>
+			<li>Data checking and correction of common data errors.</li>
+			<li>Estimates of age-specific survival parameters.</li>
+			<li>Estimates of yearly recapture probabilities.</li>
+			<li>Estimates latent (i.e. unknown) times of birth and death.</li>
+			<li>Allows testing three different mortality functions (Gompertz, Gompertz-Makeham and Siler)(Gompertz 1925, Pletcher 1999, Siler 1979).</li>
+			<li>Evaluates the effects of time-independent categorical and continuous covariates on survival.</li>
+			<li>Runs multiple simulations either in parallel (using package snowfall; Knaus 2010) or in series.</li>
+			<li>Calculates basic diagnostics on MCMC performance such as parameter update rates and serial autocorrelation.</li>
+			<li>Uses multiple simulations to estimate convergence (i.e. potential scale reduction factor; Gelman <i>et al.</i>2004).</li>
+			<li>Calculates basic measures for model selection (DIC; Spiegelhalter <i>et al.</i>2002).</li>
+		</ul>
+		<p style="text-align:justify;font-family:verdana">Future versions will include:</p>
+		<ul style="font-family:verdana;text-align:justify">
+			<li>Time-dependent covariates.</li>
+			<li>Covariates on recapture probabilities.</li>
+			<li>Model selection through Reversible Jump MCMC (RJMCMC; King and Brooks 2002; Gimenez <i>et al.</i> 2009).</li>
+			<li>Additional mortality models (i.e. logistic, Weibull, etc.).</li>
+			</ul>
+		</p>
+	  </td>
+	  <td style="vertical-align:top" width="450px">
+	      <p align="center"  style="font-size:10"><img height="400px" src="BastaGeneralChart.jpg?height=350px"><br>
+</p>
+	      <p align="center" style="font-size:12px;font-family:verdana">Fig. 2. <b>BaSTA</b> general package chart.</p><br>
+	  </td>
+    </tr>
+  </tbody>
+</table>
 
 <p style="font-size:12px"><a href="#top" style="font-size:12px;color:#84002E;font-family:verdana">Back to top</a></p>
 
-  
+	<!-- 4.3- Model:-->
+
 <table align="left" bgcolor="#A3C586" valign="middle" width="100%">
-<tbody>
-<tr>
-<td>
-<p style="letter-spacing:0.2em;color:#38472A;font-family:verdana;font-size:24px;line-height:20%;text-indent:20px">References</p>
-</td>
-</tr>
-</tbody>
+	<tbody>
+		<tr>
+			<td>
+				<p style="letter-spacing:0.2em;color:#38472A;font-family:verdana;font-size:24px;line-height:20%;text-indent:20px"><a name="model">Model description</a></p>
+			</td>
+		</tr>
+	</tbody>
+</table>
+<p><br><br></p>
+
+<table width="100%">
+  <tbody>
+    <tr>
+      <td style="vertical-align:top" width="450px">
+		<p style="text-align:justify;font-family:verdana">The core of the model is a Monte Carlo Markov Chain (MCMC) algorithm that combines Metropolis sampling for survival parameters and latent states (i.e. unknown times of birth and death) and direct sampling for recapture probabilities (Clark 2007, Colchero and Clark <i>in press</i>). The main function performs several diagnostics before running the model after which multiple MCMC simulations can be performed (Fig. 3). In case convergence is not acheived or some or all simulations failed, neither convergence nor model selection diagnostics are calculated.</p>
+	  </td>
+	  <td style="vertical-align:top" width="450px">
+	      <p align="center" style="font-size:10"><img height="500px" border="0" src="bastaChart.jpg?height=500px"><br>
+</p>
+	      <p align="center" style="font-size:12px;font-family:verdana">Fig. 3. <b>BaSTA</b> model chart.</p>
+	  </td>
+    </tr>
+  </tbody>
+</table>
+
+<p style="font-size:12px"><a href="#top" style="font-size:12px;color:#84002E;font-family:verdana">Back to top</a></p>
+
+ 
+<table align="left" bgcolor="#A3C586" valign="middle" width="100%">
+	<tbody>
+		<tr>
+			<td>
+				<p style="letter-spacing:0.2em;color:#38472A;font-family:verdana;font-size:24px;line-height:20%;text-indent:20px"><a name="refs">References</a></p>
+			</td>
+		</tr>
+	</tbody>
 </table>
 
 <p><br>
