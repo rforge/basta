@@ -22,20 +22,9 @@ $themeroot='http://r-forge.r-project.org/themes/rforge/';
 
 <body>
 <div dir="ltr"><a name="top"> </a>
-<!-- R-Forge Logo -->
-<table border="0" width="100%" cellspacing="0" cellpadding="0">
-	<tr>
-		<td>
-			<a href="http://r-forge.r-project.org/"><img height="30px" src="http://r-forge.r-project.org/themes/rforge/images/logo.png"" border="0" alt="R-Forge Logo" /> </a>
-		</td>
-	</tr>
-</table>
-
 
 <!-- get project title  -->
 <!-- own website starts here, the following may be changed as you like -->
-
-<div dir="ltr"><a name="top"> </a>
 
 
 <!-- 1.- HEADER:-->
@@ -79,17 +68,20 @@ $themeroot='http://r-forge.r-project.org/themes/rforge/';
 
   
 <!-- 3.- LOCAL LINKS:-->
-<table>
+<table width="950">
 	<tbody>
 		<tr>
-			<td align="center" valign="middle" width="290">
+			<td align="center" valign="middle" width="200">
 				<img alt="Sooty tern banding" border="1" src="sootyBand.jpg">
 			</td>
 			<td width="20">&nbsp;</td>
-			<td width="400">
+			<td width="300">
 				<h2 style="font-family:verdana;font-size:28px;color:#84002E;letter-spacing:0.2em">BaSTA</h2>
-				<p style="font-family:verdana;font-size:16px;text-align:justify"><i>Bayesian inference on age-specific survival for capture-recapture/recovery data with censored and truncated records</i></p>
+				<p style="font-family:verdana;font-size:16px;text-align:justify"><i>Bayesian inference on age-specific survival for capture-recapture-recovery data with censored and truncated records</i></p>
 				<p style="font-family:verdana;font-size:14px"><b>Authors:</b><br>Fernando Colchero <a href="mailto:Colchero@demogr.mpg.de" rel="nofollow" style="color:#84002E">Colchero@demogr.mpg.de</a><br>Owen R. Jones <a href="mailto:Colchero@demogr.mpg.de" rel="nofollow" style="color:#84002E">Jones@demogr.mpg.de</a><br>Maren Rebke <a href="mailto:Colchero@demogr.mpg.de" rel="nofollow" style="color:#84002E">Rebke@demogr.mpg.de</a></p>
+			</td>
+			<td align="right" valign="bottom" width="200">
+				<a href="http://r-forge.r-project.org/"><img height="30px" src="http://r-forge.r-project.org/themes/rforge/images/logo.png"" border="0" alt="R-Forge Logo" /> </a>
 			</td>
 		</tr>
 	</tbody>
