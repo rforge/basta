@@ -138,7 +138,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 <table width="100%" style="table-layout:fixed" cellpadding="20">
   <tbody>
     <tr>
-      <td style="vertical-align:middle" width="450px">
+      <td style="vertical-align:middle" width="400px">
 		<p style="text-align:justify;font-family:verdana;line-height:1.75;font-size:18px"><b>BaSTA</b> requires conventional data input (equivalent to other common capture-recapture softwares) and minimum user input (Fig. 2). The current version includes:</p>
 		<ul style="font-family:verdana;text-align:justify;line-height:1.75;font-size:18px">
 			<li>Functions for data formatting.</li>
@@ -189,7 +189,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 <table width="100%" style="table-layout:fixed" cellpadding="20">
   <tbody>
     <tr>
-      <td style="vertical-align:middle" width="450px">
+      <td style="vertical-align:middle" width="400px">
 		<p style="text-align:justify;font-family:verdana;line-height:1.75;font-size:18px">The core of the model is a Monte Carlo Markov Chain (MCMC) algorithm that combines Metropolis sampling for survival parameters and latent states (i.e. unknown times of birth and death) and direct sampling for recapture probabilities (Clark 2007, Colchero and Clark <i>in press</i>). The main function performs several diagnostics on the user's inputs such as checking that the data is consistent with the model's requirements, verifies that the number of iterations, the burnin sequence and the thinning gap are consistent and finally verifies that the initial parameters and jumps provided by the user allow the model to run properly (Fig. 3). After running these diagnostics, the function can run multiple MCMC simulations. In case convergence is not acheived or some or all simulations failed, neither convergence nor model selection diagnostics are calculated.</p>
 	  </td>
 	  <td style="vertical-align:top" width="450px">
