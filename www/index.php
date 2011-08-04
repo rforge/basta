@@ -29,7 +29,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 
 
 <!-- 1.- HEADER:-->
-<table style="background-color:#47697E" width="100%">
+<table style="background-color:#47697E" width="100%"  style="table-layout:fixed">
 	<tbody>
 		<tr>
 			<td width="10">&nbsp;</td>
@@ -47,7 +47,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
  
 
 <!-- 2.- LINKS:-->
-<table width="100%">
+<table width="100%" style="table-layout:fixed">
 	<tbody>
 		<tr valign="middle">
 			<td style="text-align:center;vertical-align:middle;height:30px;background-color:#A3C586;width:200px">
@@ -69,21 +69,19 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 
   
 <!-- 3.- LOCAL LINKS:-->
-<table width="950">
+<table width="700" style="table-layout:fixed">
 	<tbody>
 		<tr>
-			<td align="center" valign="middle" width="200">
+			<td align="center" valign="bottom" width="250">
 				<img alt="Sooty tern banding" border="1" src="sootyBand.jpg">
+				<p align="left"><br><br>&nbsp<a href="http://r-forge.r-project.org/"><img height="30px" src="http://r-forge.r-project.org/themes/rforge/images/logo.png"" border="0" alt="R-Forge Logo"></a></p>
 			</td>
 			<td width="20">&nbsp;</td>
-			<td width="400">
+			<td width="350">
 				<h2 style="font-family:verdana;font-size:28px;color:#84002E;letter-spacing:0.2em">BaSTA</h2>
-				<p style="font-family:verdana;font-size:16px;text-align:justify"><i>Bayesian inference on age-specific survival for capture-recapture-recovery data with censored and truncated records</i></p>
+				<p style="font-family:verdana;font-size:16px;text-align:left"><i>Bayesian inference on age-specific survival for censored and truncated capture-recapture/recovery data</i></p>
 				<p style="font-family:verdana;font-size:14px"><b>Authors:</b><br>Fernando Colchero <a href="mailto:Colchero@demogr.mpg.de" rel="nofollow" style="color:#84002E">Colchero@demogr.mpg.de</a><br>Owen R. Jones <a href="mailto:Colchero@demogr.mpg.de" rel="nofollow" style="color:#84002E">Jones@demogr.mpg.de</a><br>Maren Rebke <a href="mailto:Colchero@demogr.mpg.de" rel="nofollow" style="color:#84002E">Rebke@demogr.mpg.de</a></p>
 				<p style="font-family:verdana;font-size:14px"><b>Developed at:</b><br><a href="http://www.demogr.mpg.de" rel="nofollow" style="color:#84002E;font-family:verdana" target="_blank">Max Planck Institute for Demographic Research</a><br>(<i>Laboratory of Evolutionary Biodemography and Independent Research Group Modeling the Evolution of Aging</i>).</p>
-			</td>
-			<td align="right" valign="bottom" width="300">
-				<a href="http://r-forge.r-project.org/"><img height="30px" src="http://r-forge.r-project.org/themes/rforge/images/logo.png"" border="0" alt="R-Forge Logo" /> </a>
 			</td>
 		</tr>
 	</tbody>
@@ -94,7 +92,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 <!-- 4.- SECTIONS:-->
 	<!-- 4.1- Summary:-->
   
-<table align="left" bgcolor="#A3C586" valign="middle" width="100%">
+<table align="left" bgcolor="#A3C586" valign="middle" width="100%" style="table-layout:fixed">
 	<tbody>
 		<tr>
 			<td>
@@ -125,7 +123,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 
 	<!-- 4.2- Description:-->
 
-<table align="left" bgcolor="#A3C586" valign="middle" width="100%">
+<table align="left" bgcolor="#A3C586" valign="middle" width="100%" style="table-layout:fixed">
 	<tbody>
 		<tr>
 			<td>
@@ -136,7 +134,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 </table>
 <p><br><br></p>
 
-<table width="100%">
+<table width="100%" style="table-layout:fixed">
   <tbody>
     <tr>
       <td style="vertical-align:middle" width="450px">
@@ -176,7 +174,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 
 	<!-- 4.3- Model:-->
 
-<table align="left" bgcolor="#A3C586" valign="middle" width="100%">
+<table align="left" bgcolor="#A3C586" valign="middle" width="100%" style="table-layout:fixed">
 	<tbody>
 		<tr>
 			<td>
@@ -187,7 +185,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 </table>
 <p><br><br></p>
 
-<table width="100%">
+<table width="100%" style="table-layout:fixed">
   <tbody>
     <tr>
       <td style="vertical-align:top" width="450px">
@@ -205,7 +203,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 <p style="font-size:12px"><a href="#top" style="font-size:12px;color:#84002E;font-family:verdana">Back to top</a></p>
 
  
-<table align="left" bgcolor="#A3C586" valign="middle" width="100%">
+<table align="left" bgcolor="#A3C586" valign="middle" width="100%" style="table-layout:fixed">
 	<tbody>
 		<tr>
 			<td>
