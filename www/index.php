@@ -80,9 +80,9 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 			<td width="50">&nbsp;</td>
 			<td width="450">
 				<h2 style="font-family:verdana;font-size:28px;color:#84002E;letter-spacing:0.2em">BaSTA</h2>
-				<p style="font-family:verdana;font-size:18px;text-align:left;line-height:1.5"><i>Bayesian inference on age-specific survival for censored and truncated capture-recapture/recovery data</i></p>
-				<p style="font-family:verdana;font-size:16px;line-height:1.5"><b>Authors:</b><br>Fernando Colchero <a href="mailto:Colchero@demogr.mpg.de" rel="nofollow" style="color:#84002E">Colchero@demogr.mpg.de</a><br>Owen R. Jones <a href="mailto:Colchero@demogr.mpg.de" rel="nofollow" style="color:#84002E">Jones@demogr.mpg.de</a><br>Maren Rebke <a href="mailto:Colchero@demogr.mpg.de" rel="nofollow" style="color:#84002E">Rebke@demogr.mpg.de</a></p>
-				<p style="font-family:verdana;font-size:16px;line-height:1.5"><b>Developed at:</b><br><a href="http://www.demogr.mpg.de" rel="nofollow" style="color:#84002E;font-family:verdana" target="_blank">Max Planck Institute for Demographic Research</a><br>(<i>Laboratory of Evolutionary Biodemography and Independent Research Group Modeling the Evolution of Aging</i>).</p>
+				<p style="font-family:verdana;font-size:18px;text-align:left;line-height:1.25"><i>Bayesian inference on age-specific survival for censored and truncated capture-recapture/recovery data</i></p>
+				<p style="font-family:verdana;font-size:16px;line-height:1.25"><b>Authors:</b><br>Fernando Colchero <a href="mailto:Colchero@demogr.mpg.de" rel="nofollow" style="color:#84002E">Colchero@demogr.mpg.de</a><br>Owen R. Jones <a href="mailto:Colchero@demogr.mpg.de" rel="nofollow" style="color:#84002E">Jones@demogr.mpg.de</a><br>Maren Rebke <a href="mailto:Colchero@demogr.mpg.de" rel="nofollow" style="color:#84002E">Rebke@demogr.mpg.de</a></p>
+				<p style="font-family:verdana;font-size:16px;line-height:1.25"><b>Developed at:</b><br><a href="http://www.demogr.mpg.de" rel="nofollow" style="color:#84002E;font-family:verdana" target="_blank">Max Planck Institute for Demographic Research</a><br>(<i>Laboratory of Evolutionary Biodemography and Independent Research Group Modeling the Evolution of Aging</i>).</p>
 			</td>
 		</tr>
 	</tbody>
@@ -111,7 +111,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 		<p style="text-align:justify;font-family:verdana;line-height:1.75;font-size:18px"><b>BaSTA</b> is an R package (R Development Core Team 2011) which allows drawing inference on age-specific survival and mortality patterns from capture-recapture/recovery data when a large number of individuals (or all) have missing age information (Colchero, Jones and Rebke <i>in prep</i>). <b>BaSTA</b> is based on a model developed by Colchero and Clark (<i>in press</i>), which extends inference from parameter estimates to the estimation of unknown (i.e. latent) times of birth and death. The package also allows testing the effect of categorical and continuous individual covariates on mortality and survival (for an example see Fig. 1). Although the package is still on a development phase, we will be able to launch it in a few weeks.</p>
 	  </td>
 	  <td style="vertical-align:top" width="450px">
-		<p align="center"  style="font-size:10"><img height="400px" src="kestrelGO.png?height=400px"><br>
+		<p align="center"  style="font-size:10"><img height="450px" src="kestrelGO.png?height=450px"><br>
 </p>
 		<p align="center" style="font-size:12px;font-family:verdana">Fig. 1. <b>BaSTA</b> model output for sex differences in Kestrel mortality<br>using a Gompertz survival model (Rebke <i>et al. in prep</i>). The left<br>panel shows posterior distributions for the two survival parameters<br>while the right panel shows the resulting survival probabilities and the <br>mortality rates for males and females.</p>
 	  </td>
