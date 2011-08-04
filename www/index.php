@@ -103,16 +103,16 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 </table>
 <p><br><br></p>
 
-<table width="100%">
+<table width="100%"  style="table-layout:fixed" cellpadding="20">
   <tbody>
     <tr>
-      <td style="vertical-align:top" width="450px">
-		<p style="text-align:justify;font-family:verdana"><b>BaSTA</b> is an R package (R Development Core Team 2011) which allows drawing inference on age-specific survival and mortality patterns from capture-recapture/recovery data when a large number of individuals (or all) have missing age information (Colchero, Jones and Rebke <i>in prep</i>). <b>BaSTA</b> is based on a model developed by Colchero and Clark (<i>in press</i>), which extends inference from parameter estimates to the estimation of unknown (i.e. latent) times of birth and death. The package also allows testing the effect of categorical and continuous individual covariates on mortality and survival (for an example see Fig. 1). Although the package is still on a development phase, we will be able to launch it in a few weeks.</p>
+      <td style="vertical-align:middle" width="400px">
+		<p style="text-align:justify;font-family:verdana;line-height:1.75;font-size:18px"><b>BaSTA</b> is an R package (R Development Core Team 2011) which allows drawing inference on age-specific survival and mortality patterns from capture-recapture/recovery data when a large number of individuals (or all) have missing age information (Colchero, Jones and Rebke <i>in prep</i>). <b>BaSTA</b> is based on a model developed by Colchero and Clark (<i>in press</i>), which extends inference from parameter estimates to the estimation of unknown (i.e. latent) times of birth and death. The package also allows testing the effect of categorical and continuous individual covariates on mortality and survival (for an example see Fig. 1). Although the package is still on a development phase, we will be able to launch it in a few weeks.</p>
 	  </td>
 	  <td style="vertical-align:top" width="450px">
-		<p align="center"  style="font-size:10"><img height="300px" src="kestrelGO.png?height=300px"><br>
+		<p align="center"  style="font-size:10"><img height="400px" src="kestrelGO.png?height=400px"><br>
 </p>
-		<p align="center" style="font-size:12px;font-family:verdana">Fig. 1. <b>BaSTA</b> model output for sex differences in Kestrel mortality<br>using a Gompertz survival model (Rebke <i>et al. in prep</i>).</p>
+		<p align="center" style="font-size:12px;font-family:verdana">Fig. 1. <b>BaSTA</b> model output for sex differences in Kestrel mortality<br>using a Gompertz survival model (Rebke <i>et al. in prep</i>). The left<br>panel shows posterior distributions for the two survival parameters<br>while the right panel shows the resulting survival probabilities and the <br>mortality rates for males and females.</p>
 	  </td>
     </tr>
   </tbody>
@@ -134,12 +134,12 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 </table>
 <p><br><br></p>
 
-<table width="100%" style="table-layout:fixed">
+<table width="100%" style="table-layout:fixed" cellpadding="20">
   <tbody>
     <tr>
       <td style="vertical-align:middle" width="450px">
-		<p style="text-align:justify;font-family:verdana"><b>BaSTA</b> requires conventional data input (equivalent to other common capture-recapture softwares) and minimum user input (Fig. 2). The current version includes:</p>
-		<ul style="font-family:verdana;text-align:justify">
+		<p style="text-align:justify;font-family:verdana;line-height:1.75;font-size:18px"><b>BaSTA</b> requires conventional data input (equivalent to other common capture-recapture softwares) and minimum user input (Fig. 2). The current version includes:</p>
+		<ul style="font-family:verdana;text-align:justify;line-height:1.75;font-size:18px">
 			<li>Functions for data formatting.</li>
 			<li>Data checking and correction of common data errors.</li>
 			<li>Estimates of age-specific survival parameters.</li>
@@ -152,8 +152,8 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 			<li>Uses multiple simulations to estimate convergence (i.e. potential scale reduction factor; Gelman <i>et al.</i>2004).</li>
 			<li>Calculates basic measures for model selection (DIC; Spiegelhalter <i>et al.</i>2002).</li>
 		</ul>
-		<p style="text-align:justify;font-family:verdana">Future versions will include:</p>
-		<ul style="font-family:verdana;text-align:justify">
+		<p style="text-align:justify;font-family:verdana;line-height:1.75;font-size:18px">Future versions will include:</p>
+		<ul style="font-family:verdana;text-align:justify;line-height:1.75;font-size:18px">
 			<li>Time-dependent covariates.</li>
 			<li>Covariates on recapture probabilities.</li>
 			<li>Model selection through Reversible Jump MCMC (RJMCMC; King and Brooks 2002; Gimenez <i>et al.</i> 2009).</li>
@@ -162,7 +162,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 		</p>
 	  </td>
 	  <td style="vertical-align:top" width="450px">
-	      <p align="center"  style="font-size:10"><img height="400px" src="BastaGeneralChart.jpg?height=350px"><br>
+	      <p align="center"  style="font-size:10"><img height="450px" src="BastaGeneralChart.jpg?height=450px"><br>
 </p>
 	      <p align="center" style="font-size:12px;font-family:verdana">Fig. 2. <b>BaSTA</b> general package chart.</p><br>
 	  </td>
@@ -185,11 +185,11 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 </table>
 <p><br><br></p>
 
-<table width="100%" style="table-layout:fixed">
+<table width="100%" style="table-layout:fixed" cellpadding="20">
   <tbody>
     <tr>
-      <td style="vertical-align:top" width="450px">
-		<p style="text-align:justify;font-family:verdana">The core of the model is a Monte Carlo Markov Chain (MCMC) algorithm that combines Metropolis sampling for survival parameters and latent states (i.e. unknown times of birth and death) and direct sampling for recapture probabilities (Clark 2007, Colchero and Clark <i>in press</i>). The main function performs several diagnostics before running the model after which multiple MCMC simulations can be performed (Fig. 3). In case convergence is not acheived or some or all simulations failed, neither convergence nor model selection diagnostics are calculated.</p>
+      <td style="vertical-align:middle" width="450px">
+		<p style="text-align:justify;font-family:verdana;line-height:1.75;font-size:18px">The core of the model is a Monte Carlo Markov Chain (MCMC) algorithm that combines Metropolis sampling for survival parameters and latent states (i.e. unknown times of birth and death) and direct sampling for recapture probabilities (Clark 2007, Colchero and Clark <i>in press</i>). The main function performs several diagnostics such as checking that the input data is consistent with the model's requirements, verifies that the number of iterations, the burnin sequence and the thinning gap provided are consistent and finally verifies that the initial parameters and jumps provided by the user allow the model to run properly (Fig. 3). After running these diagnostics, the function can run multiple MCMC simulations. In case convergence is not acheived or some or all simulations failed, neither convergence nor model selection diagnostics are calculated.</p>
 	  </td>
 	  <td style="vertical-align:top" width="450px">
 	      <p align="center" style="font-size:10"><img height="500px" border="0" src="bastaChart.jpg?height=500px"><br>
@@ -217,7 +217,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 <br>
 </p>
 
-<ul style="font-family:verdana">
+<ul style="font-family:verdana;line-height:1.75;font-size:18px">
 <br>
   <li>Clark, J.S. (2007) <b>Models for ecological data</b>. Princeton University Press, Princeton, New Jersey, USA.</li>
   <br>
