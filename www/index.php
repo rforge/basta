@@ -69,19 +69,20 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 
   
 <!-- 3.- LOCAL LINKS:-->
-<table width="700" style="table-layout:fixed">
+<table width="700" style="table-layout:fixed" cellpadding="10">
 	<tbody>
 		<tr>
-			<td align="center" valign="bottom" width="250">
+			<td align="center" valign="top" width="250">
+				<p><br></p>
 				<img alt="Sooty tern banding" border="1" src="sootyBand.jpg">
-				<p align="left"><br><br>&nbsp<a href="http://r-forge.r-project.org/"><img height="30px" src="http://r-forge.r-project.org/themes/rforge/images/logo.png"" border="0" alt="R-Forge Logo"></a></p>
+				<p align="left"><br><br><br><br><br>&nbsp<a href="http://r-forge.r-project.org/"><img height="30px" src="http://r-forge.r-project.org/themes/rforge/images/logo.png"" border="0" alt="R-Forge Logo"></a></p>
 			</td>
-			<td width="20">&nbsp;</td>
-			<td width="350">
+			<td width="50">&nbsp;</td>
+			<td width="450">
 				<h2 style="font-family:verdana;font-size:28px;color:#84002E;letter-spacing:0.2em">BaSTA</h2>
-				<p style="font-family:verdana;font-size:16px;text-align:left"><i>Bayesian inference on age-specific survival for censored and truncated capture-recapture/recovery data</i></p>
-				<p style="font-family:verdana;font-size:14px"><b>Authors:</b><br>Fernando Colchero <a href="mailto:Colchero@demogr.mpg.de" rel="nofollow" style="color:#84002E">Colchero@demogr.mpg.de</a><br>Owen R. Jones <a href="mailto:Colchero@demogr.mpg.de" rel="nofollow" style="color:#84002E">Jones@demogr.mpg.de</a><br>Maren Rebke <a href="mailto:Colchero@demogr.mpg.de" rel="nofollow" style="color:#84002E">Rebke@demogr.mpg.de</a></p>
-				<p style="font-family:verdana;font-size:14px"><b>Developed at:</b><br><a href="http://www.demogr.mpg.de" rel="nofollow" style="color:#84002E;font-family:verdana" target="_blank">Max Planck Institute for Demographic Research</a><br>(<i>Laboratory of Evolutionary Biodemography and Independent Research Group Modeling the Evolution of Aging</i>).</p>
+				<p style="font-family:verdana;font-size:18px;text-align:left;line-height:1.5"><i>Bayesian inference on age-specific survival for censored and truncated capture-recapture/recovery data</i></p>
+				<p style="font-family:verdana;font-size:16px;line-height:1.5"><b>Authors:</b><br>Fernando Colchero <a href="mailto:Colchero@demogr.mpg.de" rel="nofollow" style="color:#84002E">Colchero@demogr.mpg.de</a><br>Owen R. Jones <a href="mailto:Colchero@demogr.mpg.de" rel="nofollow" style="color:#84002E">Jones@demogr.mpg.de</a><br>Maren Rebke <a href="mailto:Colchero@demogr.mpg.de" rel="nofollow" style="color:#84002E">Rebke@demogr.mpg.de</a></p>
+				<p style="font-family:verdana;font-size:16px;line-height:1.5"><b>Developed at:</b><br><a href="http://www.demogr.mpg.de" rel="nofollow" style="color:#84002E;font-family:verdana" target="_blank">Max Planck Institute for Demographic Research</a><br>(<i>Laboratory of Evolutionary Biodemography and Independent Research Group Modeling the Evolution of Aging</i>).</p>
 			</td>
 		</tr>
 	</tbody>
@@ -192,7 +193,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 		<p style="text-align:justify;font-family:verdana;line-height:1.75;font-size:18px">The core of the model is a Monte Carlo Markov Chain (MCMC) algorithm that combines Metropolis sampling for survival parameters and latent states (i.e. unknown times of birth and death) and direct sampling for recapture probabilities (Clark 2007, Colchero and Clark <i>in press</i>). The main function performs several diagnostics on the user's inputs such as checking that the data is consistent with the model's requirements, verifies that the number of iterations, the burnin sequence and the thinning gap are consistent and finally verifies that the initial parameters and jumps provided by the user allow the model to run properly (Fig. 3). After running these diagnostics, the function can run multiple MCMC simulations. In case convergence is not acheived or some or all simulations failed, neither convergence nor model selection diagnostics are calculated.</p>
 	  </td>
 	  <td style="vertical-align:top" width="450px">
-	      <p align="center" style="font-size:10"><img height="500px" border="0" src="bastaChart.jpg?height=500px"><br>
+	      <p align="center" style="font-size:10"><img height="600px" border="0" src="bastaChart.jpg?height=600px"><br>
 </p>
 	      <p align="center" style="font-size:12px;font-family:verdana">Fig. 3. <b>BaSTA</b> model chart.</p>
 	  </td>
