@@ -75,7 +75,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 			<td align="center" valign="top" width="250">
 				<p><br></p>
 				<img alt="Sooty tern banding" border="1" src="sootyBand.jpg">
-				<p align="left"><br><br><br><br><br>&nbsp<a href="http://r-forge.r-project.org/"><img height="30px" src="http://r-forge.r-project.org/themes/rforge/images/logo.png"" border="0" alt="R-Forge Logo"></a></p>
+				<p align="left"><br><br><br><br><br>&nbsp<a href="http://r-forge.r-project.org/"><img height="30px" src="Rforgelogo.png" border="0" alt="R-Forge Logo"></a></p>
 			</td>
 			<td width="50">&nbsp;</td>
 			<td width="450" valign="top">
