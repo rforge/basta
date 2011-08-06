@@ -21,7 +21,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 	<link href="http://r-forge.r-project.org/themes/rforge/styles/estilo1.css" rel="stylesheet" type="text/css" /> 
   </head>
 
-<body>
+<body style="background:#787878">
 <div dir="ltr"><a name="top">&nbsp;</a>
 
 <!-- get project title  -->
@@ -69,7 +69,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 
   
 <!-- 3.- LOCAL LINKS:-->
-<table width="700px" style="table-layout:fixed" cellpadding="10">
+<table width="1050px" style="table-layout:fixed;background:#FFFFFF" cellpadding="10">
 	<tbody>
 		<tr>
 			<td align="center" valign="top" width="250">
@@ -77,31 +77,28 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 				<img alt="Sooty tern banding" border="1" src="sootyBand.jpg">
 				<p align="left"><br><br><br><br><br>&nbsp<a href="http://r-forge.r-project.org/"><img height="30px" src="Rforgelogo.png" border="0" alt="R-Forge Logo"></a></p>
 			</td>
-			<td width="50">
-				<p>&nbsp;</p>
-			</td>
-			<td width="450" valign="top">
+			<td width="400" valign="top">
 				<p style="font-family:verdana;font-size:32px;color:#84002E;letter-spacing:0.2em"><b>BaSTA</b></p>
 				<p style="font-family:verdana;font-size:16px;line-height:1.25"><b>Authors:</b><br><br>Fernando Colchero <a href="mailto:Colchero@demogr.mpg.de" rel="nofollow" style="color:#84002E">Colchero@demogr.mpg.de</a><br>Owen R. Jones <a href="mailto:Colchero@demogr.mpg.de" rel="nofollow" style="color:#84002E">Jones@demogr.mpg.de</a><br>Maren Rebke <a href="mailto:Colchero@demogr.mpg.de" rel="nofollow" style="color:#84002E">Rebke@demogr.mpg.de</a><br></p>
 				<p style="font-family:verdana;font-size:16px;line-height:1.25;text-align:justify"><br><b>Developed at:</b><br><br><a href="http://www.demogr.mpg.de" rel="nofollow" style="color:#84002E;font-family:verdana" target="_blank">Max Planck Institute for Demographic Research</a><br>(<i>Laboratory of Evolutionary Biodemography and Independent Research Group Modeling the Evolution of Aging</i>).</p>
+			</td>
+			<td width="200px">
 			</td>
 		</tr>
 	</tbody>
 </table>
 
-<p style="font-size:small"><br></p>
-
 <!-- 4.- SECTIONS:-->
 	<!-- 4.1- Summary:-->
   
-<table  valign="middle" width="1050px" style="table-layout:fixed"">
+<table  valign="middle" width="1050px" style="table-layout:fixed;background:#FFFFFF">
 	<tbody>
 		<tr style="background:#A3C586;text-align:left;height:20px">
 			<th colspan="2">
 				<p style="letter-spacing:0.2em;color:#38472A;font-family:verdana;font-size:24px;line-height:0;text-indent:50px"><a name="summary">Project summary</a></p>
 			</th>
 		</tr>
-		<tr>
+		<tr style="background:#FFFFFF">
 			<td style="vertical-align:middle;padding:40px" width="420px">
 				<p style="text-align:justify;font-family:verdana;line-height:1.75;font-size:18px"><b>BaSTA</b> is an R package (R Development Core Team 2011) that allows drawing inference on age-specific survival and mortality patterns from capture-recapture/recovery data when a large number of individuals (or all) have missing age information (Colchero, Jones and Rebke <i>in prep</i>). <b>BaSTA</b> is based on a model developed by Colchero and Clark (<i>in press</i>), which extends inference from parameter estimates to the estimation of unknown (i.e. latent) times of birth and death. The package also allows testing the effect of categorical and continuous individual covariates on mortality and survival (for an example see Fig. 1). Although the package is still on a development phase, we will be able to launch it in a few weeks.</p>
 			</td>
