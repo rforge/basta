@@ -102,8 +102,8 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 			<td style="vertical-align:middle;padding:40px" width="420px">
 				<p style="text-align:justify;font-family:verdana;line-height:1.75;font-size:18px"><b>BaSTA</b> is an R package (R Development Core Team 2011) that allows drawing inference on age-specific survival and mortality patterns from capture-recapture/recovery data when a large number of individuals (or all) have missing age information (Colchero, Jones and Rebke <i>in prep</i>). <b>BaSTA</b> is based on a model developed by Colchero and Clark (<i>in press</i>), which extends inference from parameter estimates to the estimation of unknown (i.e. latent) times of birth and death. The package also allows testing the effect of categorical and continuous individual covariates on mortality and survival (for an example see Fig. 1). Although the package is still on a development phase, we will be able to launch it in a few weeks.</p>
 			</td>
-			<td style="vertical-align:top" width="420px">
-				<p><img width="400px" align="right" src="kestrelGO.png?width=400px"><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br></p>
+			<td style="vertical-align:top;padding:40px" width="420px">
+				<p><img width="400px" align="middle" src="kestrelGO.png?width=400px"><br><br></p>
 				<p align="center" style="font-size:12px;text-align:center;font-family:verdana">Fig. 1. <b>BaSTA</b> model output for sex differences in Kestrel mortality<br>using a Gompertz survival model (Rebke <i>et al. in prep</i>). The left<br>panel shows posterior distributions for the two survival parameters<br>while the right panel shows the resulting survival probabilities and the <br>mortality rates for males and females.</p>
 			</td>
 		</tr>
