@@ -179,9 +179,9 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 			</td>
 		</tr>
 		<!-- 4.4- References:-->
-		<tr style="background:#A3C586;text-align:left;height:20px">
+		<tr style="background:#A3C586;text-align:left;height:50px">
 			<th colspan="2">
-				<p style="letter-spacing:0.2em;color:#38472A;font-family:verdana;font-size:24px;line-height:20%;text-indent:40px"><a name="refs">References</a></p>
+				<p style="letter-spacing:0.2em;color:#38472A;font-family:verdana;font-size:24px;line-height:0%;text-indent:40px"><a name="refs">References</a></p>
 			</th>
 		</tr>
 		<tr>
