@@ -50,17 +50,13 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 <table width="1050px" style="table-layout:fixed">
 	<tbody>
 		<tr valign="middle">
-			<td style="text-align:center;vertical-align:middle;height:30px;background-color:#A3C586;width:200px">
-				<a href="#summary" style="color:#38472A;text-decoration:none;font-size:20px;font-family:verdana">SUMMARY</a>
+			<td style="text-align:center;vertical-align:middle;padding:0px;height:30px;background-color:#A3C586;width:200px"><a href="#summary" style="color:#38472A;text-decoration:none;font-size:20px;font-family:verdana">SUMMARY</a>
 			</td>
-			<td style="text-align:center;vertical-align:middle;height:30px;background-color:#A3C586;width:200px">
-				<a href="#description" style="color:#38472A;text-decoration:none;font-size:20px;font-family:verdana">PACKAGE</a>
+			<td style="text-align:center;vertical-align:middle;padding:0px;height:30px;background-color:#A3C586;width:200px"><a href="#description" style="color:#38472A;text-decoration:none;font-size:20px;font-family:verdana">PACKAGE</a>
 			</td>
-			<td style="text-align:center;vertical-align:middle;height:30px;background-color:#A3C586;width:200px">
-				<a href="#model" style="color:#38472A;text-decoration:none;font-size:20px;font-family:verdana">MODEL</a>
+			<td style="text-align:center;vertical-align:middle;padding:0px;height:30px;background-color:#A3C586;width:200px"><a href="#model" style="color:#38472A;text-decoration:none;font-size:20px;font-family:verdana">MODEL</a>
 			</td>
-			<td style="text-align:center;vertical-align:middle;height:30px;background-color:#A3C586;width:200px">
-				<a href="#refs" style="color:#38472A;text-decoration:none;font-size:20px;font-family:verdana">REFERENCES</a>
+			<td style="text-align:center;vertical-align:middle;padding:0px;height:30px;background-color:#A3C586;width:200px"><a href="#refs" style="color:#38472A;text-decoration:none;font-size:20px;font-family:verdana">REFERENCES</a>
 			</td>
 		</tr>
 	</tbody>
