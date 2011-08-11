@@ -89,10 +89,10 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 </table>
 
 <!-- 4.- SECTIONS:-->
-	<!-- 4.1- Summary:-->
   
 <table  valign="middle" width="1050px" style="table-layout:fixed;background:#FFFFFF">
 	<tbody>
+		<!-- 4.1- Summary:-->
 		<tr style="background:#A3C586;text-align:left;height:40px">
 			<th colspan="2">
 				<p style="letter-spacing:0.2em;color:#38472A;font-family:verdana;font-size:24px;line-height:0;text-indent:50px"><a name="summary">Project summary</a></p>
@@ -112,6 +112,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 				<p style="vertical-align:left;font-size:12px;text-indent:40px"><a href="#top" style="font-size:12px;color:#84002E;font-family:verdana">Back to top</a></p>
 			</td>
 		</tr>
+		<!-- 4.2- Package:-->
 		<tr style="background:#A3C586;text-align:left;height:40px">
 			<th colspan="2">
 				<p style="letter-spacing:0.2em;color:#38472A;font-family:verdana;font-size:24px;line-height:20%;text-indent:40px"><a name="description">Package description</a></p>
@@ -156,6 +157,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 				<p style="vertical-align:left;font-size:12px;text-indent:40px"><a href="#top" style="font-size:12px;color:#84002E;font-family:verdana">Back to top</a></p>
 			</td>
 		</tr>
+		<!-- 4.3- Model:-->
 		<tr style="background:#A3C586;text-align:left;height:40px">
 			<th colspan="2">
 				<p style="letter-spacing:0.2em;color:#38472A;font-family:verdana;font-size:24px;line-height:20%;text-indent:40px"><a name="model">Model description</a></p>
@@ -176,6 +178,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 				<p style="vertical-align:left;font-size:12px;text-indent:40px"><a href="#top" style="font-size:12px;color:#84002E;font-family:verdana">Back to top</a></p>
 			</td>
 		</tr>
+		<!-- 4.4- References:-->
 		<tr style="background:#A3C586;text-align:left;height:20px">
 			<th colspan="2">
 				<p style="letter-spacing:0.2em;color:#38472A;font-family:verdana;font-size:24px;line-height:20%;text-indent:40px"><a name="refs">References</a></p>
