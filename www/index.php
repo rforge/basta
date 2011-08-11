@@ -33,11 +33,11 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 	<tbody>
 		<tr>
 			<td width="10px">&nbsp;</td>
-			<td valign="middle" width="30px">
+			<td valign="middle" width="100px">
 				<img alt="BaSTA logo" border="0" height="100px" src="bastalogo.jpg?height=100px" style="margin:5px">
 			</td>
 			<td width="20px">&nbsp;</td>
-			<td width="990px" style="vertical-align:middle">
+			<td width="930px" style="vertical-align:middle">
 				<p style="white-space:nowrap;vertical-align:middle;font-family:verdana;margin-top:0px;margin-bottom:0px;font-size:38px;letter-spacing:0.25em;color:#FFCC33">BaSTA</p>
 				<p style="white-space:nowrap;vertical-align:middle;font-family:verdana;font-size:24px;color:#FCF1D1">Bayesian Survival Trajectory Analysis</p>
 			</td>
@@ -93,7 +93,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
   
 <table  valign="middle" width="1050px" style="table-layout:fixed;background:#FFFFFF">
 	<tbody>
-		<tr style="background:#A3C586;text-align:left;height:20px">
+		<tr style="background:#A3C586;text-align:left;height:40px">
 			<th colspan="2">
 				<p style="letter-spacing:0.2em;color:#38472A;font-family:verdana;font-size:24px;line-height:0;text-indent:50px"><a name="summary">Project summary</a></p>
 			</th>
@@ -112,7 +112,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 				<p style="vertical-align:left;font-size:12px;text-indent:40px"><a href="#top" style="font-size:12px;color:#84002E;font-family:verdana">Back to top</a></p>
 			</td>
 		</tr>
-		<tr style="background:#A3C586;text-align:left;height:20px">
+		<tr style="background:#A3C586;text-align:left;height:40px">
 			<th colspan="2">
 				<p style="letter-spacing:0.2em;color:#38472A;font-family:verdana;font-size:24px;line-height:20%;text-indent:40px"><a name="description">Package description</a></p>
 			</th>
@@ -133,7 +133,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 		</p>
 		</td>
 		<td style="vertical-align:top;padding:40px" width="420px">
-		    <p align="center"  style="font-size:10"><img width="500px" align="right" src="BastaGeneralChart.jpg?width=500px"><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+		    <p align="center"  style="font-size:10"><img width="420px" align="middle" src="BastaGeneralChart.jpg?width=420px">
 </p>
 			<p align="center" style="font-size:12px;font-family:verdana">Fig. 2. <b>BaSTA</b> general package chart.</p><br>
 			<ul style="font-family:verdana;text-align:justify;line-height:1.75;font-size:18px">
@@ -156,7 +156,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 				<p style="vertical-align:left;font-size:12px;text-indent:40px"><a href="#top" style="font-size:12px;color:#84002E;font-family:verdana">Back to top</a></p>
 			</td>
 		</tr>
-		<tr style="background:#A3C586;text-align:left;height:20px">
+		<tr style="background:#A3C586;text-align:left;height:40px">
 			<th colspan="2">
 				<p style="letter-spacing:0.2em;color:#38472A;font-family:verdana;font-size:24px;line-height:20%;text-indent:40px"><a name="model">Model description</a></p>
 			</th>
@@ -166,7 +166,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 		<p style="text-align:justify;font-family:verdana;line-height:1.75;font-size:18px">The core of the model is a Monte Carlo Markov Chain (MCMC) algorithm that combines Metropolis sampling for survival parameters and latent states (i.e. unknown times of birth and death) and direct sampling for recapture probabilities (Clark 2007, Colchero and Clark <i>in press</i>). The main function performs several diagnostics on the user's inputs such as checking that the data is consistent with the model's requirements, verifies that the number of iterations, the burnin sequence and the thinning gap are consistent and finally verifies that the initial parameters and jumps provided by the user allow the model to run properly (Fig. 3). After running these diagnostics, the function can run multiple MCMC simulations. In case convergence is not acheived or some or all simulations failed, neither convergence nor model selection diagnostics are calculated.</p>
 	  </td>
 		<td style="vertical-align:top;padding:40px" width="420px">
-	      <p align="center" style="font-size:10"><img width="500px" align="right" border="0" src="bastaChart.jpg?width=500px"><br>
+	      <p align="center" style="font-size:10"><img width="420px" align="middle" border="0" src="bastaChart.jpg?width=420px"><br>
 </p>
 	      <p align="center" style="font-size:12px;font-family:verdana">Fig. 3. <b>BaSTA</b> model chart.</p>
 	  </td>
