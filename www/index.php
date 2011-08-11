@@ -93,9 +93,9 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 <table  valign="middle" width="1050px" style="table-layout:fixed;background:#FFFFFF">
 	<tbody>
 		<!-- 4.1- Summary:-->
-		<tr style="background:#A3C586;text-align:left;height:40px">
+		<tr style="background:#A3C586;text-align:left;height:50px">
 			<th colspan="2">
-				<p style="letter-spacing:0.2em;color:#38472A;font-family:verdana;font-size:24px;line-height:0;text-indent:50px"><a name="summary">Project summary</a></p>
+				<p style="letter-spacing:0.2em;color:#38472A;font-family:verdana;font-size:24px;line-height:0%;text-indent:40px"><a name="summary">Project summary</a></p>
 			</th>
 		</tr>
 		<tr style="background:#FFFFFF">
@@ -113,9 +113,9 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 			</td>
 		</tr>
 		<!-- 4.2- Package:-->
-		<tr style="background:#A3C586;text-align:left;height:40px">
+		<tr style="background:#A3C586;text-align:left;height:50px">
 			<th colspan="2">
-				<p style="letter-spacing:0.2em;color:#38472A;font-family:verdana;font-size:24px;line-height:20%;text-indent:40px"><a name="description">Package description</a></p>
+				<p style="letter-spacing:0.2em;color:#38472A;font-family:verdana;font-size:24px;line-height:0%;text-indent:40px"><a name="description">Package description</a></p>
 			</th>
 		</tr>
     <tr>
@@ -158,9 +158,9 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 			</td>
 		</tr>
 		<!-- 4.3- Model:-->
-		<tr style="background:#A3C586;text-align:left;height:40px">
+		<tr style="background:#A3C586;text-align:left;height:50px">
 			<th colspan="2">
-				<p style="letter-spacing:0.2em;color:#38472A;font-family:verdana;font-size:24px;line-height:20%;text-indent:40px"><a name="model">Model description</a></p>
+				<p style="letter-spacing:0.2em;color:#38472A;font-family:verdana;font-size:24px;line-height:0%;text-indent:40px"><a name="model">Model description</a></p>
 			</th>
 		</tr>
     <tr>
