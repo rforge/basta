@@ -37,7 +37,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 				<img alt="BaSTA logo" border="0" height="100px" src="bastalogo.jpg?height=100px" style="margin:5px">
 			</td>
 			<td width="20px">&nbsp;</td>
-			<td width="930px" style="vertical-align:middle">
+			<td width="920px" style="vertical-align:middle">
 				<p style="white-space:nowrap;vertical-align:middle;font-family:verdana;margin-top:0px;margin-bottom:0px;font-size:38px;letter-spacing:0.25em;color:#FFCC33">BaSTA</p>
 				<p style="white-space:nowrap;vertical-align:middle;font-family:verdana;font-size:24px;color:#FCF1D1">Bayesian Survival Trajectory Analysis</p>
 			</td>
