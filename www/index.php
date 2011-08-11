@@ -80,7 +80,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 			<td width="400" valign="top">
 				<p style="font-family:verdana;font-size:32px;color:#84002E;letter-spacing:0.2em"><b>BaSTA</b></p>
 				<p style="font-family:verdana;font-size:16px;line-height:1.25"><b>Authors:</b><br><br>Fernando Colchero <a href="mailto:Colchero@demogr.mpg.de" rel="nofollow" style="color:#84002E">Colchero@demogr.mpg.de</a><br>Owen R. Jones <a href="mailto:Colchero@demogr.mpg.de" rel="nofollow" style="color:#84002E">Jones@demogr.mpg.de</a><br>Maren Rebke <a href="mailto:Colchero@demogr.mpg.de" rel="nofollow" style="color:#84002E">Rebke@demogr.mpg.de</a><br></p>
-				<p style="font-family:verdana;font-size:16px;line-height:1.25;text-align:justify"><br><b>Developed at:</b><br><br><a href="http://www.demogr.mpg.de" rel="nofollow" style="color:#84002E;font-family:verdana" target="_blank">Max Planck Institute for Demographic Research</a><br>(<i>Laboratory of Evolutionary Biodemography and Independent Research Group Modeling the Evolution of Aging</i>).</p>
+				<p style="font-family:verdana;font-size:16px;line-height:1.25;text-align:justify"><br><b>Developed at:</b><br><br><a href="http://www.demogr.mpg.de" rel="nofollow" style="color:#84002E;font-family:verdana" target="_blank">Max Planck Institute for Demographic Research</a><br>(<i>Max Planck Independent Research Group Modeling the Evolution of Aging and Laboratory of Evolutionary Biodemography</i>).</p>
 			</td>
 			<td width="200px">
 			</td>
