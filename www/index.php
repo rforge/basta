@@ -90,7 +90,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 	<tbody>
 		<!-- 4.1- Summary:-->
 		<tr style="background:#A3C586;text-align:left;padding:0;height:50px;text-indent:40px;line-height:0%">
-			<th colspan="2"><a style="letter-spacing:0.2em;color:#38472A;font-family:verdana;font-size:24px;text-indent:40px" name="summary">Project summary</a>
+			<th colspan="2"><a style="letter-spacing:0.2em;color:#38472A;font-family:verdana;font-size:24px;text-indent:40px;text-decoration:none" name="summary">Project summary</a>
 			</th>
 		</tr>
 		<tr style="background:#FFFFFF">
@@ -109,7 +109,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 		</tr>
 		<!-- 4.2- Package:-->
 		<tr style="background:#A3C586;text-align:left;padding:0;height:50px;text-indent:40px;line-height:0%">
-			<th colspan="2"><a style="letter-spacing:0.2em;color:#38472A;font-family:verdana;font-size:24px;text-indent:40px" name="description">Package description</a>
+			<th colspan="2"><a style="letter-spacing:0.2em;color:#38472A;font-family:verdana;font-size:24px;text-indent:40px;text-decoration:none" name="description">Package description</a>
 			</th>
 		</tr>
     <tr>
@@ -153,7 +153,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 		</tr>
 		<!-- 4.3- Model:-->
 		<tr style="background:#A3C586;text-align:left;padding:0;height:50px;text-indent:40px;line-height:0%">
-			<th colspan="2"><a style="letter-spacing:0.2em;color:#38472A;font-family:verdana;font-size:24px;text-indent:40px" name="model">Model description</a>
+			<th colspan="2"><a style="letter-spacing:0.2em;color:#38472A;font-family:verdana;font-size:24px;text-indent:40px;text-decoration:none" name="model">Model description</a>
 			</th>
 		</tr>
     <tr>
@@ -173,7 +173,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 		</tr>
 		<!-- 4.4- References:-->
 		<tr style="background:#A3C586;text-align:left;padding:0;height:50px;text-indent:40px;line-height:0%">
-			<th colspan="2"><a style="letter-spacing:0.2em;color:#38472A;font-family:verdana;font-size:24px;text-indent:40px" name="refs">References</a>
+			<th colspan="2"><a style="letter-spacing:0.2em;color:#38472A;font-family:verdana;font-size:24px;text-indent:40px;text-decoration:none" name="refs">References</a>
 			</th>
 		</tr>
 		<tr>
