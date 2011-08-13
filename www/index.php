@@ -94,7 +94,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 
 <!-- 4.- SECTIONS:-->
   
-<table  valign="middle" width="1050px" style="table-layout:fixed;background:#FFFFFF">
+<table  valign="middle" width="1050px" style="table-layout:fixed;background:#DBDBDB">
 	<tbody>
 		<!-- 4.1- Summary:-->
 		<tr style="background:#A3C586;text-align:left;padding:0;height:50px;text-indent:40px;line-height:0%">
@@ -104,15 +104,11 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 		<tr style="background:#FFFFFF">
 			<td style="vertical-align:middle;padding:40px" width="420px">
 				<p style="text-align:justify;font-family:verdana;line-height:1.75;font-size:18px"><b>BaSTA</b> is an R package (R Development Core Team 2011) that allows drawing inference on age-specific survival and mortality patterns from capture-recapture/recovery data when a large number of individuals (or all) have missing age information (Colchero, Jones and Rebke <i>in prep</i>). <b>BaSTA</b> is based on a model developed by Colchero and Clark (<i>in press</i>), which extends inference from parameter estimates to the estimation of unknown (i.e. latent) times of birth and death. The package also allows testing the effect of categorical and continuous individual covariates on mortality and survival (for an example see Fig. 1). Although the package is still on a development phase, we will be able to launch it in a few weeks.</p>
+				<p style="vertical-align:left;font-size:12px;text-indent:40px"><br><a href="#top" style="font-size:12px;color:#84002E;font-family:verdana">Back to top</a></p>
 			</td>
 			<td style="vertical-align:top;padding:40px" width="420px">
 				<p><img width="400px" align="middle" src="kestrelGO.png?width=400px"><br><br></p>
 				<p align="center" style="font-size:12px;text-align:center;font-family:verdana">Fig. 1. <b>BaSTA</b> model output for sex differences in Kestrel mortality<br>using a Gompertz survival model (Rebke <i>et al. in prep</i>). The left<br>panel shows posterior distributions for the two survival parameters<br>while the right panel shows the resulting survival probabilities and the <br>mortality rates for males and females.</p>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<p style="vertical-align:left;font-size:12px;text-indent:40px"><a href="#top" style="font-size:12px;color:#84002E;font-family:verdana">Back to top</a></p>
 			</td>
 		</tr>
 		<!-- 4.2- Package:-->
@@ -120,7 +116,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 			<th colspan="2"><a style="letter-spacing:0.2em;color:#38472A;font-family:verdana;font-size:24px;text-indent:40px" name="description">Package description</a>
 			</th>
 		</tr>
-    <tr>
+    <tr style="background:#FFFFFF">
       <td style="vertical-align:middle;padding:40px" width="420px">
 	<p style="text-align:justify;font-family:verdana;line-height:1.75;font-size:18px"><b>BaSTA</b> requires conventional data input (equivalent to other common capture-recapture softwares) and minimum user input (Fig. 2). The data required consist of a single table, in data frame format (see <a href="http://cran.r-project.org/doc/manuals/R-intro.html#Lists-and-data-frames"  rel="nofollow" style="color:#84002E;text-decoration:none">Introduction to R</a> on how to build data frames), where each row corresponds to an individual history and where the first two columns include the times of birth and death respectively, followed by the traditional capture history matrix, with one column for each year of the study and that assigns 1 when individuals were detected and 0 otherwise. The last columns are optional, and should include covariates such as sex, location id, birth weight, etc.<br><br>The current version includes:</p>
 			<ul style="font-family:verdana;text-align:justify;line-height:1.75;font-size:18px">
@@ -134,6 +130,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 				<li>Runs multiple simulations either in parallel (using package snowfall; Knaus 2010) or in series.</li>
 			</ul>
 		</p>
+		<p style="vertical-align:left;font-size:12px;text-indent:40px"><br><a href="#top" style="font-size:12px;color:#84002E;font-family:verdana">Back to top</a></p>
 		</td>
 		<td style="vertical-align:top;padding:40px" width="420px">
 		    <p align="center"  style="font-size:10"><img width="420px" align="middle" src="BastaGeneralChart.jpg?width=420px">
@@ -154,19 +151,15 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 		</p>
 	  </td>
     </tr>
-		<tr>
-			<td>
-				<p style="vertical-align:left;font-size:12px;text-indent:40px"><a href="#top" style="font-size:12px;color:#84002E;font-family:verdana">Back to top</a></p>
-			</td>
-		</tr>
 		<!-- 4.3- Model:-->
 		<tr style="background:#A3C586;text-align:left;padding:0;height:50px;text-indent:40px;line-height:0%">
 			<th colspan="2"><a style="letter-spacing:0.2em;color:#38472A;font-family:verdana;font-size:24px;text-indent:40px" name="model">Model description</a>
 			</th>
 		</tr>
-    <tr>
+    <tr style="background:#FFFFFF">
 		<td style="vertical-align:middle;padding:40px" width="420px">
 		<p style="text-align:justify;font-family:verdana;line-height:1.75;font-size:18px">The core of the model is a Monte Carlo Markov Chain (MCMC) algorithm that combines Metropolis sampling for survival parameters and latent states (i.e. unknown times of birth and death) and direct sampling for recapture probabilities (Clark 2007, Colchero and Clark <i>in press</i>). The main function performs several diagnostics on the user's inputs such as checking that the data is consistent with the model's requirements, verifies that the number of iterations, the burnin sequence and the thinning gap are consistent and finally verifies that the initial parameters and jumps provided by the user allow the model to run properly (Fig. 3). After running these diagnostics, the function can run multiple MCMC simulations. In case convergence is not acheived or some or all simulations failed, neither convergence nor model selection diagnostics are calculated.</p>
+		<p style="vertical-align:left;font-size:12px;text-indent:40px"><br><a href="#top" style="font-size:12px;color:#84002E;font-family:verdana">Back to top</a></p>
 	  </td>
 		<td style="vertical-align:top;padding:40px" width="420px">
 	      <p align="center" style="font-size:10"><img width="420px" align="middle" border="0" src="bastaChart.jpg?width=420px"><br>
@@ -174,17 +167,12 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 	      <p align="center" style="font-size:12px;font-family:verdana">Fig. 3. <b>BaSTA</b> model chart.</p>
 	  </td>
     </tr>
-		<tr>
-			<td>
-				<p style="vertical-align:left;font-size:12px;text-indent:40px"><a href="#top" style="font-size:12px;color:#84002E;font-family:verdana">Back to top</a></p>
-			</td>
-		</tr>
 		<!-- 4.4- References:-->
 		<tr style="background:#A3C586;text-align:left;padding:0;height:50px;text-indent:40px;line-height:0%">
 			<th colspan="2"><a style="letter-spacing:0.2em;color:#38472A;font-family:verdana;font-size:24px;text-indent:40px" name="refs">References</a>
 			</th>
 		</tr>
-		<tr>
+		<tr style="background:#FFFFFF">
 			<td style="vertical-align:middle;padding:40px" width="420px">
 				<p style="font-family:verdana;text-align:justify;margin-left:.5in;text-indent:-.5in;line-height:1.75;font-size:16px">
 				Clark, J.S. (2007) <b>Models for ecological data</b>. Princeton University Press, Princeton, New Jersey, USA.<br><br></p>
@@ -192,6 +180,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 				<p style="font-family:verdana;text-align:justify;margin-left:.5in;text-indent:-.5in;line-height:1.75;font-size:16px">Colchero, F., O.R. Jones and M. Rebke (<i>In progress</i>) <b>BaSTA: an R package to estimate survival and mortality from incomplete mark-recapture data with covariates.</b><br><br></p>
 				<p style="font-family:verdana;text-align:justify;margin-left:.5in;text-indent:-.5in;line-height:1.75;font-size:16px">Gimenez, O., Bonner, S., King, R., Parker, R.A., Brooks, S.P., Jamieson, L.E., Grosbois, V., Morgan, B.J.T., Thomas, L. (2009) <b>WinBUGS for population ecologists: Bayesian modeling using Markov Chain Monte Carlo methods</b>. <u>In</u><i> Modeling Demographic Processes in Marked Populations. Ecological and Environmental Statistics Series, vol 3</i> (eds D.L. Thomson, E.G. Cooch &amp; M.J. Conroy), pp. 883-915. Springer, Berlin, Germany.<br><br></p>
 				<p style="font-family:verdana;text-align:justify;margin-left:.5in;text-indent:-.5in;line-height:1.75;font-size:16px">Gompertz, B. (1825) <b>On the nature of the function expressive of the law of human mortality, and on a new mode of determining the value of life contingencies</b>. <i>Philosophical Transactions of the Royal Society of London</i>, 115, 513-583.<br></p>
+				<p style="vertical-align:left;font-size:12px;text-indent:40px"><br><a href="#top" style="font-size:12px;color:#84002E;font-family:verdana">Back to top</a></p>
 			</td>
 			<td style="vertical-align:top;padding:40px" width="420px">
 				<p style="font-family:verdana;text-align:justify;margin-left:.5in;text-indent:-.5in;line-height:1.75;font-size:16px">King, R. and Brooks, S.P. (2002) <b>Bayesian model discrimination for multiple strata capture-recapture data</b>. <i>Biometrika</i>, 89, 785-806.<br><br></p>
@@ -200,11 +189,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 				<p style="font-family:verdana;text-align:justify;margin-left:.5in;text-indent:-.5in;line-height:1.75;font-size:16px">Pletcher, S. (1999) <b>Model fitting and hypothesis testing for age-specific mortality data</b>. <i>Journal of Evolutionary Biology</i>, 12, 430-439.<br><br></p>
 				<p style="font-family:verdana;text-align:justify;margin-left:.5in;text-indent:-.5in;line-height:1.75;font-size:16px">R Development Core Team (2011). <b>R: A language and environment for statistical computing</b>. R Foundation for Statistical Computing, Vienna, Austria. ISBN 3-900051-07-0, URL <a href="http://CRAN.R-project.org/" rel="nofollow" style="color:#84002E" target="_blank">http://CRAN.R-project.org/</a>.<br><br></p>
 				<p style="font-family:verdana;text-align:justify;margin-left:.5in;text-indent:-.5in;line-height:1.75;font-size:16px">Siler, W. (1979) <b>A competing-risk model for animal mortality</b>. <i>Ecology</i>, 60, 750-757.<br></p>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<p style="vertical-align:left;font-size:12px;text-indent:40px"><a href="#top" style="font-size:12px;color:#84002E;font-family:verdana">Back to top</a></p>
+				
 			</td>
 		</tr>
 	</tbody>
