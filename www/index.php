@@ -21,12 +21,12 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 	<link href="http://r-forge.r-project.org/themes/rforge/styles/estilo1.css" rel="stylesheet" type="text/css" /> 
   </head>
 
-<body style="background:#787878">
-<div dir="ltr"><a name="top">&nbsp;</a>
+<body style="background:#E1E1E1">
 
 <!-- get project title  -->
 <!-- own website starts here, the following may be changed as you like -->
 
+<a name="top"></a>
 
 <!-- 1.- HEADER:-->
 <table style="background-color:#47697E" width="1050"  style="table-layout:fixed">
@@ -86,7 +86,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 
 <!-- 4.- SECTIONS:-->
   
-<table  valign="middle" width="1050px" style="table-layout:fixed;background:#FFFFFF">
+<table  style="table-layout:fixed;background:#FFFFFF;width:1050px;vertical-align:middle;border-color:#E1E1E1;border-width:5px">
 	<tbody>
 		<!-- 4.1- Summary:-->
 		<tr style="background:#A3C586;text-align:left;padding:0;height:50px">
