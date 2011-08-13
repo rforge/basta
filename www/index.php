@@ -47,16 +47,16 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
  
 
 <!-- 2.- LINKS:-->
-<table width="1050px" style="table-layout:fixed">
+<table width="1050px" style="table-layout:fixed;vertical-align:middle" cellspacing="5px">
 	<tbody>
-		<tr valign="middle">
-			<td style="text-align:center;vertical-align:middle;padding:0px;height:30px;background-color:#A3C586;width:200px"><a href="#summary" style="color:#38472A;text-decoration:none;font-size:20px;font-family:verdana">SUMMARY</a>
+		<tr>
+			<td style="text-align:center;vertical-align:middle;padding:0px;height:30px;background-color:#A3C586"><a href="#summary" style="color:#38472A;text-decoration:none;font-size:20px;font-family:verdana">SUMMARY</a>
 			</td>
-			<td style="text-align:center;vertical-align:middle;padding:0px;height:30px;background-color:#A3C586;width:200px"><a href="#description" style="color:#38472A;text-decoration:none;font-size:20px;font-family:verdana">PACKAGE</a>
+			<td style="text-align:center;vertical-align:middle;padding:0px;height:30px;background-color:#A3C586"><a href="#description" style="color:#38472A;text-decoration:none;font-size:20px;font-family:verdana">PACKAGE</a>
 			</td>
-			<td style="text-align:center;vertical-align:middle;padding:0px;height:30px;background-color:#A3C586;width:200px"><a href="#model" style="color:#38472A;text-decoration:none;font-size:20px;font-family:verdana">MODEL</a>
+			<td style="text-align:center;vertical-align:middle;padding:0px;height:30px;background-color:#A3C586"><a href="#model" style="color:#38472A;text-decoration:none;font-size:20px;font-family:verdana">MODEL</a>
 			</td>
-			<td style="text-align:center;vertical-align:middle;padding:0px;height:30px;background-color:#A3C586;width:200px"><a href="#refs" style="color:#38472A;text-decoration:none;font-size:20px;font-family:verdana">REFERENCES</a>
+			<td style="text-align:center;vertical-align:middle;padding:0px;height:30px;background-color:#A3C586"><a href="#refs" style="color:#38472A;text-decoration:none;font-size:20px;font-family:verdana">REFERENCES</a>
 			</td>
 		</tr>
 	</tbody>
@@ -90,7 +90,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 	<tbody>
 		<!-- 4.1- Summary:-->
 		<tr style="background:#A3C586;text-align:left;padding:0;height:50px;text-indent:40px;line-height:0%">
-			<th colspan="2"><a style="letter-spacing:0.2em;color:#38472A;font-family:verdana;font-size:24px;text-indent:40px;text-decoration:none" name="summary">Project summary</a>
+			<th colspan="2"><a style="letter-spacing:0.2em;color:#38472A;font-family:verdana;font-size:24px;text-indent:40px" name="summary">Project summary</a>
 			</th>
 		</tr>
 		<tr style="background:#FFFFFF">
@@ -109,7 +109,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 		</tr>
 		<!-- 4.2- Package:-->
 		<tr style="background:#A3C586;text-align:left;padding:0;height:50px;text-indent:40px;line-height:0%">
-			<th colspan="2"><a style="letter-spacing:0.2em;color:#38472A;font-family:verdana;font-size:24px;text-indent:40px;text-decoration:none" name="description">Package description</a>
+			<th colspan="2"><a style="letter-spacing:0.2em;color:#38472A;font-family:verdana;font-size:24px;text-indent:40px" name="description">Package description</a>
 			</th>
 		</tr>
     <tr>
@@ -153,7 +153,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 		</tr>
 		<!-- 4.3- Model:-->
 		<tr style="background:#A3C586;text-align:left;padding:0;height:50px;text-indent:40px;line-height:0%">
-			<th colspan="2"><a style="letter-spacing:0.2em;color:#38472A;font-family:verdana;font-size:24px;text-indent:40px;text-decoration:none" name="model">Model description</a>
+			<th colspan="2"><a style="letter-spacing:0.2em;color:#38472A;font-family:verdana;font-size:24px;text-indent:40px" name="model">Model description</a>
 			</th>
 		</tr>
     <tr>
@@ -173,7 +173,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 		</tr>
 		<!-- 4.4- References:-->
 		<tr style="background:#A3C586;text-align:left;padding:0;height:50px;text-indent:40px;line-height:0%">
-			<th colspan="2"><a style="letter-spacing:0.2em;color:#38472A;font-family:verdana;font-size:24px;text-indent:40px;text-decoration:none" name="refs">References</a>
+			<th colspan="2"><a style="letter-spacing:0.2em;color:#38472A;font-family:verdana;font-size:24px;text-indent:40px" name="refs">References</a>
 			</th>
 		</tr>
 		<tr>
