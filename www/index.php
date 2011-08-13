@@ -27,6 +27,14 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 <!-- get project title  -->
 <!-- own website starts here, the following may be changed as you like -->
 
+        <table style="vertical-align:middle;background:#DBDBDB" width="100%" height="100%">
+            <tbody>
+                <tr align="center">
+                    <td>
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td>
 <a name="top"></a>
 <!-- 1.- HEADER:-->
 <table style="background-color:#47697E" width="1050"  style="table-layout:fixed">
@@ -202,7 +210,14 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 	</tbody>
 </table>
 <p><br><br></p>
-
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
 
 
 </body>
