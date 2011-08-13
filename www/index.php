@@ -42,7 +42,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 		<tr>
 			<td width="10px">&nbsp;</td>
 			<td valign="middle" width="100px">
-				<img alt="BaSTA logo" border="0" height="100px" src="bastalogo.jpg?height=100px">
+				<img alt="BaSTA logo" border="0" width="100px" src="bastalogo.jpg?width=100px">
 			</td>
 			<td width="20px">&nbsp;</td>
 			<td width="920px" style="vertical-align:middle">
