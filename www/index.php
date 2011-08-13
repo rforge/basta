@@ -21,13 +21,13 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 	<link href="http://r-forge.r-project.org/themes/rforge/styles/estilo1.css" rel="stylesheet" type="text/css" /> 
   </head>
 
-<body style="background:#E1E1E1">
+<body style="background:#DBDBDB">
+
 
 <!-- get project title  -->
 <!-- own website starts here, the following may be changed as you like -->
 
 <a name="top"></a>
-
 <!-- 1.- HEADER:-->
 <table style="background-color:#47697E" width="1050"  style="table-layout:fixed">
 	<tbody>
@@ -86,12 +86,11 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 
 <!-- 4.- SECTIONS:-->
   
-<table  style="table-layout:fixed;background:#FFFFFF;width:1050px;vertical-align:middle;border-color:#E1E1E1;border-width:5px">
+<table  valign="middle" width="1050px" style="table-layout:fixed;background:#FFFFFF">
 	<tbody>
 		<!-- 4.1- Summary:-->
-		<tr style="background:#A3C586;text-align:left;padding:0;height:50px">
-			<th colspan="2">
-				<p style="letter-spacing:0.2em;color:#38472A;font-family:verdana;font-size:24px;line-height:0%;text-indent:40px"><a name="summary">Project summary</a></p>
+		<tr style="background:#A3C586;text-align:left;padding:0;height:50px;text-indent:40px;line-height:0%">
+			<th colspan="2"><a style="letter-spacing:0.2em;color:#38472A;font-family:verdana;font-size:24px;text-indent:40px" name="summary">Project summary</a>
 			</th>
 		</tr>
 		<tr style="background:#FFFFFF">
@@ -109,9 +108,8 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 			</td>
 		</tr>
 		<!-- 4.2- Package:-->
-		<tr style="background:#A3C586;text-align:left;padding:0;height:50px">
-			<th colspan="2">
-				<p style="letter-spacing:0.2em;color:#38472A;font-family:verdana;font-size:24px;line-height:0%;text-indent:40px"><a name="description">Package description</a></p>
+		<tr style="background:#A3C586;text-align:left;padding:0;height:50px;text-indent:40px;line-height:0%">
+			<th colspan="2"><a style="letter-spacing:0.2em;color:#38472A;font-family:verdana;font-size:24px;text-indent:40px" name="description">Package description</a>
 			</th>
 		</tr>
     <tr>
@@ -154,9 +152,8 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 			</td>
 		</tr>
 		<!-- 4.3- Model:-->
-		<tr style="background:#A3C586;text-align:left;padding:0;height:50px">
-			<th colspan="2">
-				<p style="letter-spacing:0.2em;color:#38472A;font-family:verdana;font-size:24px;line-height:0%;text-indent:40px"><a name="model">Model description</a></p>
+		<tr style="background:#A3C586;text-align:left;padding:0;height:50px;text-indent:40px;line-height:0%">
+			<th colspan="2"><a style="letter-spacing:0.2em;color:#38472A;font-family:verdana;font-size:24px;text-indent:40px" name="model">Model description</a>
 			</th>
 		</tr>
     <tr>
@@ -175,9 +172,8 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 			</td>
 		</tr>
 		<!-- 4.4- References:-->
-		<tr style="background:#A3C586;text-align:left;padding:0;height:50px">
-			<th colspan="2">
-				<p style="letter-spacing:0.2em;color:#38472A;font-family:verdana;font-size:24px;line-height:0%;text-indent:40px"><a name="refs">References</a></p>
+		<tr style="background:#A3C586;text-align:left;padding:0;height:50px;text-indent:40px;line-height:0%">
+			<th colspan="2"><a style="letter-spacing:0.2em;color:#38472A;font-family:verdana;font-size:24px;text-indent:40px" name="refs">References</a>
 			</th>
 		</tr>
 		<tr>
