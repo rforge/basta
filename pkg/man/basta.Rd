@@ -110,7 +110,7 @@ King, R. & Brooks, S.P. (2002) Bayesian model discrimination for multiple strata
 Spiegelhalter, D.J., Best, N.G., Carlin, B.P., Van Der Linde, A. (2002) Bayesian measures of model complexity and fit. Journal of the Royal Statistical Society: Series B 64, 583-639.
 }
 \author{
-Fernando Colchero \email{colchero@demogr.mpg.de}
+Fernando Colchero \email{colchero@demogr.mpg.de}, Owen R. Jones \email{jones@mpg.demogr.de} and Maren Rebke \email{rebke@mpg.demogr.de}
 }
 
 \seealso{
