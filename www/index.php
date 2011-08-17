@@ -85,7 +85,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 		  </td>
 		  <td class="main">
 		    <p><img width="400px" align="middle" src="kestrelGO.png?width=400px"><br><br></p>
-		    <p align="center" style="font-size:12px;text-align:center;font-family:verdana">Fig. 1. <b>BaSTA</b> model output for sex differences in Kestrel mortality<br>using a Gompertz survival model (Rebke <i>et al. in prep</i>). The left<br>panel shows posterior distributions for the two survival parameters<br>while the right panel shows the resulting survival probabilities and the <br>mortality rates for males and females.</p>
+		    <p class="caption">Fig. 1. <b>BaSTA</b> model output for sex differences in Kestrel mortality using a Gompertz survival model (Rebke <i>et al. in prep</i>). The left panel shows posterior distributions for the two survival parameters while the right panel shows the resulting survival probabilities and the mortality rates for males and females.</p>
 		  </td>
 		</tr>
 	      </tbody>
