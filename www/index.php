@@ -76,12 +76,12 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 	    <table  valign="middle" width="1050px" style="table-layout:fixed;background:#DBDBDB">
 	      <tbody>
 		<tr class="title">
-		  <th colspan="2" style="padding:0"><p class="section">Project summary</p></th>
+		  <th colspan="2"><p class="section">Project summary</p></th>
 		</tr>
 		<tr style="background:#FFFFFF">
 		  <td class="main">
 		    <p class="parag"><b>BaSTA</b> is an R package (R Development Core Team 2011) that allows drawing inference on age-specific survival and mortality patterns from capture-recapture/recovery data when a large number of individuals (or all) have missing age information (Colchero, Jones and Rebke <i>in prep</i>). <b>BaSTA</b> is based on a model developed by Colchero and Clark (<i>in press</i>), which extends inference from parameter estimates to the estimation of unknown (i.e. latent) times of birth and death. The package also allows testing the effect of categorical and continuous individual covariates on mortality and survival (for an example see Fig. 1). Although the package is still on a development phase, we will be able to launch it in a few weeks.<br></p>
-		    <p style="vertical-align:left;font-size:12px;text-indent:40px"><br><a href="#top" style="font-size:12px;color:#84002E;font-family:verdana">Back to top</a></p>
+		    <a href="#top" class="totop">Back to top</a>
 		  </td>
 		  <td class="main">
 		    <p><img width="400px" align="middle" src="kestrelGO.png?width=400px"><br><br></p>
@@ -95,7 +95,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 	    <table  valign="middle" width="1050px" style="table-layout:fixed;background:#DBDBDB">
 	      <tbody>
 		<tr class="title">
-		  <th colspan="2" style="padding:0"><p class="section">Package description</p></th>
+		  <th colspan="2"><p class="section">Package description</p></th>
 		</tr>
 		<tr style="background:#FFFFFF">
 		  <td class="main">
@@ -111,7 +111,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 		      <li>Runs multiple simulations either in parallel (using package snowfall; Knaus 2010) or in series.</li>
 		    </ul>
 		    <br></p>
-		    <p style="vertical-align:left;font-size:12px;text-indent:40px"><br><a href="#top" style="font-size:12px;color:#84002E;font-family:verdana">Back to top</a></p>
+		    <a href="#top" class="totop">Back to top</a>
 		  </td>
 		  <td style="vertical-align:top;padding:40px" width="420px">
 		    <img width="420px" align="middle" src="BastaGeneralChart.jpg?width=420px">
@@ -137,12 +137,12 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 	    <table  valign="middle" width="1050px" style="table-layout:fixed;background:#DBDBDB">
 	      <tbody>
 		<tr class="title">
-		  <th colspan="2" style="padding:0"><p class="section">Model description</p></th>
+		  <th colspan="2"><p class="section">Model description</p></th>
 		</tr>
 		<tr style="background:#FFFFFF">
 		  <td class="main">
 		    <p class="parag">The core of the model is a Monte Carlo Markov Chain (MCMC) algorithm that combines Metropolis sampling for survival parameters and latent states (i.e. unknown times of birth and death) and direct sampling for recapture probabilities (Clark 2007, Colchero and Clark <i>in press</i>). The main function performs several diagnostics on the user's inputs such as checking that the data is consistent with the model's requirements, verifies that the number of iterations, the burnin sequence and the thinning gap are consistent and finally verifies that the initial parameters and jumps provided by the user allow the model to run properly (Fig. 3). After running these diagnostics, the function can run multiple MCMC simulations. In case convergence is not acheived or some or all simulations failed, neither convergence nor model selection diagnostics are calculated.<br></p>
-		    <p style="vertical-align:left;font-size:12px;text-indent:40px"><br><a href="#top" style="font-size:12px;color:#84002E;font-family:verdana">Back to top</a></p>
+		    <a href="#top" class="totop">Back to top</a>
 		  </td>
 		  <td style="vertical-align:top;padding:40px" width="420px">
 		    <img width="420px" align="middle" border="0" src="bastaChart.jpg?width=420px">
@@ -156,7 +156,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 	    <table  valign="middle" width="1050px" style="table-layout:fixed;background:#DBDBDB">
 	      <tbody>
 		<tr class="title">
-		  <th colspan="2" style="padding:0"><p class="section">References</p></th>
+		  <th colspan="2"><p class="section">References</p></th>
 		</tr>
 		<tr style="background:#FFFFFF">
 		  <td style="vertical-align:middle;padding:40px" width="420px">
@@ -165,7 +165,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 		    <p class="Refs">Colchero, F., O.R. Jones and M. Rebke (<i>In progress</i>) <b>BaSTA: an R package to estimate survival and mortality from incomplete mark-recapture data with covariates.</b><br><br></p>
 		    <p class="Refs">Gimenez, O., Bonner, S., King, R., Parker, R.A., Brooks, S.P., Jamieson, L.E., Grosbois, V., Morgan, B.J.T., Thomas, L. (2009) <b>WinBUGS for population ecologists: Bayesian modeling using Markov Chain Monte Carlo methods</b>. <u>In</u><i> Modeling Demographic Processes in Marked Populations. Ecological and Environmental Statistics Series, vol 3</i> (eds D.L. Thomson, E.G. Cooch &amp; M.J. Conroy), pp. 883-915. Springer, Berlin, Germany.<br><br></p>
 		    <p class="Refs">Gompertz, B. (1825) <b>On the nature of the function expressive of the law of human mortality, and on a new mode of determining the value of life contingencies</b>. <i>Philosophical Transactions of the Royal Society of London</i>, 115, 513-583.<br></p>
-		    <p style="vertical-align:left;font-size:12px;text-indent:40px"><br><a href="#top" style="font-size:12px;color:#84002E;font-family:verdana">Back to top</a></p>
+		    <a href="#top" class="totop">Back to top</a>
 		  </td>
 		  <td style="vertical-align:top;padding:40px" width="420px">
 		    <p class="Refs">King, R. and Brooks, S.P. (2002) <b>Bayesian model discrimination for multiple strata capture-recapture data</b>. <i>Biometrika</i>, 89, 785-806.<br><br></p>
