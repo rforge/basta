@@ -6,14 +6,14 @@ p.parag{text-align:justify;font-family:verdana;line-height:1.75em;font-size:18px
 p.Refs{text-align:justify;margin-left:.5in;text-indent:-.5in;line-height:1.75;font-size:16px;}
 p.top{color:#84002E;vertical-align:left;font-size:12px;text-indent:40px;}
 p.caption{font-size:12px;text-align:center;}
-p.section{font-size:24px;color:#38472A;text-align:left;letter-spacing:0.2em;text-indent:40px;line-height:0px;}
+p.section{font-size:24px;color:#38472A;text-align:left;letter-spacing:0.2em;text-indent:40px;line-height:0px;font-stile:normal;}
 
 td.button{text-align:center;vertical-align:middle;padding:0px;height:30px;background-color:#A3C586;}
 td.main{vertical-align:middle;padding:40px;width:420px;}
-tr.title{background:#A3C586;text-align:left;padding:0;height:50px;text-indent:40px;line-height:0%;}
+tr.title{background:#A3C586;text-align:left;vertical-align:middle;padding:0;height:50px;text-indent:40px;line-height:0%;text-height:text-size;}
 
 ul{text-align:justify;line-height:1.75;font-size:18px;}
-
+a {target-name:current;}
 a.button:link{color:#38472A;font-size:20px;text-decoration:none;}
 a.button:visited{color:#38472A;font-size:20px;text-decoration:none;}
 a.button:hover{color:#38472A;font-size:20px;text-decoration:none;}
@@ -24,7 +24,7 @@ a.intext:visited{color:#84002E;text-decoration:none;}
 a.intext:hover{color:#84002E;text-decoration:none;}
 a.intext:active{color:#84002E;text-decoration:none;}
 
-a.topop:link{color:#84002E;font-size:12px;text-decoration:none;}
-a.topop:visited{color:#84002E;font-size:12px;text-decoration:none;}
-a.topop:hover{color:#84002E;font-size:12px;text-decoration:none;}
+a.totop:link{color:#84002E;font-size:12px;text-decoration:none;}
+a.totop:visited{color:#84002E;font-size:12px;text-decoration:none;}
+a.totop:hover{color:#84002E;font-size:12px;text-decoration:none;}
 a.totop:active{color:#84002E;font-size:12px;text-decoration:none;}
