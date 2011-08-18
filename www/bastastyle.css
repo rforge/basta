@@ -11,7 +11,7 @@ p.section{font-size:26px;color:#38472A;text-align:left;letter-spacing:0.2em;text
 td.button{text-align:center;vertical-align:middle;padding:0px;height:30px;background-color:#A3C586;}
 td.main{vertical-align:middle;padding:40px;width:420px;}
 tr.title{background:#A3C586;text-align:left;vertical-align:middle;padding:0;height:50px;text-indent:40px;line-height:0%;text-height:text-size;}
-td.section{font-size:26px;color:#38472A;text-align:left;letter-spacing:0.2em;text-indent:40px;line-height:0px;font-style:normal;vertical-align:middle;padding:40px;width:420px;padding-bottom:0px;padding-top:0px;}
+td.section{font-size:26px;color:#38472A;text-align:left;letter-spacing:0.2em;text-indent:40px;line-height:0px;font-style:normal;vertical-align:middle;padding-bottom:0px;padding-top:0px;}
 
 ul{text-align:justify;line-height:1.75;font-size:18px;}
 a {target-name:current;}
