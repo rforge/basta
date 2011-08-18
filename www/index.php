@@ -75,7 +75,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
             <a name="summary"></a>
             <table  valign="middle" width="1050px" style="table-layout:fixed;background:#DBDBDB">
               <tbody>
-                <tr class="title"><td colspan="2"><p class="section">Project summary</p></td></tr>
+                <tr class="title"><td colspan="2" class="section">Project summary</td></tr>
                 <tr style="background:#FFFFFF">
                   <td class="main">
                     <p class="parag"><b>BaSTA</b> is an R package (R Development Core Team 2011) that allows drawing inference on age-specific survival and mortality patterns from capture-recapture/recovery data when a large number of individuals (or all) have missing age information (Colchero, Jones and Rebke <i>in prep</i>). <b>BaSTA</b> is based on a model developed by Colchero and Clark (<i>in press</i>), which extends inference from parameter estimates to the estimation of unknown (i.e. latent) times of birth and death. The package also allows testing the effect of categorical and continuous individual covariates on mortality and survival (for an example see Fig. 1). Although the package is still on a development phase, we will be able to launch it in a few weeks.<br></p>
@@ -92,7 +92,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
             <a name="description"></a>
             <table  valign="middle" width="1050px" style="table-layout:fixed;background:#DBDBDB">
               <tbody>
-                <tr class="title"><td colspan="2"><p class="section">Package description</p></td></tr>
+                <tr class="title"><td colspan="2" class="section">Package description</td></tr>
                 <tr style="background:#FFFFFF">
                   <td class="main">
                     <p class="parag"><b>BaSTA</b> requires conventional data input (equivalent to other common capture-recapture softwares) and minimum user input (Fig. 2). The data required consist of a single table, in data frame format (see <a href="http://cran.r-project.org/doc/manuals/R-intro.html#Lists-and-data-frames"  rel="nofollow" class="intext">Introduction to R</a> on how to build data frames), where each row corresponds to an individual history. This table consist of a first column with individual id's, the next two columns for the times of birth and death, respectively, followed by the traditional capture history matrix. This capture history includes one column for each year of the study and assigns 1 when individuals are detected and 0 otherwise. The last columns are optional, and should include covariates such as sex, location id, birth weight, etc.<br><br>The current version includes:</p>
@@ -132,7 +132,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
             <a name="model"></a>
             <table  valign="middle" width="1050px" style="table-layout:fixed;background:#DBDBDB">
               <tbody>
-                <tr class="title"><td colspan="2"><p class="section">Model description</p></td></tr>
+                <tr class="title"><td colspan="2" class="section">Model description</td></tr>
                 <tr style="background:#FFFFFF">
                   <td class="main">
                     <p class="parag">The core of the model is a Monte Carlo Markov Chain (MCMC) algorithm that combines Metropolis sampling for survival parameters and latent states (i.e. unknown times of birth and death) and direct sampling for recapture probabilities (Clark 2007, Colchero and Clark <i>in press</i>). The main function performs several diagnostics on the user's inputs such as checking that the data is consistent with the model's requirements, verifies that the number of iterations, the burnin sequence and the thinning gap are consistent and finally verifies that the initial parameters and jumps provided by the user allow the model to run properly (Fig. 3). After running these diagnostics, the function can run multiple MCMC simulations. In case convergence is not acheived or some or all simulations failed, neither convergence nor model selection diagnostics are calculated.<br></p>
@@ -149,7 +149,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
             <a name="refs"></a>
             <table  valign="middle" width="1050px" style="table-layout:fixed;background:#DBDBDB">
               <tbody>
-                <tr class="title"><td colspan="2"><p class="section">References</p></td></tr>
+                <tr class="title"><td colspan="2" class="section">References</td></tr>
                 <tr style="background:#FFFFFF">
                   <td style="vertical-align:middle;padding:40px" width="420px">
                     <p class="Refs">Clark, J.S. (2007) <b>Models for ecological data</b>. Princeton University Press, Princeton, New Jersey, USA.<br><br></p>
