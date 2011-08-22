@@ -56,17 +56,17 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
             <table width="1045px" style="table-layout:fixed;background:#FFFFFF" cellpadding="10">
               <tbody>
                 <tr>
-                  <td align="center" valign="top" width="250">
+                  <td align="center" valign="top" width="350">
                     <p><br></p>
-                    <img alt="Sooty tern banding" border="1" src="sootyBand.jpg">
-                    <p align="left"><br><br><br><br><br>&nbsp<a href="http://r-forge.r-project.org/"><img height="30px" src="Rforgelogo.png" border="0" alt="R-Forge Logo"></a></p>
+                    <img alt="Sooty tern banding" border="0" width="350px" src="BastaPhotos.jpg">
+                    <p align="left"><br>&nbsp<a href="http://r-forge.r-project.org/"><img height="30px" src="Rforgelogo.png" border="0" alt="R-Forge Logo"></a></p>
                   </td>
                   <td width="400" valign="top">
                     <h1><b>BaSTA</b></h1>
                     <p style="font-size:16px;line-height:1.25"><b>Authors:</b><br><br>Fernando Colchero <a href="mailto:Colchero@demogr.mpg.de" rel="nofollow" style="color:#84002E">Colchero@demogr.mpg.de</a><br>Owen R. Jones <a href="mailto:Colchero@demogr.mpg.de" rel="nofollow" style="color:#84002E">Jones@demogr.mpg.de</a><br>Maren Rebke <a href="mailto:Colchero@demogr.mpg.de" rel="nofollow" style="color:#84002E">Rebke@demogr.mpg.de</a><br></p>
                     <p style="font-size:16px;line-height:1.25;text-align:justify"><br><b>Developed at:</b><br><br><a href="http://www.demogr.mpg.de" rel="nofollow" style="color:#84002E;font-family:verdana" target="_blank">Max Planck Institute for Demographic Research</a><br>(<i>Max Planck Independent Research Group Modeling the Evolution of Aging and Laboratory of Evolutionary Biodemography</i>).</p>
                   </td>
-                  <td width="150px"></td>
+                  <td width="50px"></td>
                 </tr>
               </tbody>
             </table>
