@@ -27,7 +27,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
       <tbody>
         <tr align="center">
           <td>
-            <table style="vertical-align:middle;background:#787878" width="1055px">
+            <table style="vertical-align:middle;background:#1F1209" width="1055px">
               <tbody><tr align="center"><td>
             <!-- 1.- HEADER:-->
             <table style="background-color:#47697E" width="1050"  style="table-layout:fixed">
@@ -75,7 +75,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
             <!-- 4.- SECTIONS:-->
             <!-- 4.1- Summary:-->
             <a name="summary"></a>
-            <table  valign="middle" width="1050px" style="table-layout:fixed;background:#787878">
+            <table  valign="middle" width="1050px" style="table-layout:fixed;background:#1F1209">
               <tbody>
                 <tr class="title"><td colspan="2" class="section">Project summary</td></tr>
                 <tr style="background:#FFFFFF">
@@ -92,7 +92,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
             </table>
             <!-- 4.2- Package:-->
             <a name="description"></a>
-            <table  valign="middle" width="1050px" style="table-layout:fixed;background:#787878">
+            <table  valign="middle" width="1050px" style="table-layout:fixed;background:#1F1209">
               <tbody>
                 <tr class="title"><td colspan="2" class="section">Package description</td></tr>
                 <tr style="background:#FFFFFF">
@@ -132,7 +132,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
             </table>
             <!-- 4.3- Model:-->
             <a name="model"></a>
-            <table  valign="middle" width="1050px" style="table-layout:fixed;background:#787878">
+            <table  valign="middle" width="1050px" style="table-layout:fixed;background:#1F1209">
               <tbody>
                 <tr class="title"><td colspan="2" class="section">Model description</td></tr>
                 <tr style="background:#FFFFFF">
@@ -149,7 +149,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
             </table>
             <!-- 4.4- References:-->
             <a name="refs"></a>
-            <table  valign="middle" width="1050px" style="table-layout:fixed;background:#787878">
+            <table  valign="middle" width="1050px" style="table-layout:fixed;background:#1F1209">
               <tbody>
                 <tr class="title"><td colspan="2" class="section">References</td></tr>
                 <tr style="background:#FFFFFF">
