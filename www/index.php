@@ -21,12 +21,14 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
     <link rel="stylesheet" type="text/css" href="bastastyle.css" /> 
   </head>
 
-  <body style="background:#787878">
+  <body style="background:#CCCCCC">
     <a name="top"></a>
-    <table style="vertical-align:middle;background:#787878" width="100%" height="100%">
+    <table style="vertical-align:middle;background:#CCCCCC" width="100%" height="100%">
       <tbody>
         <tr align="center">
           <td>
+            <table style="vertical-align:middle;background:#787878" width="1055px">
+              <tbody><tr align="center"><td>
             <!-- 1.- HEADER:-->
             <table style="background-color:#47697E" width="1050"  style="table-layout:fixed">
               <tbody>
