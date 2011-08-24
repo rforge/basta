@@ -23,12 +23,13 @@ Further details of the autofix argument:
   \item{ok }{A logical indicator that indicates if the data are free of errors or not. i.e. TRUE = the data are ok.}
   \item{newData }{A corrected data frame.}
   \item{type0 }{A vector of row numbers in the original data frame where there are deaths before the observation window starts.}
-  \item{type1 }{A vector of row numbers in the original data frame where there are no birth/death AND no obervations.}
-  \item{type2 }{A vector of row numbers in the original data frame where there are births recorded after death.}
-  \item{type3 }{A vector of row numbers in the original data frame where there are observations after death.}
-  \item{type4 }{A vector of row numbers in the original data frame where there are observations before birth.}
-  \item{type5 }{A vector of row numbers in the original data frame where the year of birth is not a zero in the recapture matrix.}
-  \item{type5 }{A vector of row numbers in the original data frame where the year of death is not a zero in the recapture matrix.}
+  \item{type1 }{A vector of row numbers in the original data frame where there are deaths occurring before the study starts.}
+  \item{type2 }{A vector of row numbers in the original data frame where there are no birth/death AND no obervations.}
+  \item{type3 }{A vector of row numbers in the original data frame where there are births recorded after death.}
+  \item{type4 }{A vector of row numbers in the original data frame where there are observations (i.e. recaptures) after death.}
+  \item{type5 }{A vector of row numbers in the original data frame where there are observations (i.e. recaptures) before birth.}
+  \item{type6 }{A vector of row numbers in the original data frame where the year of birth is not a zero in the recapture matrix.}
+  \item{type7 }{A vector of row numbers in the original data frame where the year of death is not a zero in the recapture matrix.}
 }
 
 \author{Owen R. Jones \email{jones@demogr.mpg.de},  Maren Rebke \email{rebke@demogr.mpg.de} and Fernando Colchero \email{colchero@demogr.mpg.de}}
