@@ -699,8 +699,8 @@ function(object, ststart, stend, model="SI", niter=50000, burnin=5001, thinning=
 
 			} else {
 				# 7.3.2 Model selection (DIC, if convergence was reached):
-				modepost   = Pmat[,ncol(Pmat)]
-				L          = nrow(Pmat[,ncol(Pmat)])
+				modepost   = Pmat[idthin,ncol(Pmat)]
+				L          = length(modepost)
 				Dm         = -2*modepost
 				Dmode      = -2*modepost[which(modepost==max(modepost))[1]]
 				Dave       = mean(Dm)
