@@ -126,8 +126,9 @@ new.dat  <- DataCheck(basta.dat, ststart=100,
             stend=120, autofix=rep(1,7))
 
 ## Run short version of BaSTA on the data:
-out      <- basta(new.dat$newData, ststart=100, 
-            stend=120, niter=100, burnin=11, thinning=10)
+out      <- basta(basta.dat, ststart=100, stend=120, 
+            model="GO", niter=20000, burnin=2001, 
+            thinning=50, th.jump=c(0.02,0.0075))
 
 ## Print results:
 out
