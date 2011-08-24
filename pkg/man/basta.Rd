@@ -125,10 +125,10 @@ data("basta.dat", package="BaSTA")
 new.dat  <- DataCheck(basta.dat, ststart=100, 
             stend=120, autofix=rep(1,7))
 
-## Run short version of BaSTA on the data:
+## Run short version of BaSTA on the data (+/- 2 mins.):
 out      <- basta(basta.dat, ststart=100, stend=120, 
-            model="GO", niter=20000, burnin=2001, 
-            thinning=50, th.jump=c(0.02,0.0075))
+            model="GO", niter=2000, burnin=1001, 
+            thinning=10, th.jump=c(0.02,0.0075))
 
 ## Print results:
 out
