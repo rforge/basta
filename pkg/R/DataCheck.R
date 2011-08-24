@@ -172,7 +172,7 @@ function(object, ststart, stend, autofix = rep(0,7), silent=TRUE) {
 #All OK
     if (length(c(type1, type2, type3, type4, type5, type6, type7)) == 
         0) {
-       cat("No problems were detected with the object.\n\n")
+       cat("No problems were detected with the data.\n\n")
     }
     ok = length(c(type1, type2, type3, type4, type5, type6, type7)) == 
         0
