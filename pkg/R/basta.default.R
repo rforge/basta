@@ -139,7 +139,7 @@ function(object, ststart, stend, model="SI", niter=50000, burnin=5001, thinning=
 			# Find if there are continuous covariates:
 			if(!is.null(Ith$cont)){
 				Zc     = cbind(1,Z[,Ith$cont])
-				colnames(Zc) = c("Intercept", colnames(Z)[Ith$cont])
+				colnames(Zc) = c("Intercept", colnames(object)[(nt+4):ncol(object)][Ith$cont])
 				Cont   = TRUE
 			} else {
 				Zc     = matrix(0,n,1); colnames(Zc) = "NZc"
