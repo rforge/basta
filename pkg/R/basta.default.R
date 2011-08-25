@@ -412,7 +412,7 @@ function(object, ststart, stend, model="SI", niter=50000, burnin=5001, thinning=
 						for(cc in idcl) thn[cc,3]   = c(rtnorm(1, thg[cc,3], 0.5, lower=low[cc,3]))
 					}
 				}
-				if(Cont) gan = rnorm(nzc, gag, 0.5) else gan = gag
+				if(Cont) gan = rnorm(nzc, gag, gaj) else gan = gag
 				testpj    = TestParsJumps(thn, gan, thj, gaj, Za, Zc,xg, bg, Ti, idm, nza, nzc, Dx, low, nth, modm, Cont)
 				inipj     = ifelse(testpj$p & testpj$j, FALSE, TRUE)
 			}
