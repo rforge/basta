@@ -20,7 +20,8 @@ function(x, plot.trace=TRUE, tracename = "theta", ...){
 		nsim         = x$settings['nsim' ]
 		simname      = unique(rownames(x$Par))
 		idpl         = which(pnames==substr(tracename,1,2))
-		X            = x$Par[,-1][,idpl]
+		X            = as.matrix(x$Par[,-1][,idpl])
+		colnames(X)  = colnames(x$Par)[-1][idpl]
 		p            = which(plotname == tracename)
 		Cols         = Palette[round(seq(1,12, length=nsim))]
 		model        = as.character(x$ModelSpecs['model'])
@@ -31,7 +32,7 @@ function(x, plot.trace=TRUE, tracename = "theta", ...){
 
 		op           = par(mfrow=c(ydim[p], xdim[p]), mar=c(3,3,3,1))
 		for(i in 1:npars[p]){
-			if(npars[p] > 1) x = X[,i] else x = X
+			x = X[,i]
 			yl          = range(x, na.rm=TRUE)
 			plot(c(1,ng), yl, col=NA, xlab="Iteration", ylab="", main=colnames(X)[i], frame.plot=FALSE)
 			for(j in 1:nsim) lines(x[which(names(x) == simname[j])], type='l', col=Cols[j], lwd=1.5)
