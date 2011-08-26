@@ -138,8 +138,9 @@ function(object, ststart, stend, model="SI", niter=50000, burnin=5001, thinning=
 		
 			# Find if there are continuous covariates:
 			if(!is.null(Ith$cont)){
-				Zc     = cbind(1,Z[,Ith$cont])
-				colnames(Zc) = c("Intercept", colnames(object)[(nt+4):ncol(object)][Ith$cont])
+				Zc     = matrix(Z[,Ith$cont], nrow(Z), length(Ith$cont))
+				Zc     = t(t(Zc)-apply(Zc,2,mean))
+				colnames(Zc) = colnames(object)[(nt+4):ncol(object)][Ith$cont]
 				Cont   = TRUE
 			} else {
 				Zc     = matrix(0,n,1); colnames(Zc) = "NZc"
@@ -726,7 +727,7 @@ function(object, ststart, stend, model="SI", niter=50000, burnin=5001, thinning=
 		thmat[,thname[idth]] = pmat[,thname[idth]]
 		if(Cont){
 			rzc       = apply(Zc, 2, quantile, c(0.5, 0.025, 0.975))
-			gave      = apply(pmat[,which(substr(colnames(pmat),1,2)=="ga")],2,mean)
+			gave      = apply(as.matrix(pmat[,which(substr(colnames(pmat),1,2)=="ga")]),2,mean)
 			zcname    = paste("Cont.",c("Med.","Lower","Upper")[i],sep="")
 		} else {
 			rzc       = matrix(0,1,1)
@@ -808,4 +809,3 @@ function(object, ststart, stend, model="SI", niter=50000, burnin=5001, thinning=
 	class(output) = "basta"
 	return(output)
 }
-
