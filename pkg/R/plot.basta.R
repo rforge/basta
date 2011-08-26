@@ -27,11 +27,11 @@ function(x, plot.trace=TRUE, tracename = "theta", ...){
 		if(model == "GO") nthm = 2 else if(model=="GM") nthm = 3 else nthm = 5
 		ydim         = c(nthm, ceiling(npars['ga']/2), ceiling(npars['pi']/2), 2)
 		xdim         = c(npars['th']/nthm, 2, 2, 2)
-		if(ydim[3]==1) xdim[3] = 1
+		for(ii in 2:3) if(ydim[ii]==1) xdim[ii] = 1
 
 		op           = par(mfrow=c(ydim[p], xdim[p]), mar=c(3,3,3,1))
 		for(i in 1:npars[p]){
-			if(npars[p] > 1)x = X[,i] else x = X
+			if(npars[p] > 1) x = X[,i] else x = X
 			yl          = range(x, na.rm=TRUE)
 			plot(c(1,ng), yl, col=NA, xlab="Iteration", ylab="", main=colnames(X)[i], frame.plot=FALSE)
 			for(j in 1:nsim) lines(x[which(names(x) == simname[j])], type='l', col=Cols[j], lwd=1.5)
