@@ -66,7 +66,7 @@ The third model is Siler (\dQuote{\code{SI}}), with five parametes \eqn{\theta =
 
 \deqn{\mu(x | \theta)_0 = e^{\alpha_1 - \beta_1 x} + c + e^{\alpha_2 + \beta_2 x}}.
 with \eqn{-\infty < \alpha_1 < \infty} and \eqn{-\infty < \alpha_2 < \infty}, \eqn{\beta_1 > 0} and \eqn{\beta_2 > 0} and \eqn{c > - (e^{\alpha_1 - \beta_1 x_m} + e^{\alpha_2 - \beta_2 x_m})} where \eqn{x_m} is the age at which \eqn{\mu_0(x | \theta)} reaches the mininum vale, and is calculated as:
-\deqn{x_m = (\alpha_1+\log(\beta_1) - \alpha_2-log(\beta_2))/(\beta_1 + \beta_2)}.
+\deqn{x_m = (\alpha_1+\log(\beta_1) - \alpha_2-\log(\beta_2))/(\beta_1 + \beta_2)}.
 
 The number of parameters in \code{th.ini.pars} is a vector defining the initial values for each parameter on the survival model of section a). The number of parameters will depend on the model chosen with \code{model}(see above). If the number of parameters specified does not match the number of parameters inherent to the model selected, the function returns an error. If no th.pars.mat argument is specified (i.e. default is NULL), the model randomly generates initial parameters.
  
@@ -128,10 +128,11 @@ new.dat  <- DataCheck(basta.dat, ststart=100,
 ## Run short version of BaSTA on the data (+/- 1.5 mins.):
 out      <- basta(basta.dat, ststart=100, stend=120, 
             model="GO", niter=2000, burnin=1001, 
-            thinning=10, th.jump=c(0.05,0.05))
+            thinning=10, th.jumps=c(0.05,0.02), 
+            ga.jumps=0.03, prog.plot=TRUE)
 
 ## Print results:
-out
+summary(out, digits=3)
 
 ## Plot traces for survival parameters:
 plot(out)
