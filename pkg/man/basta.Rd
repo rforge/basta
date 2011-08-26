@@ -128,14 +128,17 @@ new.dat  <- DataCheck(basta.dat, ststart=100,
 ## Run short version of BaSTA on the data (+/- 1.5 mins.):
 out      <- basta(basta.dat, ststart=100, stend=120, 
             model="GO", niter=2000, burnin=1001, 
-            thinning=10, th.jumps=c(0.05,0.02), 
-            ga.jumps=0.03, prog.plot=TRUE)
+            thinning=10, th.jumps=c(0.05,0.025), 
+            ga.jumps=0.025, prog.plot=TRUE)
 
 ## Print results:
 summary(out, digits=3)
 
 ## Plot traces for survival parameters:
 plot(out)
+
+## Plot traces for prop. hazards parameter:
+plot(out, tracename="gamma")
 
 ## Plot survival and mortality curves:
 plot(out, plot.trace=FALSE)
