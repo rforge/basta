@@ -9,18 +9,19 @@ This function performs multiple Monte Carlo Markov Chain (MCMC) algorithms for B
 \usage{
 basta(object, \dots)
 
-\method{basta}{default}(object, ststart, stend, model = "SI", niter = 50000, 
-      burnin = 5001, thinning = 50, rptp = ststart, th.ini.pars = NULL, 
-      th.jumps = NULL, th.priors = NULL, Prop.Hazards = FALSE, 
-      ga.ini.pars = NULL, ga.jumps = NULL, ga.priors = NULL, 
-      nsim = 1, parallel = FALSE, ncpus = 2, lifetable=TRUE, 
-      progr.plot = FALSE, \dots)
+\method{basta}{default}(object, ststart, stend, model = "GO", Shape="simple",
+      niter = 50000, burnin = 5001, thinning = 50, rptp = ststart,
+      th.ini.pars = NULL, th.jumps = NULL, th.priors = NULL, 
+      Prop.Hazards = FALSE, ga.ini.pars = NULL, ga.jumps = NULL, 
+      ga.priors = NULL, nsim = 1, parallel = FALSE, ncpus = 2,
+      lifetable=TRUE, progr.plot = FALSE, \dots)
 }
 \arguments{
   \item{object }{a \code{data.frame} to be used as an input data file for BaSTA. The first is a column of individual unique ID's, the second and third columns are birth and death years respectively. Columns 4-(nt-1) represent the observation window of nt years. This is followed (optionally) by columns for categorical and continous covariates (see details). }
   \item{ststart }{the first year of the study.}
   \item{stend }{the last year of the study.}
-  \item{model }{the underlying mortality model to be used. "GO"= Gompertz, "GM" = Gompertz Makeham and "SI" = Siler (see \code{details}).}
+  \item{model }{the underlying mortality model to be used. "EX" = exponential, GO"= Gompertz, "WE" = Weibull and "LO" = logistic (see \code{details}).}
+  \item{Shape }{The overall shape of the model. Values are: \code{simple} = no extra parameters added; \code{Makeham} = a constant parameter is added to the mortality rate; and \code{bathtub} = a Gompertz declining mortality for early ages and a constant parameter are added to the mortality model.}
   \item{niter }{the total number of MCMC steps.}
   \item{burnin }{number of iterations for the burn in (see details).}
   \item{thinning }{number of skipped MCMC steps to minimize serial autocorrelation (see details).}
@@ -79,7 +80,7 @@ As described above, the number of parameters for argument \code{ga.ini.pars} (i.
 	\item{ModSel }{Basic DIC calculations for model selection (Spiegelhalter \emph{et al.} 2002) These values need to be taken only as a reference (see comments to Spiegelhalter \emph{et al.} 2002). In the future the package will include routines for reversible jump Monte Carlo Markov Chain (RJMCMC, see King & Brooks 2002). If none or some of the simulations did not run through, then the returned value is \dQuote{NULL}.}
 	\item{Convergence }{If called by \code{\link{summary}}, matrix with convergence coefficients based on potential scale reduction as described by Gelman \emph{et al.} (2004). If only one simulation was ran, then the returned value is \dQuote{NULL}.}
   \item{settings }{If called by \code{\link{summary}}, vector indicating the number of iterations for each MCMC, the burn in sequence, the thinning interval and the number of simulations ran, as specified by the user.}
-	\item{ModelSpecs }{Model specifications inidicating the model used (i.e. Gompertz = \dQuote{GO}, Gompertz-Makeham = \dQuote{GM}, or Siler = \dQuote{SI}) as specified by the user.}
+	\item{ModelSpecs }{Model specifications inidicating the model and the Shape used as specified by the user.}
 	\item{JumpPriors }{If requested or called by functions \code{summary} or \code{\link{summary.basta}}, a matrix with the jumps and priors used in the model.}
 	\item{Params }{If requested, the full matrix of parameter estimates. The row names indicate the simulation to which they correspond.}
 	\item{Bis }{If requested, the full matrix of estimates of times of birth. The row names indicate the simulation to which they correspond.}
