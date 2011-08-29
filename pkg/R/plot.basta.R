@@ -8,6 +8,7 @@ function(x, plot.trace=TRUE, tracename = "theta", ...){
 		if(!is.element(tracename, plotname)) stop(paste("Wrong 'tracename' argument. Valid arguments are:", paste(paste("'",plotname,"'", sep=""), collapse=", "),".\n"), call.=FALSE)
 	
 		pnames       = substr(colnames(x$Par)[-1],1,2)
+		pnames[is.element(substr(pnames,1,1), c("a","b","c"))] = "th"
 		npars        = table(pnames)[c("th","ga","pi","po")]
 		names(npars) = c("th","ga","pi","po")
 		npars[is.na(npars)] = 0
@@ -18,6 +19,7 @@ function(x, plot.trace=TRUE, tracename = "theta", ...){
 		# 1. Trace plots for parameters:
 		ng           = x$settings['niter']
 		nsim         = x$settings['nsim' ]
+		nza          = ncol(x$Za)
 		simname      = unique(rownames(x$Par))
 		idpl         = which(pnames==substr(tracename,1,2))
 		X            = as.matrix(x$Par[,-1][,idpl])
@@ -25,9 +27,11 @@ function(x, plot.trace=TRUE, tracename = "theta", ...){
 		p            = which(plotname == tracename)
 		Cols         = Palette[round(seq(1,12, length=nsim))]
 		model        = as.character(x$ModelSpecs['model'])
-		if(model == "GO") nthm = 2 else if(model=="GM") nthm = 3 else nthm = 5
+		Shape        = as.character(x$ModelSpecs['Shape'])
+		if(model == "EX") nthm = 1 else if(model=="GO" | model=="WE") nthm = 2 else nthm = 3
+		if(Shape=="Makeham") nthm = nthm + 1 else if(Shape=="bathtub") nthm = nthm + 3
 		ydim         = c(nthm, ceiling(npars['ga']/2), ceiling(npars['pi']/2), 2)
-		xdim         = c(npars['th']/nthm, 2, 2, 2)
+		xdim         = c(nza, 2, 2, 2)
 		for(ii in 2:3) if(ydim[ii]==1) xdim[ii] = 1
 
 		op           = par(mfrow=c(ydim[p], xdim[p]), mar=c(3,3,3,1))
