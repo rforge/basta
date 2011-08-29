@@ -1,5 +1,5 @@
 basta.default <-
-function(object, ststart, stend, model="SI", niter=50000, burnin=5001, thinning=50, rptp = ststart, th.ini.pars=NULL, th.jumps=NULL, th.priors=NULL, Prop.Hazards = FALSE, ga.ini.pars=NULL, ga.jumps=NULL, ga.priors=NULL, nsim=1, parallel=FALSE, ncpus=2, lifetable=TRUE, progr.plot=FALSE, ...){
+function(object, ststart, stend, model="GO", Shape="simple", niter=50000, burnin=5001, thinning=50, rptp = ststart, th.ini.pars=NULL, th.jumps=NULL, th.priors=NULL, Prop.Hazards = FALSE, ga.ini.pars=NULL, ga.jumps=NULL, ga.priors=NULL, nsim=1, parallel=FALSE, ncpus=2, lifetable=TRUE, progr.plot=FALSE, ...){
 
 	# 0. Load package msm:
 	require(msm)
@@ -14,30 +14,76 @@ function(object, ststart, stend, model="SI", niter=50000, burnin=5001, thinning=
     
     # 3. Functions:
     # 3.1 Survival, mort, pdf:
-    Sx.fun <- function(x,th, ga=0, idm=3, log=FALSE){
-		Sx    =  x * (-th[,3]) + exp(th[,4])/th[,5] * (1-exp(th[,5]*x))
-		if(idm==3) Sx = Sx + (exp(th[,1])/th[,2] * (exp(-th[,2]*x)-1))
-		Sx    = Sx*exp(ga)
-		if(!log) Sx = exp(Sx)
-		return(Sx)
+	if(model=="EX"){
+		mx.fA     = function(x, th) th
+		Sx.fA     = function(x, th) exp(- th * x )
+		nthA      = 1
+		lowA      = -Inf
+		th.in     = 0.01
+		jp.in     = 0.005
+		pr.in     = 0.01
+	} else if(model=="GO"){
+		mx.fA     = function(x, th) exp(th[,1] + th[,2]*x )
+		Sx.fA     = function(x, th) exp(exp(th[,1])/th[,2] * (1 - exp(th[,2]*x)) )
+		nthA      = 2
+		lowA      = c(-Inf, -Inf)
+		th.in     = c(-1, 0.1)
+		jp.in     = c(0.05, 0.025)
+		pr.in     = c(-2, 0.01)
+	} else if(model=="WE"){
+		mx.fA     = function(x, th) th[,1] * th[,2]^th[,1] * x^(th[,1]-1)
+		Sx.fA     = function(x, th) exp(-(th[,2]*x)^th[,1])
+		nthA      = 2
+		lowA      = c(0, 0)
+		th.in     = c(1, 0.1)
+		jp.in     = c(0.01, 0.001)
+		pr.in     = c(1, 0.1)
+	} else if(model=="LO"){
+		mx.fA     = function(x, th) exp(th[,1] + th[,2]*x)/(1+th[,3]*exp(th[,1])/th[,2]*(exp(th[,2]*x)-1))
+		Sx.fA     = function(x, th) (1+th[,3]*exp(th[,1])/th[,2]*(exp(th[,2]*x)-1))^(-1/th[,3])
+		nthA      = 3
+		lowA      = c(0, 0, 0)
+		th.in     = c(-1, .25, 0.075)
+		jp.in     = c(0.001, 0.001, 0.001)
+		pr.in     = c(-2, 0.1, 0.001)
+	}
+	thnameA   = paste("b",1:nthA-1,sep="")
+
+	# Extended model for different mortality shapes:
+	if(model=="EX") Shape = "simple"
+	if(Shape=="simple"){
+		mx.fun    = function(x, Th, ga) mx.fA(x, Th) * exp(ga)
+		Sx.fun    = function(x, Th, ga) Sx.fA(x, Th)^exp(ga)
+		Low       = lowA
+		Th.in     = th.in
+		Jp.in     = jp.in
+		Pr.in     = pr.in
+		Thname    = thnameA
+	} else if(Shape=="Makeham"){
+		mx.fun    = function(x, Th, ga) (Th[,1] + mx.fA(x, matrix(Th[,-1], ncol=nthA))) * exp(ga)
+		Sx.fun    = function(x, Th, ga) (exp(-Th[,1]*x) * Sx.fA(x, matrix(Th[,-1], ncol=nthA)))^exp(ga)
+		nTh       = nthA + 1
+		Th.in     = c(0, th.in)
+		Jp.in     = c(0.01, jp.in)
+		Pr.in     = c(0, pr.in)
+		Low       = c(-Inf, lowA)
+		Thname    = c("c", thnameA)
+	} else if(Shape=="bathtub"){
+		mx.fun    = function(x, Th, ga) (exp(Th[,1]-Th[,2]*x) + Th[,3] + mx.fA(x, matrix(Th[,-c(1:3)], ncol=nthA))) * exp(ga)
+		Sx.fun    = function(x, Th, ga) (exp(exp(Th[,1])/Th[,2]*(exp(-Th[,2]*x)-1)-Th[,3]*x) * Sx.fA(x, matrix(Th[,-c(1:3)], ncol=nthA)))^exp(ga)
+		nTh       = nthA + 3
+		Th.in     = c(-0.1,0.5,0, th.in)
+		Jp.in     = c(0.001, 0.001, 0.01, jp.in)
+		Pr.in     = c(-2, 0.01, 0, pr.in)
+		Low       = c(-Inf, 0, -Inf, lowA)
+		if(model=="GO") Low = c(-Inf, 0, -Inf, -Inf, 0)
+		Thname    = c("a0", "a1", "c", thnameA)
 	}
 
-	mx.fun <- function(x,th, ga=0, idm=3, log=FALSE){
-		mx    = th[,3] + exp(th[,4] + th[,5]*x)
-		if(idm==3) mx = mx + exp(th[,1]-th[,2]*x)
-		mx    = mx * exp(ga)
-		if(log) mx = log(mx)
-		return(mx)
-	}
+	fx.fun    = function(x, Th, ga) mx.fun(x, Th, ga) * Sx.fun(x, Th, ga)
 
-    fx.fun <- function(x,th, ga=0, idm=3, log=FALSE){
-		fx       = mx.fun(x, th, ga, idm=idm, log=TRUE) + Sx.fun(x, th, ga, idm=idm, log=TRUE)
-		if(!log) fx = exp(fx)
-		return(fx)
-	}
-
-	S.x         = function(th) Sx.fun(xv, matrix(th,1,nth), gaa, idm=idm)
-	m.x         = function(th) mx.fun(xv, matrix(th,1,nth), gaa, idm=idm)
+	S.x         = function(Th) Sx.fun(xv, matrix(Th, ncol=nTh), gaa)
+	m.x         = function(Th) mx.fun(xv, matrix(Th, ncol=nTh), gaa)
 
 	# 3.2 object processing:
 	Ith.fun <- function(Z){
@@ -59,55 +105,60 @@ function(object, ststart, stend, model="SI", niter=50000, burnin=5001, thinning=
 		return(Fm * (-Lm))	
 	}
 
-	c.low <- function(th, idm=3){
-		if(idm==1) cl = 0
-		if(idm==2) cl = ifelse(th[5] > 0, -exp(th[4]), 0)
-		if(idm==3){
-			x.minf = (th[1]+log(th[2]) - th[4]-log(th[5]))/(th[2] + th[5])
-			cl     = -exp(th[1]-th[2]*(x.minf)) - exp(th[4]+th[5]*(x.minf))
+	c.low <- function(th){
+		
+		if(Shape=="Makeham"){
+			if(model=="GO"){
+				cl = ifelse(th[3] > 0, -exp(th[2]), 0)
+			} else if(model=="WE"){
+				cl = 0
+			} else if(model=="LO"){
+				cl = ifelse(th[2]>th[3]*exp(th[1]), -exp(th[2]), 0)
+			} 
+		}
+		if(Shape=="bathtub"){
+			if(model=="GO"){
+				x.minf = (th[1]+log(th[2]) - th[4]-log(th[5]))/(th[2] + th[5])
+			} else if(model=="LO"){
+				xx     = seq(0,100,0.1)
+				mxx    = mx.fun(xx, matrix(th,length(xx),nTh,byrow=TRUE),0)
+				x.minf = which(mxx==min(mxx))[1]
+			}
+			cl     = -exp(th[1]-th[2]*(x.minf)) - mx.fA(x.minf,matrix(th[-c(1:3)],1,3))
 		}
 		return(cl)
 	}
 
-	TestParsJumps  = function(th, ga, tj, gj, Za, Zc, xg, bg, Ti, idm, nza, nzc, Dx, low, nth, modm, Cont){
-		Zthm        = Za %*% th
-		Zgam        = Zc %*% ga
 
-		idtrg       = which(bg<Ti)
-		p.xm        = sum(fx.fun(xg + 0.5*Dx, Zthm, Zgam, idm=idm, log=TRUE)) - 
-		              sum(Sx.fun(Ti-bg[idtrg] + 0.5*Dx, Zthm[idtrg,], Zgam[idtrg], idm=idm, log=TRUE))
-	
-		if(is.na(p.xm) | p.xm == -Inf) ModifyPars = TRUE else ModifyPars = FALSE
-	
-		# 4.2 Test lower bound:
-		thnl        = matrix(qtnorm(rep(c(0.999, 0.001, 0.999,0.999, 0.999),each=nza), 
-		              mean=c(th), sd=c(tj), lower=c(low)), nza, nth) * modm[rep(idm,nza), ]
-		if(Cont) ganl = qnorm(rep(0.001, nzc), mean=ga, sd=gj) else ganl = ga
-
-		Zthnl       = Za %*% thnl
-		Zganl       = Zc %*% ganl
-	
-		p.xl        = sum(fx.fun(xg + 0.5*Dx, Zthnl, Zganl, idm=idm, log=TRUE)) - 
-		              sum(Sx.fun(Ti-bg[idtrg] + 0.5*Dx, Zthnl[idtrg,], Zganl[idtrg], idm=idm, log=TRUE))
-	
-		# 4.3 Test upper bound:
-		thnu        = matrix(qtnorm(rep(c(0.001, 0.999, 0.001, 0.001, 0.001),each=nza), 
-		              mean=c(th), sd=c(tj), lower=c(low)), nza, nth) * modm[rep(idm,nza), ]
-
-		if(Cont) ganu = qnorm(rep(0.999, nzc), mean=ga, sd=gj) else ganu = ga
-
-		Zthnu       = Za %*% thnu
-		Zganu       = Zc %*% ganu
-	
-		p.xu        = sum(fx.fun(xg + 0.5*Dx, Zthnu, Zganu, idm=idm, log=TRUE)) - 
-		              sum(Sx.fun(Ti-bg[idtrg] + 0.5*Dx, Zthnu[idtrg,], Zganu[idtrg], idm=idm, log=TRUE))
-	
-		if(is.na(p.xl) | p.xl == -Inf | is.na(p.xu) | p.xu == Inf) ModifyJumps = TRUE else ModifyJumps = FALSE
-
-		return(list(pars=ModifyPars, jumps = ModifyJumps))
-
+	CheckPars   = function(par, user.par, pnam){
+		if(is.null(user.par)){
+			pm        = matrix(par, nza, nTh, byrow=TRUE)
+			dimnames(pm) = dimnames(low)
+			if(nza==1) pm = t(pm)
+		} else {
+			lp        = length(user.par)
+			if(!is.element(lp, c(nTh, nTh*nza))){
+				pm     = NULL
+				if(!is.null(dim(user.par))){
+					stop(paste("\nDimensions of ", pnam, " matrix for the mortality model parameters are incorrect.\n\nProvide a single vector of length ", nTh, " or a matrix of dimensions ",nza ," times ", nTh, ".(i.e. number of categorical covariates times number of parameters for model ", model," with ",Shape, " shape).", sep=""), call.=FALSE)
+				} else if(is.null(dim(user.par))){
+					stop(paste("\nLength of ", pnam, " vector for the mortality model parameters is incorrect.\n\nProvide a single vector of length ", nTh, " or a matrix of dimensions ",nza ," times ", nTh, ".(i.e. number of categorical covariates times number of parameters for model ", model," with ",Shape, " shape).", sep=""), call.=FALSE)
+				}
+			} else {
+				if(!is.null(dim(user.par))){
+					pm    = user.par
+				} else {
+					pm       = matrix(user.par, nza, nTh, byrow=TRUE)
+				}
+				dimnames(pm) = dimnames(low)
+				if(nza==1) pm = t(pm)
+			}
+		}
+		return(pm)
 	}
-    
+
+	paralvars   = c("mx.fA", "Sx.fA", "fx.fun", "mx.fun", "Sx.fun", "ObsMatFun", "c.low", "Thname", "nthA")
+	
     # 3. Model structure setup:
     # 3.1 Extract raw data:
 	Ti          = ststart
@@ -119,7 +170,7 @@ function(object, ststart, stend, model="SI", niter=50000, burnin=5001, thinning=
 	bd          = as.matrix(object[,2:3])
 	Y           = as.matrix(object[,1:nt+3]); colnames(Y) = st
 
-	paralvars   = c("Ti","Tf","st","nt","n","bd","Y","rptp","progr.plot") 
+	paralvars   = c(paralvars, "Ti", "Tf", "st", "nt", "n", "bd", "Y", "rptp", "progr.plot", "model", "Shape") 
 
 	# 3.2 Extract covariates:
 	# a) Find if there are covariates:
@@ -175,25 +226,16 @@ function(object, ststart, stend, model="SI", niter=50000, burnin=5001, thinning=
 	paralvars   = c(paralvars,"Za","Zc","Cont","nza","nzc") 
 
 	# 3.3. Model Matrix and lower limits for parameters:
-	nth         = 5
-	modm        = matrix(c(0,0,1,0,0,1,0,rep(1,8)), 3, nth, dimnames=list(c("GO", "GM", "SI"), c("theta.a1", "theta.b1","theta.c","theta.a2","theta.b2")))
-	thname      = paste(rep(colnames(modm),each=nza), "[",rep(colnames(Za), nth),"]", sep="")
-	if(nza==1) thname = colnames(modm)
-	idm         = which(rownames(modm)==model)
-	idth        = which(modm[rep(idm, nza),]==1)
-	idths       = which(modm[idm,]==1)
-	nthm        = sum(modm[idm,])
-	th.low      = matrix(-Inf, nrow(modm),nth, dimnames=dimnames(modm))
-	th.low["SI",c("theta.b1","theta.b2")] = 0
-	low         = matrix(th.low[idm,],nza, nth, byrow=TRUE)
-	dimnames(low) = list(colnames(Za), colnames(modm))
+	thname      = paste(rep(Thname,each=nza), "[",rep(colnames(Za), nTh),"]", sep="")
+	if(nza==1) thname = Thname
+	nthm        = length(thname)
+	low         = matrix(Low,nza, nTh, byrow=TRUE)
+	dimnames(low) = list(colnames(Za), Thname)
 	ganame      = paste("gamma[",colnames(Zc),"]",sep=""); if(nzc == 1) ganame = "gamma"
 	piname      = ifelse(length(rptp)==1, "pi", paste("pi[", rptp,"]",sep=""))
 	poname      = c("post[th,ga]", "post[X0]", "post[full]")
-	Pname       = paste(rep(colnames(modm),each=nza), "[",rep(colnames(Za), nth),"]", sep="")
-	if(nza==1)  Pname = colnames(modm)
 
-	paralvars   = c(paralvars, "nth", "modm", "thname", "ganame", "piname", "poname", "idm", "idth", "low") 
+	paralvars   = c(paralvars, "nTh","nthm", "thname", "ganame", "piname", "poname", "low") 
 
 	# 3.4 MCMC setup variables:
 	ng          = niter
@@ -205,53 +247,16 @@ function(object, ststart, stend, model="SI", niter=50000, burnin=5001, thinning=
 	# 3.5 Verify th.jumps, initial parameters and th.priors: 
 	# 3.5.1 Survival model:
 	# a) Initial parameters:
-	if(is.null(th.ini.pars)){
-		thg       = t(t(modm[rep(idm, nza),])*c(-1, 0.001, -0.05, -1, 0.001))
-		if(nza==1) thg = t(thg)
-	} else {
-		lini.pars = length(th.ini.pars)
-		if(lini.pars < nthm){
-			stop(paste("\nLength of starting parameters (argument 'th.ini.pars') for the mortality model is less than ", nthm, " (i.e. number of parameters for model ", model,")", sep=""), call.=FALSE) 
-		} else if(lini.pars > nthm) {
-			stop(paste("\nLength of starting parameters (argument 'th.ini.pars') for the mortality model is larger than ", nthm , " (i.e. number of parameters for model ", model,")", sep=""), call.=FALSE)		
-		}
-		thg       = modm[rep(idm, nza), ]
-		thg[,modm[idm,]==1] = matrix(t(th.ini.pars),nza, sum(modm[idm,]), byrow=TRUE)
-		if(nza==1) thg = t(thg)
-	}	
-	thgini    = thg[,idths]
+	thg        = CheckPars(Th.in, th.ini.pars, "theta")
+	thgini    = thg
 
 	# b) Jumps:
-	if(is.null(th.jumps)){
-		thj       = t(t(modm[rep(idm, nza),])*c(0.005, 0.005, 0.02, 0.0075, 0.001))
-		if(nza==1) thj = t(thj)
-	} else {
-		ljumps    = length(th.jumps)
-		if(ljumps < nthm){
-			stop(paste("\nLength of th.jumps for the mortality model parameters is less than ", nthm, " (i.e. number of parameters for model ", model,")", sep=""), call.=FALSE) 
-		} else if(ljumps > nthm) {
-			stop(paste("\nLength of th.jumps for the mortality model parameters is larger than ", nthm, " (i.e. number of parameters for model ", model,")", sep=""), call.=FALSE)		}
-		thj       = modm[rep(idm, nza), ]
-		thj[,modm[idm,]==1] = matrix(t(th.jumps), nza, sum(modm[idm,]), byrow=TRUE)
-		if(nza==1) thj = t(thj)
-	}
-	thjini    = thj[,idths]
+	thj       = CheckPars(Jp.in, th.jumps, "jumps")
+	thjini    = thj
 
 	# c) Priors:
-	if(is.null(th.priors)){
-		thp       = t(t(modm[rep(idm, nza),])*c(-5,0.1,-0.5,0.001,0.001))
-		if(nza==1) thp = t(thp)
-	} else {
-		lpriors   = length(th.priors)
-		if(lpriors < nthm){
-			stop(paste("\nLength of th.priors for the mortality model parameters is less than ", nthm, " (i.e. number of parameters for model ", model,")", sep=""), call.=FALSE) 
-		} else if(lpriors > nthm) {
-			stop(paste("\nLength of th.priors for the mortality model parameters is larger than ", nthm, " (i.e. number of parameters for model ", model,")", sep=""), call.=FALSE)		}
-		thp       = modm[rep(idm, nza), ]
-		thp[,modm[idm,]==1] = matrix(t(th.priors),nza, sum(modm[idm,]), byrow=TRUE)
-		if(nza==1) thp = t(thp)
-	}
-	thpini    = thp[,idths]
+	thp       = CheckPars(Pr.in, th.priors, "priors")
+	thpini    = thp
 	
 	
 	# 3.5.2 Proportional hazards section:
@@ -279,7 +284,7 @@ function(object, ststart, stend, model="SI", niter=50000, burnin=5001, thinning=
 		} else {
 			lcjumps = length(ga.jumps)
 			if(lcjumps != nzc){
-				stop(paste("\nLength of th.jumps for the prop. hazards parameters is not equal to number of covariates (n =", nzc,").", sep=""), call.=FALSE)
+				stop(paste("\nLength of jumps for the prop. hazards parameters is not equal to number of covariates (n =", nzc,").", sep=""), call.=FALSE)
 			} else {
 				gaj    = ga.jumps
 				names(gaj) = colnames(Zc)
@@ -293,7 +298,7 @@ function(object, ststart, stend, model="SI", niter=50000, burnin=5001, thinning=
 		} else {
 			lcpriors = length(ga.priors)
 			if(lcpriors != nzc){
-				stop(paste("\nLength of th.priors for the prop. hazards parameters is not equal to number of covariates (n =", nzc,").", sep=""), call.=FALSE)
+				stop(paste("\nLength of priors for the prop. hazards parameters is not equal to number of covariates (n =", nzc,").", sep=""), call.=FALSE)
 			} else {
 				gap    = ga.jumps
 				names(gap) = colnames(Zc)
@@ -344,8 +349,8 @@ function(object, ststart, stend, model="SI", niter=50000, burnin=5001, thinning=
 	xx          = seq(0,100,dxx)
 	zza         = cbind(1,matrix(0, length(xx), nza-1))
 	zzc         = sum(apply(Zc, 2, mean) * gap) 
-	Ex          = sum(xx*fx.fun(xx,zza %*% thp, zzc, idm=idm)*dxx)
-	v.x         = function(x) Sx.fun(x,Zthp, Zgap, idm=idm)/Ex
+	Ex          = sum(xx*fx.fun(xx,zza %*% thp, zzc)*dxx)
+	v.x         = function(x) Sx.fun(x,Zthp, Zgap)/Ex
 
 	# d) Detection probability:
 	idpi        = findInterval(st, rptp); names(idpi) = st
@@ -392,39 +397,29 @@ function(object, ststart, stend, model="SI", niter=50000, burnin=5001, thinning=
 
 	paralvars   = c(paralvars, "Fg", "Lg", "Og", "lfi") 
 
-	# 4. Test initial parameters and th.jumps:
-	TestIniPJ   = TestParsJumps(thg, gag, thj, gaj, Za, Zc,xg, bg, Ti, idm, nza, nzc, Dx, low, nth, modm, Cont)
-
-	if(TestIniPJ$p) stop("\nInitial parameters produce pdf values equal to 0 for some individuals.\nModify initial parameters and run model again.\n", call.=FALSE)
-	if(TestIniPJ$j) stop("\nJumps produce pdf values equal to 0 for some individuals.\nReduce jumps and run model again.\n", call.=FALSE)
 
 	# 5.  Multiple MCMC function:
 	multiMCMC  = function(sim){
 		if(parallel) for(ii in 1:(sim*2)){}
+		nlow     = low
 		if(nsim > 1){
-			inipj     = FALSE
-			while(!inipj){
-				thn         = thg * 0
-				thn[idth]   = c(rtnorm(length(idth), thg[idth], 0.25, lower=low[idth]))
-				if(idm>1){
-					low[,3]     = apply(thn, 1, c.low, idm=idm)
-					idcl        = which(thn[,3] < low[,3])
-					if(length(idcl)>0){
-						for(cc in idcl) thn[cc,3]   = c(rtnorm(1, thg[cc,3], 0.5, lower=low[cc,3]))
-					}
+			thn         = matrix(rtnorm(nthm, thg, 0.25, lower=nlow), nza, nTh, dimnames=dimnames(thg))
+			if(Shape!="simple"){
+				nlow[,'c']  = apply(thn, 1, c.low)
+				idcl        = which(thn[,'c'] < nlow[,'c'])
+				if(length(idcl)>0){
+					for(cc in idcl) thn[cc,'c']   = c(rtnorm(1, thg[cc,'c'], 0.5, lower=nlow[cc,'c']))
 				}
-				if(Cont) gan = rnorm(nzc, gag, 0.5) else gan = gag
-				testpj    = TestParsJumps(thn, gan, thj, gaj, Za, Zc,xg, bg, Ti, idm, nza, nzc, Dx, low, nth, modm, Cont)
-				inipj     = ifelse(testpj$p & testpj$j, FALSE, TRUE)
 			}
-			thg         = thn
-			if(Cont) gag  = gan
+			if(Cont) gan = rnorm(nzc, gag, 0.5) else gan = gag
 		}
+		thg         = thn
+		if(Cont) gag  = gan
 	
 		# Output tables:
 		thing       = seq(bng, ng, by=thint)
-		thgibbs     = matrix(NA,ng,length(idth))
-		colnames(thgibbs) = thname[idth]
+		thgibbs     = matrix(NA,ng,nthm)
+		colnames(thgibbs) = thname
 		gagibbs     = matrix(0, ng, nzc)
 		colnames(gagibbs) = ganame
 		pigibbs     = matrix(NA, ng, npi)
@@ -433,7 +428,7 @@ function(object, ststart, stend, model="SI", niter=50000, burnin=5001, thinning=
 		dgibbs      = bgibbs
 		postm       = matrix(NA, ng, 3)
 		colnames(postm) = poname
-		thgibbs[1,] = thg[idth]
+		thgibbs[1,] = thg
 		pigibbs[1,] = pig
 		if(Cont){
 			gagibbs[1,]  = gag
@@ -445,7 +440,6 @@ function(object, ststart, stend, model="SI", niter=50000, burnin=5001, thinning=
 		naflag      = FALSE
 		g           = 2
 		gg          = 1
-		rownames(thg) = rownames(modm[rep(idm, nza), ])
 		if(progr.plot){
 			if(.Platform$OS.type=="unix") devtype=quartz else devtype=windows
 			devtype(width=2, height=0.5); progrpl = dev.cur()
@@ -456,13 +450,12 @@ function(object, ststart, stend, model="SI", niter=50000, burnin=5001, thinning=
 		
 			# 1.- SAMPLING:
 			# a) Sample survival parameters:
-			thn         = thg * 0
-			thn[idth]   = c(rtnorm(length(idth), thg[idth], thj[idth], lower=low[idth]))
-			if(idm>1){
-				low[,3]     = apply(thn, 1, c.low, idm=idm)
-				idcl        = which(thn[,3] < low[,3])
+			thn         = matrix(rtnorm(nthm, thg, thj, lower=low), nza, nTh, dimnames=dimnames(thg))
+			if(Shape!="simple"){
+				nlow[,'c']  = apply(thn, 1, c.low)
+				idcl        = which(thn[,'c'] < nlow[,'c'])
 				if(length(idcl)>0){
-					for(cc in idcl) thn[cc,3]   = c(rtnorm(1, thg[cc,3], thj[cc,3], lower=low[cc,3]))
+					for(cc in idcl) thn[cc,'c']   = c(rtnorm(1, thg[cc,'c'], 0.5, lower=nlow[cc,'c']))
 				}
 			}
 			if(Cont) gan = rnorm(nzc, gag, gaj) else gan = gag
@@ -471,17 +464,17 @@ function(object, ststart, stend, model="SI", niter=50000, burnin=5001, thinning=
 			Zthn        = Za %*% thn
 			Zgan        = Zc %*% gan
 			idtrg       = which(bg<Ti)
+			lidt        = length(idtrg)
 
-			p.thg       = sum(fx.fun(xg + 0.5*Dx, Zthg, Zgag, idm=idm, log=TRUE)) + sum(dtnorm(c(thg), c(thp), thv, lower=c(low), log=TRUE)) + sum(dnorm(gag, gap, gav, log=TRUE))
+			p.thg       = fx.fun(xg + 0.5*Dx, Zthg, Zgag)
+			if(length(idtrg) > 0) p.thg[idtrg] = p.thg[idtrg]/Sx.fun(Ti-bg[idtrg] + 0.5*Dx, matrix(Zthg[idtrg,], ncol= nTh), matrix(Zgag[idtrg,], ncol= nzc))
+			p.thg[p.thg==0] = 1e-10
+			p.thg = sum(log(p.thg)) + sum(dtnorm(c(thg), c(thp), thv, lower=c(low), log=TRUE)) + sum(dnorm(gag, gap, gav, log=TRUE))
 
-			p.thn       = sum(fx.fun(xg + 0.5*Dx, Zthn, Zgan, idm=idm, log=TRUE)) + sum(dtnorm(c(thn), c(thp), thv, lower=c(low), log=TRUE)) + sum(dnorm(gan, gap, gav, log=TRUE))
-
-			if(length(idtrg)>0){
-				p.thg      = p.thg - sum(Sx.fun(Ti-bg[idtrg] + 0.5*Dx, matrix(Zthg[idtrg,], length(idtrg), ncol(Zthg)), matrix(Zgag[idtrg], length(idtrg), ncol(Zthg)), idm=idm, log=TRUE)) 
-				
-				p.thn      = p.thn - sum(Sx.fun(Ti-bg[idtrg] + 0.5*Dx, matrix(Zthn[idtrg,], length(idtrg), ncol(Zthg)), matrix(Zgan[idtrg], length(idtrg), ncol(Zthg)), idm=idm, log=TRUE)) 
-			}
-
+			p.thn       = fx.fun(xg + 0.5*Dx, Zthn, Zgan)
+			if(length(idtrg) > 0) p.thn[idtrg] = p.thn[idtrg]/Sx.fun(Ti-bg[idtrg] + 0.5*Dx, matrix(Zthn[idtrg,], ncol=nTh), matrix(Zgan[idtrg,], ncol=nzc))
+			p.thn[p.thn==0] = 1e-10
+			p.thn = sum(log(p.thn)) + sum(dtnorm(c(thn), c(thp), thv, lower=c(low), log=TRUE)) + sum(dnorm(gan, gap, gav, log=TRUE))
 
 			r           = exp(p.thn-p.thg)
 			z           = runif(1,0,1)
@@ -517,9 +510,13 @@ function(object, ststart, stend, model="SI", niter=50000, burnin=5001, thinning=
 			Ln          = c(apply(cbind(Tf, dn-1), 1, min))
 			On          = ObsMatFun(Fn, Ln, Tm)
     
-			p.bdg       = fx.fun(xg + 0.5*Dx, Zthg, Zgag, idm=idm, log=TRUE) + (Og - lfi) %*% log(1-Pig) + log(v.x(xg + 0.5*Dx))
+			p.bdg       = fx.fun(xg + 0.5*Dx, Zthg, Zgag)
+			p.bdg[p.bdg==0] = 1e-10
+			p.bdg       = log(p.bdg) + (Og - lfi) %*% log(1-Pig) + log(v.x(xg + 0.5*Dx))
 
-			p.bdn       = fx.fun(xn + 0.5*Dx, Zthg, Zgag, idm=idm, log=TRUE) + (On - lfi) %*% log(1-Pig) + log(v.x(xn + 0.5*Dx))
+			p.bdn       = fx.fun(xn + 0.5*Dx, Zthg, Zgag)
+			p.bdn[p.bdn==0] = 1e-10
+			p.bdn       = log(p.bdn) + (On - lfi) %*% log(1-Pig) + log(v.x(xn + 0.5*Dx))
 	
 			r           = exp(p.bdn-p.bdg)
 			if(length(which(is.na(r)))>0){
@@ -548,7 +545,7 @@ function(object, ststart, stend, model="SI", niter=50000, burnin=5001, thinning=
 		
 			# 2.- STORE RESULTS:
 			# Parameters and latent states:
-			thgibbs[g,] = thg[idth]
+			thgibbs[g,] = thg
 			pigibbs[g,] = pig
 			if(Cont){
 				gagibbs[g,]  = gag
@@ -591,17 +588,17 @@ function(object, ststart, stend, model="SI", niter=50000, burnin=5001, thinning=
 		availpkg     = available.packages()
 		if(!is.element("snowfall", availpkg)){
 			warning("\nPackage 'snowfall' is not installed.\nSimulations will not be ran in parallel (computing time will be longer...)\n")
-			object   = lapply(1:nsim, multiMCMC)
+			out      = lapply(1:nsim, multiMCMC)
 		} else {
 			require(snowfall)
 			sfInit(parallel=TRUE, cpus=ncpus);
-			sfExport(list=c(paralvars, "parallel", "fx.fun", "mx.fun", "Sx.fun", "ObsMatFun", "c.low", "TestParsJumps", "nsim"))
+			sfExport(list=c(paralvars, "parallel", "nsim"))
 			sfLibrary(msm)
-			object   = sfClusterApplyLB(1:nsim, multiMCMC)
+			out     = sfClusterApplyLB(1:nsim, multiMCMC)
 			sfStop()
 		}
 	} else {
-		object   = lapply(1:nsim, multiMCMC)
+		out      = lapply(1:nsim, multiMCMC)
 	}
 	End        = Sys.time()
 
@@ -612,7 +609,7 @@ function(object, ststart, stend, model="SI", niter=50000, burnin=5001, thinning=
 	full.runs  = rep(0,nsim); names(full.runs) = simname
 	last.steps = full.runs
 	for(i in 1:nsim){
-		last.steps[i] = object[[i]]$g		
+		last.steps[i] = out[[i]]$g		
 		full.runs[i]  = ifelse(last.steps[i]==ng, 1, 0)
 	} 
 	id.failed  = which(full.runs==0)
@@ -623,7 +620,7 @@ function(object, ststart, stend, model="SI", niter=50000, burnin=5001, thinning=
 			cat(paste("Total MCMC computing time: ", round(as.numeric(julian(End)-julian(Start))*24*60, 2), " minutes\n\n", sep=""))
 			all.ran = TRUE
 		} else {
-			cat(paste("MCMC stopped at step ", object[[1]]$g,"\nPdf of ages at death equal to 0 for some individuals.\nModify starting parameters or jumps\n", sep=""))
+			cat(paste("MCMC stopped at step ", out[[1]]$g,"\nPdf of ages at death equal to 0 for some individuals.\nModify starting parameters or jumps\n", sep=""))
 		}
 	} else {
 	if(length(id.failed)>0 & length(id.failed)<nsim){
@@ -642,7 +639,7 @@ function(object, ststart, stend, model="SI", niter=50000, burnin=5001, thinning=
 	nthin      = length(thing)
 
 	# 7.1 Thinned result matrices:
-	if(Cont) pname  = c(thname[idth], ganame, piname, poname) else pname = c(thname[idth], piname, poname)
+	if(Cont) pname  = c(thname, ganame, piname, poname) else pname = c(thname, piname, poname)
 	Pmat       = matrix(NA, ng*nsim, length(pname))
 	dimnames(Pmat) = list(rep(simname, each=ng), pname)
 	Bimat      = matrix(NA, nthin*nsim, n)
@@ -653,14 +650,14 @@ function(object, ststart, stend, model="SI", niter=50000, burnin=5001, thinning=
 	for(i in 1:nsim){
 		Idsim       = which(rownames(Pmat)==simname[i])
 		if(Cont){
-			Pmat[Idsim,] = cbind(object[[i]]$theta, object[[i]]$gamma, object[[i]]$pi, object[[i]]$post)
+			Pmat[Idsim,] = cbind(out[[i]]$theta, out[[i]]$gamma, out[[i]]$pi, out[[i]]$post)
 		} else {
-			Pmat[Idsim,] = cbind(object[[i]]$theta, object[[i]]$pi, object[[i]]$post)
+			Pmat[Idsim,] = cbind(out[[i]]$theta, out[[i]]$pi, out[[i]]$post)
 		}
 		idthin[Idsim[thing]] = 1
 		Idsim       = which(rownames(Bimat)==simname[i])
-		Bimat[Idsim,] = object[[i]]$bi
-		Dimat[Idsim,] = object[[i]]$di
+		Bimat[Idsim,] = out[[i]]$bi
+		Dimat[Idsim,] = out[[i]]$di
 	}
 		
 	# 7.2 Basic summary statistics for parameters:
@@ -706,7 +703,7 @@ function(object, ststart, stend, model="SI", niter=50000, burnin=5001, thinning=
 				Dmode      = -2*modepost[which(modepost==max(modepost))[1]]
 				Dave       = mean(Dm)
 				pD         = Dave - Dmode	
-				k          = npi + length(idth)
+				k          = npi + nthm
 				if(Cont) k = k + nzc
 				DIC        = 2*Dave - Dmode
 				ModSel     = c(Dave, Dmode, pD, k, DIC)
@@ -723,8 +720,7 @@ function(object, ststart, stend, model="SI", niter=50000, burnin=5001, thinning=
 		bq        = apply(Bimat, 2, quantile, c(0.5, 0.025, 0.975))
 
 		# 7.3.4 Summary Survival and mortality:
-		thmat      = matrix(0, length(thing)*nsim, nth * nza); colnames(thmat) = Pname
-		thmat[,thname[idth]] = pmat[,thname[idth]]
+		thmat      = pmat[,thname]
 		if(Cont){
 			rzc       = apply(Zc, 2, quantile, c(0.5, 0.025, 0.975))
 			gave      = apply(as.matrix(pmat[,which(substr(colnames(pmat),1,2)=="ga")]),2,mean)
@@ -744,8 +740,8 @@ function(object, ststart, stend, model="SI", niter=50000, burnin=5001, thinning=
 			xvec[[zaname[i]]] = xv
 			for(j in 1:nrow(rzc)){
 				gaa    = sum(gave * rzc[j,])
-				Cols   = paste(colnames(modm), "[",zaname[i],"]", sep="")
-				if(nza==1) Cols = colnames(modm)
+				Cols   = paste(Thname, "[",zaname[i],"]", sep="")
+				if(nza==1) Cols = Thname
 				Sxq[[zaname[i]]][[zcname[j]]] = apply(apply(thmat[,Cols],1,S.x),1, quantile, c(0.5,0.025,0.975))
 				
 				mxq[[zaname[i]]][[zcname[j]]] = apply(apply(thmat[,Cols],1,m.x),1, quantile, c(0.5,0.025,0.975))
@@ -778,10 +774,10 @@ function(object, ststart, stend, model="SI", niter=50000, burnin=5001, thinning=
 	# Return a list object:
 	Settings           = c(niter, burnin, thinning, nsim)
 	names(Settings)    = c("niter", "burnin", "thinning", "nsim") 
-	ModelSpecs         = c(model, Prop.Hazards)
-	names(ModelSpecs)  = c("model","Prop.Hazards")
-	JumpPriors         = cbind(c(thj[idth],gaj), c(thp[idth],gap))
-	dimnames(JumpPriors) = list(c(thname[idth],ganame), c("Jump.sd", "Mean.priors"))
+	ModelSpecs         = c(model, Shape, Prop.Hazards)
+	names(ModelSpecs)  = c("model","Shape", "Prop.Hazards")
+	JumpPriors         = cbind(c(thj,gaj), c(thp,gap))
+	dimnames(JumpPriors) = list(c(thname,ganame), c("Jump.sd", "Mean.priors"))
 	if(!Cont) JumpPriors = JumpPriors[-nrow(JumpPriors), ]
 	output             = list()
 	output$coefficients= coef
