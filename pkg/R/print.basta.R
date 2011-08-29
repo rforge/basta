@@ -6,7 +6,8 @@ function(x, ...){
 	if(length(colnames(x$Zc))==1) concov = "NULL"
 	cat("\nCall:\n")
 	cat(paste("Model        \t\t", x$ModelSpecs[1],"\n",collapse=""))
-	cat(paste("Prop. hazards\t\t", x$ModelSpecs[2],"\n",collapse=""))
+	cat(paste("Shape        \t\t", x$ModelSpecs[2],"\n",collapse=""))
+	cat(paste("Prop. hazards\t\t", x$ModelSpecs[3],"\n",collapse=""))
 	cat(paste("Cat. covars  \t\t", catcov,"\n",collapse=""))
 	cat(paste("Cont. covars \t\t", concov,"\n",collapse=""))
 
