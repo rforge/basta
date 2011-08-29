@@ -42,7 +42,7 @@ function(object, ststart, stend, model="GO", Shape="simple", niter=50000, burnin
 		mx.fA     = function(x, th) exp(th[,1] + th[,2]*x)/(1+th[,3]*exp(th[,1])/th[,2]*(exp(th[,2]*x)-1))
 		Sx.fA     = function(x, th) (1+th[,3]*exp(th[,1])/th[,2]*(exp(th[,2]*x)-1))^(-1/th[,3])
 		nthA      = 3
-		lowA      = c(0, 0, 0)
+		lowA      = c(-Inf, 0, 0)
 		th.in     = c(-1, .25, 0.075)
 		jp.in     = c(0.001, 0.001, 0.001)
 		pr.in     = c(-2, 0.1, 0.001)
@@ -54,6 +54,7 @@ function(object, ststart, stend, model="GO", Shape="simple", niter=50000, burnin
 	if(Shape=="simple"){
 		mx.fun    = function(x, Th, ga) mx.fA(x, Th) * exp(ga)
 		Sx.fun    = function(x, Th, ga) Sx.fA(x, Th)^exp(ga)
+		nTh       = nthA
 		Low       = lowA
 		Th.in     = th.in
 		Jp.in     = jp.in
