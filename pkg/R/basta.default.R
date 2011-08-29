@@ -27,9 +27,9 @@ function(object, ststart, stend, model="GO", Shape="simple", niter=50000, burnin
 		Sx.fA     = function(x, th) exp(exp(th[,1])/th[,2] * (1 - exp(th[,2]*x)) )
 		nthA      = 2
 		lowA      = c(-Inf, -Inf)
-		th.in     = c(-1, 0.1)
+		th.in     = c(-1, 0.001)
 		jp.in     = c(0.05, 0.025)
-		pr.in     = c(-2, 0.01)
+		pr.in     = c(0.001, 0.001)
 	} else if(model=="WE"){
 		mx.fA     = function(x, th) th[,1] * th[,2]^th[,1] * x^(th[,1]-1)
 		Sx.fA     = function(x, th) exp(-(th[,2]*x)^th[,1])
@@ -120,7 +120,7 @@ function(object, ststart, stend, model="GO", Shape="simple", niter=50000, burnin
 		if(Shape=="bathtub"){
 			if(model=="GO"){
 				x.minf = (th[1]+log(th[2]) - th[4]-log(th[5]))/(th[2] + th[5])
-			} else if(model=="LO"){
+			} else if(model=="LO" | model=="WE"){
 				xx     = seq(0,100,0.1)
 				mxx    = mx.fun(xx, matrix(th,length(xx),nTh,byrow=TRUE),0)
 				x.minf = which(mxx==min(mxx))[1]
@@ -469,13 +469,15 @@ function(object, ststart, stend, model="GO", Shape="simple", niter=50000, burnin
 
 			p.thg       = fx.fun(xg + 0.5*Dx, Zthg, Zgag)
 			if(length(idtrg) > 0) p.thg[idtrg] = p.thg[idtrg]/Sx.fun(Ti-bg[idtrg] + 0.5*Dx, matrix(Zthg[idtrg,], ncol= nTh), matrix(Zgag[idtrg,], ncol= nzc))
-			p.thg[p.thg==0] = 1e-10
-			p.thg = sum(log(p.thg)) + sum(dtnorm(c(thg), c(thp), thv, lower=c(low), log=TRUE)) + sum(dnorm(gag, gap, gav, log=TRUE))
+			p.thg       = log(p.thg)
+			p.thg[p.thg==-Inf] = -1e1000
+			p.thg = sum(p.thg) + sum(dtnorm(c(thg), c(thp), thv, lower=c(low), log=TRUE)) + sum(dnorm(gag, gap, gav, log=TRUE))
 
 			p.thn       = fx.fun(xg + 0.5*Dx, Zthn, Zgan)
 			if(length(idtrg) > 0) p.thn[idtrg] = p.thn[idtrg]/Sx.fun(Ti-bg[idtrg] + 0.5*Dx, matrix(Zthn[idtrg,], ncol=nTh), matrix(Zgan[idtrg,], ncol=nzc))
-			p.thn[p.thn==0] = 1e-10
-			p.thn = sum(log(p.thn)) + sum(dtnorm(c(thn), c(thp), thv, lower=c(low), log=TRUE)) + sum(dnorm(gan, gap, gav, log=TRUE))
+			p.thn        = log(p.thn)
+			p.thn[p.thn==-Inf] = -1e1000
+			p.thn = sum(p.thn) + sum(dtnorm(c(thn), c(thp), thv, lower=c(low), log=TRUE)) + sum(dnorm(gan, gap, gav, log=TRUE))
 
 			r           = exp(p.thn-p.thg)
 			z           = runif(1,0,1)
@@ -511,13 +513,13 @@ function(object, ststart, stend, model="GO", Shape="simple", niter=50000, burnin
 			Ln          = c(apply(cbind(Tf, dn-1), 1, min))
 			On          = ObsMatFun(Fn, Ln, Tm)
     
-			p.bdg       = fx.fun(xg + 0.5*Dx, Zthg, Zgag)
-			p.bdg[p.bdg==0] = 1e-10
-			p.bdg       = log(p.bdg) + (Og - lfi) %*% log(1-Pig) + log(v.x(xg + 0.5*Dx))
+			p.bdg       = log(fx.fun(xg + 0.5*Dx, Zthg, Zgag))
+			p.bdg[p.bdg==-Inf] = -1e1000
+			p.bdg       = p.bdg + (Og - lfi) %*% log(1-Pig) + log(v.x(xg + 0.5*Dx))
 
-			p.bdn       = fx.fun(xn + 0.5*Dx, Zthg, Zgag)
-			p.bdn[p.bdn==0] = 1e-10
-			p.bdn       = log(p.bdn) + (On - lfi) %*% log(1-Pig) + log(v.x(xn + 0.5*Dx))
+			p.bdn       = log(fx.fun(xn + 0.5*Dx, Zthg, Zgag))
+			p.bdn[p.bdn==-Inf] = -1e1000
+			p.bdn       = p.bdn + (On - lfi) %*% log(1-Pig) + log(v.x(xn + 0.5*Dx))
 	
 			r           = exp(p.bdn-p.bdg)
 			if(length(which(is.na(r)))>0){
