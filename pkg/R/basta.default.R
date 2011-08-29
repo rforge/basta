@@ -691,7 +691,7 @@ function(object, ststart, stend, model="GO", Shape="simple", niter=50000, burnin
 			coef[,ncol(coef)] = conv[,'Rhat']
 
 			# Report if convergence was reached:
-			idnconv     = which(conv[,'Rhat']< 0.95 | conv[,'Rhat']>1.2)
+			idnconv     = which(conv[,'Rhat']< 0.95 | conv[,'Rhat']>1.1)
 			if(length(idnconv)>0){
 				ModSel     = NULL
 				warning("Convergence not reached for some survival parameters.\nDIC could not be calculated.\n", call.=FALSE)
