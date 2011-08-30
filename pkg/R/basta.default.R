@@ -37,7 +37,7 @@ function(object, ststart, stend, model="GO", Shape="simple", niter=50000, burnin
 		lowA      = c(0, 0)
 		th.in     = c(1, 0.1)
 		jp.in     = c(0.01, 0.001)
-		pr.in     = c(1, 0.1)
+		pr.in     = c(0.1, 0.01)
 	} else if(model=="LO"){
 		mx.fA     = function(x, th) exp(th[,1] + th[,2]*x)/(1+th[,3]*exp(th[,1])/th[,2]*(exp(th[,2]*x)-1))
 		Sx.fA     = function(x, th) (1+th[,3]*exp(th[,1])/th[,2]*(exp(th[,2]*x)-1))^(-1/th[,3])
