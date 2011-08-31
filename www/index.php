@@ -97,14 +97,14 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
                 <tr class="title"><td colspan="2" class="section">Package description</td></tr>
                 <tr style="background:#FFFFFF">
                   <td class="main">
-                    <p class="parag"><b>BaSTA</b> requires conventional data input (equivalent to other common capture-recapture softwares) and minimum user input (Fig. 2). The data required consist of a single table, in data frame format (see <a href="http://cran.r-project.org/doc/manuals/R-intro.html#Lists-and-data-frames"  rel="nofollow" class="intext">Introduction to R</a> on how to build data frames), where each row corresponds to an individual history. This table consist of a first column with individual id's, the next two columns for the times of birth and death, respectively, followed by the traditional capture history matrix. This capture history includes one column for each year of the study and assigns 1 when individuals are detected and 0 otherwise. The last columns are optional, and should include covariates such as sex, location id, birth weight, etc.<br><br>The current version includes:</p>
+                    <p class="parag"><b>BaSTA</b> requires conventional data input (equivalent to other common capture-recapture softwares) and minimum user input (Fig. 2). The data consist of a single table, in data frame format (see <a href="http://cran.r-project.org/doc/manuals/R-intro.html#Lists-and-data-frames"  rel="nofollow" class="intext">Introduction to R</a> on how to build data frames), where each row corresponds to an individual history. This table consist of a first column with individual id's, the next two columns for the times of birth and death, respectively, followed by the traditional capture history matrix. This capture history includes one column for each year of the study and assigns 1 when individuals are detected and 0 otherwise. The last columns are optional, and should include covariates such as sex, location id, birth weight, etc.<br><br>The current version includes:</p>
                     <ul>
                       <li>Functions for data formatting.</li>
                       <li>Data checking and correction of common data errors.</li>
                       <li>Estimates of age-specific survival parameters.</li>
                       <li>Estimates of yearly recapture probabilities.</li>
                       <li>Estimates latent (i.e. unknown) times of birth and death.</li>
-                      <li>Allows testing three different mortality functions (Gompertz, Gompertz-Makeham and Siler)(Gompertz 1925, Pletcher 1999, Siler 1979).</li>
+                      <li>Allows testing four different mortality functions (Exponential, Gompertz, Weibull and logistic) and to extend the model to Makeham or bathtub shapes.</li>
                       <li>Evaluates the effects of time-independent categorical and continuous covariates on survival.</li>
                     </ul>
                     <p><br></p>
