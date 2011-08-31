@@ -104,7 +104,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
                       <li>Estimates of age-specific survival parameters.</li>
                       <li>Estimates of yearly recapture probabilities.</li>
                       <li>Estimates latent (i.e. unknown) times of birth and death.</li>
-                      <li>Allows testing four different mortality functions (Exponential, Gompertz, Weibull and logistic) and to extend the model to Makeham or bathtub shapes.</li>
+                      <li>Allows testing four different mortality functions (Exponential, Gompertz, Weibull and logistic) and to extend the model to Makeham or bathtub shapes (Gompertz 1925, Siler 1979, Cox and Oakes 1984, Pletcher 1999).</li>
                       <li>Evaluates the effects of time-independent categorical and continuous covariates on survival.</li>
                     </ul>
                     <p><br></p>
@@ -157,11 +157,13 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
                     <p class="Refs">Clark, J.S. (2007) <b>Models for ecological data</b>. Princeton University Press, Princeton, New Jersey, USA.<br><br></p>
                     <p class="Refs">Colchero, F. and J. S. Clark (<i>in press</i>) <b>Bayesian inference on age-specific survival for censored and truncated data.</b> <i>Journal of Animal Ecology</i>.<br><br></p>
                     <p class="Refs">Colchero, F., O.R. Jones and M. Rebke (<i>In progress</i>) <b>BaSTA: an R package to estimate survival and mortality from incomplete mark-recapture data with covariates.</b><br><br></p>
+										<p class="Refs">Cox, D. R., and Oakes D. (1984) <b>Analysis of Survival Data</b>. Chapman and Hall, London.</b><br><br></p>
                     <p class="Refs">Gimenez, O., Bonner, S., King, R., Parker, R.A., Brooks, S.P., Jamieson, L.E., Grosbois, V., Morgan, B.J.T., Thomas, L. (2009) <b>WinBUGS for population ecologists: Bayesian modeling using Markov Chain Monte Carlo methods</b>. <u>In</u><i> Modeling Demographic Processes in Marked Populations. Ecological and Environmental Statistics Series, vol 3</i> (eds D.L. Thomson, E.G. Cooch &amp; M.J. Conroy), pp. 883-915. Springer, Berlin, Germany.<br><br></p>
-                    <p class="Refs">Gompertz, B. (1825) <b>On the nature of the function expressive of the law of human mortality, and on a new mode of determining the value of life contingencies</b>. <i>Philosophical Transactions of the Royal Society of London</i>, 115, 513-583.<br></p>
+                    
                     <a href="#top" class="totop">Back to top</a>
                   </td>
                   <td style="vertical-align:top;padding:40px" width="420px">
+										<p class="Refs">Gompertz, B. (1825) <b>On the nature of the function expressive of the law of human mortality, and on a new mode of determining the value of life contingencies</b>. <i>Philosophical Transactions of the Royal Society of London</i>, 115, 513-583.<br></p>
                     <p class="Refs">King, R. and Brooks, S.P. (2002) <b>Bayesian model discrimination for multiple strata capture-recapture data</b>. <i>Biometrika</i>, 89, 785-806.<br><br></p>
                     <p class="Refs">Knaus, J. (2010). <b>snowfall: Easier cluster computing (based on snow)</b>. R package version 1.84. <a href="http://CRAN.R-project.org/package=snowfall" rel="nofollow" style="color:#84002E" target="_blank">http://CRAN.R-project.org/package=snowfall</a><br><br></p>
                     <p class="Refs">Pletcher, S. (1999) <b>Model fitting and hypothesis testing for age-specific mortality data</b>. <i>Journal of Evolutionary Biology</i>, 12, 430-439.<br><br></p>
