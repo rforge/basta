@@ -467,15 +467,13 @@ function(object, ststart, stend, model="GO", Shape="simple", niter=50000, burnin
 			idtrg       = which(bg<Ti)
 			lidt        = length(idtrg)
 
-			p.thg       = fx.fun(xg + 0.5*Dx, Zthg, Zgag)
-			if(length(idtrg) > 0) p.thg[idtrg] = p.thg[idtrg]/Sx.fun(Ti-bg[idtrg] + 0.5*Dx, matrix(Zthg[idtrg,], ncol= nTh), matrix(Zgag[idtrg,], ncol= nzc))
-			p.thg       = log(p.thg)
+			p.thg       = log(fx.fun(xg + 0.5*Dx, Zthg, Zgag))
+			p.thg[idtrg] = p.thg[idtrg] - log(Sx.fun(Ti-bg[idtrg] + 0.5*Dx, matrix(Zthg[idtrg,], ncol= nTh), matrix(Zgag[idtrg,], ncol= nzc)))
 			p.thg[p.thg==-Inf] = -1e1000
 			p.thg = sum(p.thg) + sum(dtnorm(c(thg), c(thp), thv, lower=c(low), log=TRUE)) + sum(dnorm(gag, gap, gav, log=TRUE))
 
-			p.thn       = fx.fun(xg + 0.5*Dx, Zthn, Zgan)
-			if(length(idtrg) > 0) p.thn[idtrg] = p.thn[idtrg]/Sx.fun(Ti-bg[idtrg] + 0.5*Dx, matrix(Zthn[idtrg,], ncol=nTh), matrix(Zgan[idtrg,], ncol=nzc))
-			p.thn        = log(p.thn)
+			p.thn       = log(fx.fun(xg + 0.5*Dx, Zthn, Zgan))
+			p.thn[idtrg] = p.thn[idtrg] - log(Sx.fun(Ti-bg[idtrg] + 0.5*Dx, matrix(Zthn[idtrg,], ncol=nTh), matrix(Zgan[idtrg,], ncol=nzc)))
 			p.thn[p.thn==-Inf] = -1e1000
 			p.thn = sum(p.thn) + sum(dtnorm(c(thn), c(thp), thv, lower=c(low), log=TRUE)) + sum(dnorm(gan, gap, gav, log=TRUE))
 
