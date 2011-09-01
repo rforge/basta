@@ -2,11 +2,11 @@ summary.basta <-
 function(object,...){
 	
 	cat("\nCall:\n")
-	cat(paste("Model        \t\t", x$ModelSpecs[1],"\n",sep=""))
-	cat(paste("Shape        \t\t", x$ModelSpecs[2],"\n",sep=""))
-	cat(paste("Covars. structure\t\t", x$ModelSpecs[3],"\n",sep=""))
-	cat(paste("Cat. covars.  \t\t", x$ModelSpecs[4],"\n",sep=""))
-	cat(paste("Cont. covars. \t\t", x$ModelSpecs[5],"\n",sep=""))
+	cat(paste("Model             \t\t: ", object$ModelSpecs[1],"\n",sep=""))
+	cat(paste("Shape             \t\t: ", object$ModelSpecs[2],"\n",sep=""))
+	cat(paste("Covars. structure \t\t: ", object$ModelSpecs[3],"\n",sep=""))
+	cat(paste("Cat. covars.      \t\t: ", object$ModelSpecs[4],"\n",sep=""))
+	cat(paste("Cont. covars.     \t\t: ", object$ModelSpecs[5],"\n",collapse=""))
 
 	cat("\nModel settings:\n")
 	print(object$set)
