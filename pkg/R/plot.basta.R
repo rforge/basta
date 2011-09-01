@@ -62,8 +62,8 @@ function(x, plot.trace=TRUE, tracename = "theta", ...){
 		plot(c(0,mxv), range(0,1), col=NA, xlab="", ylab=expression(S(x)), main="Survival probability", frame.plot=FALSE, ...)
 		for(i in 1:nza){
 			xv         = x$xv[[i]]
-			polygon(c(xv, rev(xv)), c(x$Sx[[i]][[1]][2,], rev(x$Sx[[i]][[1]][3,])), col=Cols[i], border=Bord[i])
-			lines(xv, x$Sx[[i]][[1]][1,], col=Bord[i], lty=3)
+			polygon(c(xv, rev(xv)), c(x$Sx[[i]][[1]][,2,1], rev(x$Sx[[i]][[1]][,3,1])), col=Cols[i], border=Bord[i])
+			lines(xv, x$Sx[[i]][[1]][,1,1], col=Bord[i], lty=3)
 		}
 		if(nza>1) legend('topright', zname, pch=15, pt.cex=3, cex=1.5, col=Cols, bty='n')
 
@@ -72,8 +72,8 @@ function(x, plot.trace=TRUE, tracename = "theta", ...){
 		plot(c(0,mxv), ylmx, col=NA, xlab="Age (x)", ylab=expression(mu(x)), main="Mortality rate", frame.plot=FALSE, ylim=ylmx, ...)
 		for(i in 1:nza){
 			xv         = x$xv[[i]]
-			polygon(c(xv, rev(xv)), c(x$mx[[i]][[1]][2,], rev(x$mx[[i]][[1]][3,])), col=Cols[i], border=Bord[i])
-			lines(xv, x$mx[[i]][[1]][1,], col=Bord[i], lty=3)
+			polygon(c(xv, rev(xv)), c(x$mx[[i]][[1]][,2,1], rev(x$mx[[i]][[1]][,3,1])), col=Cols[i], border=Bord[i])
+			lines(xv, x$mx[[i]][[1]][,1,1], col=Bord[i], lty=3)
 		} 
 		par(op)
 	}
