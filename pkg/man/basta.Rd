@@ -22,7 +22,7 @@ basta(object, \dots)
   \item{ststart }{the first year of the study.}
   \item{stend }{the last year of the study.}
   \item{model }{the underlying mortality model to be used. "EX" = exponential, GO"= Gompertz, "WE" = Weibull and "LO" = logistic (see \code{details}).}
-  \item{Shape }{The overall shape of the model. Values are: \code{simple} = no extra parameters added; \code{Makeham} = a constant parameter is added to the mortality rate; and \code{bathtub} = a Gompertz declining mortality for early ages and a constant parameter are added to the mortality model.}
+  \item{Shape }{The overall shape of the model. Values are: \code{simple} = no extra parameters added; \code{Makeham} = a constant parameter is added to the mortality rate; and \code{bathtub} = a Gompertz declining mortality for early ages and a constant parameter are added to the mortality model (see \code{details}).}
   \item{covar.str }{character string that indicates how covariates should be evaluated. The options are: \dQuote{\code{mixed}}, which puts all categorical variables as covariates for each mortality parameter and all continuous covariates under a proportional hazards structure; \dQuote{\code{prop.haz}}, which puts all covariates under a proportional hazards structure; and \dQuote{\code{all.in.mort}} puts all covariates as a multilevel function of the mortality parameters (see \code{details}).}
   \item{niter }{the total number of MCMC steps.}
   \item{burnin }{number of iterations for the burn in (see details).}
