@@ -10,11 +10,12 @@ This function performs multiple Monte Carlo Markov Chain (MCMC) algorithms for B
 basta(object, \dots)
 
 \method{basta}{default}(object, ststart, stend, model = "GO", Shape="simple",
-      niter = 50000, burnin = 5001, thinning = 50, rptp = ststart,
-      th.ini.pars = NULL, th.jumps = NULL, th.priors = NULL, 
-      Prop.Hazards = FALSE, ga.ini.pars = NULL, ga.jumps = NULL, 
-      ga.priors = NULL, nsim = 1, parallel = FALSE, ncpus = 2,
-      lifetable=TRUE, progr.plot = FALSE, \dots)
+      covar.str = "mixed", niter = 50000, burnin = 5001, 
+      thinning = 50, rptp = ststart,th.ini.pars = NULL, 
+      th.jumps = NULL, th.priors = NULL, ga.ini.pars = NULL, 
+      ga.jumps = NULL, ga.priors = NULL, nsim = 1, 
+      parallel = FALSE, ncpus = 2, lifetable=TRUE, 
+      progr.plot = FALSE, \dots)
 }
 \arguments{
   \item{object }{a \code{data.frame} to be used as an input data file for BaSTA. The first is a column of individual unique ID's, the second and third columns are birth and death years respectively. Columns 4-(nt-1) represent the observation window of nt years. This is followed (optionally) by columns for categorical and continous covariates (see details). }
@@ -22,6 +23,7 @@ basta(object, \dots)
   \item{stend }{the last year of the study.}
   \item{model }{the underlying mortality model to be used. "EX" = exponential, GO"= Gompertz, "WE" = Weibull and "LO" = logistic (see \code{details}).}
   \item{Shape }{The overall shape of the model. Values are: \code{simple} = no extra parameters added; \code{Makeham} = a constant parameter is added to the mortality rate; and \code{bathtub} = a Gompertz declining mortality for early ages and a constant parameter are added to the mortality model.}
+  \item{covar.str }{character string that indicates how covariates should be evaluated. The options are: \dQuote{\code{mixed}}, which puts all categorical variables as covariates for each mortality parameter and all continuous covariates under a proportional hazards structure; \dQuote{\code{prop.haz}}, which puts all covariates under a proportional hazards structure; and \dQuote{\code{all.in.mort}} puts all covariates as a multilevel function of the mortality parameters (see \code{details}).}
   \item{niter }{the total number of MCMC steps.}
   \item{burnin }{number of iterations for the burn in (see details).}
   \item{thinning }{number of skipped MCMC steps to minimize serial autocorrelation (see details).}
@@ -29,7 +31,6 @@ basta(object, \dots)
   \item{th.ini.pars }{a vector defining the initial values for each parameter on the survival model. The number of parameters should be: 2 for Gompertz, three for Gompertz-Makeham and 5 for Siler (see details). The default is set to \code{NULL} and thus a set of random parameters is generated for each simulation.}
   \item{th.jumps }{a vector defining the size of jumps for each survival model parameter (standard error in the Metropolis step). The number of parameters will depend on the model selected.}
   \item{th.priors }{a vector defining the priors for each survival parameter. The vector takes the same format as described for \code{th.jumps}.}
-  \item{Prop.Hazards }{a logical argument that indicates if covariates should be evaluated under a proportional hazards framework. Default is \code{FALSE}. However, if continuous covariates are included in the model, those will be evaluated using a proportional hazards framework (see details).}
   \item{ga.ini.pars }{a vector of initial parameters for the proportional hazards section of the model. These can be specified when Prop.Hazards is TRUE or when continuous covariates are evaluated (see details). As with \code{th.ini.pars}, the default is set to \code{NULL} and thus default values are assigned (i.e. all equal to 0).}
   \item{ga.jumps }{a vector of jump standard errors for the proportional hazards parameters. The number of jumps will be equal to the number of covariates when the argument \code{Prop.Hazards} is set to TRUE, or to the number of continuous covariates to be evaluated. In case any of these two conditions are met and the default is used (i.e. NULL), the model automatically assigns builtin jump values.}
   \item{ga.priors }{a vector of mean priors for the proportional hazards parameters. The specification follows the same rules as \code{cjumps}.}
@@ -41,37 +42,60 @@ basta(object, \dots)
   \item{\dots }{ignored.}
 }
 \details{
-To construct the input data \code{object} the function \code{\link{CensusToCaptHist}} can be used to build the capture-recapture matrix, while function \code{\link{makecovm}} for the covariates (design) matrix.
+To construct the input data \code{object} the function \code{\link{CensusToCaptHist}} can be used to build the capture-recapture matrix, while the covariates (design) matrix can be constructed with function \code{\link{makecovm}} .
 
-The \code{burnin} argument represents the number of steps at the begining of the MCMC run that should be discarded. This sequence commonly corresponds to the non-converged section of the MCMC sequence. Convergence and model selection measures are calculated from the remaining thinned parameter chains.
+\code{BaSTA} uses parametric mortality functions to estimate age-specific mortality (survival) from capture-recapture/recovery data. The mortality rate function describes how the risk of mortality changes with age, and is defined as \eqn{\mu(x | \theta)}, where \eqn{x} correspond to age and \eqn{\theta} are parameters to be estimated. 
 
-The argument \code{thinning} specifies the number of steps to be skipped to reduce serial autocorrelation. The thinned sequence, which includes only steps after burnin is then used to calculated convergence statistics and model selection.
+Argument \code{model} allows choosing between four basic mortality rate functions: 
 
-The survival (mortality) part of the model includes two main sections: a) the actual survival section, defined by \code{model}; and b) a proportional hazards section, defined by the logical argument \code{Prop.Hazards}. Parameters associated with section a) belong to the generic parameters defined by \eqn{\theta}, while those in section b) belong to parameters \eqn{\Gamma}. The full model is defined as: 
+a) Exponential (\dQuote{\code{EX}}; Cox and Oakes 1974), with constant mortality rate:
+
+\deqn{\mu_b(x | \mathbf{b}) = b}
+with \eqn{b > 0}.
+
+b) Gompertz (\dQuote{\code{GO}}; Gompertz 1925, Pletcher 1999): 
+
+\deqn{\mu_b(x | \mathbf{b}) = e^{b_0 + b_1 x}}
+with \eqn{-\infty < b_0, b_1 < \infty}.
+
+
+c) Weibull (\dQuote{\code{WE}}; Pinder III \emph{et al.} 1978):
+
+\deqn{\mu_b(x | \mathbf{b}) = b_0 b_1^{b_0} x^{b_0 -1}}
+with \eqn{b_0, b_1 > 0}.
+
+
+d) logistic (\dQuote{\code{LO}}; Pletcher 1999):
+
+\deqn{\mu_b(x | \mathbf{b}) = \frac{e^{b_0 + b_1 x}}{1+b_2 e^{b_0}/\beta_1 (e^{b_1 x}-1)}}
+with\eqn{b_0, b_1, b_2 > 0}.
+
+Argument \code{Shape} allows to extend these models to explore more complex mortality shapes. The default value is \dQuote{\code{simple}} which leaves the model as defined above. With value \dQuote{\code{Makeham}}, a constant is added to the mortality rate, making the model equal to \eqn{\mu_0(x | \theta)= \mu_b(x | \mathbf{b}) + c}, where \eqn{\theta = [c, \mathbf{b}]}. With value \dQuote{\code{bathtub}} concave shapes in mortality can be explored. This is achieved by adding a declining Gompertz term and a constant parameter to the basic mortality model, namely:
+
+\deqn{\mu_0(x | \theta) = e^{a_0 - a_1 x} + c + \mu_b(x | \mathbf{b})}.
+with \eqn{-\infty < a_0 < \infty}, \eqn{a_1 > 0} and \eqn{c > - (e^{a_0 - a_1 x_m} + \mu_b(x_m | \mathbf{b}))} where \eqn{x_m} is the age at which \eqn{\mu_0(x | \theta)} reaches the mininum vale.
+
+To incorporate covariates into the inference process, the mortality model is further extended by including a proportional hazards structure, of the form: 
 
 \deqn{\mu(x | \theta, \Gamma, \mathbf{Z}_a, \mathbf{Z}_c) = \mu_0(x | \theta, \mathbf{Z}_a) \, e^{\Gamma \mathbf{Z}_c}}
 
-where \eqn{\mu_0(x | \theta, \mathbf{Z}_a)} represents the survival section a) while the second term \eqn{e^{\Gamma \mathbf{Z}_c}} corresponds to section b) and \eqn{\mathbf{Z}_a} and \eqn{\mathbf{Z}_c} are covariate (design) matrices for categorical and continuous covariates, respectively. If argument \code{Prop.Hazards} is set to \dQuote{FALSE}, these two design matrices are built (given that the two types of covariates are included in \code{object}). If the argument is set to \dQuote{TRUE}, all covariates are included in section b) and only one set of mortality parameters are evaluated in section a). 
+where \eqn{\mu_0(x | \theta, \mathbf{Z}_a)} represents the mortality section as defined above, while the second term \eqn{e^{\Gamma \mathbf{Z}_c}} corresponds to the proportional hazards function.  \eqn{\mathbf{Z}_a} and \eqn{\mathbf{Z}_c} are covariate (design) matrices for categorical and continuous covariates, respectively.
 
-At this point, \code{basta} has builtin three survival (mortality) models for section a) as described in Colchero and Clark (2011) (Suplemental Online material S1). The simplest model is Gompertz (\dQuote{\code{GO}}; Gompertz 1925) with two parameters \eqn{\theta = [\alpha, \beta]}, for which the mortality rate is defined as:
+When covariates are included in the dataset, the model provides three different ways in which these can be evaluated by using argument \code{covar.str}: 
 
-\deqn{\mu_0(x | \theta) = e^{\alpha + \beta x}}.
-with \eqn{-\infty < \alpha < \infty} and \eqn{-\infty < \beta < \infty}.
+1.- \dQuote{\code{mixed}} will make the mortality parameters linear functions of all categorical covariates (analogous to a GLM structure) and will put all continuous covariates under a proportional hazards structure. Thus, for a simple exponential mortality rate of the form \eqn{\mu_0(x | b) = b}, the parameter is equal to \eqn{b = b_0 + b_1 z_1 + \dots}, where \eqn{[b_0, \dots, b_k]} are paramters that link the mortality parameter \eqn{b} with the categorical covariates \eqn{[z_1,\dots,z_k]}.
 
-The folowing model is Gompertz-Makeham (\dQuote{\code{GM}}) with three parameters \eqn{\theta = [c, \alpha, \beta]}, with mortality rate:
+2.- \dQuote{\code{prop.haz}} will put all covariates under a proportional hazards structure irrespective of the type of variable.
 
-\deqn{\mu_0(x | \theta) = c + e^{\alpha + \beta x}}.
-with \eqn{c > -e^{\alpha}} if \eqn{\beta > 0} and \eqn{c > 0} otherwise, \eqn{-\infty < \alpha < \infty} and \eqn{-\infty < \beta < \infty}.
+3.- \dQuote{\code{all.in.mort}} will put all covariates as linear functions of the survival parameters as explained above. Since most models require the lower bounds for the mortality parameters to be equal to 0, the only model that can be used for this test is Gompertz with \code{Shape} set to \dQuote{\code{simple}}. In case these arguments are specified deferently, a warning message is printed noting that \code{model} will be forced to be \dQuote{\code{GO}} and \code{Shape} will be set to \dQuote{\code{simple}}.
 
-The third model is Siler (\dQuote{\code{SI}}), with five parametes \eqn{\theta = [\alpha_1, \beta_1, c, \alpha_2, \beta_2]}, and with mortality rate:
+The \code{burnin} argument represents the number of steps at the begining of the MCMC run that should be discarded. This sequence commonly corresponds to the non-converged section of the MCMC sequence. Convergence and model selection measures are calculated from the remaining thinned parameter chains if multiple simulations are ran, and all of them finish proporperly.
 
-\deqn{\mu(x | \theta)_0 = e^{\alpha_1 - \beta_1 x} + c + e^{\alpha_2 + \beta_2 x}}.
-with \eqn{-\infty < \alpha_1 < \infty} and \eqn{-\infty < \alpha_2 < \infty}, \eqn{\beta_1 > 0} and \eqn{\beta_2 > 0} and \eqn{c > - (e^{\alpha_1 - \beta_1 x_m} + e^{\alpha_2 - \beta_2 x_m})} where \eqn{x_m} is the age at which \eqn{\mu_0(x | \theta)} reaches the mininum vale, and is calculated as:
-\deqn{x_m = (\alpha_1+\log(\beta_1) - \alpha_2-\log(\beta_2))/(\beta_1 + \beta_2)}.
+The argument \code{thinning} specifies the number of steps to be skipped to reduce serial autocorrelation. The thinned sequence, which includes only steps after burnin is then used to calculated convergence statistics and model selection.
 
-The number of parameters in \code{th.ini.pars} is a vector defining the initial values for each parameter on the survival model of section a). The number of parameters will depend on the model chosen with \code{model}(see above). If the number of parameters specified does not match the number of parameters inherent to the model selected, the function returns an error. If no th.pars.mat argument is specified (i.e. default is NULL), the model randomly generates initial parameters.
- 
-As described above, the number of parameters for argument \code{ga.ini.pars} (i.e. section b), namely the proportional hazards section, will be a function of the number of continuous covariates (\eqn{+ 1} for the intercept) if argument \code{Prop.Hazards} is \dQuote{FALSE}, else the number of parameters needs to be equal to the total number of covariates.
+The number of parameters in \code{th.ini.pars} is a vector or a matrix defining the initial values for each \eqn{\theta} parameter of the mortality function. The number of parameters will depend on the model chosen with \code{model}(see above). If the number of parameters specified does not match the number of parameters inherent to the model and shape selected, the function returns an error. If no th.pars.mat argument is specified (i.e. default is NULL), the model randomly generates initial parameters. 
+
+As described above, the number of parameters for argument \code{ga.ini.pars} (i.e. section b), namely the proportional hazards section, will be a function of the number of continuous covariates if argument \code{covar.str} is \dQuote{\code{mixed}}, or to the total number of covariates when \code{covar.str} is \dQuote{\code{prop.haz}}.
 }
 
 \value{
@@ -80,7 +104,7 @@ As described above, the number of parameters for argument \code{ga.ini.pars} (i.
 	\item{ModSel }{Basic DIC calculations for model selection (Spiegelhalter \emph{et al.} 2002) These values need to be taken only as a reference (see comments to Spiegelhalter \emph{et al.} 2002). In the future the package will include routines for reversible jump Monte Carlo Markov Chain (RJMCMC, see King & Brooks 2002). If none or some of the simulations did not run through, then the returned value is \dQuote{NULL}.}
 	\item{Convergence }{If called by \code{\link{summary}}, matrix with convergence coefficients based on potential scale reduction as described by Gelman \emph{et al.} (2004). If only one simulation was ran, then the returned value is \dQuote{NULL}.}
   \item{settings }{If called by \code{\link{summary}}, vector indicating the number of iterations for each MCMC, the burn in sequence, the thinning interval and the number of simulations ran, as specified by the user.}
-	\item{ModelSpecs }{Model specifications inidicating the model and the Shape used as specified by the user.}
+	\item{ModelSpecs }{Model specifications inidicating the model, the Shape and the covariate structure used as specified by the user.}
 	\item{JumpPriors }{If requested or called by functions \code{summary} or \code{\link{summary.basta}}, a matrix with the jumps and priors used in the model.}
 	\item{Params }{If requested, the full matrix of parameter estimates. The row names indicate the simulation to which they correspond.}
 	\item{Bis }{If requested, the full matrix of estimates of times of birth. The row names indicate the simulation to which they correspond.}
@@ -128,7 +152,7 @@ new.dat  <- DataCheck(basta.dat, ststart=100,
 
 ## Run short version of BaSTA on the data (+/- 1.5 mins.):
 out      <- basta(basta.dat, ststart=100, stend=120, 
-            model="GO", niter=2000, burnin=1001, 
+            model="GO", Shape="simple", niter=2000, burnin=1001, 
             thinning=10, th.jumps=c(0.05,0.025), 
             ga.jumps=0.025, prog.plot=TRUE)
 
