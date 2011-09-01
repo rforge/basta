@@ -832,8 +832,8 @@ function(object, ststart, stend, model="GO", Shape="simple", covar.str = "mixed"
 	# Return a list object:
 	Settings           = c(niter, burnin, thinning, nsim)
 	names(Settings)    = c("niter", "burnin", "thinning", "nsim") 
-	ModelSpecs         = c(model, Shape, covar.str)
-	names(ModelSpecs)  = c("model","Shape", "Covar. structure")
+	ModelSpecs         = c(model, Shape, covar.str, paste(names(Ith$cat), collapse = ", "), paste(names(Ith$cont), collapse=", "))
+	names(ModelSpecs)  = c("model","Shape", "Covar. structure", "Categorical", "Continuous")
 	JumpPriors         = cbind(c(thj,gaj), c(thp,gap))
 	dimnames(JumpPriors) = list(c(thname,ganame), c("Jump.sd", "Mean.priors"))
 	if(!Cont) JumpPriors = JumpPriors[-nrow(JumpPriors), ]
