@@ -1,19 +1,11 @@
 basta.default <-
-function(object, ststart, stend, model="GO", Shape="simple", niter=50000, burnin=5001, thinning=50, rptp = ststart, th.ini.pars=NULL, th.jumps=NULL, th.priors=NULL, Prop.Hazards = FALSE, ga.ini.pars=NULL, ga.jumps=NULL, ga.priors=NULL, nsim=1, parallel=FALSE, ncpus=2, lifetable=TRUE, progr.plot=FALSE, ...){
+function(object, ststart, stend, model="GO", Shape="simple", covar.str = "mixed", niter=50000, burnin=5001, thinning=50, rptp = ststart, th.ini.pars=NULL, th.jumps=NULL, th.priors=NULL, ga.ini.pars=NULL, ga.jumps=NULL, ga.priors=NULL, nsim=1, parallel=FALSE, ncpus=2, lifetable=TRUE, progr.plot=FALSE, ...){
 
-	# 0. Load package msm:
+	# 1. Load package msm:
 	require(msm)
 
-	# 1. object error checking:
-	tempcheck   = DataCheck(object, ststart, stend, silent=TRUE)
-	if(tempcheck[[1]] == FALSE) stop("You have an error in Dataframe 'object',\nplease use function 'DataCheck'\n", call.=FALSE)
-
-    # 2. Check that niter, burnin, and thinning are compatible.
-    if(burnin>niter) stop("\nObject 'burnin' larger than 'niter'.")
-    if(thinning>niter) stop("\nObject 'thinning' larger than 'niter'.")
-    
-    # 3. Functions:
-    # 3.1 Survival, mort, pdf:
+    # 2. Functions:
+    # 2.1 Survival, mort, pdf:
 	if(model=="EX"){
 		mx.fA     = function(x, th) th
 		Sx.fA     = function(x, th) exp(- th * x )
@@ -37,7 +29,7 @@ function(object, ststart, stend, model="GO", Shape="simple", niter=50000, burnin
 		lowA      = c(0, 0)
 		th.in     = c(1, 0.1)
 		jp.in     = c(0.01, 0.001)
-		pr.in     = c(0.1, 0.01)
+		pr.in     = c(1, 0.01)
 	} else if(model=="LO"){
 		mx.fA     = function(x, th) exp(th[,1] + th[,2]*x)/(1+th[,3]*exp(th[,1])/th[,2]*(exp(th[,2]*x)-1))
 		Sx.fA     = function(x, th) (1+th[,3]*exp(th[,1])/th[,2]*(exp(th[,2]*x)-1))^(-1/th[,3])
@@ -86,7 +78,7 @@ function(object, ststart, stend, model="GO", Shape="simple", niter=50000, burnin
 	S.x         = function(Th) Sx.fun(xv, matrix(Th, ncol=nTh), gaa)
 	m.x         = function(Th) mx.fun(xv, matrix(Th, ncol=nTh), gaa)
 
-	# 3.2 object processing:
+	# 2.2 object processing:
 	Ith.fun <- function(Z){
 		lu          = apply(Z, 2, function(x) length(unique(x)))
 		ru          = apply(Z, 2, range)
@@ -160,8 +152,12 @@ function(object, ststart, stend, model="GO", Shape="simple", niter=50000, burnin
 
 	paralvars   = c("mx.fA", "Sx.fA", "fx.fun", "mx.fun", "Sx.fun", "ObsMatFun", "c.low", "Thname", "nthA")
 	
-    # 3. Model structure setup:
-    # 3.1 Extract raw data:
+	# 2. Input error checking and data extraction:
+	# 2.1 Data errors:
+	tempcheck   = DataCheck(object, ststart, stend, silent=TRUE)
+	if(tempcheck[[1]] == FALSE) stop("You have an error in Dataframe 'object',\nplease use function 'DataCheck'\n", call.=FALSE)
+
+    # 2.2 Extract raw data:
 	Ti          = ststart
 	Tf          = stend
 	st          = Ti:Tf
@@ -171,9 +167,9 @@ function(object, ststart, stend, model="GO", Shape="simple", niter=50000, burnin
 	bd          = as.matrix(object[,2:3])
 	Y           = as.matrix(object[,1:nt+3]); colnames(Y) = st
 
-	paralvars   = c(paralvars, "Ti", "Tf", "st", "nt", "n", "bd", "Y", "rptp", "progr.plot", "model", "Shape") 
+	paralvars   = c(paralvars, "Ti", "Tf", "st", "nt", "n", "bd", "Y", "rptp", "progr.plot") 
 
-	# 3.2 Extract covariates:
+	# 2.3 Extract covariates:
 	# a) Find if there are covariates:
 	if(ncol(object)>nt+3){
 		Z         = as.matrix(object[,(nt+4):ncol(object)])
@@ -181,35 +177,52 @@ function(object, ststart, stend, model="GO", Shape="simple", niter=50000, burnin
 		Covars    = TRUE
 		
 		# Find if the model is Prop. Hazards:
-		if(Prop.Hazards){
+		if(covar.str=="prop.haz"){
 			Zc     = Z
 			Za     = matrix(1, n, 1); colnames(Za) = "NZa"
 			Cat    = FALSE
 			Cont   = TRUE
 		} else {
-		
-			# Find if there are continuous covariates:
-			if(!is.null(Ith$cont)){
-				Zc     = matrix(Z[,Ith$cont], nrow(Z), length(Ith$cont))
-				Zc     = t(t(Zc)-apply(Zc,2,mean))
-				colnames(Zc) = colnames(object)[(nt+4):ncol(object)][Ith$cont]
-				Cont   = TRUE
-			} else {
-				Zc     = matrix(0,n,1); colnames(Zc) = "NZc"
-				Cont   = FALSE
-			}
-		
-			# Find if there are categorical covariates:
-			if(!is.null(Ith$cat)){
-				Za     = Z[,Ith$cat]
-				if(!is.null(Ith$int)){
+			
+			# If all covariates should be included in the mortality section:
+			if(covar.str=="all.in.mort" & !is.null(Ith$cont)){
+				Za   = Z
+				Zac  = matrix(Z[,Ith$cont], nrow(Z), length(Ith$cont))
+				colnames(Zac) = names(Ith$cont)
+				Za[,Ith$cont] = t(t(Zac)-apply(Zac,2,mean))
+				Za   = Za[,c(Ith$int,Ith$cat, Ith$cont)]
+				if(is.null(Ith$cat) & is.null(Ith$int)){
 					Za   = cbind(1,Za)
-					colnames(Za) = c("Intercept", colnames(Za)[-1])
+					colnames(Za) = c("Intercept", names(Ith$cont))
 				}
-				Cat    = TRUE
+				Ith   = Ith.fun(Za)
+				Zc   =  matrix(0,n,1); colnames(Zc) = "NZc"
+				Cont   = FALSE
 			} else {
-				Za     = matrix(1, n, 1); colnames(Za) = "NZa"
-				Cat    = FALSE
+		
+				# Find if there are continuous covariates:
+				if(!is.null(Ith$cont) & covar.str!="all.in.mort"){
+					Zc     = matrix(Z[,Ith$cont], nrow(Z), length(Ith$cont))
+					Zc     = t(t(Zc)-apply(Zc,2,mean))
+					colnames(Zc) = colnames(object)[(nt+4):ncol(object)][Ith$cont]
+					Cont   = TRUE
+				} else {
+					Zc     = matrix(0,n,1); colnames(Zc) = "NZc"
+					Cont   = FALSE
+				}
+		
+				# Find if there are categorical covariates:
+				if(!is.null(Ith$cat)){
+					Za     = Z[,Ith$cat]
+					if(!is.null(Ith$int)){
+						Za   = cbind(1,Za)
+						colnames(Za) = c("Intercept", colnames(Za)[-1])
+					}
+					Cat    = TRUE
+				} else {
+					Za     = matrix(1, n, 1); colnames(Za) = "NZa"
+					Cat    = FALSE
+				}
 			}
 		}
 	} else {
@@ -224,9 +237,33 @@ function(object, ststart, stend, model="GO", Shape="simple", niter=50000, burnin
 	nza         = ncol(Za)
 	nzc         = ncol(Zc)
 
-	paralvars   = c(paralvars,"Za","Zc","Cont","nza","nzc") 
+	paralvars   = c(paralvars,"Za","Zc","Cont","nza","nzc", "Ith") 
 
-	# 3.3. Model Matrix and lower limits for parameters:
+    # 2.4 Check that niter, burnin, and thinning are compatible.
+    if(burnin>niter) stop("\nObject 'burnin' larger than 'niter'.", call.=FALSE)
+    if(thinning>niter) stop("\nObject 'thinning' larger than 'niter'.", call.=FALSE)
+    
+    # 1.4 Model type, shape and covariate structure:
+    if(!is.element(model, c("EX","GO","WE","LO"))) stop("\nModel misspecification: specify available models (i.e. 'EX', 'GO', 'WE' or 'LO')\n", call.=FALSE)
+    if(!is.element(Shape, c("simple","Makeham","bathtub"))) stop("\nShape misspecification: specify available shapes (i.e. 'simple','Makeham' or 'bathtub')\n", call.=FALSE)
+    if(!is.element(covar.str, c("mixed","prop.haz","all.in.mort"))) stop("\nCovariate structure misspecification: specify available structures (i.e. 'mixed','prop.haz' or 'all.in.mort')\n", call.=FALSE)
+    
+    # 2.5 All covariates in mortality:
+    if(covar.str == "all.in.mort"){
+    	if(!is.null(Ith$cont)){
+    	if(model!="GO") warning("To test effects of continuous and categorical covariates in rate parameter of mortality functon only simple Gompertz (GO) model can be used. Model and Shape arguments were changed to 'GO' and 'simple', respectively.\n", call.=FALSE)
+    	model        = "GO"
+    	Shape        = "simple"
+    	} else {
+    		warning("No continuous covariates were included in the data. Argument 'covar.str' will be set to 'mixed'.\n", call.=FALSE)
+    		covar.str = 'mixed'
+    	}
+    }
+    
+	paralvars   = c(paralvars, "model", "Shape", "covar.str")
+	
+	# 3. MCMC prep:
+	# 3.1 Model Matrix and lower limits for parameters:
 	thname      = paste(rep(Thname,each=nza), "[",rep(colnames(Za), nTh),"]", sep="")
 	if(nza==1) thname = Thname
 	nthm        = length(thname)
@@ -238,29 +275,32 @@ function(object, ststart, stend, model="GO", Shape="simple", niter=50000, burnin
 
 	paralvars   = c(paralvars, "nTh","nthm", "thname", "ganame", "piname", "poname", "low") 
 
-	# 3.4 MCMC setup variables:
+	# 3.2 MCMC setup variables:
 	ng          = niter
 	bng         = burnin
 	thint       = thinning
 
 	paralvars   = c(paralvars, "ng", "bng", "thint") 
 
-	# 3.5 Verify th.jumps, initial parameters and th.priors: 
-	# 3.5.1 Survival model:
+	# 3.3 Verify th.jumps, initial parameters and th.priors: 
+	# 3.3.1 Survival model:
 	# a) Initial parameters:
 	thg        = CheckPars(Th.in, th.ini.pars, "theta")
+	if(covar.str=="all.in.mort" & is.null(th.ini.pars)) thg[names(Ith$cont),] = 0
 	thgini    = thg
 
 	# b) Jumps:
 	thj       = CheckPars(Jp.in, th.jumps, "jumps")
+	if(covar.str=="all.in.mort" & is.null(th.jumps)) thj[names(Ith$cont),] = 0.001
 	thjini    = thj
 
 	# c) Priors:
 	thp       = CheckPars(Pr.in, th.priors, "priors")
+	if(covar.str=="all.in.mort" & is.null(th.priors)) thp[names(Ith$cont),] = 0
 	thpini    = thp
 	
 	
-	# 3.5.2 Proportional hazards section:
+	# 3.3.2 Proportional hazards section:
 	if(Cont){
 		
 		# a) Initial parametes:
@@ -314,16 +354,16 @@ function(object, ststart, stend, model="GO", Shape="simple", niter=50000, burnin
 	}
 
 
-	# 3.6 Model variables:
-	# 3.6.1 Extract times of birth and death:
+	# 3.4 Model variables:
+	# 3.4.1 Extract times of birth and death:
 	bi          = bd[,1]
 	di          = bd[,2]
 
-	# 3.6.2 Define study duration:
+	# 3.4.2 Define study duration:
 	Dx          = (st[2]-st[1])
 	Tm          = matrix(st, n, nt, byrow=TRUE)
 
-	# 3.6.3 Calculate first and last time observed:
+	# 3.4.3 Calculate first and last time observed:
 	ytemp       = t(t(Y) * st)
 	li          = c(apply(ytemp,1,max))
 	ytemp[ytemp==0] = 10000
@@ -331,12 +371,12 @@ function(object, ststart, stend, model="GO", Shape="simple", niter=50000, burnin
 	fi[fi==10000] = 0
 	rm("ytemp")
 
-	# 3.6.4 Calculate number of times detected:
+	# 3.4.4 Calculate number of times detected:
 	oi          = Y %*% rep(1, nt)
 
 	paralvars   = c(paralvars, "bi", "di", "Dx", "Tm", "li", "fi") 
 
-	# 3.6.5 Priors:
+	# 3.4.5 Priors:
 	# a) Survival parameters:
 	Zthp        = Za %*% thp
 	thv         = 0.5
@@ -361,7 +401,7 @@ function(object, ststart, stend, model="GO", Shape="simple", niter=50000, burnin
 
 	paralvars   = c(paralvars, "Zthp", "thv", "Zgap", "gav", "Ex", "v.x", "idpi", "npi", "rho1", "rho2") 
 
-	# 3.6.6 Starting values:
+	# 3.4.6 Starting values:
 	# a) Survival parameters
 	Zthg        = Za %*% thg
 		
@@ -399,12 +439,14 @@ function(object, ststart, stend, model="GO", Shape="simple", niter=50000, burnin
 	paralvars   = c(paralvars, "Fg", "Lg", "Og", "lfi") 
 
 
-	# 5.  Multiple MCMC function:
+	# 4.  Multiple MCMC function:
 	multiMCMC  = function(sim){
 		if(parallel) for(ii in 1:(sim*2)){}
 		nlow     = low
 		if(nsim > 1){
-			thn         = matrix(rtnorm(nthm, thg, 0.25, lower=nlow), nza, nTh, dimnames=dimnames(thg))
+			vpar        = thg * 0 + 0.25
+			if(covar.str=="all.in.mort") vpar[Ith$cont,] = 0.05
+			thn         = matrix(rtnorm(nthm, thg, vpar, lower=nlow), nza, nTh, dimnames=dimnames(thg))
 			if(Shape!="simple"){
 				nlow[,'c']  = apply(thn, 1, c.low)
 				idcl        = which(thn[,'c'] < nlow[,'c'])
@@ -413,8 +455,9 @@ function(object, ststart, stend, model="GO", Shape="simple", niter=50000, burnin
 				}
 			}
 			if(Cont) gan = rnorm(nzc, gag, 0.5) else gan = gag
+			thg         = thn
 		}
-		thg         = thn
+		
 		if(Cont) gag  = gan
 	
 		# Output tables:
@@ -469,12 +512,12 @@ function(object, ststart, stend, model="GO", Shape="simple", niter=50000, burnin
 
 			p.thg       = log(fx.fun(xg + 0.5*Dx, Zthg, Zgag))
 			p.thg[idtrg] = p.thg[idtrg] - log(Sx.fun(Ti-bg[idtrg] + 0.5*Dx, matrix(Zthg[idtrg,], ncol= nTh), matrix(Zgag[idtrg,], ncol= nzc)))
-			p.thg[p.thg==-Inf] = -1e1000
+			p.thg[p.thg==-Inf] = -1e300
 			p.thg = sum(p.thg) + sum(dtnorm(c(thg), c(thp), thv, lower=c(low), log=TRUE)) + sum(dnorm(gag, gap, gav, log=TRUE))
 
 			p.thn       = log(fx.fun(xg + 0.5*Dx, Zthn, Zgan))
 			p.thn[idtrg] = p.thn[idtrg] - log(Sx.fun(Ti-bg[idtrg] + 0.5*Dx, matrix(Zthn[idtrg,], ncol=nTh), matrix(Zgan[idtrg,], ncol=nzc)))
-			p.thn[p.thn==-Inf] = -1e1000
+			p.thn[p.thn==-Inf] = -1e300
 			p.thn = sum(p.thn) + sum(dtnorm(c(thn), c(thp), thv, lower=c(low), log=TRUE)) + sum(dnorm(gan, gap, gav, log=TRUE))
 
 			r           = exp(p.thn-p.thg)
@@ -512,11 +555,11 @@ function(object, ststart, stend, model="GO", Shape="simple", niter=50000, burnin
 			On          = ObsMatFun(Fn, Ln, Tm)
     
 			p.bdg       = log(fx.fun(xg + 0.5*Dx, Zthg, Zgag))
-			p.bdg[p.bdg==-Inf] = -1e1000
+			p.bdg[p.bdg==-Inf] = -1e300
 			p.bdg       = p.bdg + (Og - lfi) %*% log(1-Pig) + log(v.x(xg + 0.5*Dx))
 
 			p.bdn       = log(fx.fun(xn + 0.5*Dx, Zthg, Zgag))
-			p.bdn[p.bdn==-Inf] = -1e1000
+			p.bdn[p.bdn==-Inf] = -1e300
 			p.bdn       = p.bdn + (On - lfi) %*% log(1-Pig) + log(v.x(xn + 0.5*Dx))
 	
 			r           = exp(p.bdn-p.bdg)
@@ -579,7 +622,7 @@ function(object, ststart, stend, model="GO", Shape="simple", niter=50000, burnin
 	}
 
 
-	# 6. Run (multi) MCMC:
+	# 5. Run (multi) MCMC:
 	if(nsim==1){
 		parallel = FALSE
 	}
@@ -635,11 +678,11 @@ function(object, ststart, stend, model="GO", Shape="simple", niter=50000, burnin
 		}
 	}	
 
-	# 7. Diagnostics:
+	# 6. Diagnostics:
 	thing      = seq(burnin, niter, thinning)
 	nthin      = length(thing)
 
-	# 7.1 Thinned result matrices:
+	# 6.1 Thinned result matrices:
 	if(Cont) pname  = c(thname, ganame, piname, poname) else pname = c(thname, piname, poname)
 	Pmat       = matrix(NA, ng*nsim, length(pname))
 	dimnames(Pmat) = list(rep(simname, each=ng), pname)
@@ -672,7 +715,7 @@ function(object, ststart, stend, model="GO", Shape="simple", niter=50000, burnin
 	
 	Pmat      = cbind(idthin, Pmat)
 
-	# 7.3 Convergence and model selection:
+	# 6.3 Convergence and model selection:
 	if(all.ran){
 		
 		# If multiple simulations...
@@ -716,46 +759,60 @@ function(object, ststart, stend, model="GO", Shape="simple", niter=50000, burnin
 			ModSel     = NULL
 		}
 
-		# 7.3.3 Summary times of birth and ages at death:
+		# 6.3.3 Summary times of birth and ages at death:
 		xq        = apply(Dimat - Bimat, 2, quantile, c(0.5, 0.025, 0.975))
 		bq        = apply(Bimat, 2, quantile, c(0.5, 0.025, 0.975))
 
-		# 7.3.4 Summary Survival and mortality:
+		# 6.3.4 Summary Survival and mortality:
 		thmat      = pmat[,thname]
 		if(Cont){
 			rzc       = apply(Zc, 2, quantile, c(0.5, 0.025, 0.975))
+			rownames(rzc)    = c("Med.","Lower","Upper")
 			gave      = apply(as.matrix(pmat[,which(substr(colnames(pmat),1,2)=="ga")]),2,mean)
-			zcname    = paste("Cont.",c("Med.","Lower","Upper")[i],sep="")
+		} else if(covar.str=="all.in.mort"){
+			rzc       = apply(as.matrix(Za[,Ith$cont]), 2, quantile, c(0.5, 0.025, 0.975))
+			dimnames(rzc)    = list(c("Med.","Lower","Upper"), names(Ith$cont))
+			gave      = 0
+			zcname    = colnames(rzc)
 		} else {
-			rzc       = matrix(0,1,1)
+			rzc       = matrix(0,1,1,dimnames=c("nc","nc"))
 			gave      = 0
 			zcname    = c("")
 		}
 		Sxq       = list()
 		mxq       = list()
 		xvec      = list()
-		zaname    = colnames(Za)
-		for(i in 1:nza){
+		zaname    = c(names(Ith$int), names(Ith$cat))
+		for(i in 1:length(zaname)){
 			idza    = which(Za[,i]==1)
 			xv      = seq(0,ceiling(max(xq[1,idza])*1.1),0.1)
 			xvec[[zaname[i]]] = xv
-			for(j in 1:nrow(rzc)){
-				gaa    = sum(gave * rzc[j,])
-				Cols   = paste(Thname, "[",zaname[i],"]", sep="")
-				if(nza==1) Cols = Thname
-				Sxq[[zaname[i]]][[zcname[j]]] = apply(apply(thmat[,Cols],1,S.x),1, quantile, c(0.5,0.025,0.975))
+			for(j in 1:ncol(rzc)){
+				Sxq[[zaname[i]]][[colnames(rzc)[j]]] = array(0, dim=c(length(xv), 3, nrow(rzc)), dimnames=list(NULL, c("50%", "2.5%", "97.5%"), rownames(rzc)))
 				
-				mxq[[zaname[i]]][[zcname[j]]] = apply(apply(thmat[,Cols],1,m.x),1, quantile, c(0.5,0.025,0.975))
+				mxq[[zaname[i]]][[colnames(rzc)[j]]] = Sxq[[zaname[i]]][[colnames(rzc)[j]]]
+				for(k in 1:nrow(rzc)){
+					gaa    = sum(gave * rzc[k,j])
+					Cols   = paste(Thname, "[",zaname[i],"]", sep="")
+					if(nza==1) Cols = Thname
+					Thm    = thmat[,Cols]
+					if(covar.str=="all.in.mort"){
+						Thm    = Thm + thmat[,paste(Thname, "[",names(Ith$cont)[j],"]", sep="")]* rzc[k,j]
+					}
+					Sxq[[zaname[i]]][[colnames(rzc)[j]]][,,k] = t(apply(apply(Thm,1,S.x),1, quantile, c(0.5,0.025,0.975)))
+				
+					mxq[[zaname[i]]][[colnames(rzc)[j]]][,,k] = t(apply(apply(Thm,1,m.x),1, quantile, c(0.5,0.025,0.975)))
+				}
 			}
 		}
-
-		# 7.3.5 Calculate life table from estimated ages at death:
+		
+		# 6.3.5 Calculate life table from estimated ages at death:
 		if(lifetable){
 			LT     = list()
-			for(i in 1:nza){
+			for(i in zaname){
 				idza    = which(Za[,i]==1 & bq[1,]>=ststart)
 				x       = xq[1,idza]
-				LT[[zaname[i]]] = CohortLT(x, ax=0.5, n=1)
+				LT[[i]] = CohortLT(x, ax=0.5, n=1)
 			}
 		} else {
 			LT     = NULL
@@ -775,8 +832,8 @@ function(object, ststart, stend, model="GO", Shape="simple", niter=50000, burnin
 	# Return a list object:
 	Settings           = c(niter, burnin, thinning, nsim)
 	names(Settings)    = c("niter", "burnin", "thinning", "nsim") 
-	ModelSpecs         = c(model, Shape, Prop.Hazards)
-	names(ModelSpecs)  = c("model","Shape", "Prop.Hazards")
+	ModelSpecs         = c(model, Shape, covar.str)
+	names(ModelSpecs)  = c("model","Shape", "Covar. structure")
 	JumpPriors         = cbind(c(thj,gaj), c(thp,gap))
 	dimnames(JumpPriors) = list(c(thname,ganame), c("Jump.sd", "Mean.priors"))
 	if(!Cont) JumpPriors = JumpPriors[-nrow(JumpPriors), ]
