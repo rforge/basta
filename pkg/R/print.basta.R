@@ -1,15 +1,11 @@
 print.basta <-
 function(x, ...){
-	catcov    = paste(colnames(x$Za), collapse=", ")
-	if(length(colnames(x$Za))==1) catcov = "NULL"
-	concov    = paste(colnames(x$Zc), collapse=", ")
-	if(length(colnames(x$Zc))==1) concov = "NULL"
 	cat("\nCall:\n")
-	cat(paste("Model        \t\t", x$ModelSpecs[1],"\n",collapse=""))
-	cat(paste("Shape        \t\t", x$ModelSpecs[2],"\n",collapse=""))
-	cat(paste("Prop. hazards\t\t", x$ModelSpecs[3],"\n",collapse=""))
-	cat(paste("Cat. covars  \t\t", catcov,"\n",collapse=""))
-	cat(paste("Cont. covars \t\t", concov,"\n",collapse=""))
+	cat(paste("Model        \t\t", x$ModelSpecs[1],"\n",sep=""))
+	cat(paste("Shape        \t\t", x$ModelSpecs[2],"\n",sep=""))
+	cat(paste("Covars. structure\t\t", x$ModelSpecs[3],"\n",sep=""))
+	cat(paste("Cat. covars.  \t\t", x$ModelSpecs[4],"\n",sep=""))
+	cat(paste("Cont. covars. \t\t", x$ModelSpecs[5],"\n",collapse=""))
 
 	cat("\nRuns:\n")
 	id.failed    = which(x$finished==0)
