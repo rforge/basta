@@ -542,7 +542,8 @@ function(object, ststart, stend, model="GO", Shape="simple", covar.str = "mixed"
 			# b) Sample times of birth and death:
 			bn          = bg 
 			bn[bi0]     = bg[bi0] + sample(-1:1, length(bi0), replace=TRUE) 
-			bn[bi0]     = apply(cbind(bn[bi0],fi[bi0]-1),1,min)
+			bn[bi0][oi[bi0]>0]  = apply(cbind(bn[bi0][oi[bi0]>0],fi[bi0][oi[bi0]>0]-1),1,min)
+			bn[bi0][oi[bi0]==0] = apply(cbind(bn[bi0][oi[bi0]==0],dg[bi0][oi[bi0]==0]-1),1,min)
 
 			dn          = dg 
 			dn[di0]     = dg[di0] + sample(-1:1, length(di0), replace=TRUE) 
@@ -775,7 +776,7 @@ function(object, ststart, stend, model="GO", Shape="simple", covar.str = "mixed"
 			gave      = 0
 			zcname    = colnames(rzc)
 		} else {
-			rzc       = matrix(0,1,1,dimnames=c("nc","nc"))
+			rzc       = matrix(0,1,1,dimnames= list("nc","nc"))
 			gave      = 0
 			zcname    = c("")
 		}
