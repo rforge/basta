@@ -124,13 +124,19 @@ As described above, the number of parameters for argument \code{ga.ini.pars} (i.
   \item{lifetable }{If requested and specified in the argument \code{lifetable}, a cohort life table calculated from the estimated ages at death.}
 }
 \references{
-Colchero, F. and Clark, J.S. (\emph{in press}) Bayesian inference on age-specific survival from capture-recapture data for censored and truncated data. Journal of Animal Ecology. 
+Colchero, F. and Clark, J.S. (\emph{in press}) Bayesian inference on age-specific survival from capture-recapture data for censored and truncated data. Journal of Animal Ecology, DOI: 10.1111/j.1365-2656.2011.01898.x
 
-Colchero, F., Jones, O.R. and Rebke, M. BaSTA - a package to estimate mortality parameters from incomplete mark-recapture data with covariates. Unpublished Manuscript.
+Colchero, F., Jones, O.R. and Rebke, M. BaSTA - a package to estimate age-specific mortality trends from incomplete mark-recapture data with covariates. Unpublished Manuscript.
+
+Cox, D. R., and Oakes D. (1984) Analysis of Survival Data. Chapman and Hall, London.
 
 Gelman, A., Carlin, J.B., Stern, H.S. & Rubin, D.B. (2004) \emph{Bayesian data analysis}. 2nd edn. Chapman & Hall/CRC, Boca Raton, Florida, USA.
 
+Gompertz, B. (1825) On the nature of the function expressive of the law of human mortality, and on a new mode of determining the value of life contingencies. Philosophical Transactions of the Royal Society of London, 115, 513-583.
+
 King, R. & Brooks, S.P. (2002) Bayesian model discrimination for multiple strata capture-recapture data. Biometrika, 89, 785-806. 
+
+Pinder III, J.E., Wiener, J.G. and Smith, M.H. (1978) The Weibull distribution: a new method of summarizing survivorship data. Ecology, 59, 175-179.
 
 Spiegelhalter, D.J., Best, N.G., Carlin, B.P., Van Der Linde, A. (2002) Bayesian measures of model complexity and fit. Journal of the Royal Statistical Society: Series B 64, 583-639.
 }
