@@ -1,11 +1,11 @@
 print.basta <-
 function(x, ...){
 	cat("\nCall:\n")
-	cat(paste("Model        \t\t", x$ModelSpecs[1],"\n",sep=""))
-	cat(paste("Shape        \t\t", x$ModelSpecs[2],"\n",sep=""))
-	cat(paste("Covars. structure\t\t", x$ModelSpecs[3],"\n",sep=""))
-	cat(paste("Cat. covars.  \t\t", x$ModelSpecs[4],"\n",sep=""))
-	cat(paste("Cont. covars. \t\t", x$ModelSpecs[5],"\n",collapse=""))
+	cat(paste("Model             \t\t: ", x$ModelSpecs[1],"\n",sep=""))
+	cat(paste("Shape             \t\t: ", x$ModelSpecs[2],"\n",sep=""))
+	cat(paste("Covars. structure \t\t: ", x$ModelSpecs[3],"\n",sep=""))
+	cat(paste("Cat. covars.      \t\t: ", x$ModelSpecs[4],"\n",sep=""))
+	cat(paste("Cont. covars.     \t\t: ", x$ModelSpecs[5],"\n",collapse=""))
 
 	cat("\nRuns:\n")
 	id.failed    = which(x$finished==0)
