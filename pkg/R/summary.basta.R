@@ -1,16 +1,12 @@
 summary.basta <-
 function(object,...){
 	
-	catcov    = paste(colnames(object$Za), collapse=", ")
-	if(length(colnames(object$Za))==1) catcov = "NULL"
-	concov    = paste(colnames(object$Zc), collapse=", ")
-	if(length(colnames(object$Zc))==1) concov = "NULL"
 	cat("\nCall:\n")
-	cat(paste("Model        \t\t", object$ModelSpecs[1],"\n",collapse=""))
-	cat(paste("Shape        \t\t", object$ModelSpecs[2],"\n",collapse=""))
-	cat(paste("Prop. hazards\t\t", object$ModelSpecs[3],"\n",collapse=""))
-	cat(paste("Cat. covars  \t\t", catcov,"\n",collapse=""))
-	cat(paste("Cont. covars \t\t", concov,"\n",collapse=""))
+	cat(paste("Model        \t\t", x$ModelSpecs[1],"\n",sep=""))
+	cat(paste("Shape        \t\t", x$ModelSpecs[2],"\n",sep=""))
+	cat(paste("Covars. structure\t\t", x$ModelSpecs[3],"\n",sep=""))
+	cat(paste("Cat. covars.  \t\t", x$ModelSpecs[4],"\n",sep=""))
+	cat(paste("Cont. covars. \t\t", x$ModelSpecs[5],"\n",sep=""))
 
 	cat("\nModel settings:\n")
 	print(object$set)
