@@ -60,6 +60,7 @@ function(object, ststart, stend, model="GO", Shape="simple", covar.str = "mixed"
 		Jp.in     = c(0.01, jp.in)
 		Pr.in     = c(0, pr.in)
 		Low       = c(-Inf, lowA)
+		if(model=="GO") Low = c(-Inf, -Inf, 0)
 		Thname    = c("c", thnameA)
 	} else if(Shape=="bathtub"){
 		mx.fun    = function(x, Th, ga) (exp(Th[,1]-Th[,2]*x) + Th[,3] + mx.fA(x, matrix(Th[,-c(1:3)], ncol=nthA))) * exp(ga)
@@ -445,6 +446,7 @@ function(object, ststart, stend, model="GO", Shape="simple", covar.str = "mixed"
 		nlow     = low
 		if(nsim > 1){
 			vpar        = thg * 0 + 0.25
+			vpar[thj==0] = 0
 			if(covar.str=="all.in.mort") vpar[Ith$cont,] = 0.05
 			thn         = matrix(rtnorm(nthm, thg, vpar, lower=nlow), nza, nTh, dimnames=dimnames(thg))
 			if(Shape!="simple"){
@@ -710,7 +712,9 @@ function(object, ststart, stend, model="GO", Shape="simple", covar.str = "mixed"
 	coef      = cbind(apply(pmat, 2, mean, na.rm=TRUE), apply(pmat, 2, sd, na.rm=TRUE), t(apply(pmat, 2, quantile, c(0.025, 0.975), na.rm=TRUE)), NA, NA, NA)
 	colnames(coef) = c("Estimate", "StdErr", "Lower95%CI", "Upper95%CI", "SerAutocor", "UpdateRate", "PotScaleReduc")
 	if(length(id.failed) < nsim){
-		coef[,"SerAutocor"]  = apply(pmat,2, function(x) cor(x[-1],x[-length(x)], use="complete.obs"))
+		idfix      = which(thj==0)
+		coef[-idfix,"SerAutocor"]  = apply(pmat[,-idfix],2, function(x) cor(x[-1],x[-length(x)], use="complete.obs"))
+		coef[idfix,"SerAutocor"]  = 1
 		coef[,"UpdateRate"]  = apply(Pmat[,-c(ncol(Pmat)-c(2:0))], 2, function(x) length(which(diff(x[!is.na(x)])!=0))/length(x[!is.na(x)]))
 	} 
 	
@@ -730,6 +734,7 @@ function(object, ststart, stend, model="GO", Shape="simple", covar.str = "mixed"
 			W           = 1/nsim*apply(Vars,2,sum)
 			Varpl       = (nthin-1)/nthin * W + 1/nthin*B
 			Rhat        = sqrt(Varpl/W)
+			Rhat[Varpl==0] = 1
 			conv        = cbind(B,W,Varpl,Rhat)
 			rownames(conv) = colnames(pmat)
 			coef[,ncol(coef)] = conv[,'Rhat']
