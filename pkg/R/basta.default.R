@@ -375,7 +375,7 @@ function(object, ststart, stend, model="GO", Shape="simple", covar.str = "mixed"
 	# 3.4.4 Calculate number of times detected:
 	oi          = Y %*% rep(1, nt)
 
-	paralvars   = c(paralvars, "bi", "di", "Dx", "Tm", "li", "fi") 
+	paralvars   = c(paralvars, "bi", "di", "Dx", "Tm", "li", "fi", "oi") 
 
 	# 3.4.5 Priors:
 	# a) Survival parameters:
