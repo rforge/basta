@@ -456,11 +456,11 @@ function(object, ststart, stend, model="GO", Shape="simple", covar.str = "mixed"
 					for(cc in idcl) thn[cc,'c']   = c(rtnorm(1, thg[cc,'c'], 0.5, lower=nlow[cc,'c']))
 				}
 			}
-			if(Cont) gan = rnorm(nzc, gag, 0.5) else gan = gag
+			if(Cont) gag = rnorm(nzc, gag, 0.5) 
 			thg         = thn
+			
 		}
 		
-		if(Cont) gag  = gan
 	
 		# Output tables:
 		thing       = seq(bng, ng, by=thint)
