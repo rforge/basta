@@ -158,9 +158,10 @@ new.dat  <- DataCheck(basta.dat, ststart=100,
 
 ## Run short version of BaSTA on the data (+/- 1.5 mins.):
 out      <- basta(basta.dat, ststart=100, stend=120, 
-            model="GO", Shape="simple", niter=2000, burnin=1001, 
-            thinning=10, th.jumps=c(0.05,0.025), 
-            ga.jumps=0.025, prog.plot=TRUE)
+            model="GO", Shape="simple", covar.str="mixed", 
+            niter=2000, burnin=1001, thinning=10, 
+            th.jumps=c(0.05,0.025), ga.jumps=0.025, 
+            progr.plot=TRUE)
 
 ## Print results:
 summary(out, digits=3)
