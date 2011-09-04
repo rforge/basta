@@ -128,7 +128,6 @@ function(object, ststart, stend, model="GO", Shape="simple", covar.str = "mixed"
 		if(is.null(user.par)){
 			pm        = matrix(par, nza, nTh, byrow=TRUE)
 			dimnames(pm) = dimnames(low)
-			if(nza==1) pm = t(pm)
 		} else {
 			lp        = length(user.par)
 			if(!is.element(lp, c(nTh, nTh*nza))){
@@ -145,7 +144,6 @@ function(object, ststart, stend, model="GO", Shape="simple", covar.str = "mixed"
 					pm       = matrix(user.par, nza, nTh, byrow=TRUE)
 				}
 				dimnames(pm) = dimnames(low)
-				if(nza==1) pm = t(pm)
 			}
 		}
 		return(pm)
