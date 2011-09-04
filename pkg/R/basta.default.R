@@ -798,6 +798,7 @@ function(object, ststart, stend, model="GO", Shape="simple", covar.str = "mixed"
 		mxq       = list()
 		xvec      = list()
 		zaname    = c(names(Ith$int), names(Ith$cat))
+		if(is.null(zaname)) zaname = "Nza"
 		for(i in 1:length(zaname)){
 			idza    = which(Za[,i]==1)
 			xv      = seq(0,ceiling(max(xq[1,idza])*1.1),0.1)
@@ -824,10 +825,10 @@ function(object, ststart, stend, model="GO", Shape="simple", covar.str = "mixed"
 		# 6.3.5 Calculate life table from estimated ages at death:
 		if(lifetable){
 			LT     = list()
-			for(i in zaname){
+			for(i in 1:length(zaname)){
 				idza    = which(Za[,i]==1 & bq[1,]>=ststart)
 				x       = xq[1,idza]
-				LT[[i]] = CohortLT(x, ax=0.5, n=1)
+				LT[[zaname[i]]] = CohortLT(x, ax=0.5, n=1)
 			}
 		} else {
 			LT     = NULL
