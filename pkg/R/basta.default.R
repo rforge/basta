@@ -713,8 +713,12 @@ function(object, ststart, stend, model="GO", Shape="simple", covar.str = "mixed"
 	colnames(coef) = c("Estimate", "StdErr", "Lower95%CI", "Upper95%CI", "SerAutocor", "UpdateRate", "PotScaleReduc")
 	if(length(id.failed) < nsim){
 		idfix      = which(thj==0)
-		coef[-idfix,"SerAutocor"]  = apply(pmat[,-idfix],2, function(x) cor(x[-1],x[-length(x)], use="complete.obs"))
-		coef[idfix,"SerAutocor"]  = 1
+		if(length(idfix)>0){
+			coef[-idfix,"SerAutocor"]  = apply(pmat[,-c(idfix)],2, function(x) cor(x[-1],x[-length(x)], use="complete.obs"))
+			coef[idfix,"SerAutocor"]  = 1
+		} else {
+			coef[,"SerAutocor"]  = apply(pmat,2, function(x) cor(x[-1],x[-length(x)], use="complete.obs"))
+		}
 		coef[,"UpdateRate"]  = apply(Pmat[,-c(ncol(Pmat)-c(2:0))], 2, function(x) length(which(diff(x[!is.na(x)])!=0))/length(x[!is.na(x)]))
 	} 
 	
