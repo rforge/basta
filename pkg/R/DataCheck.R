@@ -104,12 +104,6 @@ function(object, ststart, stend, autofix = rep(0,7), silent=TRUE) {
         	 Ymd[Ymd<0]   = 1
         	 Y[type4,]  = Ymd
         	 
-#            dyr = bd[type4, 2]
-#            dyr = dyr - Ti + 1
-            
-#            for (i in 1:length(type4)) {
-#                Y[type4[i], (dyr[i]):ncol(Y)] = rep(0, length((dyr[i]):ncol(Y)))
-#            }
        cat("Observations that post-date year of death have been removed.\n\n")
        }
     }
@@ -130,12 +124,6 @@ function(object, ststart, stend, autofix = rep(0,7), silent=TRUE) {
         	 Ymd[Ymd<0]   = 0
         	 Y[type5,]  = Ymd
             
-#            byr = bd[type5, 1]
-#            byr = byr - Ti
-            
-#            for (i in 1:length(type5)) {
-#                Y[type5[i], (1:byr[i])] = rep(0, length(1:byr[i]))
-#            }
               cat("Observations that pre-date year of birth have been removed.\n\n")
 
        }
