@@ -894,9 +894,11 @@ function(object, studyStart, studyEnd, model = "GO", shape = "simple",
   for(i in 1:nsim) {
     Idsim              <- which(rownames(out.mat) == simNames[i])
     if (Cont) {
-      out.mat[Idsim, ]   <- cbind(basta.out[[i]]$theta, basta.out[[i]]$gamma, basta.out[[i]]$pi, basta.out[[i]]$post)
+      out.mat[Idsim, ]   <- cbind(basta.out[[i]]$theta, basta.out[[i]]$gamma, 
+                                  basta.out[[i]]$pi, basta.out[[i]]$post)
     } else {
-      out.mat[Idsim, ]   <- cbind(basta.out[[i]]$theta, basta.out[[i]]$pi, basta.out[[i]]$post)
+      out.mat[Idsim, ]   <- cbind(basta.out[[i]]$theta, basta.out[[i]]$pi, 
+                                  basta.out[[i]]$post)
     }
     idthin[Idsim[thin.seq]] <- 1
     Idsim              <- which(rownames(Bimat) == simNames[i])
@@ -974,7 +976,8 @@ function(object, studyStart, studyEnd, model = "GO", shape = "simple",
         DIC                <- 2 * Dave - Dmode
         modSel             <- c(Dave, Dmode, pD, k, DIC)
         names(modSel)      <- c("D.ave", "D.mode", "pD", "k", "DIC")
-        cat("Survival parameters converged appropriately.\nDIC was calculated\n.")
+        cat("Survival parameters converged appropriately.",
+            "\nDIC was calculated\n.")
       }
     } else {
       conv               <- NULL
@@ -1007,7 +1010,8 @@ function(object, studyStart, studyEnd, model = "GO", shape = "simple",
     Sxq                <- list()
     mxq                <- list()
     xvec               <- list()
-    zaname             <- c(names(covariate.type$int), names(covariate.type$cat))
+    zaname             <- c(names(covariate.type$int), 
+                            names(covariate.type$cat))
     if (is.null(zaname)) zaname <- "NoCov"
     for(i in 1:length(zaname)) {
       idza               <- which(Zcat[, i] == 1)
@@ -1020,7 +1024,8 @@ function(object, studyStart, studyEnd, model = "GO", shape = "simple",
                                                       "2.5%", "97.5%"), 
                                                       rownames(rzc)))
         
-        mxq[[zaname[i]]][[colnames(rzc)[j]]] <- Sxq[[zaname[i]]][[colnames(rzc)[j]]]
+        mxq[[zaname[i]]][[colnames(rzc)[j]]] <- 
+          Sxq[[zaname[i]]][[colnames(rzc)[j]]]
         for(k in 1:nrow(rzc)) {
           gaa                <- sum(gave * rzc[k, j])
           Cols               <- paste(name.theta, "[",zaname[i], "]", sep = "")
