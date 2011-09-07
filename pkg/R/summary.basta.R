@@ -33,8 +33,8 @@ function(object,...){
 	} 
 	
 	cat("\nModel Selection:\n")
-	if(!is.null(object$ModSel)){
-		print(object$ModSel)
+	if(!is.null(object$modSel)){
+		print(object$modSel)
 	} else {
 		if(object$set['nsim'] == 1) cat("DIC was not calculated due to insufficient number of simulations to estimate convergence.\n") else cat("DIC was not calculated due to lack of convergence.\n")
 	}
