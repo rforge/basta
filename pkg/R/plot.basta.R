@@ -19,7 +19,7 @@ function(x, plot.trace=TRUE, tracename = "theta", ...){
 		# 1. Trace plots for parameters:
 		ng           = x$settings['niter']
 		nsim         = x$settings['nsim' ]
-		nza          = ncol(x$Za)
+		nza          = ncol(x$Zcat)
 		simname      = unique(rownames(x$Par))
 		idpl         = which(pnames==substr(tracename,1,2))
 		X            = as.matrix(x$Par[,-1][,idpl])
@@ -27,9 +27,9 @@ function(x, plot.trace=TRUE, tracename = "theta", ...){
 		p            = which(plotname == tracename)
 		Cols         = Palette[round(seq(1,12, length=nsim))]
 		model        = as.character(x$ModelSpecs['model'])
-		Shape        = as.character(x$ModelSpecs['Shape'])
+		shape        = as.character(x$ModelSpecs['shape'])
 		if(model == "EX") nthm = 1 else if(model=="GO" | model=="WE") nthm = 2 else nthm = 3
-		if(Shape=="Makeham") nthm = nthm + 1 else if(Shape=="bathtub") nthm = nthm + 3
+		if(shape=="Makeham") nthm = nthm + 1 else if(shape=="bathtub") nthm = nthm + 3
 		ydim         = c(nthm, ceiling(npars['ga']/2), ceiling(npars['pi']/2), 2)
 		xdim         = c(nza, 2, 2, 2)
 		for(ii in 2:3) if(ydim[ii]==1) xdim[ii] = 1
