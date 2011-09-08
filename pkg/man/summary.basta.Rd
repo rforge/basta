@@ -12,13 +12,13 @@ These functions are all methods for class \code{basta}
 \usage{
 \method{summary}{basta}(object, \dots)
 \method{print}{basta}(x, \dots)
-\method{plot}{basta}(x, plot.trace = TRUE, tracename = "theta", \dots)
+\method{plot}{basta}(x, plot.trace = TRUE, trace.name = "theta", \dots)
 }
 \arguments{
   \item{object }{an object of class '\code{basta}'}
   \item{x }{an object of class '\code{basta}'}
   \item{plot.trace}{logical, if \code{TRUE} the raw parameter traces are plotted, else, the predictive intervals for the resulting survival probability and mortality rates are plotted.}
-  \item{tracename }{character string indicating the set of parameters or posteriors to be plotted. The options are: "theta" to plot the survival model parameters; "gamma" to plot the proportional hazards parameters (if it applies, else \code{plot.basta} returns an error); "pi" to plot the recapture probabilities; and "post" to plot the conditional posteriors for the parameters and for the latent ages at death, and the full posterior for the model.}
+  \item{trace.name }{character string indicating the set of parameters or posteriors to be plotted. The options are: "theta" to plot the survival model parameters; "gamma" to plot the proportional hazards parameters (if it applies, else \code{plot.basta} returns an error); "pi" to plot the recapture probabilities; and "post" to plot the conditional posteriors for the parameters and for the latent ages at death, and the full posterior for the model.}
   \item{\dots }{additional arguments passed to functions \code{print}, \code{summary} and \code{plot}.}
 }
 \details{
