@@ -124,7 +124,6 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
                       <li>Time-dependent covariates.</li>
                       <li>Covariates on recapture probabilities.</li>
                       <li>Model selection through Reversible Jump MCMC (RJMCMC; King and Brooks 2002; Gimenez <i>et al.</i> 2009).</li>
-                      <li>Additional mortality models (i.e. logistic, Weibull, etc.).</li>
                     </ul>
                   </td>
                 </tr>
@@ -155,7 +154,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
                 <tr style="background:#FFFFFF">
                   <td style="vertical-align:middle;padding:40px" width="420px">
                     <p class="Refs">Clark, J.S. (2007) <b>Models for ecological data</b>. Princeton University Press, Princeton, New Jersey, USA.<br><br></p>
-                    <p class="Refs">Colchero, F. and J. S. Clark (<i>in press</i>) <b>Bayesian inference on age-specific survival for censored and truncated data.</b> <i>Journal of Animal Ecology</i>.<br><br></p>
+                    <p class="Refs">Colchero, F. and J.S. Clark (2011) <b>Bayesian inference on age-specific survival for censored and truncated data.</b> <i>Journal of Animal Ecology.</i> doi: 10.1111/ j.1365-2656.2011.01898.x (<a href="http://onlinelibrary.wiley.com/doi/10.1111/j.1365-2656.2011.01898.x/abstract">publication</a>).<br><br></p>
                     <p class="Refs">Colchero, F., O.R. Jones and M. Rebke (<i>In progress</i>) <b>BaSTA: an R package to estimate survival and mortality from incomplete mark-recapture data with covariates.</b><br><br></p>
 										<p class="Refs">Cox, D. R., and Oakes D. (1984) <b>Analysis of Survival Data</b>. Chapman and Hall, London.</b><br><br></p>
                     <p class="Refs">Gimenez, O., Bonner, S., King, R., Parker, R.A., Brooks, S.P., Jamieson, L.E., Grosbois, V., Morgan, B.J.T., Thomas, L. (2009) <b>WinBUGS for population ecologists: Bayesian modeling using Markov Chain Monte Carlo methods</b>. <u>In</u><i> Modeling Demographic Processes in Marked Populations. Ecological and Environmental Statistics Series, vol 3</i> (eds D.L. Thomson, E.G. Cooch &amp; M.J. Conroy), pp. 883-915. Springer, Berlin, Germany.<br><br></p>
