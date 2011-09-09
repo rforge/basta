@@ -192,7 +192,7 @@ function(object, studyStart, studyEnd, model = "GO", shape = "simple",
         x.min         <- which(mort == min(mort))[1]
       }
       c.low         <- -exp(theta[1] - theta[2] * x.min) - 
-                            CalculateBasicMx(x.min, matrix(theta[-c(1:3)], 1, 3))
+                            CalculateBasicMx(x.min, matrix(theta[-c(1:3)], 1, length.theta0))
     }
     return(c.low)
   }
