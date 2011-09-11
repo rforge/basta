@@ -22,7 +22,7 @@ These functions are all methods for class \code{basta}
   \item{\dots }{additional arguments passed to functions \code{print}, \code{summary} and \code{plot}.}
 }
 \details{
-For objects of class \code{basta}, function \code{print} prints three summaries describing the model and its results, namely: \code{call}, \code{run} and \code{coefficients}. \code{call} describes the model used (i.e. Gompertz, Gompertz-Makeham, or Siler), if covariates were evaluated under a proportional hazards framework, and which covariates (if any) were categorical and which continuous. 
+For objects of class \code{basta}, function \code{print} prints three summaries describing the model and its results, namely: \code{call}, \code{run} and \code{coefficients}. \code{call} describes the basic model used (i.e. exponential, Gompertz, Weibull or logistic), the shape chosen, \dQuote{\code{simple}}, \dQuote{\code{Makeham}} or \dQuote{\code{bathtub}}, the covariate structure chosen, namely \dQuote{\code{mixed}}, \dQuote{\code{prop.haz}} or \dQuote{\code{all.in.mort}} and which covariates (if any) were categorical and which continuous. 
 
 The summary \code{run} describes if all simulations ran for the totality of the \code{niter} chosen by the user on function \code{\link{basta}} or, in case not all runs finished, outlines which runs failed.
 
