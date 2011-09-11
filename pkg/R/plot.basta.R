@@ -1,5 +1,5 @@
 plot.basta <-
-function(x, plot.trace=TRUE, trace.name = "theta", ...){
+function(x, plot.trace = TRUE, trace.name = "theta", ...){
 
   Palette           <- c("#A6CEE3", "#1F78B4", "#B2DF8A", "#33A02C", 
                          "#FB9A99", "#E31A1C", "#FDBF6F", "#FF7F00", 
@@ -111,7 +111,7 @@ function(x, plot.trace=TRUE, trace.name = "theta", ...){
              legend  = zname, 
              pch     = 15, 
              pt.cex  = 3, 
-             cex     = 1.5, 
+             cex     = 1.25, 
              col     = Cols, 
              bty     = 'n')
     }
@@ -140,4 +140,3 @@ function(x, plot.trace=TRUE, trace.name = "theta", ...){
     par(op)
   }
 }
-
