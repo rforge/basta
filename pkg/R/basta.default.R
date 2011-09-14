@@ -189,7 +189,7 @@ function(object, studyStart, studyEnd, model = "GO", shape = "simple",
         x.vec         <- seq(0, 100, 0.1)
         mort          <- CalculateFullMx(x.vec, matrix(theta, length(x.vec), 
                                          length.theta, byrow = TRUE), 0)
-        x.min         <- which(mort == min(mort))[1]
+        x.min         <- x.vec[which(mort == min(mort))[1]]
       }
       c.low         <- -exp(theta[1] - theta[2] * x.min) - 
                             CalculateBasicMx(x.min, matrix(theta[-c(1:3)], 1, length.theta0))
