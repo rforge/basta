@@ -861,10 +861,12 @@ function(object, studyStart, studyEnd, model = "GO", shape = "simple",
   } else {
     if (length(id.failed)>0 & length(id.failed)<nsim) {
       cat("\nOne or more simulations failed\nConvergence diagnostics ",
-          "and model selection will not be calculated.\n")
+          "and model selection will not be calculated.\n",
+          "Reduce jumps to avoid pdf of ages at death equal to 0.\n")
     } else if (length(id.failed)==nsim) {
       cat("\nAll simulations failed\nConvergence diagnostics and model ",
-          "selection will not be calculated.\n")
+          "selection will not be calculated.\n",
+          "Reduce jumps to avoid pdf of ages at death equal to 0.\n")
     } else {
       all.ran            <- TRUE
       cat("\nMultiple simulations finished.\n")
