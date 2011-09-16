@@ -11,17 +11,16 @@ function(object, studyStart, studyEnd, model = "GO", shape = "simple",
   # unknown times of birth and death. It used the framework described by
   # Colchero & Clark (2011) Journal of Animal Ecology. The code is organized
   # as follows:
-  # - Section 1 (line   25): load packages
-  # - Section 2 (line   28): Define functions
-  # - Section 3 (line  289): Load data
-  # - Section 4 (line  378): Error checking
-  # - Section 5 (line  421): MCMC prep
-  # - Section 6 (line  585): Define multi-MCMC function
-  # - Section 7 (line  832): Run multiple BaSTA MCMCs
-  # - Section 8 (line  904): Calculate diagnostics
-  # - Section 9 (line 1103): Create output object
+  # - Section 1 (line   24): load packages
+  # - Section 2 (line   27): Define functions
+  # - Section 3 (line  288): Load data
+  # - Section 4 (line  377): Error checking
+  # - Section 5 (line  420): MCMC prep
+  # - Section 6 (line  584): Define multi-MCMC function
+  # - Section 7 (line  831): Run multiple BaSTA MCMCs
+  # - Section 8 (line  903): Calculate diagnostics
+  # - Section 9 (line 1097): Create output object
   
-
   # 1. Load package msm:
   require(msm)
 
@@ -1046,11 +1045,10 @@ function(object, studyStart, studyEnd, model = "GO", shape = "simple",
       xv                 <- seq(0, ceiling(max(xq[1, idza]) * 1.1), 0.1)
       xvec[[zaname[i]]]  <- xv
       for(j in 1:ncol(rzc)) {
-        Sxq[[zaname[i]]][[colnames(rzc)[j]]] <- array(0, dim = c(length(xv), 3, 
-                                                      nrow(rzc)), dimnames = 
-                                                      list(NULL, c("50%", 
-                                                      "2.5%", "97.5%"), 
-                                                      rownames(rzc)))
+        Sxq[[zaname[i]]][[colnames(rzc)[j]]] <- 
+                array(0, dim = c(length(xv), 3, nrow(rzc)), 
+                dimnames = list(NULL, c("50%", "2.5%", "97.5%"), 
+                rownames(rzc)))
         
         mxq[[zaname[i]]][[colnames(rzc)[j]]] <- 
           Sxq[[zaname[i]]][[colnames(rzc)[j]]]
@@ -1064,16 +1062,12 @@ function(object, studyStart, studyEnd, model = "GO", shape = "simple",
                                   "[",names(covariate.type$cont)[j],"]", 
                                   sep = "")] * rzc[k, j]
           }
-          Sxq[[zaname[i]]][[colnames(rzc)[j]]][, , k] <- t(apply(apply(Thm, 
-                                                           1 ,CalculateMultiSx), 
-                                                           1, quantile, 
-                                                           c(0.5, 0.025, 
-                                                           0.975)))
-          mxq[[zaname[i]]][[colnames(rzc)[j]]][, , k] <- t(apply(apply(Thm, 
-                                                           1 ,CalculateMultiMx), 
-                                                           1, quantile, 
-                                                           c(0.5, 0.025, 
-                                                           0.975)))
+          Sxq[[zaname[i]]][[colnames(rzc)[j]]][, , k] <- 
+                t(apply(apply(Thm, 1 ,CalculateMultiSx), 1, quantile, 
+                c(0.5, 0.025, 0.975)))
+          mxq[[zaname[i]]][[colnames(rzc)[j]]][, , k] <- 
+                t(apply(apply(Thm, 1 ,CalculateMultiMx), 1, quantile, 
+                c(0.5, 0.025, 0.975)))
         }
       }
     }
