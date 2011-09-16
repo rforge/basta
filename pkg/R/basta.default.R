@@ -5,6 +5,22 @@ function(object, studyStart, studyEnd, model = "GO", shape = "simple",
          thetaPriors = NULL, gammaStart = NULL, gammaJumps = NULL, 
          gammaPriors = NULL, nsim = 1, parallel = FALSE, ncpus = 2, 
          lifeTable = TRUE, progrPlots = FALSE, ...) {
+         	
+  # This function estimates age-specific mortality from capture-recapture/
+  # recovery (CRR) data when a large proportion of (or all) the records have
+  # unknown times of birth and death. It used the framework described by
+  # Colchero & Clark (2011) Journal of Animal Ecology. The code is organized
+  # as follows:
+  # - Section 1 (line   25): load packages
+  # - Section 2 (line   28): Define functions
+  # - Section 3 (line  289): Load data
+  # - Section 4 (line  378): Error checking
+  # - Section 5 (line  421): MCMC prep
+  # - Section 6 (line  585): Define multi-MCMC function
+  # - Section 7 (line  832): Run multiple BaSTA MCMCs
+  # - Section 8 (line  904): Calculate diagnostics
+  # - Section 9 (line 1103): Create output object
+  
 
   # 1. Load package msm:
   require(msm)
@@ -183,8 +199,8 @@ function(object, studyStart, studyEnd, model = "GO", shape = "simple",
     }
     if (shape == "bathtub") {
       if (model == "GO") {
-        x.min         <- (theta[1] + log(theta[2]) - theta[4] - log(theta[5])) / 
-                         (theta[2] + theta[5])
+        x.min         <- (theta[1] + log(theta[2]) - theta[4] - 
+                         log(theta[5])) / (theta[2] + theta[5])
       } else if (model == "LO" | model == "WE") {
         x.vec         <- seq(0, 100, 0.1)
         mort          <- CalculateFullMx(x.vec, matrix(theta, length(x.vec), 
@@ -192,7 +208,8 @@ function(object, studyStart, studyEnd, model = "GO", shape = "simple",
         x.min         <- x.vec[which(mort == min(mort))[1]]
       }
       c.low         <- -exp(theta[1] - theta[2] * x.min) - 
-                            CalculateBasicMx(x.min, matrix(theta[-c(1:3)], 1, length.theta0))
+                            CalculateBasicMx(x.min, matrix(theta[-c(1:3)], 
+                            1, length.theta0))
     }
     return(c.low)
   }
@@ -212,7 +229,8 @@ function(object, studyStart, studyEnd, model = "GO", shape = "simple",
                       " or a matrix of dimensions ", length.cat ," times ", 
                       length.theta, ".(i.e. number of categorical ", 
                       "covariates times number of parameters for model ", 
-                      model," with ", shape, " shape).", sep = ""), call. = FALSE)
+                      model," with ", shape, " shape).", sep = ""), 
+                      call. = FALSE)
         } else if (is.null(dim(user.par))) {
           stop(paste("\nLength of ", par.name, 
                      " vector for the mortality model parameters is incorrect.",
@@ -226,7 +244,8 @@ function(object, studyStart, studyEnd, model = "GO", shape = "simple",
         if (!is.null(dim(user.par))) {
           par.mat       <- user.par
         } else {
-          par.mat       <- matrix(user.par, length.cat, length.theta, byrow = TRUE)
+          par.mat       <- matrix(user.par, length.cat, length.theta, 
+                                  byrow = TRUE)
         }
         dimnames(par.mat)  <- dimnames(low.full.theta)
       }
@@ -267,7 +286,8 @@ function(object, studyStart, studyEnd, model = "GO", shape = "simple",
          "'DataCheck'\n", call. = FALSE)
   }
 
-  # 2.2 Extract raw data:
+  # 3 Data formatting:
+  # 3.1 Extract raw data and create BaSTA data tables:
   study.years        <- studyStart:studyEnd
   study.length       <- length(study.years)
   idnames            <- object[, 1]
@@ -280,7 +300,7 @@ function(object, studyStart, studyEnd, model = "GO", shape = "simple",
                           "study.length", "n", "bd", "Y", "recaptTrans", 
                           "progrPlots") 
 
-  # 2.3 Extract covariates:
+  # 2.2 Extract covariates:
   # a) Find if there are covariates:
   if (ncol(object) > study.length + 3) {
     Z                  <- as.matrix(object[, (study.length + 4):ncol(object)])
@@ -317,7 +337,7 @@ function(object, studyStart, studyEnd, model = "GO", shape = "simple",
           Zcont              <- matrix(Z[, covariate.type$cont], nrow(Z), 
                                        length(covariate.type$cont))
           Zcont              <- t(t(Zcont) - apply(Zcont, 2, mean))
-          colnames(Zcont)    <- colnames(object)[(study.length + 4):ncol(object)][covariate.type$cont]
+          colnames(Zcont)    <- names(covariate.type$cont)
           Cont               <- TRUE
         } else {
           Zcont              <- matrix(0,n,1)
@@ -355,7 +375,8 @@ function(object, studyStart, studyEnd, model = "GO", shape = "simple",
   parallelVars       <- c(parallelVars, "Zcat", "Zcont", "Cont", 
                           "length.cat", "length.cont", "covariate.type") 
 
-  # 2.4 Check that niter, burnin, and thinning are compatible.
+  # 4 Error checking:
+  # 4.1 Check that niter, burnin, and thinning are compatible.
   if (burnin > niter) {
     stop("\nObject 'burnin' larger than 'niter'.", call. = FALSE)
   }
@@ -363,7 +384,7 @@ function(object, studyStart, studyEnd, model = "GO", shape = "simple",
     stop("\nObject 'thinning' larger than 'niter'.", call. = FALSE)
   }
     
-  # 1.4 Model type, shape and covariate structure:
+  # 4.2 Model type, shape and covariate structure:
   if (!is.element(model, c("EX","GO","WE","LO"))) {
     stop("\nModel misspecification: specify available models", 
          "(i.e. 'EX', 'GO', 'WE' or 'LO')\n", call. = FALSE)
@@ -377,7 +398,7 @@ function(object, studyStart, studyEnd, model = "GO", shape = "simple",
          " 'mixed', 'prop.haz' or 'all.in.mort'.\n", call. = FALSE)
   }
     
-  # 2.5 All covariates in mortality:
+  # 4.3 All covariates in mortality:
   if (covarsStruct == "all.in.mort") {
     if (!is.null(covariate.type$cont)) {
       if (model != "GO") {
@@ -397,8 +418,8 @@ function(object, studyStart, studyEnd, model = "GO", shape = "simple",
   
   parallelVars       <- c(parallelVars, "model", "shape", "covarsStruct")
 
-  # 3. MCMC prep:
-  # 3.1 Model Matrix and lower limits for parameters:
+  # 5. MCMC prep:
+  # 5.1 Model Matrix and lower limits for parameters:
   name.full.theta    <- paste(rep(name.theta, each = length.cat), 
                              "[", rep(colnames(Zcat), length.theta), "]", 
                              sep = "")
@@ -421,8 +442,8 @@ function(object, studyStart, studyEnd, model = "GO", shape = "simple",
                           "name.full.theta", "name.gamma", "name.pi", 
                           "name.post", "low.full.theta") 
 
-  # 3.2 Verify thetaJumps, initial parameters and thetaPriors: 
-  # 3.2.1 Survival model:
+  # 5.2 Verify thetaJumps, initial parameters and thetaPriors: 
+  # 5.2.1 Survival model:
   # a) Initial parameters:
   theta.g            <- CheckParsMort(ini.theta, thetaStart, "theta")
   if (covarsStruct == "all.in.mort" & is.null(thetaStart)) {
@@ -443,7 +464,7 @@ function(object, studyStart, studyEnd, model = "GO", shape = "simple",
   }
 	
 	
-  # 3.3.2 Proportional hazards section:
+  # 5.3.2 Proportional hazards section:
   if (Cont) {
     # a) Initial parametes:
     gamma.g            <- CheckParsPH(gammaStart, "gamma parameters")
@@ -461,16 +482,16 @@ function(object, studyStart, studyEnd, model = "GO", shape = "simple",
     gamma.prior        <- 0
   }
 
-  # 3.4 Model variables:
-  # 3.4.1 Extract times of birth and death:
+  # 5.4 Model variables:
+  # 5.4.1 Extract times of birth and death:
   bi                 <- bd[, 1]
   di                 <- bd[, 2]
 
-  # 3.4.2 Define study duration:
+  # 5.4.2 Define study duration:
   Dx                 <- (study.years[2] - study.years[1])
   Tm                 <- matrix(study.years, n, study.length, byrow=TRUE)
 
-  # 3.4.3 Calculate first and last time observed:
+  # 5.4.3 Calculate first and last time observed:
   ytemp              <- t(t(Y) * study.years)
   last.obs           <- c(apply(ytemp,1,max))
   ytemp[ytemp == 0]  <- 10000
@@ -478,13 +499,13 @@ function(object, studyStart, studyEnd, model = "GO", shape = "simple",
   first.obs[first.obs == 10000] <- 0
   rm("ytemp")
 
-  # 3.4.4 Calculate number of times detected:
+  # 5.4.4 Calculate number of times detected:
   oi                 <- Y %*% rep(1, study.length)
 
   parallelVars       <- c(parallelVars, "niter", "burnin", "thinning", "bi", 
                           "di", "Dx", "Tm", "last.obs", "first.obs", "oi") 
 
-  # 3.4.5 Priors:
+  # 5.4.5 Priors:
   # a) Survival parameters:
   Ztheta.p           <- Zcat %*% theta.prior
   theta.sd           <- 0.5
@@ -513,9 +534,10 @@ function(object, studyStart, studyEnd, model = "GO", shape = "simple",
   rho2               <- 0.1
   
   parallelVars       <- c(parallelVars, "Ztheta.p", "theta.sd", "Zgamma.p", 
-                          "gamma.sd", "Ex", "v.x", "idpi", "npi", "rho1", "rho2") 
+                          "gamma.sd", "Ex", "v.x", "idpi", "npi", "rho1", 
+                          "rho2") 
 
-  # 3.4.6 Starting values:
+  # 5.4.6 Starting values:
   # a) Matrix of survival parameters:
   Ztheta.g           <- Zcat %*% theta.g
 		
@@ -560,7 +582,7 @@ function(object, studyStart, studyEnd, model = "GO", shape = "simple",
   parallelVars       <- c(parallelVars, "Fg", "Lg", "Og", "lfi") 
 
 
-  # 4.  Multiple MCMC function:
+  # 6.  Multiple MCMC function:
   multiMCMC  <- function(sim) {
     if (parallel){
       for(ii in 1:(sim * 2)) {}
@@ -807,7 +829,8 @@ function(object, studyStart, studyEnd, model = "GO", shape = "simple",
                 naflag = naflag))
   }
   
-  # 5. Run (multi) MCMC:
+  # 7. Run (multi) MCMC:
+  # 7.1 Run simulations either in series or in parallel:
   if (nsim == 1) {
     parallel <- FALSE
   }
@@ -821,7 +844,8 @@ function(object, studyStart, studyEnd, model = "GO", shape = "simple",
     avail.pkgs        <- available.packages()
     if (!is.element("snowfall", avail.pkgs)) {
       warning("\nPackage 'snowfall' is not installed.\nSimulations ",
-              "will not be ran in parallel (computing time will be longer...)\n")
+              "will not be ran in parallel (computing time will ",
+              "be longer...)\n")
       basta.out          <- lapply(1:nsim, multiMCMC)
     } else {
       require(snowfall)
@@ -836,7 +860,7 @@ function(object, studyStart, studyEnd, model = "GO", shape = "simple",
   }
   End                <- Sys.time()
   
-  # Report if all simulations ran through:
+  # 7.2 Report if all simulations ran through:
   simNames           <- paste("Sim.", (1:nsim), sep="")
   full.runs          <- rep(0,nsim)
   names(full.runs)   <- simNames
@@ -856,7 +880,8 @@ function(object, studyStart, studyEnd, model = "GO", shape = "simple",
     } else {
       cat(paste("MCMC stopped at step ", basta.out[[1]]$g,
           "\nPdf of ages at death equal to 0 for some individuals.",
-          "\nReduce jumps to avoid pdf of ages at death equal to 0.\n", sep = ""))
+          "\nReduce jumps to avoid pdf of ages at death equal to 0.\n", 
+          sep = ""))
     }
   } else {
     if (length(id.failed)>0 & length(id.failed)<nsim) {
@@ -876,11 +901,11 @@ function(object, studyStart, studyEnd, model = "GO", shape = "simple",
     }
   }	
   
-  # 6. Diagnostics:
+  # 8. Diagnostics:
   thin.seq           <- seq(burnin, niter, thinning)
   nthin              <- length(thin.seq)
   
-  # 6.1 Thinned result matrices:
+  # 8.1 Thinned result matrices:
   if (Cont) {
     name.out.mat       <- c(name.full.theta, name.gamma, name.pi, name.post) 
   } else {
@@ -908,7 +933,7 @@ function(object, studyStart, studyEnd, model = "GO", shape = "simple",
     Dimat[Idsim, ]     <- basta.out[[i]]$di
   }
   
-  # 7.2 Basic summary statistics for parameters:
+  # 8.2 Basic summary statistics for parameters:
   par.mat            <- out.mat[idthin == 1,-(c(ncol(out.mat) - c(2:0)))]
   coef               <- cbind(apply(par.mat, 2, mean, na.rm=TRUE), 
                         apply(par.mat, 2, sd, na.rm=TRUE), 
@@ -934,13 +959,13 @@ function(object, studyStart, studyEnd, model = "GO", shape = "simple",
   }
   out.mat            <- cbind(idthin, out.mat)
   
-  # 6.3 Convergence and model selection:
+  # 8.3 Convergence and model selection:
   if (all.ran) {
 
     # If multiple simulations...
     if (nsim>1) {
 
-      # 7.3.1 Convergence diagnostics (potential scale reduction):
+      # 8.3.1 Convergence diagnostics (potential scale reduction):
       Means              <- apply(par.mat, 2, function(x) 
                                   tapply(x, rownames(par.mat), mean))
       Vars               <- apply(par.mat, 2, function(x) 
@@ -963,7 +988,7 @@ function(object, studyStart, studyEnd, model = "GO", shape = "simple",
         warning("Convergence not reached for some survival parameters.",
                 "\nDIC could not be calculated.\n", call. = FALSE)
       } else {
-        # 7.3.2 Model selection (DIC, if convergence was reached):
+        # 8.3.2 Model selection (DIC, if convergence was reached):
         posterior          <- out.mat[idthin == 1, ncol(out.mat)]
         L                  <- length(posterior)
         Dm                 <- -2 * posterior
@@ -986,16 +1011,17 @@ function(object, studyStart, studyEnd, model = "GO", shape = "simple",
       modSel             <- NULL
     }
     
-    # 6.3.3 Summary times of birth and ages at death:
+    # 8.3.3 Summary times of birth and ages at death:
     xq                 <- apply(Dimat - Bimat, 2, quantile, c(0.5, 0.025, 0.975))
     bq                 <- apply(Bimat, 2, quantile, c(0.5, 0.025, 0.975))
     
-    # 6.3.4 Summary Survival and mortality:
+    # 8.3.4 Summary Survival and mortality:
     thmat              <- par.mat[, name.full.theta]
     if (Cont) {
       rzc                <- apply(Zcont, 2, quantile, c(0.5, 0.025, 0.975))
       rownames(rzc)      <- c("Med.", "Lower", "Upper")
-      gave               <- apply(as.matrix(par.mat[, which(substr(colnames(par.mat), 
+      gave               <- apply(as.matrix(par.mat[, 
+                                  which(substr(colnames(par.mat), 
                                   1, 2) == "gamma")]), 2, mean)
     } else if (covarsStruct == "all.in.mort") {
       rzc                <- apply(as.matrix(Zcat[, covariate.type$cont]), 2, 
@@ -1040,17 +1066,19 @@ function(object, studyStart, studyEnd, model = "GO", shape = "simple",
           }
           Sxq[[zaname[i]]][[colnames(rzc)[j]]][, , k] <- t(apply(apply(Thm, 
                                                            1 ,CalculateMultiSx), 
-                                                           1, quantile, c(0.5, 0.025, 
+                                                           1, quantile, 
+                                                           c(0.5, 0.025, 
                                                            0.975)))
           mxq[[zaname[i]]][[colnames(rzc)[j]]][, , k] <- t(apply(apply(Thm, 
                                                            1 ,CalculateMultiMx), 
-                                                           1, quantile, c(0.5, 0.025, 
+                                                           1, quantile, 
+                                                           c(0.5, 0.025, 
                                                            0.975)))
         }
       }
     }
     
-    # 6.3.5 Calculate life table from estimated ages at death:
+    # 8.3.5 Calculate life table from estimated ages at death:
     if (lifeTable) {
       LT                 <- list()
       for(i in 1:length(zaname)) {
@@ -1072,7 +1100,7 @@ function(object, studyStart, studyEnd, model = "GO", shape = "simple",
     if (lifeTable) LT  <- NULL
   }
   
-  # Return a list object:
+  # 9. Return a list object of class 'basta':
   Settings           <- c(niter, burnin, thinning, nsim)
   names(Settings)    <- c("niter", "burnin", "thinning", "nsim") 
   ModelSpecs         <- c(model, shape, covarsStruct, 
