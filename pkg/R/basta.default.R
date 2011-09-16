@@ -856,7 +856,7 @@ function(object, studyStart, studyEnd, model = "GO", shape = "simple",
     } else {
       cat(paste("MCMC stopped at step ", basta.out[[1]]$g,
           "\nPdf of ages at death equal to 0 for some individuals.",
-          "\nModify starting parameters or jumps\n", sep = ""))
+          "\nReduce jumps to avoid pdf of ages at death equal to 0.\n", sep = ""))
     }
   } else {
     if (length(id.failed)>0 & length(id.failed)<nsim) {
