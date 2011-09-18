@@ -515,80 +515,80 @@ function(object, studyStart, studyEnd, model = "GO", shape = "simple",
 
   # 5.3 Define final priors:
   # a) Survival parameters:
-  Ztheta.p                  <- Zcat %*% theta.prior
-  theta.sd                  <- 0.5
+  Ztheta.p                   <- Zcat %*% theta.prior
+  theta.sd                   <- 0.5
 		
   # b) Prop. hazards section:
-  Zgamma.p                  <- Zcont %*% gamma.prior
-  gamma.sd                  <- 1
+  Zgamma.p                   <- Zcont %*% gamma.prior
+  gamma.sd                   <- 1
 
   # c) Age distribution:
-  dxx                       <- 0.001
-  xx                        <- seq(0,100,dxx)
-  zza                       <- cbind(1, matrix(0, length(xx), length.cat - 1))
-  zzc                       <- sum(apply(Zcont, 2, mean) * gamma.prior) 
-  Ex                        <- sum(xx * CalculateFullFx(xx, zza %*% theta.prior, 
-                            zzc) * dxx)
-  v.x                       <- function(x) {
+  dxx                        <- 0.001
+  xx                         <- seq(0,100,dxx)
+  zza                        <- cbind(1, matrix(0, length(xx), length.cat - 1))
+  zzc                        <- sum(apply(Zcont, 2, mean) * gamma.prior) 
+  Ex                         <- sum(xx * CalculateFullFx(xx, zza %*% theta.prior, 
+                                   zzc) * dxx)
+  v.x                        <- function(x) {
     CalculateFullSx(x, Ztheta.p, Zgamma.p) / Ex
   }
   rm(list=c("dxx", "xx", "zza", "zzc"))
 
   # d) Detection probability:
-  idpi                      <- findInterval(study.years, recaptTrans)
-  names(idpi)               <- study.years
-  npi                       <- length(unique(idpi))
-  rho1                      <- 0.1
-  rho2                      <- 0.1
+  idpi                       <- findInterval(study.years, recaptTrans)
+  names(idpi)                <- study.years
+  npi                        <- length(unique(idpi))
+  rho1                       <- 0.1
+  rho2                       <- 0.1
   
-  parallelVars              <- c(parallelVars, "Ztheta.p", "theta.sd", 
-                                 "Zgamma.p", "gamma.sd", "Ex", "v.x", 
-                                 "idpi", "npi", "rho1", "rho2") 
+  parallelVars               <- c(parallelVars, "Ztheta.p", "theta.sd", 
+                                  "Zgamma.p", "gamma.sd", "Ex", "v.x", 
+                                  "idpi", "npi", "rho1", "rho2") 
 
   # 5.4 Starting values:
   # a) Matrix of survival parameters:
-  Ztheta.g                  <- Zcat %*% theta.g
+  Ztheta.g                   <- Zcat %*% theta.g
 		
   # b) Matrix of prop. hazards parameters:
-  Zgamma.g                  <- Zcont %*% gamma.g
+  Zgamma.g                   <- Zcont %*% gamma.g
 
   # c) Recapture probability:
-  pi.g                      <- rep(0.5, npi)
-  Pig                       <- pi.g[idpi]
+  pi.g                       <- rep(0.5, npi)
+  Pig                        <- pi.g[idpi]
 
   # d) Times of birth and death:
-  bi0                       <- which(bi==0)
-  bg                        <- bi
+  bi0                        <- which(bi==0)
+  bg                         <- bi
   bg[bi == 0 & first.obs > 0] <- first.obs[bi == 0 & first.obs > 0] - 1
   bg[bi == 0 & first.obs == 0 & di > 0] <- 
     di[bi == 0 & first.obs == 0 & di > 0] - 1
 
-  di0                       <- which(di==0)
-  dg                        <- di
+  di0                        <- which(di==0)
+  dg                         <- di
   dg[di == 0 & last.obs > 0]<- last.obs[di == 0 & last.obs > 0] + 1
   dg[di == 0 & last.obs == 0]<- bi[di == 0 & last.obs == 0] + 1
   dg[dg < studyStart]<- studyStart + 1
 
-  xg                        <- dg - bg
+  xg                         <- dg - bg
 
-  parallelVars              <- c(parallelVars, "theta.g", "theta.jump", 
-                                 "theta.prior", "gamma.g", "gamma.jump", 
-                                 "gamma.prior", "pi.g", "Pig", "bg", "dg", 
-                                 "xg", "bi0", "di0") 
+  parallelVars               <- c(parallelVars, "theta.g", "theta.jump", 
+                                  "theta.prior", "gamma.g", "gamma.jump", 
+                                  "gamma.prior", "pi.g", "Pig", "bg", "dg", 
+                                  "xg", "bi0", "di0") 
 
   # 5.5 Full observation matrix:
-  Fg                        <- c(apply(cbind(studyStart, bg+1), 1, max))
-  Lg                        <- c(apply(cbind(studyEnd, dg-1), 1, min))
-  Og                        <- BuildAliveMatrix(Fg, Lg, Tm)
-  fii                       <- first.obs
+  Fg                         <- c(apply(cbind(studyStart, bg+1), 1, max))
+  Lg                         <- c(apply(cbind(studyEnd, dg-1), 1, min))
+  Og                         <- BuildAliveMatrix(Fg, Lg, Tm)
+  fii                        <- first.obs
   fii[bi > 0 & bi >= studyStart] <- bi[bi > 0 & bi >= studyStart] + 1
   fii[bi > 0 & bi < studyStart]  <- studyStart
-  lii                       <- last.obs
+  lii                        <- last.obs
   lii[di > 0 & di <= studyEnd]   <- di[di > 0 & di <= studyEnd] - 1
   lii[di > 0 & di > studyEnd]    <- studyEnd
-  lfi                       <- BuildAliveMatrix(fii, lii, Tm)
+  lfi                        <- BuildAliveMatrix(fii, lii, Tm)
 
-  parallelVars              <- c(parallelVars, "Fg", "Lg", "Og", "lfi") 
+  parallelVars               <- c(parallelVars, "Fg", "Lg", "Og", "lfi") 
 
 
   # 6.  Multiple MCMC function:
@@ -596,7 +596,7 @@ function(object, studyStart, studyEnd, model = "GO", shape = "simple",
     if (parallel){
       for(ii in 1:(sim * 2)) {}
     } 
-    nlow     <- low.full.theta
+    nlow                     <- low.full.theta
     if (nsim > 1) {
       thetaJitter            <- theta.g * 0 + 0.25
       thetaJitter[theta.jump==0] <- 0
