@@ -1171,7 +1171,7 @@ function(object, studyStart, studyEnd, model = "GO", shape = "simple",
   output$studyEnd            <- studyEnd
   output$finished            <- full.runs
   if (lifeTable) {
-  output$lifeTable           <- LT
+    output$lifeTable         <- LT
   } 
   class(output)              <- "basta"
   return(output)
