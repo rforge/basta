@@ -559,13 +559,13 @@ function(object, studyStart, studyEnd, model = "GO", shape = "simple",
   # d) Times of birth and death:
   bi0                        <- which(bi==0)
   bg                         <- bi
-  bg[bi == 0 & first.obs > 0] <- first.obs[bi == 0 & first.obs > 0] - 1
+  bg[bi == 0 & first.obs > 0]<- first.obs[bi == 0 & first.obs > 0] - 1
   bg[bi == 0 & first.obs == 0 & di > 0] <- 
     di[bi == 0 & first.obs == 0 & di > 0] - 1
 
   di0                        <- which(di==0)
   dg                         <- di
-  dg[di == 0 & last.obs > 0]<- last.obs[di == 0 & last.obs > 0] + 1
+  dg[di == 0 & last.obs > 0] <- last.obs[di == 0 & last.obs > 0] + 1
   dg[di == 0 & last.obs == 0]<- bi[di == 0 & last.obs == 0] + 1
   dg[dg < studyStart]<- studyStart + 1
 
@@ -691,8 +691,7 @@ function(object, studyStart, studyEnd, model = "GO", shape = "simple",
                                     Zgamma.g))
       p.thg[idtrg]           <- p.thg[idtrg] - log(CalculateFullSx(studyStart - 
                                 bg[idtrg] + 0.5 * Dx, matrix(Ztheta.g[idtrg, ], 
-                                ncol = length.theta), matrix(Zgamma.g[idtrg, ], 
-                                ncol = length.cont)))
+                                ncol = length.theta), Zgamma.g[idtrg]))
       p.thg[p.thg==-Inf]     <- -1e300
       p.thg                  <- sum(p.thg) + sum(dtnorm(c(theta.g), 
                                 c(theta.prior), theta.sd, 
@@ -704,8 +703,7 @@ function(object, studyStart, studyEnd, model = "GO", shape = "simple",
                                     Zgamma.n))
       p.thn[idtrg]           <- p.thn[idtrg] - log(CalculateFullSx(studyStart - 
                                 bg[idtrg] + 0.5 * Dx, matrix(Ztheta.n[idtrg, ], 
-                                ncol = length.theta), matrix(Zgamma.n[idtrg, ], 
-                                ncol = length.cont)))
+                                ncol = length.theta), Zgamma.n[idtrg]))
       p.thn[p.thn==-Inf]     <- -1e300
       p.thn                  <- sum(p.thn) + sum(dtnorm(c(theta.n), 
                                 c(theta.prior), theta.sd, 
@@ -1013,8 +1011,9 @@ function(object, studyStart, studyEnd, model = "GO", shape = "simple",
       
       # Report if convergence was reached:
       idnconv                <- which(conv[, 'Rhat']< 0.95 | conv[, 'Rhat']>1.1)
-      if (length(idnconv)>0) {
+      if (length(idnconv) > 0) {
         modSel               <- NULL
+        kl.mat               <- NULL
         warning("Convergence not reached for some survival parameters.",
                 "\nDIC could not be calculated.\n", call. = FALSE)
       } else {
@@ -1035,10 +1034,69 @@ function(object, studyStart, studyEnd, model = "GO", shape = "simple",
         names(modSel)        <- c("D.ave", "D.mode", "pD", "k", "DIC")
         cat("Survival parameters converged appropriately.",
             "\nDIC was calculated\n.")
+        # 8.3.3 Inference on parameter estimates:
+        # Kullback-Liebler distances for categorical covariates:
+        if (is.null(covariate.type$cat)) {
+          kl.mat             <- NULL
+        } else {
+          name.cat           <- names(covariate.type$cat)
+          n.cat              <- length(name.cat)
+          n.comb             <- (n.cat - 1)^2 - 
+                                ((n.cat - 1)^2 - (n.cat - 1)) / 2
+          covar.comb         <- matrix(0, n.comb, 2, 
+                                       dimnames = list(NULL, c("cov1", "cov2")))
+          ij                 <- 1
+          for (i in 1:(n.cat - 1)) {
+            for (j in 2:n.cat) {
+            	if (i < j) {
+            	  covar.comb[ij, ]<- c(name.cat[i], name.cat[j])
+            	  ij           <- ij + 1
+            	}
+            }
+          }
+          if (covarsStruct == "mixed") {
+            kl.mat           <- matrix(NA, nrow = n.comb, ncol = length.theta0, 
+                                       dimnames = list(paste(covar.comb[,1], 
+                                       "-", covar.comb[,2], sep = ""), name.theta0))
+            p.low            <- low.full.theta[1,]
+          } else {
+            kl.mat           <- matrix(NA, nrow = n.comb, ncol = 1, 
+                                       dimnames = list(paste(covar.comb[,1], 
+                                       "-", covar.comb[,2], sep = ""), "gamma"))
+            p.low            <- -Inf
+          }
+          kl.pars            <- colnames(kl.mat)
+          for(i in 1:ncol(kl.mat)){
+            for(j in 1:n.comb){
+              p1             <- par.mat[, paste(kl.pars[i], "[", 
+                                        covar.comb[j, 1], "]", sep = "")]
+              mean.p1        <- mean(p1)
+              sd.p1          <- sd(p1)
+              p2             <- par.mat[, paste(kl.pars[i], "[", 
+                                        covar.comb[j, 2], "]", sep = "")]
+              mean.p2        <- mean(p2)
+              sd.p2          <- sd(p2)
+              full.range     <- range(c(mean.p1 + c(-4, 4) * sd.p1, 
+                                        mean.p2 + c(-4, 4) * sd.p2))
+              full.range[1]  <- max(full.range[1], p.low[i])
+              p.vec          <- seq(full.range[1], full.range[2], length = 500)
+              dp             <- p.vec[2] - p.vec[1]
+              dens.p1        <- dtnorm(p.vec, mean = mean(p1), sd = sd(p1), 
+                                       low = p.low[i])  
+              dens.p2        <- dtnorm(p.vec, mean = mean(p2), sd = sd(p2), 
+                                       low = p.low[i])  
+              kl.mat[j, i]   <- (sum(dens.p1*log(dens.p1/dens.p2) * 
+                                     dp) +
+                                 sum(dens.p2*log(dens.p2/dens.p1) * 
+                                     dp)) / 2
+            }
+          }
+        }
       }
     } else {
       conv                   <- NULL
       modSel                 <- NULL
+      kl.mat                 <- NULL
     }
     
     # 8.3.3 Summary times of birth and ages at death:
@@ -1076,7 +1134,11 @@ function(object, studyStart, studyEnd, model = "GO", shape = "simple",
       zaname                 <- "NoCov"
     } 
     for(i in 1:length(zaname)) {
-      idza                   <- which(Zcat[, i] == 1)
+      if (zaname[i] == "NoCov") {
+        idza                 <- 1:n
+      } else {
+        idza                 <- which(Z[, zaname[i]] == 1)
+      }
       xv                     <- seq(0, ceiling(max(xq[1, idza]) * 1.1), 0.1)
       xvec[[zaname[i]]]      <- xv
       for(j in 1:ncol(rzc)) {
@@ -1111,7 +1173,12 @@ function(object, studyStart, studyEnd, model = "GO", shape = "simple",
     if (lifeTable) {
       LT                     <- list()
       for(i in 1:length(zaname)) {
-        idza                 <- which(Zcat[, i] == 1 & bq[1, ] >= studyStart)
+        if (zaname[i] == "NoCov") {
+          idza               <- which(bq[1, ] >= studyStart)
+        } else {
+          idza               <- which(Z[, zaname[i]] == 1 &  
+                                      bq[1, ] >= studyStart)
+        }
         x                    <- xq[1, idza]
         LT[[zaname[i]]]      <- CohortLT(x, ax = 0.5, n = 1)
       }
@@ -1121,6 +1188,7 @@ function(object, studyStart, studyEnd, model = "GO", shape = "simple",
   } else {
     conv                     <- NULL
     modSel                   <- NULL
+    kl.mat                   <- NULL
     xq                       <- NULL
     bq                       <- NULL
     Sxq                      <- NULL
@@ -1152,6 +1220,7 @@ function(object, studyStart, studyEnd, model = "GO", shape = "simple",
   output$coefficients        <- coef
   output$modSel              <- modSel
   output$Convergence         <- conv
+  output$KullbackLiebler     <- kl.mat
   output$settings            <- Settings
   output$ModelSpecs          <- ModelSpecs
   output$JumpPriors          <- JumpPriors
