@@ -102,6 +102,7 @@ As described above, the number of parameters for argument \code{gammaStart} (i.e
   \item{coefficients }{Matrix with estimated coefficients (i.e. mean values per parameter on the thinned sequences after burnin), which includes standard errors, upper and lower 95\% credible intervals, update rates per parameter (commonly the same for all survival and proportional hazards parameters), serial autocorrelation on the thinned sequences and potential scale reduction factor for convergence (see \code{Convergence} value below). }
 	\item{modSel }{Basic DIC calculations for model selection (Spiegelhalter \emph{et al.} 2002) These values need to be taken only as a reference (see comments to Spiegelhalter \emph{et al.} 2002). In the future the package will include routines for reversible jump Monte Carlo Markov Chain (RJMCMC, see King & Brooks 2002). If none or some of the simulations did not run through, then the returned value is \dQuote{NULL}.}
 	\item{Convergence }{If called by \code{\link{summary}}, matrix with convergence coefficients based on potential scale reduction as described by Gelman \emph{et al.} (2004). If only one simulation was ran, then the returned value is \dQuote{NULL}.}
+  \item{KullbackLiebler }{If called by \code{\link{summary}}, matrix with Kullback-Liebler discrepancy between pair of parameters for categorical covariates (Burnham & Anderson 2001). If only one simulation was ran, then the returned value is \dQuote{NULL}.}
   \item{settings }{If called by \code{\link{summary}}, vector indicating the number of iterations for each MCMC, the burn in sequence, the thinning interval and the number of simulations ran, as specified by the user.}
 	\item{ModelSpecs }{Model specifications inidicating the model, the Shape and the covariate structure used as specified by the user.}
 	\item{JumpPriors }{If requested or called by functions \code{summary} or \code{\link{summary.basta}}, a matrix with the jumps and priors used in the model.}
@@ -123,6 +124,8 @@ As described above, the number of parameters for argument \code{gammaStart} (i.e
   \item{lifetable }{If requested and specified in the argument \code{lifetable}, a cohort life table calculated from the estimated ages at death.}
 }
 \references{
+Burnham, K.P. & Anderson, D.R. (2001) Kullback–Leibler information as a basis for strong inference in ecological studies. \emph{Widlife Research}, 28, 111–119.
+
 Colchero, F. and Clark, J.S. (2011) Bayesian inference on age-specific survival from capture-recapture data for censored and truncated data. Journal of Animal Ecology, DOI: 10.1111/j.1365-2656.2011.01898.x
 
 Colchero, F., Jones, O.R. and Rebke, M. BaSTA - a package to estimate age-specific mortality trends from incomplete mark-recapture data with covariates. \emph{Unpublished Manuscript}.
