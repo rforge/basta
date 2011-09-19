@@ -5,7 +5,8 @@ function(object,...){
   cat(paste("Shape             \t\t: ", object$ModelSpecs[2], "\n", sep = ""))
   cat(paste("Covars. structure \t\t: ", object$ModelSpecs[3], "\n", sep = ""))
   cat(paste("Cat. covars.      \t\t: ", object$ModelSpecs[4], "\n", sep = ""))
-  cat(paste("Cont. covars.     \t\t: ", object$ModelSpecs[5], "\n", collapse = ""))
+  cat(paste("Cont. covars.     \t\t: ", object$ModelSpecs[5], "\n", 
+            collapse = ""))
 
   cat("\nModel settings:\n")
   print(object$set)
@@ -32,6 +33,9 @@ function(object,...){
 	
   cat("\nJumps and priors:\n")
   print(object$JumpP)
+  
+  cat("\nKullback-Liebler discrepancy:\n")
+  print.default(object$K, ...)
 
   cat("\nCoefficients:\n")
   print.default(object$coefficients, ...)
