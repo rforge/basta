@@ -17,9 +17,9 @@ function(object, studyStart, studyEnd, model = "GO", shape = "simple",
   # - Section 4 (line  341): Data formatting
   # - Section 5 (line  449): MCMC prep
   # - Section 6 (line  594): Define multi-MCMC function
-  # - Section 7 (line  858): Run multiple BaSTA MCMCs
-  # - Section 8 (line  930): Calculate diagnostics
-  # - Section 9 (line 1134): Create output object
+  # - Section 7 (line  856): Run multiple BaSTA MCMCs
+  # - Section 8 (line  928): Calculate diagnostics
+  # - Section 9 (line 1202): Create output object
   
   # 1. Load package msm:
   require(msm)
@@ -804,8 +804,7 @@ function(object, studyStart, studyEnd, model = "GO", shape = "simple",
       
       # Conditional posteriors: 
       posterior.mat[g, ]     <- c(p.thg, sum(p.bdg), p.thg + 
-                                 sum((Og - lfi) %*% log(1 - Pig) + 
-                                 log(v.x(xg + 0.5 * Dx))))
+                                 sum((Og - lfi) %*% log(1 - Pig)))
   
       # Progress plot:
       if (g %in% round(seq(1, niter, length = 100)) & progrPlots) {
