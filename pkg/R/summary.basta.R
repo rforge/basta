@@ -1,5 +1,6 @@
 summary.basta <-
 function(object,...){
+  extraArgs       <- list(...)
   cat("\nCall:\n")
   cat(paste("Model             \t\t: ", object$ModelSpecs[1], "\n", sep = ""))
   cat(paste("Shape             \t\t: ", object$ModelSpecs[2], "\n", sep = ""))
@@ -34,11 +35,31 @@ function(object,...){
   cat("\nJumps and priors:\n")
   print(object$JumpP)
   
-  cat("\nKullback-Liebler discrepancy:\n")
-  print.default(object$K, ...)
+  if (length(extraArgs) > 0) {
+    if (!is.element('digits', names(extraArgs))){
+      digits      <- 4
+    } else {
+      digits      <- extraArgs$digits
+    }
+  } else {
+    digits        <- 4
+  }
+  cat("\nMean Kullback-Liebler\ndiscrepancy calibration (KLDC):\n")
+  if (!is.null(object$K)){
+    mean.q        <- (object$K$q12 + object$K$q21) / 2
+    print.default(mean.q, digits = digits)
+  } else {
+    if (object$set['nsim'] == 1) {
+      cat("KLDC was not calculated due to insufficient number",
+          " of simulations to estimate convergence.\n")
+    } else {
+      cat("KLDC was not calculated due to lack of convergence.\n")
+    }
+  }
+  
 
   cat("\nCoefficients:\n")
-  print.default(object$coefficients, ...)
+  print.default(object$coefficients, digits = digits)
 
   cat("\nConvergence:\n")
   if (is.null(object$modSel)){
