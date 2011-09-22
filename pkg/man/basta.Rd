@@ -101,8 +101,8 @@ As described above, the number of parameters for argument \code{gammaStart} (i.e
 \code{basta} returns an object of class \sQuote{\code{basta}}. Function \code{\link{summary}} can be used to obtain or print a summary of the results.
   \item{coefficients }{Matrix with estimated coefficients (i.e. mean values per parameter on the thinned sequences after burnin), which includes standard errors, upper and lower 95\% credible intervals, update rates per parameter (commonly the same for all survival and proportional hazards parameters), serial autocorrelation on the thinned sequences and potential scale reduction factor for convergence (see \code{Convergence} value below). }
 	\item{modSel }{Basic DIC calculations for model selection (Spiegelhalter \emph{et al.} 2002) These values need to be taken only as a reference (see comments to Spiegelhalter \emph{et al.} 2002). In the future the package will include routines for reversible jump Monte Carlo Markov Chain (RJMCMC, see King & Brooks 2002). If none or some of the simulations did not run through, then the returned value is \dQuote{NULL}.}
-	\item{Convergence }{If called by \code{\link{summary}}, matrix with convergence coefficients based on potential scale reduction as described by Gelman \emph{et al.} (2004). If only one simulation was ran, then the returned value is \dQuote{NULL}.}
-  \item{KullbackLiebler }{If called by \code{\link{summary}}, matrix with Kullback-Liebler discrepancy between pair of parameters for categorical covariates (Burnham and Anderson 2001). If only one simulation was ran, then the returned value is \dQuote{NULL}.}
+	\item{Convergence }{If requested, matrix with convergence coefficients based on potential scale reduction as described by Gelman \emph{et al.} (2004). If only one simulation was ran, then the returned value is \dQuote{NULL}.}
+  \item{KullbackLiebler }{If called by \code{\link{summary}}, list with Kullback-Liebler discrepancy matrices between pair of parameters for categorical covariates (McCulloch 1989, Burnham and Anderson 2001) and McCulloch's (1989) calibration measure. If only one simulation was ran or if no convergence is reached, then the returned value is \dQuote{NULL}.}
   \item{settings }{If called by \code{\link{summary}}, vector indicating the number of iterations for each MCMC, the burn in sequence, the thinning interval and the number of simulations ran, as specified by the user.}
 	\item{ModelSpecs }{Model specifications inidicating the model, the Shape and the covariate structure used as specified by the user.}
 	\item{JumpPriors }{If requested or called by functions \code{summary} or \code{\link{summary.basta}}, a matrix with the jumps and priors used in the model.}
@@ -137,6 +137,8 @@ Gelman, A., Carlin, J.B., Stern, H.S. & Rubin, D.B. (2004) \emph{Bayesian data a
 Gompertz, B. (1825) On the nature of the function expressive of the law of human mortality, and on a new mode of determining the value of life contingencies. \emph{Philosophical Transactions of the Royal Society of London}, 115, 513-583.
 
 King, R. & Brooks, S.P. (2002) Bayesian model discrimination for multiple strata capture-recapture data. \emph{Biometrika}, 89, 785-806. 
+
+McCulloch, R.E. (1989) Local model influence. \emph{Journal of the American Statistical Association}, 84, 473–478.
 
 Pinder III, J.E., Wiener, J.G. and Smith, M.H. (1978) The Weibull distribution: a new method of summarizing survivorship data. \emph{Ecology}, 59, 175-179.
 
