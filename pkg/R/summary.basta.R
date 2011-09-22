@@ -74,9 +74,9 @@ function(object,...){
   } else {
     cat("Appropriate convergence reached for all parameters.\n")
   } 
-  cat("\nModel Selection:\n")
+  cat("\nDIC:\n")
   if (!is.null(object$modSel)){
-    print(object$modSel)
+    cat(object$modSel["DIC"])
   } else {
     if (object$set['nsim'] == 1) {
       cat("DIC was not calculated due to insufficient number",
