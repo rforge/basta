@@ -1012,7 +1012,7 @@ function(object, studyStart, studyEnd, model = "GO", shape = "simple",
       idnconv                <- which(conv[, 'Rhat']< 0.95 | conv[, 'Rhat']>1.1)
       if (length(idnconv) > 0) {
         modSel               <- NULL
-        kl.mat               <- NULL
+        kl.list              <- NULL
         warning("Convergence not reached for some survival parameters.",
                 "\nDIC could not be calculated.\n", call. = FALSE)
       } else {
@@ -1036,7 +1036,7 @@ function(object, studyStart, studyEnd, model = "GO", shape = "simple",
         # 8.3.3 Inference on parameter estimates:
         # Kullback-Liebler distances for categorical covariates:
         if (is.null(covariate.type$cat)) {
-          kl.mat             <- NULL
+          kl.list            <- NULL
         } else {
           name.cat           <- names(covariate.type$cat)
           n.cat              <- length(name.cat)
@@ -1054,18 +1054,26 @@ function(object, studyStart, studyEnd, model = "GO", shape = "simple",
             }
           }
           if (covarsStruct == "mixed") {
-            kl.mat           <- matrix(NA, nrow = n.comb, ncol = length.theta0, 
-                                       dimnames = list(paste(covar.comb[,1], 
-                                       "-", covar.comb[,2], sep = ""), name.theta0))
+            kl.12            <- matrix(NA, nrow = n.comb, ncol = length.theta0, 
+                                       dimnames = list(paste(covar.comb[, 1], 
+                                       "-", covar.comb[, 2], sep = ""), name.theta0))
+            kl.21            <- matrix(NA, nrow = n.comb, ncol = length.theta0, 
+                                       dimnames = list(paste(covar.comb[, 2], 
+                                       "-", covar.comb[, 1], sep = ""), name.theta0))
             p.low            <- low.full.theta[1,]
           } else {
-            kl.mat           <- matrix(NA, nrow = n.comb, ncol = 1, 
+            kl.12            <- matrix(NA, nrow = n.comb, ncol = 1, 
                                        dimnames = list(paste(covar.comb[,1], 
                                        "-", covar.comb[,2], sep = ""), "gamma"))
+            kl.21            <- matrix(NA, nrow = n.comb, ncol = 1, 
+                                       dimnames = list(paste(covar.comb[, 2], 
+                                       "-", covar.comb[, 1], sep = ""), "gamma"))
             p.low            <- -Inf
           }
-          kl.pars            <- colnames(kl.mat)
-          for(i in 1:ncol(kl.mat)){
+          q.12               <- kl.12
+          q.21               <- kl.21
+          kl.pars            <- colnames(kl.12)
+          for(i in 1:ncol(kl.12)){
             for(j in 1:n.comb){
               p1             <- par.mat[, paste(kl.pars[i], "[", 
                                         covar.comb[j, 1], "]", sep = "")]
@@ -1084,18 +1092,24 @@ function(object, studyStart, studyEnd, model = "GO", shape = "simple",
                                        low = p.low[i])  
               dens.p2        <- dtnorm(p.vec, mean = mean(p2), sd = sd(p2), 
                                        low = p.low[i])  
-              kl.mat[j, i]   <- (sum(dens.p1*log(dens.p1/dens.p2) * 
-                                     dp) +
-                                 sum(dens.p2*log(dens.p2/dens.p1) * 
-                                     dp)) / 2
+              kl.12[j, i]    <- sum(dens.p1*log(dens.p1/dens.p2) * 
+                                     dp)
+              kl.21[j, i]    <- sum(dens.p2*log(dens.p2/dens.p1) * 
+                                     dp)
+              q.12[j, i]     <- (1 + (1 - exp(-2 * kl.12[j, i])^(1 / 2))) / 2
+              q.21[j, i]     <- (1 + (1 - exp(-2 * kl.21[j, i])^(1 / 2))) / 2
             }
           }
+          kl.list            <- list(kl12 = kl.12, 
+                                     kl21 = kl.21, 
+                                     q12  = q.12, 
+                                     q21  = q.21)
         }
       }
     } else {
       conv                   <- NULL
       modSel                 <- NULL
-      kl.mat                 <- NULL
+      kl.list                <- NULL
     }
     
     # 8.3.3 Summary times of birth and ages at death:
@@ -1187,7 +1201,7 @@ function(object, studyStart, studyEnd, model = "GO", shape = "simple",
   } else {
     conv                     <- NULL
     modSel                   <- NULL
-    kl.mat                   <- NULL
+    kl.list                  <- NULL
     xq                       <- NULL
     bq                       <- NULL
     Sxq                      <- NULL
@@ -1219,7 +1233,7 @@ function(object, studyStart, studyEnd, model = "GO", shape = "simple",
   output$coefficients        <- coef
   output$modSel              <- modSel
   output$Convergence         <- conv
-  output$KullbackLiebler     <- kl.mat
+  output$KullbackLiebler     <- kl.list
   output$settings            <- Settings
   output$ModelSpecs          <- ModelSpecs
   output$JumpPriors          <- JumpPriors
