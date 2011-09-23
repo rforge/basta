@@ -10,11 +10,12 @@ This function performs multiple Monte Carlo Markov Chain (MCMC) algorithms for B
 basta(object, \dots)
 
 \method{basta}{default}(object, studyStart, studyEnd, model = "GO", shape = "simple", 
-         covarsStruct = "mixed", niter = 50000, burnin = 5001, thinning = 50, 
-         recaptTrans = studyStart, thetaStart = NULL, thetaJumps = NULL, 
-         thetaPriors = NULL, gammaStart = NULL, gammaJumps = NULL, 
-         gammaPriors = NULL, nsim = 1, parallel = FALSE, ncpus = 2, 
-         lifeTable = TRUE, progrPlots = FALSE, \dots)
+         covarsStruct = "mixed", niter = 50000, burnin = 5001, 
+         thinning = 50, recaptTrans = studyStart, thetaStart = NULL, 
+         thetaJumps = NULL, thetaPriors = NULL, gammaStart = NULL, 
+         gammaJumps = NULL, gammaPriors = NULL, nsim = 1, 
+         parallel = FALSE, ncpus = 2, lifeTable = TRUE, 
+         progrPlots = FALSE, \dots)
 }
 \arguments{
   \item{object }{a \code{data.frame} to be used as an input data file for BaSTA. The first is a column of individual unique ID's, the second and third columns are birth and death years respectively. Columns 4-(nt-1) represent the observation window of nt years. This is followed (optionally) by columns for categorical and continous covariates (see details). }
