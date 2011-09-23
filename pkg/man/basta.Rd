@@ -138,7 +138,7 @@ Gompertz, B. (1825) On the nature of the function expressive of the law of human
 
 King, R. & Brooks, S.P. (2002) Bayesian model discrimination for multiple strata capture-recapture data. \emph{Biometrika}, 89, 785-806. 
 
-McCulloch, R.E. (1989) Local model influence. \emph{Journal of the American Statistical Association}, 84, 473–478.
+McCulloch, R.E. (1989) Local model influence. \emph{Journal of the American Statistical Association}, 84, 473-478.
 
 Pinder III, J.E., Wiener, J.G. and Smith, M.H. (1978) The Weibull distribution: a new method of summarizing survivorship data. \emph{Ecology}, 59, 175-179.
 
