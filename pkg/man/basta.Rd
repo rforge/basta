@@ -125,7 +125,7 @@ As described above, the number of parameters for argument \code{gammaStart} (i.e
   \item{lifetable }{If requested and specified in the argument \code{lifetable}, a cohort life table calculated from the estimated ages at death.}
 }
 \references{
-Burnham, K.P. & Anderson, D.R. (2001) Kullback–Leibler information as a basis for strong inference in ecological studies. \emph{Widlife Research}, 28, 111–119.
+Burnham, K.P. & Anderson, D.R. (2001) Kullback-Leibler information as a basis for strong inference in ecological studies. \emph{Widlife Research}, 28, 111-119.
 
 Colchero, F. and Clark, J.S. (2011) Bayesian inference on age-specific survival from capture-recapture data for censored and truncated data. Journal of Animal Ecology, DOI: 10.1111/j.1365-2656.2011.01898.x
 
