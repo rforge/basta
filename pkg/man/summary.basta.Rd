@@ -1,6 +1,4 @@
 \name{summary.basta}
-\name{print.basta}
-\name{plot.basta}
 \alias{summary.basta}
 \alias{print.basta}
 \alias{plot.basta}
