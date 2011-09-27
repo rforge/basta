@@ -6,7 +6,6 @@
 % \VignetteDepends{msm} 
 % \VignetteKeyword{stats} 
 
-
 \usepackage{amsmath}
 \usepackage{amscd}
 \usepackage[tableposition=top]{caption}
@@ -33,24 +32,23 @@ library(BaSTA)
 
 \section{xxx}
 
-For example, Figure~\ref{fig1}
-
-\subsection{xxx}
-
+For example, Figure~\ref{histo}.
 
 <<label=fig1,echo=FALSE>>=
-plot(hist(rnorm(1000))
+plot(hist(rnorm(1000)))
 @
 
 \begin{figure}
 \begin{center}
 <<label=fig1, fig=TRUE, echo=FALSE>>=
-<<exampletree>>
+<<fig1>>
 @
 \end{center}
 \caption{Example figure}
-\label{fig1}
+\label{histo}
 \end{figure}
+
+\subsection{xxx}
 
 
 \end{document}
