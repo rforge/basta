@@ -9,18 +9,19 @@ This function performs multiple Monte Carlo Markov Chain (MCMC) algorithms for B
 \usage{
 basta(object, \dots)
 
-\method{basta}{default}(object, studyStart, studyEnd, model = "GO", shape = "simple", 
-         covarsStruct = "mixed", niter = 50000, burnin = 5001, 
-         thinning = 50, recaptTrans = studyStart, thetaStart = NULL, 
-         thetaJumps = NULL, thetaPriors = NULL, gammaStart = NULL, 
-         gammaJumps = NULL, gammaPriors = NULL, nsim = 1, 
-         parallel = FALSE, ncpus = 2, lifeTable = TRUE, 
+\method{basta}{default}(object, studyStart, studyEnd, minAge = 0, model = "GO", 
+         shape = "simple", covarsStruct = "mixed", niter = 50000,
+         burnin = 5001, thinning = 50, recaptTrans = studyStart, 
+         thetaStart = NULL, thetaJumps = NULL, thetaPriors = NULL, 
+         gammaStart = NULL, gammaJumps = NULL, gammaPriors = NULL, 
+         nsim = 1, parallel = FALSE, ncpus = 2, lifeTable = TRUE, 
          progrPlots = FALSE, \dots)
 }
 \arguments{
   \item{object }{a \code{data.frame} to be used as an input data file for BaSTA. The first is a column of individual unique ID's, the second and third columns are birth and death years respectively. Columns 4-(nt-1) represent the observation window of nt years. This is followed (optionally) by columns for categorical and continous covariates (see details). }
   \item{studyStart }{the first year of the study.}
   \item{studyEnd }{the last year of the study.}
+  \item{minAge }{age at which the analysis should start (see details)}
   \item{model }{the underlying mortality model to be used. "EX" = exponential, GO"= Gompertz, "WE" = Weibull and "LO" = logistic (see \code{details}).}
   \item{shape }{The overall shape of the model. Values are: \code{simple} = no extra parameters added; \code{Makeham} = a constant parameter is added to the mortality rate; and \code{bathtub} = a Gompertz declining mortality for early ages and a constant parameter are added to the mortality model (see \code{details}).}
   \item{covarsStruct }{character string that indicates how covariates should be evaluated. The options are: \dQuote{\code{mixed}}, which puts all categorical variables as covariates for each mortality parameter and all continuous covariates under a proportional hazards structure; \dQuote{\code{prop.haz}}, which puts all covariates under a proportional hazards structure; and \dQuote{\code{all.in.mort}} puts all covariates as a multilevel function of the mortality parameters (see \code{details}).}
@@ -123,6 +124,7 @@ As described above, the number of parameters for argument \code{gammaStart} (i.e
   \item{stend }{If requested, the last year of the study}
   \item{finished }{Vector of binary values indicating which simulations ran to the end.}
   \item{lifetable }{If requested and specified in the argument \code{lifetable}, a cohort life table calculated from the estimated ages at death.}
+  \item{lambda }{If argument \code{minAge} is larger than 0 and if requested, matrix with lambda parameter estimates for early changes in distribution of ages at death.}
 }
 \references{
 Burnham, K.P. & Anderson, D.R. (2001) Kullback-Leibler information as a basis for strong inference in ecological studies. \emph{Widlife Research}, 28, 111-119.
