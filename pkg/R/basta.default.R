@@ -1,10 +1,11 @@
 basta.default <- 
-function(object, studyStart, studyEnd, model = "GO", shape = "simple", 
-         covarsStruct = "mixed", niter = 50000, burnin = 5001, 
-         thinning = 50, recaptTrans = studyStart, thetaStart = NULL, 
-         thetaJumps = NULL, thetaPriors = NULL, gammaStart = NULL, 
-         gammaJumps = NULL, gammaPriors = NULL, nsim = 1, parallel = FALSE, 
-         ncpus = 2, lifeTable = TRUE, progrPlots = FALSE, ...) {
+function(object, studyStart, studyEnd, minAge = 0, model = "GO", 
+         shape = "simple", covarsStruct = "mixed", niter = 50000, 
+         burnin = 5001, thinning = 50, recaptTrans = studyStart, 
+         thetaStart = NULL, thetaJumps = NULL, thetaPriors = NULL, 
+         gammaStart = NULL, gammaJumps = NULL, gammaPriors = NULL, 
+         nsim = 1, parallel = FALSE, ncpus = 2, lifeTable = TRUE, 
+         progrPlots = FALSE, ...) {
          	
   # This function estimates age-specific mortality from capture-recapture/
   # recovery (CRR) data when a large proportion of (or all) the records have
@@ -337,16 +338,16 @@ function(object, studyStart, studyEnd, model = "GO", shape = "simple",
   }
   
   parallelVars               <- c(parallelVars, "model", "shape", "covarsStruct")
-
+  
   # 4 Data formatting:
   # 4.1 Extract raw data and create BaSTA data tables:
   # 4.1.1 Study duration, birth & death matrix and recapture matrix:
   study.years                <- studyStart:studyEnd
   study.length               <- length(study.years)
   n                          <- nrow(object)
-  bd                         <- as.matrix(object[, 2:3])
   Y                          <- as.matrix(object[, 1:study.length + 3])
   colnames(Y)                <- study.years
+  bd                         <- as.matrix(object[, 2:3])
   bi                         <- bd[, 1]
   di                         <- bd[, 2]
 
@@ -598,10 +599,10 @@ function(object, studyStart, studyEnd, model = "GO", shape = "simple",
     } 
     nlow                     <- low.full.theta
     if (nsim > 1) {
-      thetaJitter            <- theta.g * 0 + 0.25
+      thetaJitter            <- theta.g * 0 + 0.5
       thetaJitter[theta.jump==0] <- 0
       if (covarsStruct=="all.in.mort") {
-        thetaJitter[covariate.type$cont, ] <- 0.05
+        thetaJitter[covariate.type$cont, ] <- 0.15
       }
       theta.n                <- matrix(rtnorm(length.full.theta, theta.g, 
                                        thetaJitter, lower=nlow), length.cat, 
@@ -633,6 +634,7 @@ function(object, studyStart, studyEnd, model = "GO", shape = "simple",
     colnames(pi.mat)         <- name.pi
     bi.mat                   <- matrix(NA,length(thin.seq),n)
     di.mat                   <- bi.mat
+    la.vec                   <- rep(NA, niter)
     posterior.mat            <- matrix(NA, niter, 3)
     colnames(posterior.mat)  <- name.post
     theta.mat[1, ]           <- theta.g
@@ -642,6 +644,25 @@ function(object, studyStart, studyEnd, model = "GO", shape = "simple",
     }
     Ztheta.g                 <- Zcat %*% theta.g
     Zgamma.g                 <- Zcont %*% gamma.g
+    lag                      <- 0.01
+    
+    # Juvenile and adult ages:
+    IminAge                  <- ifelse(minAge > 0, 1, 0)
+    Iag                      <- rep(0, n)
+    Ijg                      <- Iag
+    Iag[xg > minAge]         <- 1
+    Ijg[xg <= minAge]        <- 1
+    xjg                      <- xg
+    xjg[xg > minAge]         <- minAge
+    xag                      <- xg - minAge
+    xag[xg < minAge]         <- 0
+    xjtg                     <- xg * 0
+    idtr                     <- which(bg < studyStart & 
+                                      studyStart - bg < minAge)
+    xjtg[idtr]               <- studyStart - bg[idtr]
+    xatg                     <- xg * 0
+    idtr                     <- which(bg + minAge < studyStart)
+    xatg[idtr]               <- studyStart - (bg[idtr] + minAge)
 
     # Run Gibbs sampler:
     naflag                   <- FALSE
@@ -661,6 +682,7 @@ function(object, studyStart, studyEnd, model = "GO", shape = "simple",
 		
       # 1.- SAMPLING:
       # a) Sample survival parameters:
+      # i) Metropolis draw for params:
       theta.n                <- matrix(rtnorm(length.full.theta, theta.g, 
                                        theta.jump, lower = low.full.theta), 
                                        length.cat, length.theta, 
@@ -682,29 +704,33 @@ function(object, studyStart, studyEnd, model = "GO", shape = "simple",
         gamma.n              <- gamma.g
       }
       
+      # ii) Build individual parameter matrices:
       Ztheta.n               <- Zcat %*% theta.n
       Zgamma.n               <- Zcont %*% gamma.n
-      idtrg                  <- which(bg < studyStart)
-      lidt                   <- length(idtrg)
-      
-      p.thg                  <- log(CalculateFullFx(xg + 0.5 * Dx, Ztheta.g, 
-                                    Zgamma.g))
-      p.thg[idtrg]           <- p.thg[idtrg] - log(CalculateFullSx(studyStart - 
-                                bg[idtrg] + 0.5 * Dx, matrix(Ztheta.g[idtrg, ], 
-                                ncol = length.theta), Zgamma.g[idtrg]))
+            
+      # iii) Calculate conditional posteriors:
+      # - Current parameters:
+      p.thg                  <- (log(CalculateFullFx(xag + 
+                                0.5 * Dx, Ztheta.g, Zgamma.g)) -
+                                log(CalculateFullSx(xatg + 0.5 * Dx, 
+                                Ztheta.g, Zgamma.g))) * Iag 
+      # - Correct for precision limit:
       p.thg[p.thg==-Inf]     <- -1e300
+      # - Priors:
       p.thg                  <- sum(p.thg) + sum(dtnorm(c(theta.g), 
                                 c(theta.prior), theta.sd, 
                                 lower = low.full.theta, log = TRUE)) + 
                                 sum(dnorm(gamma.g, gamma.prior, gamma.sd, 
                                 log = TRUE))
 
-      p.thn                  <- log(CalculateFullFx(xg + 0.5 * Dx, Ztheta.n, 
-                                    Zgamma.n))
-      p.thn[idtrg]           <- p.thn[idtrg] - log(CalculateFullSx(studyStart - 
-                                bg[idtrg] + 0.5 * Dx, matrix(Ztheta.n[idtrg, ], 
-                                ncol = length.theta), Zgamma.n[idtrg]))
+      # - Proposed parameters:
+      p.thn                  <- (log(CalculateFullFx(xag + 
+                                0.5 * Dx, Ztheta.n, Zgamma.n)) -
+                                log(CalculateFullSx(xatg + 0.5 * Dx, 
+                                Ztheta.n, Zgamma.n))) * Iag
+      # - Correct for precision limit:
       p.thn[p.thn==-Inf]     <- -1e300
+      # - Priors:
       p.thn                  <- sum(p.thn) + sum(dtnorm(c(theta.n), 
                                 c(theta.prior), theta.sd, 
                                 lower = low.full.theta, log=TRUE)) + 
@@ -731,6 +757,7 @@ function(object, studyStart, studyEnd, model = "GO", shape = "simple",
       }
       
       # b) Sample times of birth and death:
+      # i) New times of birth and death:
       bn                     <- bg 
       bn[bi0]                <- bg[bi0] + sample(-1:1, length(bi0), 
                                 replace = TRUE) 
@@ -745,21 +772,43 @@ function(object, studyStart, studyEnd, model = "GO", shape = "simple",
                                       1, max) 
       xn                     <- dn - bn
       
+      # ii) New full alive matrices:
       Fn                     <- c(apply(cbind(studyStart, bn + 1), 1, max))
       Ln                     <- c(apply(cbind(studyEnd, dn - 1), 1, min))
       On                     <- BuildAliveMatrix(Fn, Ln, Tm)
+
+      # iii) New juvenile and adult ages:
+      Ian                    <- rep(0, n)
+      Ijn                    <- Ian
+      Ian[xn > minAge]       <- 1
+      Ijn[xn <= minAge]      <- 1
+      xjn                    <- xn
+      xjn[xn > minAge]       <- minAge
+      xan                    <- xn - minAge
+      xan[xn < minAge]       <- 0
+      xjtn                   <- xn * 0
+      idtr                   <- which(bn < studyStart & 
+                                      studyStart - bn < minAge)
+      xjtn[idtr]             <- studyStart - bn[idtr]
+      xatn                   <- xn * 0
+      idtr                   <- which(bn + minAge < studyStart)
+      xatn[idtr]             <- studyStart - (bn[idtr] + minAge)
       
-      p.bdg                  <- log(CalculateFullFx(xg + 0.5 * Dx, 
-                                    Ztheta.g, Zgamma.g))
+      # iiii) Calculate conditional posteriors:
+      # - Current ages:
+      p.bdg                  <- (log(lag) * Ijg - lag * xjg) * IminAge + 
+                                log(CalculateFullFx(xag + 
+                                0.5 * Dx, Ztheta.g, Zgamma.g)) * Iag
       p.bdg[p.bdg==-Inf]     <- -1e300
       p.bdg                  <- p.bdg + (Og - lfi) %*% log(1 - Pig) + 
-                                log(v.x(xg + 0.5 * Dx))
-      
-      p.bdn                  <- log(CalculateFullFx(xn + 0.5 * Dx, 
-                                    Ztheta.g, Zgamma.g))
+                                log(v.x(xag + 0.5 * Dx)) * Iag
+      # - New ages:
+      p.bdn                  <- (log(lag) * Ijn - lag * xjn) * IminAge  + 
+                                log(CalculateFullFx(xan + 
+                                0.5 * Dx, Ztheta.g, Zgamma.g)) * Ian
       p.bdn[p.bdn==-Inf]     <- -1e300
       p.bdn                  <- p.bdn + (On - lfi) %*% log(1 - Pig) + 
-                                log(v.x(xn + 0.5 * Dx))
+                                log(v.x(xan + 0.5 * Dx)) * Ian
       
       r                      <- exp(p.bdn-p.bdg)
       if (length(which(is.na(r)))>0) {
@@ -773,6 +822,12 @@ function(object, studyStart, studyEnd, model = "GO", shape = "simple",
         xg[idrz]             <- xn[idrz]
         p.bdg[idrz]          <- p.bdn[idrz]
         Og[idrz, ]           <- On[idrz, ]
+        xjg[idrz]            <- xjn[idrz]
+        xjtg[idrz]           <- xjtn[idrz]
+        xag[idrz]            <- xan[idrz]
+        xatg[idrz]           <- xatn[idrz]
+        Iag[idrz]            <- Ian[idrz]
+        Ijg[idrz]            <- Ijn[idrz]
       }
       
       # c) Sample recapture probability(ies):
@@ -789,12 +844,31 @@ function(object, studyStart, studyEnd, model = "GO", shape = "simple",
       }
       Pig                    <- pi.g[idpi]
       
+      # d) if minAge > 0, sample lambda:
+      if (minAge > 0) {
+        lan                   <- rtnorm(n = 1, mean = lag, 
+                                       sd = 0.001, lower = 0)
+        p.lag                <- sum(log(lag) * Ijg - lag * xjg + lag * xjtg) +
+                                dtnorm(lag, mean = 0.01, sd = 1, lower = 0)
+        p.lan                <- sum(log(lan) * Ijg - lan * xjg + lan * xjtg) +
+                                dtnorm(lan, mean = 0.01, sd = 1, lower = 0)
+        
+        r                    <- exp(p.lan - p.lag)
+        z                    <- runif(1, 0, 1)
+        if (r > z) {
+          lag                 <- lan
+        }
+      }
+      
       # 2.- STORE RESULTS:
       # Parameters and latent states:
       theta.mat[g, ]         <- theta.g
       pi.mat[g, ]            <- pi.g
       if (Cont) {
       	 gamma.mat[g, ]       <- gamma.g
+      }
+      if (minAge > 0) {
+        la.vec[g]            <- lag
       }
       if (g %in% thin.seq) {
       	 bi.mat[gg, ]         <- bg
@@ -840,11 +914,11 @@ function(object, studyStart, studyEnd, model = "GO", shape = "simple",
     if (progrPlots) {
       dev.off(progrpl)
     }
-    
     # Return results:
     return(list(theta  = theta.mat, 
                 gamma  = gamma.mat, 
-                pi     = pi.mat, 
+                pi     = pi.mat,
+                la     = la.vec, 
                 bi     = bi.mat, 
                 di     = di.mat, 
                 post   = posterior.mat, 
@@ -873,7 +947,7 @@ function(object, studyStart, studyEnd, model = "GO", shape = "simple",
     } else {
       require(snowfall)
       sfInit(parallel = TRUE, cpus = ncpus);
-      sfExport(list = c(parallelVars, "parallel", "nsim"))
+      sfExport(list = c(parallelVars, "parallel", "nsim", "minAge"))
       sfLibrary(msm)
       basta.out              <- sfClusterApplyLB(1:nsim, multiMCMC)
       sfStop()
@@ -941,6 +1015,13 @@ function(object, studyStart, studyEnd, model = "GO", shape = "simple",
   rownames(Bimat)            <- rep(simNames, each = nthin)
   Dimat                      <- Bimat
   idthin                     <- rep(0, niter*nsim)
+  if (minAge > 0) {
+    la.mat                   <- matrix(NA, nrow = niter, ncol = nsim, 
+                                       dimnames = list(NULL, simNames))
+  } else {
+    la.mat                   <- matrix(NA, nrow = 1, ncol = nsim,
+                                       dimnames = list(NULL, simNames))
+  }
   
   for(i in 1:nsim) {
     Idsim                    <- which(rownames(out.mat) == simNames[i])
@@ -958,6 +1039,9 @@ function(object, studyStart, studyEnd, model = "GO", shape = "simple",
     Idsim                    <- which(rownames(Bimat) == simNames[i])
     Bimat[Idsim, ]           <- basta.out[[i]]$bi
     Dimat[Idsim, ]           <- basta.out[[i]]$di
+    if (minAge > 0){
+      la.mat[, i]            <- basta.out[[i]]$la
+    } 
   }
   
   # 8.2 Basic summary statistics for parameters:
@@ -1153,7 +1237,7 @@ function(object, studyStart, studyEnd, model = "GO", shape = "simple",
         idza                 <- which(Z[, zaname[i]] == 1)
       }
       xv                     <- seq(0, ceiling(max(xq[1, idza]) * 1.1), 0.1)
-      xvec[[zaname[i]]]      <- xv
+      xvec[[zaname[i]]]      <- xv + minAge
       for(j in 1:ncol(rzc)) {
         Sxq[[zaname[i]]][[colnames(rzc)[j]]] <- 
                 array(0, dim = c(length(xv), 3, nrow(rzc)), 
@@ -1254,7 +1338,10 @@ function(object, studyStart, studyEnd, model = "GO", shape = "simple",
   output$finished            <- full.runs
   if (lifeTable) {
     output$lifeTable         <- LT
-  } 
+  }
+  if (minAge > 0) {
+    output$Lambda            <- la.mat
+  }
   class(output)              <- "basta"
   return(output)
 }
