@@ -51,36 +51,36 @@ Argument \code{model} allows choosing between four basic mortality rate function
 
 a) Exponential (\dQuote{\code{EX}}; Cox and Oakes 1974), with constant mortality rate:
 
-\deqn{\mu_b(x | \mathbf{b}) = b}
+\deqn{\mu_b(x | b) = b}
 with \eqn{b > 0}.
 
 b) Gompertz (\dQuote{\code{GO}}; Gompertz 1925, Pletcher 1999): 
 
-\deqn{\mu_b(x | \mathbf{b}) = e^{b_0 + b_1 x}}
+\deqn{\mu_b(x | b) = exp(b_0 + b_1 x)}
 with \eqn{-\infty < b_0, b_1 < \infty}.
 
 
 c) Weibull (\dQuote{\code{WE}}; Pinder III \emph{et al.} 1978):
 
-\deqn{\mu_b(x | \mathbf{b}) = b_0 b_1^{b_0} x^{b_0 -1}}
+\deqn{\mu_b(x | b) = b_0 b_1^(b_0) x^(b_0 -1)}
 with \eqn{b_0, b_1 > 0}.
 
 
 d) logistic (\dQuote{\code{LO}}; Pletcher 1999):
 
-\deqn{\mu_b(x | \mathbf{b}) = \frac{e^{b_0 + b_1 x}}{1+b_2 e^{b_0}/\beta_1 (e^{b_1 x}-1)}}
+\deqn{\mu_b(x | b) = exp(b_0 + b_1 x) / (1 + b_2 exp(b_0)/b_1 (exp(b_1 x)-1))}
 with\eqn{b_0, b_1, b_2 > 0}.
 
-Argument \code{shape} allows to extend these models to explore more complex mortality shapes. The default value is \dQuote{\code{simple}} which leaves the model as defined above. With value \dQuote{\code{Makeham}}, a constant is added to the mortality rate, making the model equal to \eqn{\mu_0(x | \theta)= \mu_b(x | \mathbf{b}) + c}, where \eqn{\theta = [c, \mathbf{b}]}. With value \dQuote{\code{bathtub}} concave shapes in mortality can be explored. This is achieved by adding a declining Gompertz term and a constant parameter to the basic mortality model, namely:
+Argument \code{shape} allows to extend these models to explore more complex mortality shapes. The default value is \dQuote{\code{simple}} which leaves the model as defined above. With value \dQuote{\code{Makeham}}, a constant is added to the mortality rate, making the model equal to \eqn{\mu_0(x | \theta)= \mu_b(x | b) + c}, where \eqn{\theta = [c, b]}. With value \dQuote{\code{bathtub}} concave shapes in mortality can be explored. This is achieved by adding a declining Gompertz term and a constant parameter to the basic mortality model, namely:
 
-\deqn{\mu_0(x | \theta) = e^{a_0 - a_1 x} + c + \mu_b(x | \mathbf{b})}.
-with \eqn{-\infty < a_0 < \infty}, \eqn{a_1 > 0} and \eqn{c > - (e^{a_0 - a_1 x_m} + \mu_b(x_m | \mathbf{b}))} where \eqn{x_m} is the age at which \eqn{\mu_0(x | \theta)} reaches the mininum vale.
+\deqn{\mu_0(x | \theta) = exp(a_0 - a_1 x) + c + \mu_b(x | b)}.
+with \eqn{-\infty < a_0 < \infty}, \eqn{a_1 > 0} and \eqn{c > - (exp(a_0 - a_1 x_m) + \mu_b(x_m | b))} where \eqn{x_m} is the age at which \eqn{\mu_0(x | \theta)} reaches the mininum vale.
 
 To incorporate covariates into the inference process, the mortality model is further extended by including a proportional hazards structure, of the form: 
 
-\deqn{\mu(x | \theta, \Gamma, \mathbf{Z}_a, \mathbf{Z}_c) = \mu_0(x | \theta, \mathbf{Z}_a) \, e^{\Gamma \mathbf{Z}_c}}
+\deqn{\mu(x | \theta, \Gamma, Z_a, Z_c) = \mu_0(x | \theta, Z_a) \, exp(\Gamma Z_c)}
 
-where \eqn{\mu_0(x | \theta, \mathbf{Z}_a)} represents the mortality section as defined above, while the second term \eqn{e^{\Gamma \mathbf{Z}_c}} corresponds to the proportional hazards function.  \eqn{\mathbf{Z}_a} and \eqn{\mathbf{Z}_c} are covariate (design) matrices for categorical and continuous covariates, respectively.
+where \eqn{\mu_0(x | \theta, Z_a)} represents the mortality section as defined above, while the second term \eqn{exp(\Gamma Z_c)} corresponds to the proportional hazards function.  \eqn{Z_a} and \eqn{Z_c} are covariate (design) matrices for categorical and continuous covariates, respectively.
 
 When covariates are included in the dataset, the model provides three different ways in which these can be evaluated by using argument \code{covarsStruct}: 
 
