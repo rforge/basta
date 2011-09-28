@@ -20,7 +20,7 @@
 
 \begin{document}
 
-\title{The \BaSTA{} package vignette}
+\title{The BaSTA package vignette}
 \author{Fernando Colchero and Owen R. Jones}
 \maketitle
 
