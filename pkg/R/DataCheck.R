@@ -16,7 +16,7 @@ function(object, studyStart, studyEnd, autofix = rep(0,7), silent=TRUE) {
 
 #if(autofix == TRUE) stop("Autofix specification should be a numerical vector of length 7.")
 
-    Ti         = studyStart
+   Ti         = studyStart
 	Tf         = studyEnd
 	st         = Ti:Tf
 	nt         = length(st)
@@ -73,7 +73,7 @@ function(object, studyStart, studyEnd, autofix = rep(0,7), silent=TRUE) {
     bd2 = cbind(bd2, 1:n)
 #    bd2 = subset(bd2, bd2[, 1] != 0 & bd2[, 2] != 0)
 #    type3 = bd2[,3][which(bd2[, 1] > bd2[, 2])]
-    type3 = which(bd[,1] > bd[,2] & bd[, 1] != 0 & bd[, 2] != 0)    
+    type3 = which(bd[, 1] > bd[, 2] & bd[, 1] != 0 & bd[, 2] != 0)    
     if (length(type3) != 0) {
         cat("The following rows have birth dates that are later than their death dates:\n")
         print(type3)
@@ -130,10 +130,10 @@ function(object, studyStart, studyEnd, autofix = rep(0,7), silent=TRUE) {
     }
     
 # 6. Year of birth should be a zero in recapture matrix Y
-    idb   = which(bd[,1]>0 & bd[,1]>=Ti & bd[,1] <=Tf)
-    bcol  = bd[idb,1] - Ti + 1
-    bpos  = (bcol-1)*n + idb
-    type6 = which(Y[bpos]==1)
+    idb   = which(bd[, 1] > 0 & bd[, 1] >= Ti & bd[, 1] <= Tf)
+    bcol  = bd[idb, 1] - Ti
+    bpos  = bcol * n + idb
+    type6 = idb[which(Y[bpos] == 1)]
 
     if (length(type6) != 0) {
         cat("The following rows have a one in the recapture matrix in the birth year:\n")
@@ -145,9 +145,9 @@ function(object, studyStart, studyEnd, autofix = rep(0,7), silent=TRUE) {
     
 # 7. Year of death should be a zero in recapture matrix Y
     idd   = which(bd[,2]>0 & bd[,2]>=Ti)
-    dcol  = bd[idd,2] - Ti + 1
-    dpos  = (dcol-1)*n + idd
-    type7 = which(Y[dpos]==1)
+    dcol  = bd[idd,2] - Ti
+    dpos  = dcol * n + idd
+    type7 = idd[which(Y[dpos] == 1)]
     if (length(type7) != 0) {
         cat("The following rows have a one in the recapture matrix in the death year:\n")
         print(type7)
