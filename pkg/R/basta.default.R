@@ -599,7 +599,7 @@ function(object, studyStart, studyEnd, minAge = 0, model = "GO",
     } 
     nlow                     <- low.full.theta
     if (nsim > 1) {
-      thetaJitter            <- theta.g * 0 + 0.5
+      thetaJitter            <- theta.g * 0 + 0.35
       thetaJitter[theta.jump==0] <- 0
       if (covarsStruct=="all.in.mort") {
         thetaJitter[covariate.type$cont, ] <- 0.15
@@ -848,9 +848,11 @@ function(object, studyStart, studyEnd, minAge = 0, model = "GO",
       if (minAge > 0) {
         lan                   <- rtnorm(n = 1, mean = lag, 
                                        sd = 0.001, lower = 0)
-        p.lag                <- sum(log(lag) * Ijg - lag * xjg + lag * xjtg) +
+        p.lag                <- sum(log(lag) * Ijg - lag * xjg + 
+                                    lag * xjtg) +
                                 dtnorm(lag, mean = 0.01, sd = 1, lower = 0)
-        p.lan                <- sum(log(lan) * Ijg - lan * xjg + lan * xjtg) +
+        p.lan                <- sum(log(lan) * Ijg - lan * xjg + 
+                                    lan * xjtg) +
                                 dtnorm(lan, mean = 0.01, sd = 1, lower = 0)
         
         r                    <- exp(p.lan - p.lag)
