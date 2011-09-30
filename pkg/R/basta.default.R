@@ -45,7 +45,7 @@ function(object, studyStart, studyEnd, minAge = 0, model = "GO",
     }
     length.theta0            <- 2
     low.theta0               <- c(-Inf, -Inf)
-    ini.theta0               <- c(-2, 0.01)
+    ini.theta0               <- c(-3, 0.01)
     jump.theta0              <- c(0.05, 0.025)
     prior.theta0             <- c(-3, 0.01)
   } else if (model == "WE") {
@@ -72,7 +72,7 @@ function(object, studyStart, studyEnd, minAge = 0, model = "GO",
     }
     length.theta0            <- 3
     low.theta0               <- c(-Inf, 0, 0)
-    ini.theta0               <- c(-2, 0.01, 0.0001)
+    ini.theta0               <- c(-3, 0.01, 0.0001)
     jump.theta0              <- c(0.001, 0.001, 0.001)
     prior.theta0             <- c(-3, 0.01, 1e-10)
   }
