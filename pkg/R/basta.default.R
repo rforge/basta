@@ -45,9 +45,9 @@ function(object, studyStart, studyEnd, minAge = 0, model = "GO",
     }
     length.theta0            <- 2
     low.theta0               <- c(-Inf, -Inf)
-    ini.theta0               <- c(-1, 0.001)
+    ini.theta0               <- c(-2, 0.01)
     jump.theta0              <- c(0.05, 0.025)
-    prior.theta0             <- c(0.001, 0.001)
+    prior.theta0             <- c(-3, 0.01)
   } else if (model == "WE") {
     CalculateBasicMx         <- function(x, theta) {
       theta[, 1] * theta[, 2]^theta[, 1] * x^(theta[, 1] - 1)
@@ -57,7 +57,7 @@ function(object, studyStart, studyEnd, minAge = 0, model = "GO",
     }
     length.theta0            <- 2
     low.theta0               <- c(0, 0)
-    ini.theta0               <- c(1, 0.1)
+    ini.theta0               <- c(1.5, 0.1)
     jump.theta0              <- c(0.01, 0.001)
     prior.theta0             <- c(1, 0.01)
   } else if (model == "LO") {
@@ -72,9 +72,9 @@ function(object, studyStart, studyEnd, minAge = 0, model = "GO",
     }
     length.theta0            <- 3
     low.theta0               <- c(-Inf, 0, 0)
-    ini.theta0               <- c(-1, .25, 0.075)
+    ini.theta0               <- c(-2, 0.01, 0.0001)
     jump.theta0              <- c(0.001, 0.001, 0.001)
-    prior.theta0             <- c(-2, 0.1, 0.001)
+    prior.theta0             <- c(-3, 0.01, 1e-10)
   }
   name.theta0                <- paste("b", (1:length.theta0) - 1, sep="")
 
@@ -407,7 +407,14 @@ function(object, studyStart, studyEnd, minAge = 0, model = "GO",
         if (!is.null(covariate.type$cont) & covarsStruct != "all.in.mort") {
           Zcont              <- matrix(Z[, covariate.type$cont], nrow(Z), 
                                        length(covariate.type$cont))
-          Zcont              <- t(t(Zcont) - apply(Zcont, 2, mean))
+          rangeZc            <- apply(Zcont, 2, range)
+          idNoChange         <- which(rangeZc[1, ] * rangeZc[2, ] < 0)
+          if (length(idNoChange) > 0) {
+            for (i in idNoChange) {
+            	 Zcont[, i]      <- Zcont[, i] - mean(Zcont[, i])
+            }
+          }
+#          Zcont              <- t(t(Zcont) - apply(Zcont, 2, mean))
           colnames(Zcont)    <- names(covariate.type$cont)
           Cont               <- TRUE
         } else {
@@ -599,7 +606,7 @@ function(object, studyStart, studyEnd, minAge = 0, model = "GO",
     } 
     nlow                     <- low.full.theta
     if (nsim > 1) {
-      thetaJitter            <- theta.g * 0 + 0.35
+      thetaJitter            <- theta.g * 0 + 0.5
       thetaJitter[theta.jump==0] <- 0
       if (covarsStruct=="all.in.mort") {
         thetaJitter[covariate.type$cont, ] <- 0.15
@@ -715,7 +722,7 @@ function(object, studyStart, studyEnd, minAge = 0, model = "GO",
                                 log(CalculateFullSx(xatg + 0.5 * Dx, 
                                 Ztheta.g, Zgamma.g))) * Iag 
       # - Correct for precision limit:
-      p.thg[p.thg==-Inf]     <- -1e300
+      p.thg[p.thg==-Inf]     <- -1e200
       # - Priors:
       p.thg                  <- sum(p.thg) + sum(dtnorm(c(theta.g), 
                                 c(theta.prior), theta.sd, 
@@ -729,7 +736,7 @@ function(object, studyStart, studyEnd, minAge = 0, model = "GO",
                                 log(CalculateFullSx(xatg + 0.5 * Dx, 
                                 Ztheta.n, Zgamma.n))) * Iag
       # - Correct for precision limit:
-      p.thn[p.thn==-Inf]     <- -1e300
+      p.thn[p.thn==-Inf]     <- -1e200
       # - Priors:
       p.thn                  <- sum(p.thn) + sum(dtnorm(c(theta.n), 
                                 c(theta.prior), theta.sd, 
@@ -799,14 +806,14 @@ function(object, studyStart, studyEnd, minAge = 0, model = "GO",
       p.bdg                  <- (log(lag) * Ijg - lag * xjg) * IminAge + 
                                 log(CalculateFullFx(xag + 
                                 0.5 * Dx, Ztheta.g, Zgamma.g)) * Iag
-      p.bdg[p.bdg==-Inf]     <- -1e300
+      p.bdg[p.bdg==-Inf]     <- -1e200
       p.bdg                  <- p.bdg + (Og - lfi) %*% log(1 - Pig) + 
                                 log(v.x(xag + 0.5 * Dx)) * Iag
       # - New ages:
       p.bdn                  <- (log(lag) * Ijn - lag * xjn) * IminAge  + 
                                 log(CalculateFullFx(xan + 
                                 0.5 * Dx, Ztheta.g, Zgamma.g)) * Ian
-      p.bdn[p.bdn==-Inf]     <- -1e300
+      p.bdn[p.bdn==-Inf]     <- -1e200
       p.bdn                  <- p.bdn + (On - lfi) %*% log(1 - Pig) + 
                                 log(v.x(xan + 0.5 * Dx)) * Ian
       
