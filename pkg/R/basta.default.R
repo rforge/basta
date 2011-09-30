@@ -609,7 +609,7 @@ function(object, studyStart, studyEnd, minAge = 0, model = "GO",
       thetaJitter            <- theta.g * 0 + 0.5
       thetaJitter[theta.jump==0] <- 0
       if (covarsStruct=="all.in.mort") {
-        thetaJitter[covariate.type$cont, ] <- 0.15
+        thetaJitter[covariate.type$cont, ] <- 0.05
       }
       theta.n                <- matrix(rtnorm(length.full.theta, theta.g, 
                                        thetaJitter, lower=nlow), length.cat, 
