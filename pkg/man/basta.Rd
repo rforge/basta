@@ -160,8 +160,8 @@ Fernando Colchero \email{colchero@demogr.mpg.de}, Owen R. Jones \email{jones@mpg
 data("basta.dat", package="BaSTA")
 
 ## Check data consistency:
-new.dat  <- DataCheck(basta.dat, studyStart=100, 
-            studyEnd=120, autofix=rep(1,7))
+new.dat  <- DataCheck(basta.dat, studyStart=51, 
+            studyEnd=70, autofix=rep(1,7))
 
 ## Run short version of BaSTA on the data (+/- 1.5 mins.):
 out      <- basta(basta.dat, studyStart=100, studyEnd=120, 
