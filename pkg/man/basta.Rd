@@ -164,10 +164,10 @@ new.dat  <- DataCheck(basta.dat, studyStart=51,
             studyEnd=70, autofix=rep(1,7))
 
 ## Run short version of BaSTA on the data (+/- 1.5 mins.):
-out      <- basta(basta.dat, studyStart=100, studyEnd=120, 
+out      <- basta(basta.dat, studyStart=51, studyEnd=70, 
             model="GO", shape="simple", covarsStruct="mixed", 
             niter=2000, burnin=1001, thinning=10, 
-            thetaJumps=c(0.05,0.025), gammaJumps=0.025, 
+            thetaJumps=c(0.025,0.01), gammaJumps=0.01, 
             progrPlots=TRUE)
 
 ## Print results:
