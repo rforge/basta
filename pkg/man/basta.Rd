@@ -177,7 +177,7 @@ summary(out, digits=3)
 plot(out)
 
 ## Plot traces for prop. hazards parameter:
-plot(out, tracename="gamma")
+plot(out, trace.name="gamma")
 
 ## Plot survival and mortality curves:
 plot(out, plot.trace=FALSE)
