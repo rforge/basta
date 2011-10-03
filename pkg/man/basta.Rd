@@ -33,7 +33,7 @@ basta(object, \dots)
   \item{thetaJumps }{a vector defining the size of jumps for each survival model parameter (standard error in the Metropolis step). The number of parameters will depend on the model selected.}
   \item{thetaPriors }{a vector defining the priors for each survival parameter. The vector takes the same format as described for \code{thetaJumps}.}
   \item{gammaStart }{a vector of initial parameters for the proportional hazards section of the model. These can be specified when Prop.Hazards is TRUE or when continuous covariates are evaluated (see details). As with \code{thetaStart}, the default is set to \code{NULL} and thus default values are assigned (i.e. all equal to 0).}
-  \item{gammaJumps }{a vector of jump standard errors for the proportional hazards parameters. The number of jumps will be equal to the number of covariates when the argument \code{covarsStruct} is set to \dQuote{\code{prop.haz}}, or to the number of continuous covariates to be evaluated when \code{covarsStruct} is set to \dQuote{\code{mixed}}. In case any of these two conditions are met and the default is used (i.e. NULL), the model automatically assigns builtin jump values.}
+  \item{gammaJumps }{a vector of jump standard errors for the proportional hazards parameters. The number of jumps will be equal to the number of covariates when the argument \code{covarsStruct} is set to \dQuote{\code{prop.haz}}, or to the number of continuous covariates to be evaluated when \code{covarsStruct} is set to \dQuote{\code{mixed}}. In case any of these two conditions are met and the default is used (i.e. NULL), the model automatically assigns built-in jump values.}
   \item{gammaPriors }{a vector of mean priors for the proportional hazards parameters. The specification follows the same rules as \code{gammaJumps}.}
   \item{nsim }{a numerical value for the number of simulations.}
   \item{parallel }{logical; if TRUE package \pkg{snowfall} is called and multiple simulations are run in parallel. If \pkg{snowfall} is not installed, the model is ran in series.}
@@ -157,27 +157,27 @@ Fernando Colchero \email{colchero@demogr.mpg.de}, Owen R. Jones \email{jones@mpg
 }
 \examples{
 ## Load data:
-data("basta.dat", package="BaSTA")
+data("basta.dat", package = "BaSTA")
 
 ## Check data consistency:
-new.dat  <- DataCheck(basta.dat, studyStart=51, 
-            studyEnd=70, autofix=rep(1,7))
+new.dat  <- DataCheck(basta.dat, studyStart = 51, 
+            studyEnd = 70, autofix = rep(1,7))
 
 ## Run short version of BaSTA on the data (+/- 1.5 mins.):
-out      <- basta(basta.dat, studyStart=51, studyEnd=70, 
-            model="GO", shape="simple", covarsStruct="mixed", 
-            niter=2000, burnin=1001, thinning=10, 
-            thetaJumps=c(0.025,0.01), gammaJumps=0.01, 
+out      <- basta(basta.dat, studyStart = 51, studyEnd = 70, 
+            model = "GO", shape = "simple", covarsStruct = "mixed", 
+            niter = 2000, burnin = 1001, thinning = 10, 
+            thetaJumps = c(0.025,0.01), gammaJumps = 0.01, 
             progrPlots=TRUE)
 
 ## Print results:
-summary(out, digits=3)
+summary(out, digits = 3)
 
 ## Plot traces for survival parameters:
 plot(out)
 
 ## Plot traces for prop. hazards parameter:
-plot(out, trace.name="gamma")
+plot(out, trace.name = "gamma")
 
 ## Plot survival and mortality curves:
 plot(out, plot.trace=FALSE)
