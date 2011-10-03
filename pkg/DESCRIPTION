@@ -1,6 +1,6 @@
 Package: BaSTA
 Type: Package
-Title: BaSTA - a package for estimating age-specific mortality from incomplete capture-recapture/recovery data
+Title: A package for estimating age-specific mortality from incomplete capture-recapture/recovery data
 Version: 1.0
 Date: 2011-07-24
 Author: Fernando Colchero, Owen Jones, Maren Rebke
