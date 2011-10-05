@@ -2,10 +2,10 @@
 \alias{basta}
 \alias{basta.default}
 \title{
-Parametric Bayesian estimation of age-specific survival for truncated and censored capture-recapture/recovery records.
+Parametric Bayesian estimation of age-specific mortality for truncated and censored capture-recapture/recovery data.
 }
 \description{
-This function performs multiple Monte Carlo Markov Chain (MCMC) algorithms for Bayesian estimation of age-specific mortality and survival trends when a large proportion of (or all) records have unknown times of birth and/or death. Survival parameters and unknown (i.e. latent) birth and death times are estimated, with a choice of three mortality functions (i.e. Gompertz, Gompertz-Makeham and Siler), based on the model described by Colchero & Clark (2011). Categorical and continuous covariates can be included either within a proportional hazards framework or following Colchero and Clark's (2011) approach.}
+This function performs multiple Monte Carlo Markov Chain (MCMC) algorithms for Bayesian estimation of age-specific mortality and survival trends when a large proportion of (or all) records have unknown times of birth and/or death. Survival parameters and unknown (i.e. latent) birth and death times are estimated, allowing the user to test a range of mortality patterns, and to test the effect of covariates following Colchero and Clark's (2011) approach.}
 \usage{
 basta(object, \dots)
 
