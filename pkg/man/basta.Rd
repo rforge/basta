@@ -10,7 +10,7 @@ This function performs multiple Monte Carlo Markov Chain (MCMC) algorithms for B
 basta(object, \dots)
 
 \method{basta}{default}(object, studyStart, studyEnd, minAge = 0, model = "GO", 
-         shape = "simple", covarsStruct = "mixed", niter = 50000,
+         shape = "simple", covarsStruct = "fused", niter = 50000,
          burnin = 5001, thinning = 50, recaptTrans = studyStart, 
          thetaStart = NULL, thetaJumps = NULL, thetaPriors = NULL, 
          gammaStart = NULL, gammaJumps = NULL, gammaPriors = NULL, 
@@ -24,7 +24,7 @@ basta(object, \dots)
   \item{minAge }{age at which the analysis should start (see details)}
   \item{model }{the underlying mortality model to be used. "EX" = exponential, GO"= Gompertz, "WE" = Weibull and "LO" = logistic (see \code{details}).}
   \item{shape }{The overall shape of the model. Values are: \code{simple} = no extra parameters added; \code{Makeham} = a constant parameter is added to the mortality rate; and \code{bathtub} = a Gompertz declining mortality for early ages and a constant parameter are added to the mortality model (see \code{details}).}
-  \item{covarsStruct }{character string that indicates how covariates should be evaluated. The options are: \dQuote{\code{mixed}}, which puts all categorical variables as covariates for each mortality parameter and all continuous covariates under a proportional hazards structure; \dQuote{\code{prop.haz}}, which puts all covariates under a proportional hazards structure; and \dQuote{\code{all.in.mort}} puts all covariates as a multilevel function of the mortality parameters (see \code{details}).}
+  \item{covarsStruct }{character string that indicates how covariates should be evaluated. The options are: \dQuote{\code{fused}}, which puts all categorical variables as covariates for each mortality parameter and all continuous covariates under a proportional hazards structure; \dQuote{\code{prop.haz}}, which puts all covariates under a proportional hazards structure; and \dQuote{\code{all.in.mort}} puts all covariates as a multilevel function of the mortality parameters (see \code{details}).}
   \item{niter }{the total number of MCMC steps.}
   \item{burnin }{number of iterations for the burn in (see details).}
   \item{thinning }{number of skipped MCMC steps to minimize serial autocorrelation (see details).}
@@ -33,7 +33,7 @@ basta(object, \dots)
   \item{thetaJumps }{a vector defining the size of jumps for each survival model parameter (standard error in the Metropolis step). The number of parameters will depend on the model selected.}
   \item{thetaPriors }{a vector defining the priors for each survival parameter. The vector takes the same format as described for \code{thetaJumps}.}
   \item{gammaStart }{a vector of initial parameters for the proportional hazards section of the model. These can be specified when Prop.Hazards is TRUE or when continuous covariates are evaluated (see details). As with \code{thetaStart}, the default is set to \code{NULL} and thus default values are assigned (i.e. all equal to 0).}
-  \item{gammaJumps }{a vector of jump standard errors for the proportional hazards parameters. The number of jumps will be equal to the number of covariates when the argument \code{covarsStruct} is set to \dQuote{\code{prop.haz}}, or to the number of continuous covariates to be evaluated when \code{covarsStruct} is set to \dQuote{\code{mixed}}. In case any of these two conditions are met and the default is used (i.e. NULL), the model automatically assigns built-in jump values.}
+  \item{gammaJumps }{a vector of jump standard errors for the proportional hazards parameters. The number of jumps will be equal to the number of covariates when the argument \code{covarsStruct} is set to \dQuote{\code{prop.haz}}, or to the number of continuous covariates to be evaluated when \code{covarsStruct} is set to \dQuote{\code{fused}}. In case any of these two conditions are met and the default is used (i.e. NULL), the model automatically assigns built-in jump values.}
   \item{gammaPriors }{a vector of mean priors for the proportional hazards parameters. The specification follows the same rules as \code{gammaJumps}.}
   \item{nsim }{a numerical value for the number of simulations.}
   \item{parallel }{logical; if TRUE package \pkg{snowfall} is called and multiple simulations are run in parallel. If \pkg{snowfall} is not installed, the model is ran in series.}
@@ -84,7 +84,7 @@ where \eqn{\mu_0(x | \theta, Z_a)} represents the mortality section as defined a
 
 When covariates are included in the dataset, the model provides three different ways in which these can be evaluated by using argument \code{covarsStruct}: 
 
-1.- \dQuote{\code{mixed}} will make the mortality parameters linear functions of all categorical covariates (analogous to a GLM structure) and will put all continuous covariates under a proportional hazards structure. Thus, for a simple exponential mortality rate of the form \eqn{\mu_0(x | b) = b}, the parameter is equal to \eqn{b = b_0 + b_1 z_1 + \dots}, where \eqn{[b_0, \dots, b_k]} are paramters that link the mortality parameter \eqn{b} with the categorical covariates \eqn{[z_1,\dots,z_k]}.
+1.- \dQuote{\code{fused}} will make the mortality parameters linear functions of all categorical covariates (analogous to a GLM structure) and will put all continuous covariates under a proportional hazards structure. Thus, for a simple exponential mortality rate of the form \eqn{\mu_0(x | b) = b}, the parameter is equal to \eqn{b = b_0 + b_1 z_1 + \dots}, where \eqn{[b_0, \dots, b_k]} are paramters that link the mortality parameter \eqn{b} with the categorical covariates \eqn{[z_1,\dots,z_k]}.
 
 2.- \dQuote{\code{prop.haz}} will put all covariates under a proportional hazards structure irrespective of the type of variable.
 
@@ -96,7 +96,7 @@ The argument \code{thinning} specifies the number of steps to be skipped to redu
 
 The number of parameters in \code{thetaStart} is a vector or a matrix defining the initial values for each \eqn{\theta} parameter of the mortality function. The number of parameters will depend on the model chosen with \code{model}(see above). If the number of parameters specified does not match the number of parameters inherent to the model and shape selected, the function returns an error. If no \code{thetaStart} argument is specified (i.e. default is NULL), the model randomly generates initial parameters. 
 
-As described above, the number of parameters for argument \code{gammaStart} (i.e. section b), namely the proportional hazards section, will be a function of the number of continuous covariates if argument \code{covarsStruct} is \dQuote{\code{mixed}}, or to the total number of covariates when \code{covarsStruct} is \dQuote{\code{prop.haz}}.
+As described above, the number of parameters for argument \code{gammaStart} (i.e. section b), namely the proportional hazards section, will be a function of the number of continuous covariates if argument \code{covarsStruct} is \dQuote{\code{fused}}, or to the total number of covariates when \code{covarsStruct} is \dQuote{\code{prop.haz}}.
 }
 
 \value{
@@ -165,7 +165,7 @@ new.dat  <- DataCheck(basta.dat, studyStart = 51,
 
 ## Run short version of BaSTA on the data (+/- 1.5 mins.):
 out      <- basta(basta.dat, studyStart = 51, studyEnd = 70, 
-            model = "GO", shape = "simple", covarsStruct = "mixed", 
+            model = "GO", shape = "simple", covarsStruct = "fused", 
             niter = 2000, burnin = 1001, thinning = 10, 
             thetaJumps = c(0.025,0.01), gammaJumps = 0.01, 
             progrPlots=TRUE)
