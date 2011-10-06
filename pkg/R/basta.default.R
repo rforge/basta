@@ -1,6 +1,6 @@
 basta.default <- 
 function(object, studyStart, studyEnd, minAge = 0, model = "GO", 
-         shape = "simple", covarsStruct = "mixed", niter = 50000, 
+         shape = "simple", covarsStruct = "fused", niter = 50000, 
          burnin = 5001, thinning = 50, recaptTrans = studyStart, 
          thetaStart = NULL, thetaJumps = NULL, thetaPriors = NULL, 
          gammaStart = NULL, gammaJumps = NULL, gammaPriors = NULL, 
@@ -314,9 +314,9 @@ function(object, studyStart, studyEnd, minAge = 0, model = "GO",
     stop("\nshape misspecification. Appropriate arguments are:",
          " 'simple', 'Makeham' or 'bathtub'.\n", call. = FALSE)
   }
-  if (!is.element(covarsStruct, c("mixed", "prop.haz", "all.in.mort"))) {
+  if (!is.element(covarsStruct, c("fused", "prop.haz", "all.in.mort"))) {
     stop("\nCovariate structure misspecification. Appropriate arguments are:",
-         " 'mixed', 'prop.haz' or 'all.in.mort'.\n", call. = FALSE)
+         " 'fused', 'prop.haz' or 'all.in.mort'.\n", call. = FALSE)
   }
     
   # 3.4 All covariates in mortality:
@@ -332,8 +332,8 @@ function(object, studyStart, studyEnd, minAge = 0, model = "GO",
       shape                  <- "simple"
     } else {
       warning("No continuous covariates were included in the data. Argument",
-              " 'covarsStruct' will be set to 'mixed'.\n", call. = FALSE)
-      covarsStruct           <- 'mixed'
+              " 'covarsStruct' will be set to 'fused'.\n", call. = FALSE)
+      covarsStruct           <- 'fused'
     }
   }
   
@@ -1146,7 +1146,7 @@ function(object, studyStart, studyEnd, minAge = 0, model = "GO",
             	}
             }
           }
-          if (covarsStruct == "mixed") {
+          if (covarsStruct == "fused") {
             kl.12            <- matrix(NA, nrow = n.comb, ncol = length.theta0, 
                                        dimnames = list(paste(covar.comb[, 1], 
                                        "-", covar.comb[, 2], sep = ""), name.theta0))
