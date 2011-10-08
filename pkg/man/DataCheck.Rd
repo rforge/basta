@@ -15,14 +15,26 @@
 }
 
 \details{
-Further details of the autofix argument:
+Argument \code{autofix} allows the user to fix the potential errors by specifying a code for each fix. Below are the descriptions of the actions that are taken depending on the error type and the fix code:
 
+Type 1: 0 = do nothing; 1 = remove from dataframe
+
+Type 2: 0 = do nothing; 1 = remove from dataframe
+
+Type 3: 0 = do nothing; 1 = replace death records with 0; 2 = replace birth records with 0; 3 = replace both birth and death records with 0
+
+Type 4: 0 = do nothing; 1 = remove spurious post-death observations
+
+Type 5: 0 = do nothing; 1 = remove observations that pre-date year of birth 
+
+Type 6: 0 = do nothing; 1 = replace birth year element of observation matrix with 0
+
+Type 7: 0 = do nothing; 1 = replace death year element of observation matrix with 0
 }
 
 \value{
   \item{ok }{A logical indicator that indicates if the data are free of errors or not. i.e. TRUE = the data are ok.}
   \item{newData }{A corrected data frame.}
-  \item{type0 }{A vector of row numbers in the original data frame where there are deaths before the observation window starts.}
   \item{type1 }{A vector of row numbers in the original data frame where there are deaths occurring before the study starts.}
   \item{type2 }{A vector of row numbers in the original data frame where there are no birth/death AND no obervations.}
   \item{type3 }{A vector of row numbers in the original data frame where there are births recorded after death.}
