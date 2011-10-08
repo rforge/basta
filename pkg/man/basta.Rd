@@ -38,12 +38,12 @@ basta(object, \dots)
   \item{nsim }{a numerical value for the number of simulations.}
   \item{parallel }{logical; if TRUE package \pkg{snowfall} is called and multiple simulations are run in parallel. If \pkg{snowfall} is not installed, the model is ran in series.}
   \item{ncpus }{a numerical value that indicates the number of cpus to be used if \code{parallel} is TRUE and package \pkg{snowfall} is installed. The default is 2 cpus. If package pkg{snowfall} is not installed, the simulations are run in series.}
-  \item{lifeTable }{Logical, if \code{TRUE} a cohort life table is calculated using function \code{\link{CohortLT}}.}
+  \item{lifeTable }{Logical, if \code{TRUE} a cohort life table is calculated using function \code{\link{MakeLifeTable}}.}
   \item{progrPlots }{logical, if \code{TRUE} small plots are displayed showing the percent progress achieved for each MCMC simulation. }
   \item{\dots }{ignored.}
 }
 \details{
-To construct the input data \code{object} the function \code{\link{CensusToCaptHist}} can be used to build the capture-recapture matrix, while the covariates (design) matrix can be constructed with function \code{\link{makecovm}} .
+To construct the input data \code{object} the function \code{\link{CensusToCaptHist}} can be used to build the capture-recapture matrix, while the covariates (design) matrix can be constructed with function \code{\link{MakeCovMat}} .
 
 \code{BaSTA} uses parametric mortality functions to estimate age-specific mortality (survival) from capture-recapture/recovery data. The mortality rate function describes how the risk of mortality changes with age, and is defined as \eqn{\mu(x | \theta)}, where \eqn{x} correspond to age and \eqn{\theta} are parameters to be estimated. 
 
@@ -153,7 +153,7 @@ Fernando Colchero \email{colchero@demogr.mpg.de}, Owen R. Jones \email{jones@mpg
 
 \seealso{
 \code{\link{summary.basta}}, \code{\link{print.basta}}, \code{\link{plot.basta}} to visualized summary outputs for objects of class \dQuote{\code{basta}}.
-\code{\link{CensusToCaptHist}} and \code{\link{makecovm}} for raw data formatting.
+\code{\link{CensusToCaptHist}} and \code{\link{MakeCovMat}} for raw data formatting.
 }
 \examples{
 ## Load data:

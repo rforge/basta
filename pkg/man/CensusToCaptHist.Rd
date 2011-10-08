@@ -31,7 +31,7 @@ Owen R. Jones \email{jones@demogr.mpg.de}
 }
 
 \seealso{
-\code{\link{makecovm}} to format a covariate matrix compatible with this output. 
+\code{\link{MakeCovMat}} to format a covariate matrix compatible with this output. 
 \code{\link{basta}}
 }
 \examples{

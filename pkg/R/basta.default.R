@@ -1286,7 +1286,7 @@ function(object, studyStart, studyEnd, minAge = 0, model = "GO",
                                       bq[1, ] >= studyStart)
         }
         x                    <- xq[1, idza]
-        LT[[zaname[i]]]      <- CohortLT(x, ax = 0.5, n = 1)
+        LT[[zaname[i]]]      <- MakeLifeTable(x, ax = 0.5, n = 1)
       }
     } else {
       LT                     <- NULL
