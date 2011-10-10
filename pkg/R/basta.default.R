@@ -25,8 +25,40 @@ function(object, studyStart, studyEnd, minAge = 0, model = "GO",
   # 1. Load package msm:
   require(msm)
 
-  # 2. Functions:
-  # 2.1 Survival, mort, pdf:
+  # 2. Initial error checking:
+  # 2.1 Data errors:
+  data.check                 <- DataCheck(object, studyStart, studyEnd, 
+                                          silent = TRUE)
+  if (!data.check[[1]]) {
+    stop("\nYou have an error in Dataframe 'object',\nplease use function ",
+         "'DataCheck'\n", call. = FALSE)
+  }
+
+  # 2.2 Check that niter, burnin, and thinning are compatible.
+  if (burnin > niter) {
+    stop("\nObject 'burnin' larger than 'niter'.", call. = FALSE)
+  }
+  if (thinning > niter) {
+    stop("\nObject 'thinning' larger than 'niter'.", call. = FALSE)
+  }
+    
+  # 2.3 Model type, shape and covariate structure:
+  if (!is.element(model, c("EX","GO","WE","LO"))) {
+    stop("\nModel misspecification: specify available models", 
+         "(i.e. 'EX', 'GO', 'WE' or 'LO')\n", call. = FALSE)
+  }
+  if (!is.element(shape, c("simple","Makeham","bathtub"))) {
+    stop("\nshape misspecification. Appropriate arguments are:",
+         " 'simple', 'Makeham' or 'bathtub'.\n", call. = FALSE)
+  }
+  if (!is.element(covarsStruct, c("fused", "prop.haz", "all.in.mort"))) {
+    stop("\nCovariate structure misspecification. Appropriate arguments are:",
+         " 'fused', 'prop.haz' or 'all.in.mort'.\n", call. = FALSE)
+  }
+    
+
+  # 3. Functions:
+  # 3.1 Survival, mort, pdf:
   # a) Basic model:
   if (model == "EX") {
     CalculateBasicMx         <- function(x, theta) theta
@@ -147,7 +179,7 @@ function(object, studyStart, studyEnd, minAge = 0, model = "GO",
     CalculateFullMx(xv, matrix(theta, ncol = length.theta), gaa)
   }
 
-  # 2.2 Covariate type (i.e. categorical and continuous):
+  # 3.2 Covariate type (i.e. categorical and continuous):
   FindCovariateType          <- function(Z) {
     # This functions finds and returns if an intercecpt was included 
     # and which covariates are categorical or continuous.
@@ -177,7 +209,7 @@ function(object, studyStart, studyEnd, minAge = 0, model = "GO",
                 cont = idcon))
   }
 
-  # 2.3 Matrix of indicators for time alive:
+  # 3.3 Matrix of indicators for time alive:
   BuildAliveMatrix           <- function(f, l, Tm) {
     Fm             <- Tm - f
     Fm[Fm >= 0]    <- 1
@@ -188,7 +220,7 @@ function(object, studyStart, studyEnd, minAge = 0, model = "GO",
     return(Fm * (-Lm))	
   }
 
-  # 2.4 Calculate lower bound for 'c' parameter:
+  # 3.4 Calculate lower bound for 'c' parameter:
   CalculateLowC              <- function(theta) {
     if (shape == "Makeham") {
       if (model == "GO") {
@@ -219,7 +251,7 @@ function(object, studyStart, studyEnd, minAge = 0, model = "GO",
     return(c.low)
   }
 
-  # 2.5 Check if input values for parameters, jumps and priors are consistent:
+  # 3.5 Check if input values for parameters, jumps and priors are consistent:
   # a) Mortality:
   CheckParsMort              <- function(par, user.par, par.name) {
     if (is.null(user.par)) {
@@ -288,38 +320,7 @@ function(object, studyStart, studyEnd, minAge = 0, model = "GO",
                                   "studyStart", "studyEnd", "recaptTrans", 
                                   "progrPlots")
 	
-  # 3. Error checking:
-  # 3.1 Data errors:
-  data.check                 <- DataCheck(object, studyStart, studyEnd, 
-                                          silent = TRUE)
-  if (!data.check[[1]]) {
-    stop("\nYou have an error in Dataframe 'object',\nplease use function ",
-         "'DataCheck'\n", call. = FALSE)
-  }
-
-  # 3.2 Check that niter, burnin, and thinning are compatible.
-  if (burnin > niter) {
-    stop("\nObject 'burnin' larger than 'niter'.", call. = FALSE)
-  }
-  if (thinning > niter) {
-    stop("\nObject 'thinning' larger than 'niter'.", call. = FALSE)
-  }
-    
-  # 3.3 Model type, shape and covariate structure:
-  if (!is.element(model, c("EX","GO","WE","LO"))) {
-    stop("\nModel misspecification: specify available models", 
-         "(i.e. 'EX', 'GO', 'WE' or 'LO')\n", call. = FALSE)
-  }
-  if (!is.element(shape, c("simple","Makeham","bathtub"))) {
-    stop("\nshape misspecification. Appropriate arguments are:",
-         " 'simple', 'Makeham' or 'bathtub'.\n", call. = FALSE)
-  }
-  if (!is.element(covarsStruct, c("fused", "prop.haz", "all.in.mort"))) {
-    stop("\nCovariate structure misspecification. Appropriate arguments are:",
-         " 'fused', 'prop.haz' or 'all.in.mort'.\n", call. = FALSE)
-  }
-    
-  # 3.4 All covariates in mortality:
+  # 3.6 Check when all covariates in mortality:
   if (covarsStruct == "all.in.mort") {
     if (!is.null(covariate.type$cont)) {
       if (model != "GO") {
