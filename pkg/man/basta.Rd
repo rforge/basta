@@ -69,7 +69,7 @@ with \eqn{b_0, b_1 > 0}.
 d) logistic (\dQuote{\code{LO}}; Pletcher 1999):
 
 \deqn{\mu_b(x | b) = exp(b_0 + b_1 x) / (1 + b_2 exp(b_0)/b_1 (exp(b_1 x)-1))}
-with\eqn{b_0, b_1, b_2 > 0}.
+with \eqn{b_0, b_1, b_2 > 0}.
 
 Argument \code{shape} allows to extend these models to explore more complex mortality shapes. The default value is \dQuote{\code{simple}} which leaves the model as defined above. With value \dQuote{\code{Makeham}}, a constant is added to the mortality rate, making the model equal to \eqn{\mu_0(x | \theta)= \mu_b(x | b) + c}, where \eqn{\theta = [c, b]}. With value \dQuote{\code{bathtub}} concave shapes in mortality can be explored. This is achieved by adding a declining Gompertz term and a constant parameter to the basic mortality model, namely:
 
@@ -78,7 +78,7 @@ with \eqn{-\infty < a_0 < \infty}, \eqn{a_1 > 0} and \eqn{c > - (exp(a_0 - a_1 x
 
 To incorporate covariates into the inference process, the mortality model is further extended by including a proportional hazards structure, of the form: 
 
-\deqn{\mu(x | \theta, \Gamma, Z_a, Z_c) = \mu_0(x | \theta, Z_a) \, exp(\Gamma Z_c)}
+\deqn{\mu(x | \theta, \Gamma, Z_a, Z_c) = \mu_0(x | \theta, Z_a) exp(\Gamma Z_c)}
 
 where \eqn{\mu_0(x | \theta, Z_a)} represents the mortality section as defined above, while the second term \eqn{exp(\Gamma Z_c)} corresponds to the proportional hazards function.  \eqn{Z_a} and \eqn{Z_c} are covariate (design) matrices for categorical and continuous covariates, respectively.
 
@@ -100,7 +100,6 @@ As described above, the number of parameters for argument \code{gammaStart} (i.e
 }
 
 \value{
-\code{basta} returns an object of class \sQuote{\code{basta}}. Function \code{\link{summary}} can be used to obtain or print a summary of the results.
   \item{coefficients }{Matrix with estimated coefficients (i.e. mean values per parameter on the thinned sequences after burnin), which includes standard errors, upper and lower 95\% credible intervals, update rates per parameter (commonly the same for all survival and proportional hazards parameters), serial autocorrelation on the thinned sequences and potential scale reduction factor for convergence (see \code{Convergence} value below). }
 	\item{modSel }{Basic DIC calculations for model selection (Spiegelhalter \emph{et al.} 2002) These values need to be taken only as a reference (see comments to Spiegelhalter \emph{et al.} 2002). In the future the package will include routines for reversible jump Monte Carlo Markov Chain (RJMCMC, see King & Brooks 2002). If none or some of the simulations did not run through, then the returned value is \dQuote{NULL}.}
 	\item{Convergence }{If requested, matrix with convergence coefficients based on potential scale reduction as described by Gelman \emph{et al.} (2004). If only one simulation was ran, then the returned value is \dQuote{NULL}.}
