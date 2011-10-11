@@ -1,55 +1,56 @@
 MakeCovMat <-
-function(Data,covs) {
-
-nd = data.frame(Data[,which(names(Data)%in%covs)])
-if(ncol(nd)==1) names(nd)=covs
-
-Cl = as.vector(sapply(nd,class))
-
-temp = c(Cl == "factor"|Cl == "numeric")
-if(sum(temp)<length(Cl)) stop("Data types for the covariates should be 'factor' or 'numeric'")
-
-factorCovs  = which(Cl=="factor")
-numericCovs = which(Cl=="numeric")
-
-if(length(factorCovs) >  1)  FactCovs = as.factor(apply(nd[,factorCovs],1,paste,collapse="."))
-if(length(factorCovs) == 1) FactCovs = nd[,factorCovs]
-if(length(factorCovs) == 0) FactCovs = NULL
-
-if(length(numericCovs) != 0) NumCovs = nd[,which(Cl=="numeric")]
-if(length(numericCovs) == 0) NumCovs = NULL
-
-if(is.null(FactCovs)) {tempCovs = data.frame(NumCovs)} 
-if(is.null(NumCovs)) {tempCovs = data.frame(FactCovs)}
-if(!is.null(NumCovs)&!is.null(FactCovs)) {tempCovs = data.frame(FactCovs,NumCovs)}
-
-Z=NULL
-
-for (x in 1:ncol(tempCovs)){
-    if(class(tempCovs[,x]) == "numeric"){
-        Z = cbind(Z,tempCovs[,x])
-        }
-    
-    if(class(tempCovs[,x]) == "factor"){
-        vL = length(tempCovs[,x])
-        nLevs = length(levels(tempCovs[,x]))
-        a = (vL * nLevs) - nLevs
-        sv = seq(0, a, nLevs) + as.numeric(tempCovs[,x])
-        MV = rep(0, vL * nLevs)
-        MV[sv] = 1
-        M = matrix(MV, ncol = nLevs, nrow = vL, byrow = TRUE)
-        colnames(M) = levels(tempCovs[,x])
-        
-        Z = cbind(Z,M)
-        }
+function(x, data){
+  if(missing(x)){
+    x            <- 1:ncol(data)
+  }
+  if (is.numeric(x) | is.character(x)) {
+    if (is.numeric(x)) {
+      if (!all(x %in% 1:ncol(data))) {
+        stop("Some arguments in 'x' do not match the column numbers in data ",
+             "frame 'data'.\n", call. = FALSE)
+      } else {
+        xname    <- colnames(data)[x]
+      }
+    } else if (is.character(x)) {
+      if (!all(x %in% colnames(data))) {
+        stop("Some arguments in 'x' do not match the column names in data ",
+             "frame 'data'.\n", call. = FALSE)
+      } else {
+        xname    <- x
+      }
+    } 
+    classes      <- sapply(xname, function(j) class(data[, j]))
+    if ("factor" %in% classes) {
+      facts      <- which(classes == "factor")
+      if (length(facts) == 1){
+        xfac     <- xname[classes == "factor"]
+      } else {
+        xfac     <- paste(xname[classes == "factor"], collapse = ":")
+      } 
+    } else {
+      xfac       <- NULL
     }
-
-#Assign column names to the numeric variables (if there are any)
-if(length(numericCovs)!=0){
-    if(is.null(colnames(Z))) {colnames(Z) = rep("",length(numericCovs))}
-    colnames(Z)[colnames(Z)==""] = names(nd)[Cl=="numeric"]
+    nums         <- which(classes == "numeric")
+    if (length(nums) == 1) {
+      xnum       <- xname[classes == "numeric"]
+    } else if(length(nums) > 1) {
+      xnum       <- paste(xname[classes == "numeric"], collapse = "+")
+    } else {
+      xnum       <- NULL
     }
-
-return(Z)
+    covs         <- as.formula(paste("~", paste(c(xfac, xnum), 
+                               collapse = "+"), "- 1"))
+  } else if (class(x) == "formula") {
+    xcov         <- labels(terms(x))
+    xcov         <- unique(unlist(strsplit(xcov, split = ":")))
+    if (!all(xcov %in% colnames(data))) {
+      stop("Some variables in formula 'x' do not match the ",
+           "column names in data.\n", call. = FALSE)
+    } else {
+      covs       <- as.formula(paste("~", paste(x, " - 1")[2], sep = ""))
+    }
+  }
+  covmat         <- cbind(model.matrix(covs, data = data))
+  return(covmat)
 }
 
