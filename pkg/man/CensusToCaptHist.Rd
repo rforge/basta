@@ -41,6 +41,6 @@ for(i in unique(id.vec)){
   svec     <- which(id.vec == i)
   d.vec[svec] <- sort(sample(1990:1995, length(svec)))
 }
-Y         <- CensusToCaptHist(ID = id.vec,  d = d.vec, 
-                              dformat = "yyyy")
+Y          <- CensusToCaptHist(ID = id.vec,  d = d.vec, 
+                               dformat = "yyyy")
 }
