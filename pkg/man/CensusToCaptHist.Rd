@@ -23,7 +23,7 @@ format for \code{d}
 }
 }
 \details{
-Argument \code{dformat} can be specified as an object of class \code{POSIXct} or \code{POSIXlt}, or as a character string indicating the day, month and year. 
+Argument \code{d} can be specified as an object of class \code{POSIXct} or \code{POSIXlt}, or as a character string indicating the day, month and year. 
 }
 
 \author{
