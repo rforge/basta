@@ -23,7 +23,7 @@ format for \code{d}
 }
 }
 \details{
-under construction...
+Argument \code{dformat} can be specified as an object of class \code{POSIXct} or \code{POSIXlt}, or as a character string indicating the day, month and year. 
 }
 
 \author{
@@ -35,5 +35,12 @@ Owen R. Jones \email{jones@demogr.mpg.de}
 \code{\link{basta}}
 }
 \examples{
-##under construction
+id.vec     <- sort(sample(1:5, size = 15, replace = TRUE))
+d.vec       <- rep(0, length(id.vec))
+for(i in unique(id.vec)){
+  svec     <- which(id.vec == i)
+  d.vec[id.vec == i] <- sort(sample(1990:1995, length(svec)))
+}
+Y            <- CensusToCaptHist(ID = id.vec,  d = d.vec, 
+                    dformat = "yyyy")
 }
