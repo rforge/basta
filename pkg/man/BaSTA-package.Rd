@@ -34,6 +34,7 @@ Maren Rebke \email{rebke@mpg.demogr.de}
 
 \references{
 Colchero and Clark 2011 Bayesian inference on age-specific survival from capture-recapture data for censored and truncated data. Journal of Animal Ecology. 
+
 Colchero, Jones and Rebke. BaSTA - a package to estimate mortality parameters from incomplete mark-recapture data with covariates. Unpublished Manuscript.
 }
 
