@@ -12,7 +12,7 @@ MakeCovMat(x, data)
 }
 
 \arguments{
-  \item{x }{A character string vector or a numerical vector indicating the columns to be included or an object of class \code{\link{formula}} indicating the type of }
+  \item{x }{A character string vector or a numerical vector indicating the columns to be included or an object of class \code{\link{formula}}}
   \item{data }{a data frame of n rows (n = number of individuals in dataset) and nz columns (number of general covariates) including categorical covariates as factors (e.g. sex with individual labels "f","m", location, etc.) and/or continuous individual covariates (e.g. weight at birth, general weather conditions at each location, etc.).}
   }
 
