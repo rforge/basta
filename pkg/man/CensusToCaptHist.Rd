@@ -36,11 +36,11 @@ Owen R. Jones \email{jones@demogr.mpg.de}
 }
 \examples{
 id.vec     <- sort(sample(1:5, size = 15, replace = TRUE))
-d.vec       <- rep(0, length(id.vec))
+d.vec      <- rep(0, length(id.vec))
 for(i in unique(id.vec)){
   svec     <- which(id.vec == i)
-  d.vec[id.vec == i] <- sort(sample(1990:1995, length(svec)))
+  d.vec[svec] <- sort(sample(1990:1995, length(svec)))
 }
-Y            <- CensusToCaptHist(ID = id.vec,  d = d.vec, 
-                    dformat = "yyyy")
+Y         <- CensusToCaptHist(ID = id.vec,  d = d.vec, 
+                              dformat = "yyyy")
 }
