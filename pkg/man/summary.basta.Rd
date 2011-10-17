@@ -37,7 +37,7 @@ Gelman, A., Carlin, J.B., Stern, H.S. & Rubin, D.B. (2004) \emph{Bayesian data a
 
 McCulloch, R.E. (1989) Local model influence. \emph{Journal of the American Statistical Association}, 84, 473-478.
 
-Spiegelhalter, D.J., Best, N.G., Carlin, B.P., Van Der Linde, A. (2002) Bayesian measures of model complexity and fit. Journal of the Royal Statistical Society: Series B 64, 583-639.
+Spiegelhalter, D.J., Best, N.G., Carlin, B.P., Van Der Linde, A. (2002) Bayesian measures of model complexity and fit. \emph{Journal of the Royal Statistical Society: Series B} 64, 583-639.
 }
 \author{
 Fernando Colchero \email{colchero@demogr.mpg.de}, Owen R. Jones \email{jones@demogr.mpg.de} and Maren Rebke \email{rebke@demogr.mpg.de}
@@ -47,7 +47,7 @@ Fernando Colchero \email{colchero@demogr.mpg.de}, Owen R. Jones \email{jones@dem
 \code{\link{basta}}
 }
 
-\example{
+\examples{
 ## Load BaSTA output:
 data("basta.out", package = "BaSTA")
 
