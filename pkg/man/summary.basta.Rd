@@ -54,10 +54,10 @@ data("basta.out", package = "BaSTA")
 ## Print summary output:
 summary(basta.out)
 
-## Plot mortality parameter (theta) traces:
+## Plot traces for mortality parameters (theta):
 plot(basta.out)
 
-## Plot proportional hazards parameter (gamma) traces:
+## Plot traces for proportional hazards parameters (gamma):
 plot(basta.out, trace.name = "gamma")
 
 ## Plot predicted mortality and survival:
