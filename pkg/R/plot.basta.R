@@ -30,6 +30,11 @@ function(x, plot.trace = TRUE, trace.name = "theta", ...){
     idpl            <- which(varNames == substr(trace.name, 1, 2))
     X               <- as.matrix(x$Par[, -1][, idpl])
     colnames(X)     <- colnames(x$Par)[-1][idpl]
+    if (niter > 1e3) {
+      xThin         <- round(seq(1, niter, length = 1e3))
+    } else {
+      xThin         <- 1:niter
+    }
     p               <- which(traces == trace.name)
     Cols            <- Palette[round(seq(1, 12, length = nsim))]
     model           <- as.character(x$ModelSpecs['model'])
@@ -53,9 +58,9 @@ function(x, plot.trace = TRUE, trace.name = "theta", ...){
     op              <- par(mfrow = c(ydim[p], xdim[p]), 
                            mar   = c(3, 3, 3, 1))
     for(i in 1:nTraces[p]){
-      x             <- X[,i]
+      x             <- X[, i]
       yl            <- range(x, na.rm = TRUE)
-      plot(x          = c(1,niter), 
+      plot(x          = c(1, niter), 
            y          = yl, 
            col        = NA, 
            xlab       = "Iteration", 
@@ -63,7 +68,8 @@ function(x, plot.trace = TRUE, trace.name = "theta", ...){
            main       = colnames(X)[i], 
            frame.plot = FALSE)
       for(j in 1:nsim) {
-        lines(x       = x[which(names(x) == simNames[j])], 
+        lines(x       = xThin, 
+              y       = x[which(names(x) == simNames[j])][xThin],
               type    = 'l', 
               col     = Cols[j], 
               lwd     = 1.5)
