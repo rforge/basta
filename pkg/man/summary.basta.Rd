@@ -47,3 +47,20 @@ Fernando Colchero \email{colchero@demogr.mpg.de}, Owen R. Jones \email{jones@dem
 \code{\link{basta}}
 }
 
+\example{
+## Load BaSTA output:
+data("basta.out", package = "BaSTA")
+
+## Print summary output:
+summary(basta.out)
+
+## Plot mortality parameter (theta) traces:
+plot(basta.out)
+
+## Plot proportional hazards parameter (gamma) traces:
+plot(basta.out, trace.name = "gamma")
+
+## Plot predicted mortality and survival:
+plot(basta.out, plot.trace = FALSE)
+}
+
