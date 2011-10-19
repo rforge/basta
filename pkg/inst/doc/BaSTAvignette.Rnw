@@ -28,7 +28,7 @@
 \makeindex
 
 % \SweaveOpts{keep.source=TRUE, echo=TRUE}
-%\VignetteIndexEntry{BaSTA}
+%\VignetteIndexEntry{Using BaSTA}
 
 % General set up commands %
 \linespread{1.3}
