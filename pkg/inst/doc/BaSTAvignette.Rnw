@@ -57,7 +57,7 @@
 \section{Introduction}
 
 
-Here we present BaSTA (Bayesian Survival Trajectory Analysis), a free-open-source R package \citep{R} that implements the hierarchical Bayesian model described by \cite{ColcheroClark2011}.  This package facilitates drawing inference on age-specific mortality from CRR data when a large proportion (or all) of the records have missing information on times of birth and death. In addition, BaSTA allows to evaluate the effect of continuous and categorical covariates on mortality. 
+Here we present BaSTA (Bayesian Survival Trajectory Analysis), a free-open-source R package \citep{R} that implements the hierarchical Bayesian model described by \cite{ColcheroClark2011}.  This package facilitates drawing inference on age-specific mortality from CRR data when a large proportion (or all) of the records have missing information on times of birth and death. In addition, BaSTA allows users to evaluate the effect of continuous and categorical covariates on mortality. 
 
 <<setup, print=FALSE, echo=FALSE>>=
 library(BaSTA)
@@ -78,7 +78,10 @@ BaSTA consists of a set of routines initialized by the user through data input a
 The package's main function, called \mverb{basta()}, defines its own S3 method \citep{ChambersHastie92} and outputs an object of class \mverb{basta} which can then be explored with the generic functions \mverb{plot()}, \mverb{summary()} and \mverb{print()}. The package also includes two data formatting functions, \mverb{CensusToCaptHist()} and \mverb{MakeCovMat()}, and a data checking function \mverb{DataCheck()}. 
 
 \section{Data formatting}
-The input data for BaSTA uses a format compatible with other programs that deal with CRR data sets such as MARK \citep{White&Burnham99}. The data needs to be configured as a table in data frame format where each row corresponds to one individual.  The first column corresponds to the individual ids while the second and third columns include the years of birth and death, respectively. Next, $T$ columns ($T =$ study span), one per study year, are filled with the individual recapture histories. Thus, every year an individual is detected the corresponding column is filled with 1 and 0 otherwise. In case covariates are to be included, additional columns can be added, one per covariate. For instance, table \ref{Tab1} shows a data frame for four individuals and a study span of $T = 4$ years with one covariate, i.e. location. In this example, individuals 1 and 2 have known birth year and individuals 1 and 3 have know death year, individual 1 was detected in the first, third and fourth year of the study, individual 2 from the second to the forth year and so forth. Individuals 1 and 2 belong to location 1 and individuals 3 and 4 to location 2.
+
+The input data for BaSTA uses a format compatible with other programs that deal with CRR data sets such as MARK \citep{White&Burnham99}. The data needs to be configured as a table in data frame format where each row corresponds to one individual.  The first column corresponds to the individual ids while the second and third columns include the years of birth and death, respectively. Next, $T$ columns ($T =$ study span), one per study year, are filled with the individual recapture histories. Thus, every year an individual is detected the corresponding column is filled with 1 and 0 otherwise. 
+
+If covariates are to be included, additional columns can be added, with one column per covariate. For instance, table \ref{Tab1} shows a data frame for four individuals and a study span of $T = 4$ years with one covariate, i.e. location. In this example, individuals 1 and 2 have known birth year and individuals 1 and 3 have know death year, individual 1 was detected in the first, third and fourth year of the study, individual 2 from the second to the forth year and so forth. Individuals 1 and 2 belong to location 1 and individuals 3 and 4 to location 2.
 
 \begin{table}[h]
   \caption{Data format required by BaSTA.}
@@ -97,7 +100,9 @@ ID&Birth&Death&year 1&year 2&year 3&year 4&location\\
 \end{table}
 
 \subsection{Construct capture history matrix: \mverb{CensusToCaptHist()}}
-This matrix can be constructed using BaSTA's built-in data formatting functions. For instance, with function \mverb{CensusToCaptHist()}, it is possible to convert a conventional individual survey table (i.e. one record per time an individual is observed) to the recapture matrix described above. Below is an example with simulated data where we simulate the capture history of five individuals between 1990 and 2000:
+
+This capture history matrix can be constructed using BaSTA's built-in data formatting functions. For instance, with function \mverb{CensusToCaptHist()}, it is possible to convert a conventional individual survey table (i.e. one record per time an individual is observed) to the recapture matrix described above. Below is an example with a simulated capture history of five individuals between 1990 and 2000:
+
 <<>>=
 id.vec     <- sort(sample(1:5, size = 15, replace = TRUE))
 d.vec       <- rep(0, length(id.vec))
@@ -107,15 +112,20 @@ for(i in unique(id.vec)){
 }
 Y            <- CensusToCaptHist(ID = id.vec,  d = d.vec, dformat = "yyyy")
 @
-Argument \mverb{ID} in function \mverb{CensusToCaptHist} takes a vector with the individual ids, argument \mverb{d} the dates in which each individual was detected and \mverb{dformat} is used to specify the date format in \mverb{d}.
-The resulting capture history matrix looks like:
+
+The \mverb{ID} argument in the \mverb{CensusToCaptHist()} function, takes a vector with the individual IDs, along with the \mverb{d} argument, which is a vector of dates on which each individual was detected, and argument \mverb{dformat} which is (optionally) used to specify the date format used in \mverb{d}.
+
+The resulting capture history matrix looks like this:
+
 <<print=FALSE, echo=FALSE>>=
 print(Y)
 @
 
 
 \subsection{Construct covariates matrix: \mverb{MakeCovMat()}}
-Covariates can be set up in the apropriate format with function \mverb{MakeCovMat()}. Below is an example with simulated data for five individuals:
+
+Covariates can be set up in the apropriate format with the \mverb{MakeCovMat()} function. Below is an example with simulated data for five individuals:
+
 <<>>=
 sex        <- sample(c("f", "m"), 5, replace = TRUE)
 weight     <- rnorm(5, mean = 10, sd = 1)
@@ -127,7 +137,8 @@ This covariate data frame looks like:
 print(raw.mat)
 @
 
-The data frame \mverb{raw.mat} contains a column for the sex categorical covariate and one for the weight covariate. This data frame can be then rearranged with function \mverb{MakeCovMat()} so that it can be incorporated into the main data frame for BaSTA: 
+The data frame \mverb{raw.mat} contains one column for sex, a categorical covariate, and one for weight, a continuous covariate. This data frame can be then rearranged into a suitable format for BaSTA with the \mverb{MakeCovMat()}  function. The data can then be incorporated into the main data frame used as an input for BaSTA: 
+
 <<>>=
 cov.mat    <- MakeCovMat(x = c("sex", "weight"), data = raw.mat)
 @
@@ -137,7 +148,8 @@ cov.mat    <- MakeCovMat(x = c("sex", "weight"), data = raw.mat)
 print(cov.mat)
 @
 
-Argument \mverb{x} can be used to specify which covariates should be included in the covariate matrix either with a character string vector (see example above), or with a numerical vector that indicates the column numbers in the data frame \mverb{data} that should be used for inference. In case all the columns are to be included, argument \mverb{x} can be ignored and only argument \mverb{data} needs to be specified. Alternatively, \mverb{x} can be of class \mverb{formula}, as we show in the following example:
+Argument \mverb{x} can be used to specify which covariates should be included in the covariate matrix either with a character string vector (see example above), or with a numerical vector that indicates the column numbers in the data frame \mverb{data} that should be used for inference. If all of the columns are to be included, the \mverb{x} argument can be ignored and only the \mverb{data} argument needs to be specified. Alternatively, \mverb{x} can be of class \mverb{formula}, as we show in the following example:
+
 <<>>=
 cov.mat    <- MakeCovMat(x = ~ sex + weight + sex:weight, data = raw.mat)
 @
@@ -147,10 +159,11 @@ cov.mat    <- MakeCovMat(x = ~ sex + weight + sex:weight, data = raw.mat)
 print(cov.mat)
 @
 
-In this case, we are including an interaction between sex and weight. For further details on how to specify a formula in R, type \mverb{help(formula)} in the R console. 
+In this case, we are also including an interaction between sex and weight. For further details on how to specify a formula in R, type \mverb{help(formula)} in the R console. 
 
 \subsection{Verify data consistency: \mverb{DataCheck()}}
-After the final data frame is constructed, it can be verified with function \mverb{DataCheck()}. This function performs a range of diagnostics on the data frame (Table \ref{Tab2}). Below is an example with the built in dataset:
+After the final data frame is constructed, it can be verified with the \mverb{DataCheck()} function. This function performs a range of diagnostic checks on the data frame (Table \ref{Tab2}). Below is an example with the simulated dataset we provide with the package:
+
 <<eval=FALSE>>=
 ## Load data:
 data("basta.dat", package = "BaSTA")
@@ -160,16 +173,17 @@ new.dat  <- DataCheck(basta.dat, studyStart = 51,
             studyEnd = 70, autofix = rep(1,7), silent = FALSE)
 @
 
-If argument \mverb{silent} is set as \mverb{FALSE}, then the function prints out a range of descriptive statistics about the dataset as folows:
+If argument \mverb{silent} is set as \mverb{FALSE}, then the function prints out a range of descriptive statistics about the dataset, exemplified as follows:
+
 <<print=FALSE, echo=FALSE,eval=TRUE>>=
 new.dat  <- DataCheck(basta.dat, studyStart = 51, 
             studyEnd = 70, autofix = rep(1,7), silent = FALSE)
 @
 
-Data check searches the dataset for seven different types of error (Table \ref{Tab2}), which can be fixed using argument \mverb{autofix}. Although this can save a lot of time and effort to the user, we strongly advise to verify the reported errors and make an informed decision on how to fixed them. 
+\mverb{DataCheck()} searches the dataset for seven different types of error (Table \ref{Tab2}), which can be fixed using argument \mverb{autofix}. Although this can save a lot of time and effort to the user, we strongly advise users to verify the reported errors and make an informed decision on how to fixed them. 
 
 \begin{table}[h!]
-  \caption{Description of error types in datasets as defined in function \mverb{DataCheck} and the actions that are taken based on the values provided in argument \mverb{autofix}.}
+  \caption{Description of error types in datasets as defined in the \mverb{DataCheck()} function and the actions that are taken based on the values provided in argument \mverb{autofix}.}
   \label{Tab2}
   \begin{center}
 \begin{tabular}{p{2cm}p{4cm}p{7cm}}
@@ -188,7 +202,8 @@ Data check searches the dataset for seven different types of error (Table \ref{T
   \end{center}
 \end{table}
 
-As an example, below we show how \mverb{DataCheck} reports errors for a dataset that has death years before the birth years (i.e. \textbf{type 3} error) for a few individuals:
+As an example,  we show below how \mverb{DataCheck()} reports errors for a dataset that includes death years that apparently occur before the year of birth (i.e. a \textbf{type 3} error) for a few individuals:
+
 <<print=FALSE, echo=FALSE,eval=TRUE>>=
 dat.error  <- basta.dat
 id        <- sapply(c(55, 60, 65), function(x) which(basta.dat[, 2] == x)[1])
@@ -201,15 +216,19 @@ new.dat  <- DataCheck(dat.error, studyStart = 51,
 @
 
 \section{Setting up the analysis: function \mverb{basta()}}
-After the data has been formatted and verified for consistency the analysis is performed with function \mverb{basta()}. In this section we explain the arguments used in this function. This function can be ran by specifying only the dataset with argument \mverb{object} and the times of start and end of the study with arguments \mverb{studyStart} and \mverb{studyEnd}, respectively. Thus, a simple analysis for a study starting in 1990 and finishing in 2000 and with a hypothetical data frame called `\mverb{mydata}' can be performed by typing the following command into R:
+
+After the data has been formatted and verified for consistency, the analysis is performed with the \mverb{basta()} function. In this section we explain the arguments used in this function. This function can be run, in it's simplest form, by specifying only the dataset (with the \mverb{object} argument), and the start and end times of the study with the \mverb{studyStart} and \mverb{studyEnd} arguments. Thus, a simple analysis for a study starting in 1990 and finishing in 2000 and with a hypothetical data frame called `\mverb{mydata}' can be performed by entering the following command:
+
 <<eval=FALSE>>=
 out         <- basta(object = mydata, studyStart = 1990, studyEnd = 2000)
 @
 
-All other arguments have default values that allow to run the model without specifying any additional information (default values can be viewed on the \mverb{basta()} help file). Still, in order to make use of all the functionality of BaSTA we recommend to explore different models and shapes, as well as different covariate structures. Below we present how to set up an analysis with BaSTA to test a range of models and covariate data structures (further details on the models and diagnostics can be found in \citealt{BaSTA2011}) .
+All of the other arguments in the \mverb{basta()} function have default values that allow users to run the model without specifying any additional information. The default values can be viewed in the \mverb{basta()} help file with the comment \mverb{?basta}. In order to take advantage of the full functionality of BaSTA we recommend that users explore different models and shapes, as well as a variety of covariate structures. Below we outline how to set up an analysis with BaSTA in order to test a range of models and covariate data structures (further details on the models and diagnostics can be found in \citealt{BaSTA2011}) .
 
 \subsection{Choosing mortality models: arguments \mverb{model} and \mverb{shape}}
-Argument \mverb{model} can be used to choose between four basic mortality rate functions: a) `\mverb{EX}'; exponential (\citealt{Cox&Oakes1984}); b) `\mverb{GO}' (default); Gompertz (\citealt{Gompertz:1825,Pletcher1999}); c) `\mverb{WE}'; Weibull (\citealt{Pinder1978}); and d) `\mverb{LO}'; logistic (\citealt{Pletcher1999}) (Table \ref{Tabmod}). Each one of these functions can describe different trends in age-specific mortality, giving BaSTA considerable flexibility when estimating these vital rates (Fig. \ref{Fig2}). 
+
+The \mverb{model} argument can be used to choose between four basic mortality rate functions: a) `\mverb{EX}'; exponential (\citealt{Cox&Oakes1984}); b) `\mverb{GO}' (default); Gompertz (\citealt{Gompertz:1825,Pletcher1999}); c) `\mverb{WE}'; Weibull (\citealt{Pinder1978}); and d) `\mverb{LO}'; logistic (\citealt{Pletcher1999}) (Table \ref{Tabmod}). Each one of these functions can describe different trends in age-specific mortality, giving BaSTA considerable flexibility when estimating these vital rates (Fig. \ref{Fig2}). 
+
 \begin{figure}[h!]
   \label{Fig2}
   \begin{center}
@@ -218,7 +237,7 @@ Argument \mverb{model} can be used to choose between four basic mortality rate f
   \end{center}
 \end{figure}
 
-In addition, BaSTA allows to extend these basic functions to include more complex shapes. Specifically, three general forms can be defined with argument \mverb{shape}: i) `\mverb{simple}' (default), which uses only the basic functions defined in Table \ref{Tabmod}; ii) `\mverb{Makeham}' \citep{Pletcher1999}, which adds a constant to the mortality rate; and iii) `\mverb{bathtub}' (e.g. \citealt{Siler:1979}), which consists of adding a declining Gompertz function and a constant to the basic mortality rate. The resulting shapes can be seen in Fig. \ref{Fig2}.  In table \ref{Tabpars} we show the number of parameters for the different types of mortality models and shape combinations.
+In addition, BaSTA allows users to extend these basic functions in order to examine more complex shapes. Specifically, three general forms can be defined with the  \mverb{shape} argument: i) `\mverb{simple}' (the default shape), which uses only the basic functions defined in Table \ref{Tabmod}; ii) `\mverb{Makeham}' \citep{Pletcher1999}, which adds a constant to the mortality rate; and iii) `\mverb{bathtub}' (e.g. \citealt{Siler:1979}), which consists of adding a declining Gompertz function and a constant to the basic mortality rate. The resulting shapes can be seen in Fig. \ref{Fig2}. Clearly, the number of parameters used in each of these combinations varies. In table \ref{Tabpars} we show the number of parameters for the different types of mortality models and shape combinations.
 
 \begin{table}[h!]
   \caption{Number of parameters for all combinations of mortality models and shapes that can be tested in BaSTA.}
@@ -238,22 +257,25 @@ Logistic   & 3 & 4 & 6 \\
   \end{center}
 \end{table}
 
-For instance, to run the analysis using a logistic mortality rate with a bathtub shape, the specifications for the function should be:
+For example, to run the analysis using a logistic mortality rate with a bathtub shape, the specifications for the function should be:
 
 <<eval=FALSE>>=
 out         <- basta(object = mydata, studyStart = 1990, studyEnd = 2000, model = "LO", shape = "bathtub")
 @
 
-In case the model or the shape are misspecified, the analysis is stopped and an error message is printed that clarifies which argument values should be used. 
+If the model or the shape are misspecified, the analysis will be stopped and an error message is printed that clarifies which argument values should be used. 
 
-\subsection{Defining covariate structure: argument \mverb{covarsStruct}}
-BaSTA also allows to evaluate the effect of covariates on age patterns of mortality. This is achieved with argument \mverb{covarsStruct}, which defines three optional structures: i) `\mverb{fused}' (default), in which covariates are separated into continuous and categorical, where the first are included into a proportional hazards framework \citep{Klein:2003}, and the later are included as linear functions of the mortality parameters, analogous to generalized linear models (GLMs); ii) `\mverb{prop.haz}' where all covariates are included as proportional hazards; and iii) `\mverb{all.in.mort}' where all covariates are evaluated as linear functions of the mortality parameters. Currently, this last can only be implemented with Gompertz (`\mverb{GO}') model with `\mverb{simple}' shape. 
+\subsection{Defining covariate structure: the \mverb{covarsStruct} argument}
 
-\subsection{MCMC general settings: \mverb{niter}, \mverb{burnin} and \mverb{thinning}}
-The number of MCMC steps can be specified with argument \mverb{niter}, while the burn-in sequence and the thinning interval are controlled with arguments \mverb{burnin} and \mverb{thinning}, respectively. The burn-in corresponds to the initial sequence before parameters reach convergence, which is commonly discarded, leaving the remaining steps to calculate a range of diagnostics and other statistics \citep{Clark:2007}. The thinning interval is set as to reduce serial autocorrelation between consecutive parameter estimates. Based on the results from \cite{ColcheroClark2011}, the default values are \mverb{niter} $= 50,000$ steps, \mverb{burnin} $= 5,001$ and \mverb{thinning} $= 50$. Still, we recommend that these values should be tested before the final simulations are implemented.
+BaSTA also allows to evaluate the effect of covariates on age patterns of mortality. This is achieved with the \mverb{covarsStruct} argument, which defines three optional structures: i) `\mverb{fused}' (default), in which covariates are separated into continuous and categorical, and where the former are included into a proportional hazards framework \citep{Klein:2003}, and the latter are included as linear functions of the mortality parameters. This is analogous to their treatment in generalized linear models (GLMs); ii) `\mverb{prop.haz}' where all covariates are included as proportional hazards; and iii) `\mverb{all.in.mort}' where all covariates are evaluated as linear functions of the mortality parameters. Currently, this last structure can only be implemented with a Gompertz (`\mverb{GO}') model with a `\mverb{simple}' shape. 
+
+\subsection{MCMC general settings: the \mverb{niter}, \mverb{burnin} and \mverb{thinning} arguments}
+
+The number of MCMC steps can be specified with the \mverb{niter} argument, while the burn-in sequence and the thinning interval are controlled with arguments \mverb{burnin} and \mverb{thinning}, respectively. The burn-in corresponds to the initial sequence before parameters reach convergence, which is commonly discarded, leaving the remaining steps to calculate a range of diagnostics and other statistics \citep{Clark:2007}. The thinning interval is set in order to reduce serial autocorrelation between consecutive parameter estimates. Based on the results from \cite{ColcheroClark2011}, the default values are \mverb{niter} $= 50,000$ steps, \mverb{burnin} $= 5,001$ and \mverb{thinning} $= 50$. Still, we recommend that these values should be tested before the final simulations are implemented.
 
 \subsection{Initial parameters, jumps and priors}
-Although BaSTA has built-in default values for initial parameters, jump standard deviations and priors, these can be modified with arguments \mverb{thetaStart} and \mverb{gammaStart} for mortality and proportional hazards initial parameters, and the corresponding \mverb{thetaJumps}, \mverb{thetaPriors}, \mverb{gammaJumps} and \mverb{gammaPriors} for jumps and priors. It is important to note that the length of the vector or the dimensions of the matrices specified should correspond to the number of parameters for each combination of \mverb{model}, \mverb{shape}, and \mverb{covarsStruct}. For instance, if a logistic (`\mverb{LO}') model with `\mverb{simple}' shape (i.e. 3 parameters, Table \ref{Tabpars}) and a `\mverb{mixed}' covariate structure is chosen, and two categorical and two continuous covariates are included in the dataset, \mverb{thetaStart}, \mverb{thetaJumps} and \mverb{thetaPriors} should be vectors of length 3 (the same set of parameters for both categorical covariates), or of length 6 (one set of parameters per covariate), or matrices of dimension $2 \times 3$. Also, \mverb{gammaStart}, \mverb{gammaJumps} and \mverb{gammaPriors} should all be vectors of length 2 for this example. For instance, if we wish to specify the jumps for the mortality parameters in this example, we could type:
+
+Although BaSTA has built-in default values for initial parameters, jump standard deviations, and priors, these can be modified with the arguments \mverb{thetaStart} and \mverb{gammaStart} for mortality and proportional hazards initial parameters, and the corresponding \mverb{thetaJumps}, \mverb{thetaPriors}, \mverb{gammaJumps} and \mverb{gammaPriors} arguments for jumps and priors. It is important to note that the length of the vector or the dimensions of the matrices specified should correspond to the number of parameters for each combination of \mverb{model}, \mverb{shape}, and \mverb{covarsStruct}. For instance, if a logistic (`\mverb{LO}') model with `\mverb{simple}' shape (i.e. 3 parameters, Table \ref{Tabpars}) and a `\mverb{mixed}' covariate structure is chosen, and two categorical and two continuous covariates are included in the dataset, \mverb{thetaStart}, \mverb{thetaJumps} and \mverb{thetaPriors} should be vectors of length 3 (the same set of parameters for both categorical covariates), or of length 6 (one set of parameters per covariate), or matrices of dimension $2 \times 3$. Also, \mverb{gammaStart}, \mverb{gammaJumps} and \mverb{gammaPriors} should all be vectors of length 2 for this example. For example, if we wish to specify the jumps for the mortality parameters in this example, we could type:
 
 <<eval=FALSE>>=
 out         <- basta(object = mydata, studyStart = 1990, studyEnd = 2000, model = "LO", shape = "simple", thetaJumps = c(0.1, 0.1, 0.1))
@@ -264,7 +286,7 @@ out         <- basta(object = mydata, studyStart = 1990, studyEnd = 2000, model 
 new.jumps    <- matrix(c(rep(0.1, 3), rep(0.2, 3)), nrow = 2, ncol = 3, byrow = TRUE, dimnames = list(c('cov1', 'cov2'), paste("b", 0:2, sep="")))
 @
 
-\noindent where each column corresponds to a mortality parameter and each row to a covariate, of the form:
+\noindent where each column corresponds to a mortality parameter, and each row to a covariate, of the form:
 <<print=FALSE,echo=FALSE>>=
 print(new.jumps)
 @
@@ -275,42 +297,48 @@ out         <- basta(object = mydata, studyStart = 1990, studyEnd = 2000, model 
 @
 
 \subsection{Multiple runs: arguments \mverb{nsim}, \mverb{parallel} and \mverb{ncpus}}
-To ensure that parameter estimates derived from MCMC routines converge appropriately, it is necessary to run several simulations from over-dispersed initial parameter values \citep{Gelman:2004}. By doing this, it is possible to confirm if the parameter chains (i.e. traces) all converge to the same final values, irrespective of the initial parameters. BaSTA allows to run multiple simulations by specifying the number of runs desired with argument \mverb{nsim}. Moreover, to reduce the amount of computing time, BaSTA facilitates to perform these multiple runs in parallel through package snowfall \citep{Knaus2010}. This is achieved by setting the logical argument \mverb{parallel} as `\mverb{TRUE}'. In addition, the number of cores used can be selected with argument \mverb{ncpus}. In case the package \mverb{snowfall} is not installed, or the argument \mverb{parallel} is set as `\mverb{FALSE}', then the multiple simulations are ran in series. We strongly recommend running multiple simulations in parallel, since this reduces computing time proportionally to the number of cpus used. Most computers today have dual or quad core processors, while many of them can handle hyper-threading (HT), which allows to split one core into two virtual processors. This means that, with the average lap-top with dual core and HT capabilities, one can potentially run up to 4 simulations in parallel.
 
-Thus, to run 4 simulations in parallel on 4 cpus for a simple-shaped Gompertz model, function \mverb{basta()} can be specified as:
+To ensure that parameter estimates derived from MCMC routines converge appropriately, it is necessary to run several simulations from over-dispersed initial parameter values \citep{Gelman:2004}. By doing this, it is possible to confirm whether the parameter chains (i.e. traces) all converge to the same final values, irrespective of the initial parameters. BaSTA allows users to run multiple simulations by specifying the number of runs desired with \mverb{nsim} argument. Moreover, to reduce the amount of computing time, BaSTA facilitates the performance of these multiple runs in parallel using the \mverb{snowfall} package \citep{Knaus2010}. This is achieved by setting the logical argument \mverb{parallel} as `\mverb{TRUE}'. In addition, the number of cores used can be selected with argument \mverb{ncpus}. If the package \mverb{snowfall} is not installed, or the argument \mverb{parallel} is set as `\mverb{FALSE}', then the multiple simulations are run in series. We strongly recommend running multiple simulations in parallel, since this reduces computing time proportionally to the number of cpus used. Most computers today have dual or quad core processors, and many of them can handle hyper-threading (HT), which effectively splits one core into two virtual processors. This means that, with the average laptop with dual core and HT capabilities, one can potentially run up to 4 simulations in parallel.
+
+To run 4 simulations in parallel on 4 cpus for a simple-shaped Gompertz model, the \mverb{basta()} function should be specified as:
+
 <<eval=FALSE>>=
 out         <- basta(object = mydata, studyStart = 1990, studyEnd = 2000, nsim = 4, parallel = TRUE, ncpus = 4)
 @
 
 
 \section{Results}
+
 \subsection{MCMC performance diagnostics}
-After the MCMC algorithms are finished, a range of diagnostics are calculated on the parameter chains. 
-If multiple simulations are implemented and all of them run through, then potential scale reduction is calculated for each parameter to estimate convergence \citep{Gelman:2004}. This diagnostic is calculated as $\hat{R} = \sqrt{\hat{v}^+ / W}$ , where $W$ is a measure of the within-sequence variance and $\hat{v}^+$ is a weighted average of the between-sequence variance ($B$) and $W$. Convergence is attained when $\hat{R}$ is close to 1. As a rule of thumb, we have assigned an arbitrary upper bound of $\hat{R}<1.1$ above which it is assumed that parameters have not reached convergence. 
+
+After the MCMC algorithms are finished, a range of diagnostics are calculated from the parameter chains. 
+If multiple simulations were implemented and all of them have run through to completion, then potential scale reduction is calculated for each parameter to estimate convergence \citep{Gelman:2004}. This diagnostic is calculated as $\hat{R} = \sqrt{\hat{v}^+ / W}$ , where $W$ is a measure of the within-sequence variance and $\hat{v}^+$ is a weighted average of the between-sequence variance ($B$) and $W$. Convergence is attained when $\hat{R}$ is close to 1. As a rule of thumb, we have assigned an arbitrary upper bound of $\hat{R}<1.1$ above which it is assumed that parameters have not reached convergence. 
 
 \subsection{Model fit}
-If all parameters have converged, BaSTA calculates deviance information criterion (DIC; \citealt{Spiegelhalter2002}), which has been described as a measure of predictive power and a criterion for model fit. DIC approximates the expected predictive deviance, and is calculated as 
+
+If all parameters have converged, BaSTA calculates the deviance information criterion (DIC; \citealt{Spiegelhalter2002}), which has been described as a measure of predictive power and a criterion for model fit. DIC approximates the expected predictive deviance, and is calculated as;
 
 \begin{equation*}
 \mathrm{DIC} = 2\hat{D}_{avg}(y) - D_{\hat{\theta}}(y)
 \end{equation*}
 
-\noindent where $y$ denotes the observed data, $\hat{D}_{avg}(y)$ is the mean discrepancy between the data and the model as a function of the parameters $\theta$, averaged over the posterior distribution, while $D_{\hat{\theta}}(y)$ is the discrepancy at the posterior mode (here represented by the point estimate $\hat{\theta}$). It is important to outline that the use of DICs is still controversial and therefore the results need to be taken with caution (see responses in \citealt{Spiegelhalter2002}). In order to improve the measure provided, BaSTA's DIC is calculated as an approximation to the group-marginalized DIC presented by \citet{Millar2009}. 
+\noindent where $y$ denotes the observed data, $\hat{D}_{avg}(y)$ is the mean discrepancy between the data and the model as a function of the parameters $\theta$, averaged over the posterior distribution, and $D_{\hat{\theta}}(y)$ is the discrepancy at the posterior mode (here represented by the point estimate $\hat{\theta}$). It is important to realise that the use of DICs is still controversial and, therefore, the results should to be taken with caution (see responses in \citealt{Spiegelhalter2002}). In order to improve the measure provided, BaSTA's DIC is calculated as an approximation of the group-marginalized DIC presented by \citet{Millar2009}. 
 
 \subsection{Parameter comparison for categorical covariates}
-In addition, BaSTA includes a diagnostic based on Kullback-Liebler discrepancies (KLD; \citealt{KullbackLiebler1951,McCulloch1989}), that provides the user with a measure of how differently (or similarly) each categorical covariate affects survival.  For instance, if we wish to evaluate the differences in survival between males and females with a simple Gompertz model, such that the mortality rate is of the form:
+
+BaSTA also includes a diagnostic based on Kullback-Liebler discrepancies (KLD; \citealt{KullbackLiebler1951,McCulloch1989}), that provides the user with a measure of how differently (or similarly) each categorical covariate affects survival.  For instance, we may wish to evaluate the differences in survival between males and females with a simple Gompertz model, such that the mortality rate is of the form:
 \begin{equation}\label{eq:lin}
 \mu(x | \bth) = \exp\left[\overbrace{\left(\bal^T z\right)}^{b_0} + \overbrace{\left(\bbe^T z\right)}^{b_1} x\right],
 \end{equation}
-where $\bth$ are mortality parameters such that $\bth = [b_0, b_1]$ and $\bal$ and $\bbe$ are subparameters that  then both parameters $b_0$ and $b_1$ in equation \ref{eq:lin} are evaluated as a function of these covariates. To illustrate this lets take $b_0$, for which the resulting `sub-parameters' would be $\alpha_{f}$ and $\alpha_{m}$ such that, for an individual $i$, we have $b_0 = \alpha_f I_i + \alpha_m (1 - I_i)$, where $I_i$ is an indicator function that assigns 1 if the individual is a female and 0 otherwise. For each of these parameters, BaSTA produces a posterior distribution, say $P_f = p(\alpha_{f} | \dots)$ and $P_m = p(\alpha_{m} | \dots)$, respectively. The KLD between these distributions is calculated as:
+where $\bth$ are mortality parameters such that $\bth = [b_0, b_1]$ and $\bal$ and $\bbe$ are subparameters that  then both parameters $b_0$ and $b_1$ in equation \ref{eq:lin} are evaluated as a function of these covariates. To illustrate the calculation of KLD,  lets take $b_0$, for which the resulting `sub-parameters' would be $\alpha_{f}$ and $\alpha_{m}$ such that, for an individual $i$, we have $b_0 = \alpha_f I_i + \alpha_m (1 - I_i)$, where $I_i$ is an indicator function that assigns 1 if the individual is a female and 0 otherwise. For each of these parameters, BaSTA produces a posterior distribution, say $P_f = p(\alpha_{f} | \dots)$ and $P_m = p(\alpha_{m} | \dots)$, respectively. The KLD between these distributions is calculated as:
 
 \begin{equation}\label{eq:kld}
 K(P_f, P_m) = \int_{0}^{\infty} P_f \log\left(\frac{P_f}{P_m}\right) d\alpha
 \end{equation}
 
-The result can be interpreted as how far off we would be if we tried to predict $\alpha_m$ from the posterior distribution of $\alpha_f$. If both distributions are identical, then $K(P_f, P_m) = 0$, suggesting that there is no distinction between males and females for $b_0$; as the KLD values increase the higher the discrepancy becomes. As it can be inferred from equation \ref{eq:kld} the relationship is asymmetric, namely $K(P_f, P_m) \neq K(P_m, P_f)$. 
+The result can be interpreted as how far off we would be if we tried to predict $\alpha_m$ from the posterior distribution of $\alpha_f$. If both distributions are identical, then $K(P_f, P_m) = 0$, suggesting that there is no distinction between males and females for $b_0$; as the KLD values increase the higher the discrepancy becomes. As can be inferred from equation \ref{eq:kld}, the relationship is asymmetric, namely $K(P_f, P_m) \neq K(P_m, P_f)$. 
 
-\citet{McCulloch1989} proposed a simple calibration of the KLD values that reduces the asymmetry and makes them easier to interpret. Let $k = K(P_f, P_m)$ and $q(k)$ a calibration function such that 
+To make KLD easier to interpret \citet{McCulloch1989} therefore proposed a simple calibration of the KLD values that reduces the asymmetry. This is as follows: Let $k = K(P_f, P_m)$ and $q(k)$ a calibration function such that 
 \begin{eqnarray*}
 k & = & K(P_f,P_m) \\
 &=&  K(B(1/2), B(q(k)))
@@ -326,11 +354,14 @@ Thus, $q(k)$ ranges from 0.5 to 1, where a value of 0.5 means that the distribut
 
 
 \subsection{Model outputs}
-The output provided by function \mverb{basta()} is a list object of class \mverb{basta} that includes a range of diagnostics and results. This list includes summarized results in the form of coefficients (with standard errors and credible intervals), MCMC performance diagnostics, model settings as specified by the user, estimations of model fit and parameter overlap for categorical covariates, the raw traces from all runs, summarized values for times of birth and death, the data used in the model, and additional outputs such as life tables for each categorical covariate calculated from the estimated ages at death (without including left-truncated individuals). 
+
+The output provided by the \mverb{basta()} function is a list object of class \mverb{basta} that includes a range of diagnostics and results. This list includes summarized results in the form of coefficients (with standard errors and credible intervals), MCMC performance diagnostics, model settings as specified by the user, estimations of model fit and parameter overlap for categorical covariates, the raw traces from all runs, summarized values for times of birth and death, the data used in the model, and additional outputs such as life tables for each categorical covariate calculated from the estimated ages at death (without including left-truncated individuals). 
 
 \section{Summarizing and plotting results}
+
 \subsection{Printing results: functions \mverb{print()} and \mverb{summary()}}
-As we mentioned above, BaSTA's outputs can be explored using some of the R generic functions. For instance, functions \mverb{print()} and \mverb{summary()} print a range of summary statistics and descriptions of the model used. Basic summary values can be visualized by only typing the name of the BaSTA output object into the R console, while more information can be printed with function \mverb{summary}. For example, here are the summary values for a simple-shaped Gompertz analysis on the simulated dataset included in the package, with 4 parallel simulations: 
+
+As we mentioned above, BaSTA's outputs can be explored using some of R's generic functions. For instance, the basic  \mverb{print()} and \mverb{summary()} functions print a range of summary statistics and descriptions of the model used. Basic summary values can be visualized simply by typing the name of the BaSTA output object into the R console, while more information can be obtained with the \mverb{summary} function. For example, here are the summary values for a simple-shaped Gompertz analysis on the simulated dataset included in the package, with 4 parallel simulations: 
 
 <<>>=
 summary(basta.out, digits = 3)
@@ -342,12 +373,14 @@ To visually verify that all parameter estimates have reached convergence, functi
 <<eval=FALSE>>=
 plot(basta.out)
 @
-Which produces the following plot of traces for the mortality parameters:
+This produces the following plot of traces for the mortality parameters:
+
 \begin{center}
 <<fig =TRUE , echo =FALSE >>=
 plot(basta.out)
 @
 \end{center}
+
 In this case, no additional arguments are required. To plot the traces of the proportional hazards or recapture probability parameters or of the posterior chains, argument \mverb{trace.name} should be specified, with values \mverb{gamma}, \mverb{pi} or \mverb{post}. For instance, here is the code to plot the traces of the proportional hazards parameters:
 <<eval=FALSE>>=
 plot(basta.out, trace.name = "gamma")
