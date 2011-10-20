@@ -12,21 +12,19 @@ This function calculates a standard cohort-based life table from death ages.
 
 \arguments{
   \item{DeathAges}{A vector of ages at death. These can be precise (e.g. 5.4 yrs) or rounded to the integer year (e.g. 5 yrs).}
-  \item{ax}{A vector describing the averaged individual-years lived in the interval by those dying in the interval.   It is only necessary to put the first few values - further values are extrapolated to the correct dimensions. e.g. if ax is set as c(0.3, 0.5) and there are 5 rows in the life tables, ax will become c(0.3, 0.5, 0.5, 0.5, 0.5).}
-  \item{n}{n defines the interval width. The default is 1 (yr), but it can be set to be anything numerical value(s). For example, if you want small intervals for early ages, and larger intervals for older ages, you can define n as a sequence such as c(1,1,5) to indicate that the first 2 intervals are 1 year long, then the rest of the intervals are 5 years long.}
-}
 
-\details{
-Must add further details here.
+  \item{ax}{A vector describing the averaged individual-years lived in the interval by those dying in the interval.   It is only necessary to put the first few values - further values are extrapolated to the correct dimensions. e.g. if \code{ax} is set as \code{c(0.3, 0.5)} and there are 5 rows in the life tables, \code{ax} will become \code{c(0.3, 0.5, 0.5, 0.5, 0.5)}.}
+
+  \item{n}{Defines the interval width. The default is 1 (yr), but it can be set to be any numerical value(s). For example, if you want small intervals for early ages, and larger intervals for older ages, you can define n as a sequence such as \code{c(1,1,5)} to indicate that the first 2 intervals are 1 year long, then the rest of the intervals are 5 years long.}
 }
 
 \value{
-The function returns a data.frame in the form of a life table with the following column headings.
-Start and end of the interval, where start of the interval is defined as x, lx (number left alive at age x), dx (number dying between ages x and x+1), mx (death rate in the cohort between ages x and x+n), ax (average person-years lived in the interval by those dying in the interval), qx (probability of dying between ages x and x+1), px (probability of surviving between ages x and x+1), Lx (person years lived between ages x and x+1), Tx (person-years lived above age x), ex (expectation of life at age x).
+The function returns a \code{data.frame} in the form of a life table with the following column headings.
+Start and end of the interval, where start of the interval is defined as \emph{x}, \emph{lx} (number alive at age \emph{x} (i.e. at the start of the interval)), \emph{dx} (number dying between ages \emph{x} and \emph{x+n}), \emph{mx} (death rate in the cohort between ages \emph{x} and \emph{x+n}), \emph{ax} (average person-years lived in the interval by those dying in the interval), \emph{qx} (probability of dying between ages \emph{x} and \emph{x+n}), \emph{px} (probability of surviving between ages \emph{x} and \emph{x+n}), \emph{Lx} (`person' years lived between ages \emph{x} and \emph{x+n}), \emph{Tx} (`person' years lived above age \emph{x}), \emph{ex} (life expectancy at age \emph{x}).
 }
 
 \references{
-Preston et al. 2001. Demography: Measuring and modeling population processes. Blackwell Publishers.
+Preston, S.H., Heuveline, P. and Guillot, M. (2001) \emph{Demography: Measuring and modeling population processes.} Blackwell Publishers, Oxford, UK.
 }
 
 \author{Owen Jones \email{jones@mpg.demogr.de}}

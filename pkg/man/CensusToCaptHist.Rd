@@ -2,10 +2,10 @@
 \alias{CensusToCaptHist}
 
 \title{
-Construct capture-history matrix from census matrix to be used in BaSTA.
+Constructs capture-history matrix from census matrix to be used in Bayesian Survival Trajectory Analysis (BaSTA).
 }
 \description{
-This function takes a common census table and converts it into a capture-history matrix to be used as part of a BaSTA data input.
+This function takes a common census table, consisting of a pair of vectors with ID and observation date, and converts it into a capture-history matrix to be used as part of a BaSTA data input.
 }
 \usage{
 CensusToCaptHist(ID, d, dformat = "dd/mm/yyyy")
@@ -13,17 +13,17 @@ CensusToCaptHist(ID, d, dformat = "dd/mm/yyyy")
 
 \arguments{
   \item{ID}{
-vector with individual ids.
+A vector with individual IDs.
 }
   \item{d}{
-vector of dates when each individual was observed
+A vector of dates when each individual was observed.
 }
   \item{dformat}{
-format for \code{d}
+Defines the format for \code{d}
 }
 }
 \details{
-Argument \code{d} can be specified as an object of class \code{POSIXct} or \code{POSIXlt}, or as a character string indicating the day, month and year. 
+The \code{d} argument can be specified as an object of class \code{POSIXct} or \code{POSIXlt}, or as a character string indicating the day, month and year. (e.g. \code{dd/mm/yyyy}, \code{mmddyyyy}, \code{mm-dd-yyyy} etc.) 
 }
 
 \author{
@@ -31,8 +31,7 @@ Owen R. Jones \email{jones@demogr.mpg.de}
 }
 
 \seealso{
-\code{\link{MakeCovMat}} to format a covariate matrix compatible with this output. 
-\code{\link{basta}}
+\code{\link{MakeCovMat}}, which formats a covariate matrix compatible with this output. 
 }
 \examples{
 id.vec     <- sort(sample(1:5, size = 15, replace = TRUE))

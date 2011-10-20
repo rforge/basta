@@ -2,7 +2,7 @@
 \alias{MakeCovMat}
 
 \title{
-Function to build a matrix of covariates (i.e. design matrix) for a BaSTA analysis.
+Function to build a matrix of covariates (i.e. design matrix) for a Bayesian Survival Trajectory Analysis (BaSTA) analysis.
 }
 \description{
 This function creates a matrix of covariates or design matrix appropriate for BaSTA from raw individual level covariate data. The function identifies categorical and continuous covariates and organizes them accordingly. 
@@ -12,16 +12,19 @@ MakeCovMat(x, data)
 }
 
 \arguments{
-  \item{x }{A character string vector or a numerical vector indicating the columns to be included or an object of class \code{\link{formula}}}
-  \item{data }{a data frame of n rows (n = number of individuals in dataset) and nz columns (number of general covariates) including categorical covariates as factors (e.g. sex with individual labels "f","m", location, etc.) and/or continuous individual covariates (e.g. weight at birth, general weather conditions at each location, etc.).}
+ 
+ \item{x }{A character string vector or a numerical vector indicating the columns to be included or an object of class \code{\link{formula}}.}
+ 
+ \item{data }{A data frame of n rows (n = number of individuals in dataset) and nz columns (number of general covariates) including categorical covariates as factors (e.g. sex with individual labels "f","m", location, etc.) and/or continuous individual covariates (e.g. weight at birth, general weather conditions at each location, etc.).}
   }
 
 \details{
-Argument \code{x} can be of class \code{character}, \code{numeric} or \code{formula} as long as the elements described correspond to the column names in the \code{data} data frame. 
-The data frame specified in argument \code{data} needs to explicitly diferenciate between categorical and numerical variables. The elements in the column of a categorical variable need to be coerced to be \code{factors}.  
+The \code{x} argument can be of class \code{character}, \code{numeric} or \code{formula} as long as the elements described correspond to the column names in the \code{data} data frame. 
+The data frame specified in argument \code{data} needs to explicitly differentiate between categorical and numerical variables. The elements in the column of a categorical variable must be coerced to be \code{factors}.  
 }
+
 \value{
-The function returns a new covariate matrix to be collated to a matrix that includes a column for individual ids, a column for time of birth and on for times of death, and the full recapture matrix.
+The function returns a new covariate matrix to be collated to a matrix that includes a column for individual ID, a column for time of birth, and a column for times of death, plus the full recapture matrix.
 }
 
 \author{

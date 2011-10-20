@@ -8,7 +8,7 @@ BaSTA: a package for parametric Bayesian estimation of age-specific survival for
 }
 
 \description{
-This package estimates mortality with covariates from capture-recapture/recovery data in a Bayesian framework when many individuals are of unknown age. It includes tools for data checking, model diagnostics and outputs such as life-tables and plots.
+This package estimates survival trajectories with covariates from capture-recapture/recovery data in a Bayesian framework when many individuals are of unknown age. It includes tools for data checking, model diagnostics, and outputs such as life-tables and plots.
 }
 
 \details{
@@ -21,15 +21,12 @@ License: \tab GNU General Public Licence\cr
 LazyLoad: \tab yes\cr
 }
 
-This package estimates mortality parameters from capture-recapture data where there are individuals with unknown birth/death dates.
-It is currently under development and cannot be expected to work perfectly yet!
+This package estimates survival parameters from capture-recapture data where there are individuals with unknown birth/death dates.
 
 }
 
 \author{
-Fernando Colchero \email{colchero@mpg.demogr.de}
-Owen Jones \email{jones@mpg.demogr.de}
-Maren Rebke \email{rebke@mpg.demogr.de}
+Fernando Colchero \email{colchero@mpg.demogr.de}, Owen Jones \email{jones@mpg.demogr.de}, and Maren Rebke \email{rebke@mpg.demogr.de}
 }
 
 \references{
