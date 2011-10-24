@@ -15,7 +15,7 @@
 
   \item{studyEnd }{The end year of the observation window.}
 
-  \item{autofix }{A logical argument indicating whether to automatically fix any errors. This should be used with extreme caution. We recommend going back to the individual-based data and fixing each error "by hand".}
+  \item{autofix }{A vector argument with a length of 7 indicating whether to automatically fix any errors (see details). This should be used with extreme caution. We recommend going back to the individual-based data and fixing each error "by hand".}
 
   \item{silent }{A logical argument indicating whether to print a detailed report to the screen or not.}
 
