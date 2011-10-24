@@ -53,18 +53,18 @@ Fernando Colchero \email{colchero@demogr.mpg.de}, Owen R. Jones \email{jones@dem
 
 \examples{
 ## Load BaSTA output:
-data("basta.out", package = "BaSTA")
+data("sim1Out", package = "BaSTA")
 
 ## Print summary output:
-summary(basta.out)
+summary(sim1Out)
 
 ## Plot traces for mortality parameters (theta):
-plot(basta.out)
+plot(sim1Out)
 
 ## Plot traces for proportional hazards parameters (gamma):
-plot(basta.out, trace.name = "gamma")
+plot(sim1Out, trace.name = "gamma")
 
 ## Plot predicted mortality and survival:
-plot(basta.out, plot.trace = FALSE)
+plot(sim1Out, plot.trace = FALSE)
 }
 
