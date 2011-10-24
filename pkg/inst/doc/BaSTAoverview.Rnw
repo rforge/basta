@@ -57,7 +57,7 @@
 \section{Introduction}
 
 
-Here we present BaSTA (Bayesian Survival Trajectory Analysis), a free-open-source R package \citep{R} that implements the hierarchical Bayesian model described by \cite{ColcheroClark2011}.  This package facilitates drawing inference on age-specific mortality from CRR data when a large proportion (or all) of the records have missing information on times of birth and death. In addition, BaSTA allows users to evaluate the effect of continuous and categorical covariates on mortality. 
+Here we present BaSTA (Bayesian Survival Trajectory Analysis), a free open-source R package \citep{R} that implements the hierarchical Bayesian model described by \cite{ColcheroClark2011}.  This package facilitates drawing inference on age-specific mortality from capture-recapture/recovery (CRR) data when a large proportion (or all) of the records have missing information on times of birth and death. In addition, BaSTA allows users to evaluate the effect of continuous and categorical covariates on mortality. 
 
 <<setup, print=FALSE, echo=FALSE>>=
 library(BaSTA)
@@ -73,13 +73,13 @@ data("sim1Out", package = "BaSTA")
   \end{center}
 \end{figure}
 
-BaSTA consists of a set of routines initialized by the user through data input and the definition of basic model settings (Fig. \ref{Fig1}). The package then verifies that the data has the right format and that the user-defined model settings are consistent (i.e. initial error checks). If no errors are found, the model runs one or multiple Monte Carlo Markov Chain (MCMC) algorithms (for a full description of the algorithm see \citealt{ColcheroClark2011}). After the MCMC runs are finished, the package calculates a range of diagnostics that include measures of serial autocorrelation on parameter traces, parameter update rates, convergence and preliminary model selection.
+BaSTA consists of a set of routines initialised by the user through data input and the definition of basic model settings (Fig. \ref{Fig1}). The package then verifies that the data has the right format, and that the user-defined model settings are consistent (i.e. initial error checks). If no errors are found, the model runs one or multiple Markov Chain Monte Carlo (MCMC) algorithms (for a full description of the algorithm see \citealt{ColcheroClark2011}). After the MCMC runs are finished, the package calculates a range of diagnostics that include measures of serial autocorrelation on parameter traces, parameter update rates, convergence and preliminary model selection.
 
-The package's main function, called \mverb{basta()}, defines its own S3 method \citep{ChambersHastie92} and outputs an object of class \mverb{basta} which can then be explored with the generic functions \mverb{plot()}, \mverb{summary()} and \mverb{print()}. The package also includes two data formatting functions, \mverb{CensusToCaptHist()} and \mverb{MakeCovMat()}, and a data checking function \mverb{DataCheck()}. 
+The package's main function, called \mverb{basta()}, defines its own S3 method \citep{ChambersHastie92} and outputs an object of class \mverb{basta} which can then be explored with the generic  \mverb{plot()}, \mverb{summary()} and \mverb{print()} functions. The package also includes two data formatting functions, \mverb{CensusToCaptHist()} and \mverb{MakeCovMat()}, and a data checking function \mverb{DataCheck()}. 
 
 \section{Data formatting}
 
-The input data for BaSTA uses a format compatible with other programs that deal with CRR data sets such as MARK \citep{White&Burnham99}. The data needs to be configured as a table in data frame format where each row corresponds to one individual.  The first column corresponds to the individual ids while the second and third columns include the years of birth and death, respectively. Next, $T$ columns ($T =$ study span), one per study year, are filled with the individual recapture histories. Thus, every year an individual is detected the corresponding column is filled with 1 and 0 otherwise. 
+BaSTA's input data format is compatible with other programs that deal with CRR data sets such as MARK \citep{White&Burnham99}. The data needs to be configured as a table in data frame format where each row corresponds to one individual.  The first column corresponds to the individual IDs while the second and third columns give the years of birth and death, respectively. Next, $T$ columns ($T =$ study span), one per study year, are filled with the individual recapture histories. Thus, every year an individual is detected the corresponding column is filled with 1 and 0 otherwise. 
 
 If covariates are to be included, additional columns can be added, with one column per covariate. For instance, table \ref{Tab1} shows a data frame for four individuals and a study span of $T = 4$ years with one covariate, i.e. location. In this example, individuals 1 and 2 have known birth year and individuals 1 and 3 have know death year, individual 1 was detected in the first, third and fourth year of the study, individual 2 from the second to the forth year and so forth. Individuals 1 and 2 belong to location 1 and individuals 3 and 4 to location 2.
 
@@ -132,18 +132,20 @@ weight     <- rnorm(5, mean = 10, sd = 1)
 raw.mat    <- data.frame(sex, weight)
 @
 
-This covariate data frame looks like:
+\noindent This covariate data frame looks like this:
+
 <<print=FALSE,echo=FALSE>>=
 print(raw.mat)
 @
 
-The data frame \mverb{raw.mat} contains one column for sex, a categorical covariate, and one for weight, a continuous covariate. This data frame can be then rearranged into a suitable format for BaSTA with the \mverb{MakeCovMat()}  function. The data can then be incorporated into the main data frame used as an input for BaSTA: 
+\noindent The data frame \mverb{raw.mat} contains one column for sex, a categorical covariate, and one for weight, a continuous covariate. This data frame can be then rearranged into a suitable format for BaSTA with the \mverb{MakeCovMat()}  function. The data can then be incorporated into the main data frame used as an input for BaSTA: 
 
 <<>>=
 cov.mat    <- MakeCovMat(x = c("sex", "weight"), data = raw.mat)
 @
 
 \noindent which produces the following matrix:
+
 <<print=FALSE,echo=FALSE>>=
 print(cov.mat)
 @
@@ -159,21 +161,21 @@ cov.mat    <- MakeCovMat(x = ~ sex + weight + sex:weight, data = raw.mat)
 print(cov.mat)
 @
 
-In this case, we are also including an interaction between sex and weight. For further details on how to specify a formula in R, type \mverb{help(formula)} in the R console. 
+\noindent In this case, we are also including an interaction between sex and weight. For further details on how to specify a formula in R, type \mverb{help(formula)} in the R console. 
 
 \subsection{Verify data consistency: \mverb{DataCheck()}}
 After the final data frame is constructed, it can be verified with the \mverb{DataCheck()} function. This function performs a range of diagnostic checks on the data frame (Table \ref{Tab2}). Below is an example with the simulated dataset we provide with the package:
 
 <<eval=FALSE>>=
 ## Load data:
-data("sim1", package = "BaSTA")
+data("sim1.dat", package = "BaSTA")
 
 ## Check data consistency:
-new.dat  <- DataCheck(sim1, studyStart = 51, 
+new.dat  <- DataCheck(sim1.dat, studyStart = 51, 
             studyEnd = 70, autofix = rep(1,7), silent = FALSE)
 @
 
-If argument \mverb{silent} is set as \mverb{FALSE}, then the function prints out a range of descriptive statistics about the dataset, exemplified as follows:
+\noindent If the \mverb{silent} argument is set as \mverb{FALSE}, then the function prints out a range of descriptive statistics about the dataset, exemplified as follows:
 
 <<print=FALSE, echo=FALSE,eval=TRUE>>=
 new.dat  <- DataCheck(sim1, studyStart = 51, 
@@ -186,17 +188,17 @@ new.dat  <- DataCheck(sim1, studyStart = 51,
   \caption{Description of error types in datasets as defined in the \mverb{DataCheck()} function and the actions that are taken based on the values provided in argument \mverb{autofix}.}
   \label{Tab2}
   \begin{center}
-\begin{tabular}{p{2cm}p{4cm}p{7cm}}
+\begin{tabular}{p{2cm}p{5cm}p{7cm}}
 \hline
 \textbf{Error type}&\textbf{Description}&\textbf{autofix code}\\
 \hline\hline
-  \textbf{type 1} & Deaths occurring before the study starts& 0 = do nothing; 1 = remove from dataframe\\
-  \textbf{type 2} & No birth/death AND no recaptures& 0 = do nothing; 1 = remove from dataframe\\
-  \textbf{type 3} & Births recorded after death& 0 = do nothing; 1 = replace death records with 0; 2 = replace birth records with 0; 3 = replace both birth and death records with 0\\
-  \textbf{type 4} &Recaptures after death& 0 = do nothing; 1 = remove spurious post-death observations\\
-  \textbf{type 5} & Recaptures before birth. & 0 = do nothing; 1 = remove observations that pre-date year of birth \\
-  \textbf{type 6} & Year of birth is not a zero in the recapture matrix& 0 = do nothing; 1 = replace birth year element of observation matrix with 0\\
-  \textbf{type 7} &Year of death is not a zero in the recapture matrix& 0 = do nothing; 1 = replace death year element of observation matrix with 0\\
+  \textbf{type 1} & Deaths occurring before the study starts & 0 = do nothing; 1 = remove from dataframe\\
+  \textbf{type 2} & No birth/death AND no recaptures & 0 = do nothing; 1 = remove from dataframe\\
+  \textbf{type 3} & Births recorded after death & 0 = do nothing; 1 = replace death records with 0; 2 = replace birth records with 0; 3 = replace both birth and death records with 0\\
+  \textbf{type 4} &Recaptures after death & 0 = do nothing; 1 = remove spurious post-death observations\\
+  \textbf{type 5} & Recaptures before birth & 0 = do nothing; 1 = remove observations that pre-date year of birth \\
+  \textbf{type 6} & Year of birth is not a zero in the recapture matrix & 0 = do nothing; 1 = replace birth year element of observation matrix with 0\\
+  \textbf{type 7} &Year of death is not a zero in the recapture matrix & 0 = do nothing; 1 = replace death year element of observation matrix with 0\\
 \hline
 \end{tabular}
   \end{center}
@@ -223,7 +225,7 @@ After the data has been formatted and verified for consistency, the analysis is 
 out         <- basta(object = mydata, studyStart = 1990, studyEnd = 2000)
 @
 
-All of the other arguments in the \mverb{basta()} function have default values that allow users to run the model without specifying any additional information. The default values can be viewed in the \mverb{basta()} help file with the comment \mverb{?basta}. In order to take advantage of the full functionality of BaSTA we recommend that users explore different models and shapes, as well as a variety of covariate structures. Below we outline how to set up an analysis with BaSTA in order to test a range of models and covariate data structures (further details on the models and diagnostics can be found in \citealt{BaSTA2011}) .
+All of the other arguments in the \mverb{basta()} function have default values that allow users to run the model without specifying any additional information. The default values can be viewed in the \mverb{basta()} help file with the comment \mverb{?basta}. In order to take advantage of the full functionality of BaSTA we recommend that users explore different models and shapes, as well as a variety of covariate structures. Below we outline how to set up an analysis with BaSTA in order to test a range of models and covariate data structures (further details on the models and diagnostics can be found in \citealt{BaSTA2011}).
 
 \subsection{Choosing mortality models: arguments \mverb{model} and \mverb{shape}}
 
@@ -267,7 +269,7 @@ If the model or the shape are misspecified, the analysis will be stopped and an 
 
 \subsection{Defining covariate structure: the \mverb{covarsStruct} argument}
 
-BaSTA also allows to evaluate the effect of covariates on age patterns of mortality. This is achieved with the \mverb{covarsStruct} argument, which defines three optional structures: i) `\mverb{fused}' (default), in which covariates are separated into continuous and categorical, and where the former are included into a proportional hazards framework \citep{Klein:2003}, and the latter are included as linear functions of the mortality parameters. This is analogous to their treatment in generalized linear models (GLMs); ii) `\mverb{prop.haz}' where all covariates are included as proportional hazards; and iii) `\mverb{all.in.mort}' where all covariates are evaluated as linear functions of the mortality parameters. Currently, this last structure can only be implemented with a Gompertz (`\mverb{GO}') model with a `\mverb{simple}' shape. 
+BaSTA also allows to evaluate the effect of covariates on age patterns of mortality. This is achieved with the \mverb{covarsStruct} argument, which defines three optional structures: i) `\mverb{fused}' (default), in which covariates are separated into continuous and categorical, and where the former are included into a proportional hazards framework \citep{Klein:2003}, and the latter are included as linear functions of the mortality parameters. This is analogous to their treatment in generalized linear models (GLMs); ii) `\mverb{prop.haz}' where all covariates are included as proportional hazards; and iii) `\mverb{all.in.mort}' where all covariates are evaluated as linear functions of the mortality parameters. Currently, the latter structure can only be implemented with a Gompertz (`\mverb{GO}') model with a `\mverb{simple}' shape. 
 
 \subsection{MCMC general settings: the \mverb{niter}, \mverb{burnin} and \mverb{thinning} arguments}
 
@@ -332,6 +334,8 @@ BaSTA also includes a diagnostic based on Kullback-Liebler discrepancies (KLD; \
 \end{equation}
 where $\bth$ are mortality parameters such that $\bth = [b_0, b_1]$ and $\bal$ and $\bbe$ are subparameters that  then both parameters $b_0$ and $b_1$ in equation \ref{eq:lin} are evaluated as a function of these covariates. To illustrate the calculation of KLD,  lets take $b_0$, for which the resulting `sub-parameters' would be $\alpha_{f}$ and $\alpha_{m}$ such that, for an individual $i$, we have $b_0 = \alpha_f I_i + \alpha_m (1 - I_i)$, where $I_i$ is an indicator function that assigns 1 if the individual is a female and 0 otherwise. For each of these parameters, BaSTA produces a posterior distribution, say $P_f = p(\alpha_{f} | \dots)$ and $P_m = p(\alpha_{m} | \dots)$, respectively. The KLD between these distributions is calculated as:
 
+%The first sentence in the above paragraph (where $\bth$ are mortality parameters...) is not clear.
+
 \begin{equation}\label{eq:kld}
 K(P_f, P_m) = \int_{0}^{\infty} P_f \log\left(\frac{P_f}{P_m}\right) d\alpha
 \end{equation}
@@ -341,16 +345,16 @@ The result can be interpreted as how far off we would be if we tried to predict 
 To make KLD easier to interpret \citet{McCulloch1989} therefore proposed a simple calibration of the KLD values that reduces the asymmetry. This is as follows: Let $k = K(P_f, P_m)$ and $q(k)$ a calibration function such that 
 \begin{eqnarray*}
 k & = & K(P_f,P_m) \\
-&=&  K(B(1/2), B(q(k)))
+&=&  K(B(\frac{1}{2}), B(q(k)))
 \end{eqnarray*}
 
-where $B(1/2)$ is a Bernouilli distribution for an event with probability $1/2$ (i.e. same probability of success and failure). This calibration is then calculated as:
+\noindent where $B(\frac{1}{2})$ is a Bernouilli distribution for an event with probability $1/2$ (i.e. same probability of success and failure). This calibration is then calculated as:
 
 \begin{equation}\label{eq:qk}
-q(k) = (1 + (1 - e^{-2k})^{1/2})/2
+q(k) = \frac{(1 + (1 - e^{-2k})^{\frac{1}{2}})}{2}
 \end{equation} 
 
-Thus, $q(k)$ ranges from 0.5 to 1, where a value of 0.5 means that the distributions are identical, and 1 that there is no overlap between them.
+\noindent Thus, $q(k)$ ranges from 0.5 to 1, where a value of 0.5 means that the distributions are identical, and 1 that there is no overlap between them.
 
 
 \subsection{Model outputs}
@@ -361,43 +365,58 @@ The output provided by the \mverb{basta()} function is a list object of class \m
 
 \subsection{Printing results: functions \mverb{print()} and \mverb{summary()}}
 
-As we mentioned above, BaSTA's outputs can be explored using some of R's generic functions. For instance, the basic  \mverb{print()} and \mverb{summary()} functions print a range of summary statistics and descriptions of the model used. Basic summary values can be visualized simply by typing the name of the BaSTA output object into the R console, while more information can be obtained with the \mverb{summary} function. For example, here are the summary values for a simple-shaped Gompertz analysis on the simulated dataset included in the package, with 4 parallel simulations: 
+As we mentioned above, BaSTA's outputs can be explored using some of R's generic functions. For instance, the basic  \mverb{print()} and \mverb{summary()} functions print a range of summary statistics and descriptions of the model used. Basic summary values can be visualized simply by typing the name of the BaSTA output object into the R console, while more information can be obtained with the \mverb{summary()} function. For example, here are the summary values for a simple-shaped Gompertz analysis on the simulated dataset included in the package, with 4 parallel simulations: 
 
 <<>>=
 summary(sim1Out, digits = 3)
-@
+@.
 
 
 \subsection{Plotting results: function \mverb{plot()}}
 To visually verify that all parameter estimates have reached convergence, function \mverb{plot()} can be used on the BaSTA output object. Here is an example with the same output described above:
+
 <<eval=FALSE>>=
 plot(sim1Out)
-@
-This produces the following plot of traces for the mortality parameters:
+@,
 
+This produces a plot of traces for the mortality parameters as in Fig.~\ref{traceExample1}:
+
+\begin{figure}[htbp]
 \begin{center}
-<<fig =TRUE , echo =FALSE >>=
+
+<<fig=TRUE, echo=FALSE>>=
 plot(sim1Out)
 @
+
 \end{center}
+\caption{Traces for the model parameters.}
+\label{traceExample}
+\end{figure}
 
 In this case, no additional arguments are required. To plot the traces of the proportional hazards or recapture probability parameters or of the posterior chains, argument \mverb{trace.name} should be specified, with values \mverb{gamma}, \mverb{pi} or \mverb{post}. For instance, here is the code to plot the traces of the proportional hazards parameters:
+
+
 <<eval=FALSE>>=
 plot(sim1Out, trace.name = "gamma")
 @
 
-In addition, the predicted survival probabilities and mortality rate functions for the different categorical covariates can be plot by typing:
+In addition, the predicted survival probabilities and mortality rate functions for the different categorical covariates can be plotted by typing:
+
 <<eval=FALSE>>=
 plot(sim1Out, plot.trace = FALSE)
-@
+@,
 
-Which produces the following plot:
+\noindent which produces the following plot (Fig.~\ref{trajectoryPlot}):
+
+\begin{figure}[htbp]
 \begin{center}
-<<fig =TRUE , echo =FALSE >>=
+<<fig=TRUE, echo=FALSE>>=
 plot(sim1Out, plot.trace = FALSE)
 @
 \end{center}
-
+\caption{Survival and mortality trajectories from the example data analysis.}
+\label{trajectoryPlot}
+\end{figure}
 
 %\section{Troubleshooting}
 %\subsection{How to interpret serial autocorrelation and update rate values}
