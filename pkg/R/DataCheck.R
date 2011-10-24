@@ -1,22 +1,9 @@
 DataCheck <-
 function(object, studyStart, studyEnd, autofix = rep(0,7), silent=TRUE) {
 
-#ToDo: add code to specify variations on what to do with the autofix
-#Autofix = a vector that defines whether, and how, to fix a problematic dataset.
-#It is a vector with 7 elements (one for each type of error), and the numbers 
-#specify how to deal with the error.
-#The default is c(0,0,0,0,0,0,0) - to do nothing.
-#Type 1: 0 = do nothing; 1 = remove from dataframe
-#Type 2: 0 = do nothing; 1 = remove from dataframe
-#Type 3: 0 = do nothing; 1 = replace death records with 0; 2 = replace birth records with 0; 3 = replace both birth and death records with 0
-#Type 4: 0 = do nothing; 1 = remove spurious post-death observations
-#Type 5: 0 = do nothing; 1 = remove observations that pre-date year of birth 
-#Type 6: 0 = do nothing; 1 = replace birth year element of observation matrix with 0
-#Type 7: 0 = do nothing; 1 = replace death year element of observation matrix with 0
+if(autofix == TRUE) stop("Autofix specification should be a numerical vector of length 7.")
 
-#if(autofix == TRUE) stop("Autofix specification should be a numerical vector of length 7.")
-
-   Ti         = studyStart
+    Ti         = studyStart
 	Tf         = studyEnd
 	st         = Ti:Tf
 	nt         = length(st)
@@ -68,11 +55,10 @@ function(object, studyStart, studyEnd, autofix = rep(0,7), silent=TRUE) {
     }
     
 # 3. Birth after death 
-#Need to check that this works - looks like it has changed.
+
     bd2 = bd
     bd2 = cbind(bd2, 1:n)
-#    bd2 = subset(bd2, bd2[, 1] != 0 & bd2[, 2] != 0)
-#    type3 = bd2[,3][which(bd2[, 1] > bd2[, 2])]
+
     type3 = which(bd[, 1] > bd[, 2] & bd[, 1] != 0 & bd[, 2] != 0)    
     if (length(type3) != 0) {
         cat("The following rows have birth dates that are later than their death dates:\n")
