@@ -234,14 +234,14 @@ Fernando Colchero \email{colchero@demogr.mpg.de}, Owen R. Jones \email{jones@mpg
 }
 \examples{
 ## Load data:
-data("basta.dat", package = "BaSTA")
+data("sim1", package = "BaSTA")
 
 ## Check data consistency:
-new.dat  <- DataCheck(basta.dat, studyStart = 51, 
+new.dat  <- DataCheck(sim1, studyStart = 51, 
             studyEnd = 70, autofix = rep(1,7))
 
 ## Run short version of BaSTA on the data (+/- 1.5 mins.):
-out      <- basta(basta.dat, studyStart = 51, studyEnd = 70, 
+out      <- basta(sim1, studyStart = 51, studyEnd = 70, 
             model = "GO", shape = "simple", covarsStruct = "fused", 
             niter = 2000, burnin = 1001, thinning = 10, 
             thetaJumps = c(0.025,0.01), gammaJumps = 0.01, 
