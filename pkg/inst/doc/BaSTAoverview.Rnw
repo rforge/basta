@@ -61,8 +61,8 @@ Here we present BaSTA (Bayesian Survival Trajectory Analysis), a free-open-sourc
 
 <<setup, print=FALSE, echo=FALSE>>=
 library(BaSTA)
-data("basta.dat", package = "BaSTA")
-data("basta.out", package = "BaSTA")
+data("sim1", package = "BaSTA")
+data("sim1Out", package = "BaSTA")
 @
 
 \begin{figure}[h!]
@@ -166,17 +166,17 @@ After the final data frame is constructed, it can be verified with the \mverb{Da
 
 <<eval=FALSE>>=
 ## Load data:
-data("basta.dat", package = "BaSTA")
+data("sim1", package = "BaSTA")
 
 ## Check data consistency:
-new.dat  <- DataCheck(basta.dat, studyStart = 51, 
+new.dat  <- DataCheck(sim1, studyStart = 51, 
             studyEnd = 70, autofix = rep(1,7), silent = FALSE)
 @
 
 If argument \mverb{silent} is set as \mverb{FALSE}, then the function prints out a range of descriptive statistics about the dataset, exemplified as follows:
 
 <<print=FALSE, echo=FALSE,eval=TRUE>>=
-new.dat  <- DataCheck(basta.dat, studyStart = 51, 
+new.dat  <- DataCheck(sim1, studyStart = 51, 
             studyEnd = 70, autofix = rep(1,7), silent = FALSE)
 @
 
@@ -205,8 +205,8 @@ new.dat  <- DataCheck(basta.dat, studyStart = 51,
 As an example,  we show below how \mverb{DataCheck()} reports errors for a dataset that includes death years that apparently occur before the year of birth (i.e. a \textbf{type 3} error) for a few individuals:
 
 <<print=FALSE, echo=FALSE,eval=TRUE>>=
-dat.error  <- basta.dat
-id        <- sapply(c(55, 60, 65), function(x) which(basta.dat[, 2] == x)[1])
+dat.error  <- sim1
+id        <- sapply(c(55, 60, 65), function(x) which(sim1[, 2] == x)[1])
 dat.error[id, 3] <- dat.error[id, 2] - c(1, 2, 4)
 @
 
@@ -364,37 +364,37 @@ The output provided by the \mverb{basta()} function is a list object of class \m
 As we mentioned above, BaSTA's outputs can be explored using some of R's generic functions. For instance, the basic  \mverb{print()} and \mverb{summary()} functions print a range of summary statistics and descriptions of the model used. Basic summary values can be visualized simply by typing the name of the BaSTA output object into the R console, while more information can be obtained with the \mverb{summary} function. For example, here are the summary values for a simple-shaped Gompertz analysis on the simulated dataset included in the package, with 4 parallel simulations: 
 
 <<>>=
-summary(basta.out, digits = 3)
+summary(sim1Out, digits = 3)
 @
 
 
 \subsection{Plotting results: function \mverb{plot()}}
 To visually verify that all parameter estimates have reached convergence, function \mverb{plot()} can be used on the BaSTA output object. Here is an example with the same output described above:
 <<eval=FALSE>>=
-plot(basta.out)
+plot(sim1Out)
 @
 This produces the following plot of traces for the mortality parameters:
 
 \begin{center}
 <<fig =TRUE , echo =FALSE >>=
-plot(basta.out)
+plot(sim1Out)
 @
 \end{center}
 
 In this case, no additional arguments are required. To plot the traces of the proportional hazards or recapture probability parameters or of the posterior chains, argument \mverb{trace.name} should be specified, with values \mverb{gamma}, \mverb{pi} or \mverb{post}. For instance, here is the code to plot the traces of the proportional hazards parameters:
 <<eval=FALSE>>=
-plot(basta.out, trace.name = "gamma")
+plot(sim1Out, trace.name = "gamma")
 @
 
 In addition, the predicted survival probabilities and mortality rate functions for the different categorical covariates can be plot by typing:
 <<eval=FALSE>>=
-plot(basta.out, plot.trace = FALSE)
+plot(sim1Out, plot.trace = FALSE)
 @
 
 Which produces the following plot:
 \begin{center}
 <<fig =TRUE , echo =FALSE >>=
-plot(basta.out, plot.trace = FALSE)
+plot(sim1Out, plot.trace = FALSE)
 @
 \end{center}
 
