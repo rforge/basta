@@ -32,10 +32,10 @@ basta(object, \dots)
 \item{studyEnd }{The last year of the study.}
   
   
-\item{minAge }{Age at which the analysis should start (see details)}
+\item{minAge }{Age at which the analysis should start (see \code{details})}
   
   
-\item{model }{The underlying mortality model to be used. "EX" = exponential, GO"= Gompertz, "WE" = Weibull and "LO" = logistic (see \code{details}).}
+\item{model }{The underlying mortality model to be used. "EX" = exponential, "GO"= Gompertz, "WE" = Weibull and "LO" = logistic (see \code{details}).}
   
   
 \item{shape }{The overall shape of the model. Values are: \code{simple} = no extra parameters added; \code{Makeham} = a constant parameter is added to the mortality rate; and \code{bathtub} = a Gompertz declining mortality for early ages and a constant parameter are added to the mortality model (see \code{details}).}
