@@ -1,9 +1,9 @@
 DataCheck <-
 function(object, studyStart, studyEnd, autofix = rep(0,7), silent=TRUE) {
 
-if(autofix == TRUE) stop("Autofix specification should be a numerical vector of length 7.")
+if(length(autofix) < 7) stop("Autofix specification should be a numerical vector of length 7.")
 
-    Ti         = studyStart
+   Ti         = studyStart
 	Tf         = studyEnd
 	st         = Ti:Tf
 	nt         = length(st)
