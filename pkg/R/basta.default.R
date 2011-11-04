@@ -415,7 +415,6 @@ function(object, studyStart, studyEnd, minAge = 0, model = "GO",
             	 Zcont[, i]      <- Zcont[, i] - mean(Zcont[, i])
             }
           }
-#          Zcont              <- t(t(Zcont) - apply(Zcont, 2, mean))
           colnames(Zcont)    <- names(covariate.type$cont)
           Cont               <- TRUE
         } else {
@@ -1150,10 +1149,12 @@ function(object, studyStart, studyEnd, minAge = 0, model = "GO",
           if (covarsStruct == "fused") {
             kl.12            <- matrix(NA, nrow = n.comb, ncol = length.theta0, 
                                        dimnames = list(paste(covar.comb[, 1], 
-                                       "-", covar.comb[, 2], sep = ""), name.theta0))
+                                       "-", covar.comb[, 2], sep = ""),
+                                       name.theta0))
             kl.21            <- matrix(NA, nrow = n.comb, ncol = length.theta0, 
                                        dimnames = list(paste(covar.comb[, 2], 
-                                       "-", covar.comb[, 1], sep = ""), name.theta0))
+                                       "-", covar.comb[, 1], sep = ""),
+                                       name.theta0))
             p.low            <- low.full.theta[1,]
           } else {
             kl.12            <- matrix(NA, nrow = n.comb, ncol = 1, 
@@ -1161,7 +1162,8 @@ function(object, studyStart, studyEnd, minAge = 0, model = "GO",
                                        "-", covar.comb[,2], sep = ""), "gamma"))
             kl.21            <- matrix(NA, nrow = n.comb, ncol = 1, 
                                        dimnames = list(paste(covar.comb[, 2], 
-                                       "-", covar.comb[, 1], sep = ""), "gamma"))
+                                       "-", covar.comb[, 1], 
+                                       sep = ""), "gamma"))
             p.low            <- -Inf
           }
           q.12               <- kl.12
@@ -1213,7 +1215,9 @@ function(object, studyStart, studyEnd, minAge = 0, model = "GO",
                                       c(0.5, 0.025, 0.975))
     
     # 8.3.4 Summary Survival and mortality:
-    thmat                    <- par.mat[, name.full.theta]
+    thmat                    <- matrix(par.mat[, name.full.theta], 
+                                       ncol = length.full.theta, 
+                                       dimnames = list(NULL, name.full.theta))
     if (Cont) {
       rzc                    <- apply(Zcont, 2, quantile, c(0.5, 0.025, 0.975))
       rownames(rzc)          <- c("Med.", "Lower", "Upper")
@@ -1260,7 +1264,7 @@ function(object, studyStart, studyEnd, minAge = 0, model = "GO",
           gaa                <- sum(gave * rzc[k, j])
           Cols               <- paste(name.theta, "[",zaname[i], "]", sep = "")
           if (length.cat == 1) Cols <- name.theta
-          Thm                <- thmat[, Cols]
+          Thm                <- matrix(thmat[, Cols], ncol = length(Cols))
           if (covarsStruct == "all.in.mort") {
             Thm              <- Thm + thmat[, paste(name.theta, 
                                 "[",names(covariate.type$cont)[j],"]", 
@@ -1269,9 +1273,17 @@ function(object, studyStart, studyEnd, minAge = 0, model = "GO",
           Sxq[[zaname[i]]][[colnames(rzc)[j]]][, , k] <- 
                 t(apply(apply(Thm, 1 ,CalculateMultiSx), 1, quantile, 
                 c(0.5, 0.025, 0.975)))
-          mxq[[zaname[i]]][[colnames(rzc)[j]]][, , k] <- 
-                t(apply(apply(Thm, 1 ,CalculateMultiMx), 1, quantile, 
-                c(0.5, 0.025, 0.975)))
+          if (model == "EX") {
+            Thmm             <- matrix(Thm, nrow = nrow(Thm), 
+                                       ncol = length(xv), byrow = TRUE) *
+                                exp(gaa)
+            mxq[[zaname[i]]][[colnames(rzc)[j]]][, , k] <- 
+                t(apply(Thmm,2, quantile, c(0.5, 0.025, 0.975)))
+          } else {
+            mxq[[zaname[i]]][[colnames(rzc)[j]]][, , k] <- 
+                t(apply(apply(Thm, 1 ,CalculateMultiMx),
+                        1, quantile, c(0.5, 0.025, 0.975)))
+          }
         }
       }
     }
