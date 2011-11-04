@@ -104,7 +104,7 @@ ID&Birth&Death&year 1&year 2&year 3&year 4&location\\
 This capture history matrix can be constructed using BaSTA's built-in data formatting functions. For instance, with function \mverb{CensusToCaptHist()}, it is possible to convert a conventional individual survey table (i.e. one record per time an individual is observed) to the recapture matrix described above. Below is an example with a simulated capture history of five individuals between 1990 and 2000:
 
 <<>>=
-id.vec     <- sort(sample(1:5, size = 15, replace = TRUE))
+id.vec     <- sort(c(rep(1, 3), rep(2, 2), rep(3, 4), rep(4, 3), rep(5, 3)))
 d.vec       <- rep(0, length(id.vec))
 for(i in unique(id.vec)){
   svec     <- which(id.vec == i)
@@ -369,7 +369,7 @@ As we mentioned above, BaSTA's outputs can be explored using some of R's generic
 
 <<>>=
 summary(sim1Out, digits = 3)
-@.
+@
 
 
 \subsection{Plotting results: function \mverb{plot()}}
@@ -377,7 +377,7 @@ To visually verify that all parameter estimates have reached convergence, functi
 
 <<eval=FALSE>>=
 plot(sim1Out)
-@,
+@
 
 This produces a plot of traces for the mortality parameters as in Fig.~\ref{traceExample1}:
 
@@ -404,7 +404,7 @@ In addition, the predicted survival probabilities and mortality rate functions f
 
 <<eval=FALSE>>=
 plot(sim1Out, plot.trace = FALSE)
-@,
+@
 
 \noindent which produces the following plot (Fig.~\ref{trajectoryPlot}):
 
