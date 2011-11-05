@@ -93,9 +93,11 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
                 <tr class="title"><td colspan="2" class="section">Project summary</td></tr>
                 <tr style="background:#FFFFFF">
                   <td class="main">
-                    <p class="parag"><b>BaSTA</b> is an R package (R Development Core Team 2011) that allows drawing inference on age-specific survival and mortality patterns from capture-recapture/recovery data when a large number of individuals (or all) have missing age information (Colchero, Jones and Rebke <i>in prep</i>). <b>BaSTA</b> is based on a model developed by Colchero and Clark (<i>in press</i>), which extends inference from parameter estimates to the estimation of unknown (i.e. latent) times of birth and death. The package also allows testing the effect of categorical and continuous individual covariates on mortality and survival (for an example see Fig. 1). Although the package is still on a development phase, to install this early (most likely buggy...) version, open the R console and type: <br></p>
-										</p><code>install.packages("BaSTA", repos = "http://R-Forge.R-project.org", type = "source")</code>
-<br><br></p>
+                    <p class="parag"><b>BaSTA</b> is an R package (R Development Core Team 2011) that allows drawing inference on age-specific survival and mortality patterns from capture-recapture/recovery data when a large number of individuals (or all) have missing age information (Colchero, Jones and Rebke <i>in prep</i>). <b>BaSTA</b> is based on a model developed by Colchero and Clark (<i>in press</i>), which extends inference from parameter estimates to the estimation of unknown (i.e. latent) times of birth and death. The package also allows testing the effect of categorical and continuous individual covariates on mortality and survival (for an example see Fig. 1). The package is now availale on CRAN, or it can be installed via R-Forge by opening the R console and typing: <br></p>
+										<p><code>install.packages("BaSTA", repos = "http://R-Forge.R-project.org", type = "source")</code>
+<br></p>
+
+										<p class="parag">We have set up a <a href="mailto:Basta-users@lists.r-forge.r-project.org"  rel="nofollow" style="color:#84002E">BaSTA Users mailing</a> list so users can ask questions or provide comments, suggestions or criticism that can help us improve the package. Users can register by <a href="https://lists.r-forge.r-project.org/cgi-bin/mailman/listinfo/basta-users"  rel="nofollow" class="intext">clicking here</a>.<br></p>
                     <a href="#top" class="totop">Back to top</a>
                   </td>
                   <td class="main">
