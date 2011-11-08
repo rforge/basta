@@ -141,9 +141,6 @@ function(object, studyStart, studyEnd, minAge = 0, model = "GO",
     jump.theta               <- c(0.01, jump.theta0)
     prior.theta              <- c(0, prior.theta0)
     low.theta                <- c(-Inf, low.theta0)
-    if (model == "GO") {
-      low.theta              <- c(-Inf, -Inf, 0)
-    }
     name.theta               <- c("c", name.theta0)
   } else if (shape == "bathtub") {
     CalculateFullMx          <- function(x, theta, gamma) {
