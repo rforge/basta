@@ -124,6 +124,9 @@ function(x, plot.trace = TRUE, trace.name = "theta", ...){
 
     # Plot mortality rates:
     ylmx            <- c(0, round(max(unlist(x$mx))))
+    if(max(ylmx)==Inf) {ylmx <- c(0, 25)}
+#Note: These limits need to be changed to account for negative senescence.
+
     plot(x           = c(0,mxv), 
          y           = ylmx, 
          col         = NA, 
