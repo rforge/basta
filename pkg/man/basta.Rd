@@ -197,7 +197,7 @@ As described above, the number of parameters for the \code{gammaStart} argument 
   
 \item{finished }{Vector of binary values indicating which simulations ran to the end.}
   
-\item{lifetable }{If requested and specified in the argument \code{lifetable}, a cohort life table calculated from the estimated ages at death.}
+\item{lifeTable }{If requested and specified in the argument \code{lifeTable}, a cohort life table calculated from the estimated ages at death.}
   
 \item{lambda }{If argument \code{minAge} is larger than 0 and if requested, matrix with lambda parameter estimates for early changes in distribution of ages at death.}
 }
