@@ -164,10 +164,14 @@ function(object, studyStart, studyEnd, minAge = 0, model = "GO",
     name.theta               <- c("a0", "a1", "c", name.theta0)
   }
 
-  CalculateFullFx            <- function(x, theta, gamma) {
-    CalculateFullMx(x, theta, gamma) * CalculateFullSx(x, theta, gamma)
-  }
+#  CalculateFullFx            <- function(x, theta, gamma) {
+#    CalculateFullMx(x, theta, gamma) * CalculateFullSx(x, theta, gamma)
+#  }
 
+  CalculateFullFx            <- function(x, theta, gamma) {
+    CalculateFullSx(x, theta, gamma) - CalculateFullSx(x + Dx, theta, gamma)
+  }
+  
   CalculateMultiSx           <- function(theta) {
     CalculateFullSx(xv, matrix(theta, ncol = length.theta), gaa)
   }
@@ -654,8 +658,8 @@ function(object, studyStart, studyEnd, minAge = 0, model = "GO",
     IminAge                  <- ifelse(minAge > 0, 1, 0)
     Iag                      <- rep(0, n)
     Ijg                      <- Iag
-    Iag[xg > minAge]         <- 1
-    Ijg[xg <= minAge]        <- 1
+    Iag[xg >= minAge]        <- 1
+    Ijg[xg < minAge]         <- 1
     xjg                      <- xg
     xjg[xg > minAge]         <- minAge
     xag                      <- xg - minAge
@@ -714,9 +718,9 @@ function(object, studyStart, studyEnd, minAge = 0, model = "GO",
             
       # iii) Calculate conditional posteriors:
       # - Current parameters:
-      p.thg                  <- (log(CalculateFullFx(xag + 
-                                0.5 * Dx, Ztheta.g, Zgamma.g)) -
-                                log(CalculateFullSx(xatg + 0.5 * Dx, 
+      p.thg                  <- (log(CalculateFullFx(xag, 
+                                Ztheta.g, Zgamma.g)) -
+                                log(CalculateFullSx(xatg, 
                                 Ztheta.g, Zgamma.g))) * Iag 
       # - Correct for precision limit:
       p.thg[p.thg==-Inf]     <- -1e200
@@ -728,9 +732,9 @@ function(object, studyStart, studyEnd, minAge = 0, model = "GO",
                                 log = TRUE))
 
       # - Proposed parameters:
-      p.thn                  <- (log(CalculateFullFx(xag + 
-                                0.5 * Dx, Ztheta.n, Zgamma.n)) -
-                                log(CalculateFullSx(xatg + 0.5 * Dx, 
+      p.thn                  <- (log(CalculateFullFx(xag, 
+                                Ztheta.n, Zgamma.n)) -
+                                log(CalculateFullSx(xatg, 
                                 Ztheta.n, Zgamma.n))) * Iag
       # - Correct for precision limit:
       p.thn[p.thn==-Inf]     <- -1e200
@@ -784,8 +788,8 @@ function(object, studyStart, studyEnd, minAge = 0, model = "GO",
       # iii) New juvenile and adult ages:
       Ian                    <- rep(0, n)
       Ijn                    <- Ian
-      Ian[xn > minAge]       <- 1
-      Ijn[xn <= minAge]      <- 1
+      Ian[xn >= minAge]      <- 1
+      Ijn[xn < minAge]       <- 1
       xjn                    <- xn
       xjn[xn > minAge]       <- minAge
       xan                    <- xn - minAge
@@ -801,15 +805,15 @@ function(object, studyStart, studyEnd, minAge = 0, model = "GO",
       # iiii) Calculate conditional posteriors:
       # - Current ages:
       p.bdg                  <- (log(lag) * Ijg - lag * xjg) * IminAge + 
-                                log(CalculateFullFx(xag + 
-                                0.5 * Dx, Ztheta.g, Zgamma.g)) * Iag
+                                log(CalculateFullFx(xag, 
+                                Ztheta.g, Zgamma.g)) * Iag
       p.bdg[p.bdg==-Inf]     <- -1e200
       p.bdg                  <- p.bdg + (Og - lfi) %*% log(1 - Pig) + 
                                 log(v.x(xag + 0.5 * Dx)) * Iag
       # - New ages:
       p.bdn                  <- (log(lag) * Ijn - lag * xjn) * IminAge  + 
-                                log(CalculateFullFx(xan + 
-                                0.5 * Dx, Ztheta.g, Zgamma.g)) * Ian
+                                log(CalculateFullFx(xan, 
+                                Ztheta.g, Zgamma.g)) * Ian
       p.bdn[p.bdn==-Inf]     <- -1e200
       p.bdn                  <- p.bdn + (On - lfi) %*% log(1 - Pig) + 
                                 log(v.x(xan + 0.5 * Dx)) * Ian
@@ -833,7 +837,7 @@ function(object, studyStart, studyEnd, minAge = 0, model = "GO",
         Iag[idrz]            <- Ian[idrz]
         Ijg[idrz]            <- Ijn[idrz]
       }
-      
+
       # c) Sample recapture probability(ies):
       rho1g                  <- rho1 + t(t(Y) %*% rep(1, n))
       rho2g                  <- rho2 + t(t(Og - Y) %*% rep(1, n))
