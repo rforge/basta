@@ -158,19 +158,19 @@ function(object, studyStart, studyEnd, autofix = rep(0, 7), silent=TRUE) {
     
   if (!silent) {
     cat(paste("*DataSummary*\n- Number of individuals         =",  
-        format(n, big.mark = ',', width = 6), "\n"))
+        format(n, big.mark = ',', width = 7), "\n"))
     cat(paste("- Number with known birth year  =", 
-        format(sum(bd[, 1] != 0), big.mark = ',', width = 6), "\n"))
+        format(sum(bd[, 1] != 0), big.mark = ',', width = 7), "\n"))
     cat(paste("- Number with known death year  =", 
         format(sum(bd[, 2] != 0), 
-        big.mark = ',', width = 6), "\n"))
+        big.mark = ',', width = 7), "\n"))
     cat(paste("- Number with known birth\n",
-        "AND death years               =", 
+        "AND death years                =", 
         format(sum(bd[, 2] != 0 & bd[, 1] != 0), big.mark = ",", 
-        width = 6), "\n\n"))
+        width = 7), "\n\n"))
     cat(paste("- Total number of detections\n",  
-        "in recapture matrix           =", 
-        format(sum(Y), big.mark = ",", width = 6), "\n\n"))
+        "in recapture matrix            =", 
+        format(sum(Y), big.mark = ",", width = 7), "\n\n"))
     cat(paste("- Earliest detection time       =", 
         format(min(ytemp), width = 7), "\n"))
     cat(paste("- Latest detection time         =", 
