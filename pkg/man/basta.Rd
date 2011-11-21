@@ -155,7 +155,7 @@ As described above, the number of parameters for the \code{gammaStart} argument 
   
 \item{coefficients }{A matrix with estimated coefficients (i.e. mean values per parameter on the thinned sequences after burnin), which includes standard errors, upper and lower 95\% credible intervals, update rates per parameter (commonly the same for all survival and proportional hazards parameters), serial autocorrelation on the thinned sequences and the potential scale reduction factor for convergence (see \code{Convergence} value below). }
 	
-\item{modSel }{Basic deviance information criterion (DIC) calculations to be used for model selection (Spiegelhalter \emph{et al.} 2002). These values should only be used a reference (see comments in Spiegelhalter \emph{et al.} 2002). A future version of the package will include routines for reversible jump Markov Chain Monte Carlo (RJMCMC, see King & Brooks 2002). If all or some of the simulations failed, then the returned value is \code{NULL}.}
+\item{DIC }{Basic deviance information criterion (DIC) calculations to be used for model selection (Spiegelhalter \emph{et al.} 2002). These values should only be used a reference (see comments in Spiegelhalter \emph{et al.} 2002). A future version of the package will include routines for reversible jump Markov Chain Monte Carlo (RJMCMC, see King & Brooks 2002). If all or some of the simulations failed, then the returned value is \code{NULL}.}
 	
 \item{Convergence }{If requested, a matrix with convergence coefficients based on potential scale reduction as described by Gelman \emph{et al.} (2004). If only one simulation was ran, then the returned value is \code{NULL}.}
   
