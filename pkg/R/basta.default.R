@@ -1338,7 +1338,7 @@ function(object, studyStart, studyEnd, minAge = 0, model = "GO",
   }
   output                     <- list()
   output$coefficients        <- coef
-  output$modSel              <- modSel
+  output$DIC                 <- modSel
   output$Convergence         <- conv
   output$KullbackLiebler     <- kl.list
   output$settings            <- Settings
