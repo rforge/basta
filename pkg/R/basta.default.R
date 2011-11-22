@@ -45,7 +45,7 @@ function(object, studyStart, studyEnd, minAge = 0, model = "GO",
   # 2.3 Model type, shape and covariate structure:
   if (!is.element(model, c("EX","GO","WE","LO"))) {
     stop("\nModel misspecification: specify available models", 
-         "(i.e. 'EX', 'GO', 'WE' or 'LO')\n", call. = FALSE)
+         " (i.e. 'EX', 'GO', 'WE' or 'LO')\n", call. = FALSE)
   }
   if (!is.element(shape, c("simple","Makeham","bathtub"))) {
     stop("\nshape misspecification. Appropriate arguments are:",
@@ -55,7 +55,10 @@ function(object, studyStart, studyEnd, minAge = 0, model = "GO",
     stop("\nCovariate structure misspecification. Appropriate arguments are:",
          " 'fused', 'prop.haz' or 'all.in.mort'.\n", call. = FALSE)
   }
-    
+  
+if (is.element(model, c("EX"))&!is.element(shape, c("simple"))) {
+    stop("\nModel misspecification: EX model can only be fitted with a simple shape", call. = FALSE)
+  }
 
   # 3. Functions:
   # 3.1 Survival, mort, pdf:
