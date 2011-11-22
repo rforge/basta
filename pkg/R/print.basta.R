@@ -28,7 +28,7 @@ function(x, ...){
   }
   cat("\nCoefficients:\n")
   print.default(x$coefficients, ...)
-  if (is.null(x$modSel)){
+  if (is.null(x$DIC)){
     if (x$set['nsim'] == 1) {
       cat("\nConvergence calculations require more than one run.",
           "\nTo estimate potential scale reduction run at least two simulations.\n")
