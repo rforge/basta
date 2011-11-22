@@ -62,7 +62,7 @@ function(object,...){
   print.default(object$coefficients, digits = digits)
 
   cat("\nConvergence:\n")
-  if (is.null(object$modSel)){
+  if (is.null(object$DIC)){
     if (object$set['nsim'] == 1) {
       cat("\nConvergence calculations require more than one run.",
           "\nTo estimate potential scale reduction run at least two simulations.\n")
@@ -75,8 +75,8 @@ function(object,...){
     cat("Appropriate convergence reached for all parameters.\n")
   } 
   cat("\nDIC:\n")
-  if (!is.null(object$modSel)){
-    cat(object$modSel["DIC"])
+  if (!is.null(object$DIC)){
+    cat(object$DIC["DIC"])
   } else {
     if (object$set['nsim'] == 1) {
       cat("DIC was not calculated due to insufficient number",
