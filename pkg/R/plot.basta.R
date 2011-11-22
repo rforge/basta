@@ -107,11 +107,25 @@ function(x, plot.trace = TRUE, trace.name = "theta", ...){
               y      = c(x$Sx[[i]][[1]][, 2, 1], rev(x$Sx[[i]][[1]][, 3, 1])), 
               col    = Cols[i], 
               border = Bord[i])
-      lines(x        = xv, 
+
+             lines(x        = xv, 
             y        = x$Sx[[i]][[1]][,1,1], 
             col      = Bord[i], 
             lty      = 3)
-    }
+
+ #Empirical data
+bd = subset(data.frame(x$bd),BirthYear!=0&DeathYear!=0)
+if(nrow(bd)>0) {max.age <- max(bd[,2]-bd[,1])} else {max.age = 0}
+
+if(max.age>0){
+      xvEmp = x$xv[[i]][which(x$xv[[i]]<=max.age)]
+      SxEmp = x$Sx[[i]][[1]][which(x$xv[[i]]<=max.age),,]
+      polygon(x      = c(xvEmp, rev(xvEmp)), 
+              y      = c(SxEmp[, 2], rev(SxEmp[, 3])), 
+              col    = paste(substr(Cols[i],1,7),"99",sep=""), 
+              border = Bord[i])}
+ 
+ }
     if (length.cat > 1) {
       legend(x       = 'topright', 
              legend  = zname, 
@@ -145,6 +159,19 @@ function(x, plot.trace = TRUE, trace.name = "theta", ...){
             y        = x$mx[[i]][[1]][, 1, 1], 
             col      = Bord[i], 
             lty      = 3)
+            
+#Empirical data
+if(nrow(bd)>0) {max.age <- max(bd[,2]-bd[,1])} else {max.age = 0}
+
+if(max.age>0){
+      xvEmp = x$xv[[i]][which(x$xv[[i]]<=max.age)]
+      mxEmp = x$mx[[i]][[1]][which(x$xv[[i]]<=max.age),,]
+      polygon(x      = c(xvEmp, rev(xvEmp)), 
+              y      = c(mxEmp[, 2], rev(mxEmp[, 3])), 
+              col    = paste(substr(Cols[i],1,7),"99",sep=""), 
+              border = Bord[i])
+              }
+            
     }
     par(op)
   }
