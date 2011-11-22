@@ -610,7 +610,9 @@ if (is.element(model, c("EX"))&!is.element(shape, c("simple"))) {
     } 
     nlow                     <- low.full.theta
     if (nsim > 1) {
-      thetaJitter            <- theta.g * 0 + 0.5
+     
+     if(is.element(model, c("EX"))){thetaJitter <- theta.g * 0 + 0.1}else{thetaJitter <- theta.g * 0 + 0.5}
+      
       thetaJitter[theta.jump==0] <- 0
       if (covarsStruct=="all.in.mort") {
         thetaJitter[covariate.type$cont, ] <- 0.05
