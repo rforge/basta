@@ -1131,7 +1131,7 @@ if (is.element(model, c("EX"))&!is.element(shape, c("simple"))) {
         modSel               <- c(Dave, Dmode, pD, k, DIC)
         names(modSel)        <- c("D.ave", "D.mode", "pD", "k", "DIC")
         cat("Survival parameters converged appropriately.",
-            "\nDIC was calculated\n.")
+            "\nDIC was calculated.\n")
         # 8.3.3 Inference on parameter estimates:
         # Kullback-Liebler distances for categorical covariates:
         if (is.null(covariate.type$cat)) {
