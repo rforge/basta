@@ -113,17 +113,21 @@ function(x, plot.trace = TRUE, trace.name = "theta", ...){
             col      = Bord[i], 
             lty      = 3)
 
- #Empirical data
-bd = subset(data.frame(x$bd),BirthYear!=0&DeathYear!=0)
-if(nrow(bd)>0) {max.age <- max(bd[,2]-bd[,1])} else {max.age = 0}
+#Estimated ages data
+max.age <- max(x$Xq[1,][x$Zcat[,i] == 1])
 
 if(max.age>0){
       xvEmp = x$xv[[i]][which(x$xv[[i]]<=max.age)]
-      SxEmp = x$Sx[[i]][[1]][which(x$xv[[i]]<=max.age),,]
-      polygon(x      = c(xvEmp, rev(xvEmp)), 
-              y      = c(SxEmp[, 2], rev(SxEmp[, 3])), 
+      if(length.cat>1){SxEmp = x$Sx[[i]][[1]][which(x$xv[[i]]<=max.age),,]
+      SxEmp = SxEmp[,,"Med."]
+      }else{SxEmp = x$Sx[[1]][[1]][,,1]
+      SxEmp = SxEmp[which(x$xv[[i]]<=max.age),]}
+      
+            polygon(x      = c(xvEmp, rev(xvEmp)), 
+              y = c(SxEmp[,2], rev(SxEmp[,3])),
               col    = paste(substr(Cols[i],1,7),"99",sep=""), 
-              border = Bord[i])}
+              border = Bord[i])
+              }
  
  }
     if (length.cat > 1) {
@@ -161,16 +165,23 @@ if(max.age>0){
             lty      = 3)
             
 #Empirical data
-if(nrow(bd)>0) {max.age <- max(bd[,2]-bd[,1])} else {max.age = 0}
+max.age <- max(x$Xq[1,][x$Zcat[,i] == 1])
 
 if(max.age>0){
+
       xvEmp = x$xv[[i]][which(x$xv[[i]]<=max.age)]
-      mxEmp = x$mx[[i]][[1]][which(x$xv[[i]]<=max.age),,]
-      polygon(x      = c(xvEmp, rev(xvEmp)), 
-              y      = c(mxEmp[, 2], rev(mxEmp[, 3])), 
+      if(length.cat>1){mxEmp = x$mx[[i]][[1]][which(x$xv[[i]]<=max.age),,]
+      mxEmp = mxEmp[,,"Med."]
+      }else{mxEmp = x$mx[[1]][[1]][,,1]
+      mxEmp = mxEmp[which(x$xv[[i]]<=max.age),]}
+      
+            polygon(x      = c(xvEmp, rev(xvEmp)), 
+              y = c(mxEmp[,2], rev(mxEmp[,3])),
               col    = paste(substr(Cols[i],1,7),"99",sep=""), 
-              border = Bord[i])
-              }
+              border = Bord[i])}
+
+    
+ 
             
     }
     par(op)
