@@ -118,8 +118,9 @@ max.age <- max(x$Xq[1,][x$Zcat[,i] == 1])
 
 if(max.age>0){
       xvEmp = x$xv[[i]][which(x$xv[[i]]<=max.age)]
-      if(length.cat>1){SxEmp = x$Sx[[i]][[1]][which(x$xv[[i]]<=max.age),,]
-      SxEmp = SxEmp[,,"Med."]
+      if(length.cat>1){
+      SxEmp =  x$Sx[[i]][[1]][,,1]
+      SxEmp =  SxEmp[which(x$xv[[i]]<=max.age),]
       }else{SxEmp = x$Sx[[1]][[1]][,,1]
       SxEmp = SxEmp[which(x$xv[[i]]<=max.age),]}
       
@@ -170,8 +171,9 @@ max.age <- max(x$Xq[1,][x$Zcat[,i] == 1])
 if(max.age>0){
 
       xvEmp = x$xv[[i]][which(x$xv[[i]]<=max.age)]
-      if(length.cat>1){mxEmp = x$mx[[i]][[1]][which(x$xv[[i]]<=max.age),,]
-      mxEmp = mxEmp[,,"Med."]
+      if(length.cat>1){
+      mxEmp =  x$mx[[i]][[1]][,,1]
+      mxEmp =  mxEmp[which(x$xv[[i]]<=max.age),]
       }else{mxEmp = x$mx[[1]][[1]][,,1]
       mxEmp = mxEmp[which(x$xv[[i]]<=max.age),]}
       
