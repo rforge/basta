@@ -1,4 +1,4 @@
-plotMultiMort <- function(modList){
+PlotMultiMort <- function(modList){
 
 ylmx.temp = NULL
 for(m in 1:length(modList)){
