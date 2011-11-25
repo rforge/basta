@@ -9,12 +9,11 @@ for(m in 1:length(modList)){
 
 
 for(m in 1:length(modList)){
-x = get(modList[m])
-    mxv             <- ceiling(max(unlist(x$xv)) / 5) * 5
-
+    x = get(modList[m])
+    mxv <- ceiling(max(unlist(x$xv)) / 5) * 5
     if(max(ylmx)==Inf) {ylmx <- c(0, 25)}
+    length.cat        <- ncol(x$Zcat)
 
-#Note: These limits need to be changed to account for negative senescence.
 
 if(m==1){    plot(x           = c(0,mxv), 
          y           = ylmx, 
