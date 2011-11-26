@@ -143,8 +143,9 @@ if(max.age>0){
 
     # Plot mortality rates:
     ylmx            <- c(0, round(max(unlist(x$mx))))
+    print(ylmx)
     if(max(ylmx)==Inf) {ylmx <- c(0, 25)}
-#Note: These limits need to be changed to account for negative senescence.
+    if(max(ylmx)==0) {ylmx <- c(0, 1)}
 
     plot(x           = c(0,mxv), 
          y           = ylmx, 
