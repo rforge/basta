@@ -17,8 +17,8 @@ for(m in 1:length(modList)){
     if(max(ylmx)==Inf) {ylmx <- c(0, 25)}
 
     length.cat        <- ncol(x$Zcat)
-    Cols            <- adjustcolor(Bord, alpha.f = 0.5)
     Bord            <- Palette[round(seq(1, 12, length = length.cat))]
+    Cols            <- adjustcolor(Bord, alpha.f = 0.5)
 
 
 if(m==1){    plot(x           = c(0,mxv), 
