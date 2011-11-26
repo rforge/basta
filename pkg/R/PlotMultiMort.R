@@ -1,5 +1,8 @@
 PlotMultiMort <- function(modList){
 
+Palette           <- c("#A6CEE3", "#1F78B4", "#B2DF8A", "#33A02C", 
+                         "#FB9A99", "#E31A1C", "#FDBF6F", "#FF7F00", 
+                         "#CAB2D6", "#6A3D9A", "#FFFF99", "#B15928")
 ylmx.temp = NULL
 for(m in 1:length(modList)){
     x = get(modList[m])
@@ -12,7 +15,9 @@ for(m in 1:length(modList)){
     x = get(modList[m])
     mxv <- ceiling(max(unlist(x$xv)) / 5) * 5
     if(max(ylmx)==Inf) {ylmx <- c(0, 25)}
+
     length.cat        <- ncol(x$Zcat)
+    Bord            <- Palette[round(seq(1, 12, length = length.cat))]
 
 
 if(m==1){    plot(x           = c(0,mxv), 
