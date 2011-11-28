@@ -76,7 +76,7 @@ function(object,...){
   } 
   cat("\nDIC:\n")
   if (!is.null(object$DIC)){
-    cat(object$DIC["DIC"])
+    cat(object$DIC["DIC"],"\n")
   } else {
     if (object$set['nsim'] == 1) {
       cat("DIC was not calculated due to insufficient number",
