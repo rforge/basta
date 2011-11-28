@@ -53,7 +53,7 @@ function(object,...){
       cat("KLDC was not calculated due to insufficient number",
           " of simulations to estimate convergence.\n")
     } else {
-      cat("KLDC was not calculated due to lack of convergence, or because covariates were not included in the model.\n")
+      cat("KLDC was not calculated due to lack of convergence,","or because covariates were not included in the model.\n")
     }
   }
   
