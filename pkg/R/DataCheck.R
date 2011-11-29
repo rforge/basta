@@ -23,7 +23,7 @@ function(object, studyStart, studyEnd, autofix = rep(0, 7), silent=TRUE) {
 
   
   # 1. Death before observations start
-  type1            <- which(bd[, 2] < Ti & bd[, 2] != 0)
+  type1            <- as.vector(which(bd[, 2] < Ti & bd[, 2] != 0))
   if (length(type1) != 0) {
     cat("The following rows deaths occur before observations start:\n")
     print(type1)
@@ -40,7 +40,7 @@ function(object, studyStart, studyEnd, autofix = rep(0, 7), silent=TRUE) {
   }
     
   # 2. No birth/death AND no obervations
-  type2            <- which(rowSums(bd) + rowSums(Y) == 0)
+  type2            <- as.vector(which(rowSums(bd) + rowSums(Y) == 0))
     if (length(type2) != 0) {
       cat("The following rows have no object (unknown birth, unknown death, and no observations):\n")
       print(type2)
@@ -60,7 +60,7 @@ function(object, studyStart, studyEnd, autofix = rep(0, 7), silent=TRUE) {
   bd2              <- bd
   bd2              <- cbind(bd2, 1:n)
 
-  type3 = which(bd[, 1] > bd[, 2] & bd[, 1] != 0 & bd[, 2] != 0)    
+  type3 = as.vector(which(bd[, 1] > bd[, 2] & bd[, 1] != 0 & bd[, 2] != 0))
   if (length(type3) != 0) {
     cat("The following rows have birth dates that are later than their death dates:\n")
     print(type3)
@@ -82,7 +82,7 @@ function(object, studyStart, studyEnd, autofix = rep(0, 7), silent=TRUE) {
   lastObs          <- c(apply(ytemp, 1, max))
   tempDeath        <- bd[,2]
   tempDeath[tempDeath==0] <- Inf
-  type4            <- which(lastObs > tempDeath & tempDeath >= Ti)
+  type4            <- as.vector(which(lastObs > tempDeath & tempDeath >= Ti))
   rm(tempDeath)
     
   if (length(type4) != 0) {
@@ -102,7 +102,7 @@ function(object, studyStart, studyEnd, autofix = rep(0, 7), silent=TRUE) {
   # 5. Observations before birth
   ytemp[ytemp == 0]<- Inf
   firstObs         <- c(apply(ytemp, 1, min))
-  type5            <- which(firstObs < bd[, 1])
+  type5            <- as.vector(which(firstObs < bd[, 1]))
     
   if (length(type5) != 0) {
     cat("The following rows have observations that occur before the year of birth:\n")
@@ -122,7 +122,7 @@ function(object, studyStart, studyEnd, autofix = rep(0, 7), silent=TRUE) {
   idb              <- which(bd[, 1] > 0 & bd[, 1] >= Ti & bd[, 1] <= Tf)
   bcol             <- bd[idb, 1] - Ti
   bpos             <- bcol * n + idb
-  type6            <- idb[which(Y[bpos] == 1)]
+  type6            <- as.vector(idb[which(Y[bpos] == 1)])
 
   if (length(type6) != 0) {
     cat("The following rows have a one in the recapture matrix in the birth year:\n")
@@ -136,7 +136,7 @@ function(object, studyStart, studyEnd, autofix = rep(0, 7), silent=TRUE) {
   idd              <- which(bd[, 2] > 0 & bd[, 2] >= Ti)
   dcol             <- bd[idd, 2] - Ti
   dpos             <- dcol * n + idd
-  type7            <- idd[which(Y[dpos] == 1)]
+  type7            <- as.vector(idd[which(Y[dpos] == 1)])
   if (length(type7) != 0) {
     cat("The following rows have a one in the recapture matrix in the death year:\n")
     print(type7)
