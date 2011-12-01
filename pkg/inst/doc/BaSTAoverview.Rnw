@@ -328,7 +328,7 @@ If all parameters have converged, BaSTA calculates the deviance information crit
 
 \subsection{Parameter comparison for categorical covariates}
 
-BaSTA also includes a diagnostic based on Kullback-Liebler discrepancies (KLD; \citealt{KullbackLiebler1951,McCulloch1989}), that provides the user with a measure of how differently (or similarly) each categorical covariate affects survival.  For instance, we may wish to evaluate the differences in survival between males and females with a simple Gompertz model, such that the mortality rate is of the form:
+BaSTA also includes a diagnostic based on Kullback-Leibler discrepancies (KLD; \citealt{KullbackLeibler1951,McCulloch1989}), that provides the user with a measure of how differently (or similarly) each categorical covariate affects survival.  For instance, we may wish to evaluate the differences in survival between males and females with a simple Gompertz model, such that the mortality rate is of the form:
 \begin{equation}\label{eq:lin}
 \mu(x | \bth) = \exp\left[\overbrace{\left(\bal^T z\right)}^{b_0} + \overbrace{\left(\bbe^T z\right)}^{b_1} x\right],
 \end{equation}
