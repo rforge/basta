@@ -159,7 +159,7 @@ As described above, the number of parameters for the \code{gammaStart} argument 
 	
 \item{Convergence }{If requested, a matrix with convergence coefficients based on potential scale reduction as described by Gelman \emph{et al.} (2004). If only one simulation was ran, then the returned value is \code{NULL}.}
   
-\item{KullbackLiebler }{If called by \code{\link{summary}}, list with Kullback-Liebler discrepancy matrices between pair of parameters for categorical covariates (McCulloch 1989, Burnham and Anderson 2001) and McCulloch's (1989) calibration measure. If only one simulation was ran or if no convergence is reached, then the returned value is \code{NULL}.}
+\item{KullbackLeibler }{If called by \code{\link{summary}}, list with Kullback-Leibler discrepancy matrices between pair of parameters for categorical covariates (McCulloch 1989, Burnham and Anderson 2001) and McCulloch's (1989) calibration measure. If only one simulation was ran or if no convergence is reached, then the returned value is \code{NULL}.}
   
 \item{settings }{If called by \code{\link{summary}}, this is a vector indicating the number of iterations for each MCMC, the burn in sequence, the thinning interval, and the number of simulations that were run.}
 	
