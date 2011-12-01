@@ -44,7 +44,7 @@ function(object,...){
   } else {
     digits        <- 4
   }
-  cat("\nMean Kullback-Liebler\ndiscrepancy calibration (KLDC):\n")
+  cat("\nMean Kullback-Leibler\ndiscrepancy calibration (KLDC):\n")
   if (!is.null(object$K)){
     mean.q        <- (object$K$q12 + object$K$q21) / 2
     print.default(mean.q, digits = digits)
