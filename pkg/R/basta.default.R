@@ -1133,7 +1133,7 @@ if (is.element(model, c("EX"))&!is.element(shape, c("simple"))) {
         cat("Survival parameters converged appropriately.",
             "\nDIC was calculated.\n")
         # 8.3.3 Inference on parameter estimates:
-        # Kullback-Liebler distances for categorical covariates:
+        # Kullback-Leibler distances for categorical covariates:
         if (is.null(covariate.type$cat)) {
           kl.list            <- NULL
         } else {
@@ -1345,7 +1345,7 @@ if (is.element(model, c("EX"))&!is.element(shape, c("simple"))) {
   output$coefficients        <- coef
   output$DIC                 <- modSel
   output$Convergence         <- conv
-  output$KullbackLiebler     <- kl.list
+  output$KullbackLeibler     <- kl.list
   output$settings            <- Settings
   output$ModelSpecs          <- ModelSpecs
   output$JumpPriors          <- JumpPriors
