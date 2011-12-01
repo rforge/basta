@@ -182,9 +182,6 @@ if(max.age>0){
               col    = paste(substr(Cols[i],1,7),"99",sep=""), 
               border = Bord[i])}
 
-    
- 
-            
     }
     par(op)
   }
