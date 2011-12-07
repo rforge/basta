@@ -300,6 +300,9 @@ if (is.element(model, c("EX"))&!is.element(shape, c("simple"))) {
   CheckParsPH                <- function(user.par, par.name){
     if (is.null(user.par)) {
       par               <- rep(0, length.cont)
+      if (par.name == "gamma jumps") {
+        par <- rep(0.001, length.cont)
+      }
       names(par)        <- colnames(Zcont)
     } else {
       length.par        <- length(user.par)
