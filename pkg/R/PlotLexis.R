@@ -1,14 +1,15 @@
-PlotLexis <- function(x,ci=1,ji=0.5,col=c("#007FFF15","#FF000015"),xlab="Year",ylab="Age (yrs)"){
+PlotLexis <- function(x,ci=1,ji=0.5,col=c("#FF000015","#007FFF15"),xlab="Year",ylab="Age (yrs)"){
 
 BirthTime  = x$Bq[ci,]
 AgeAtDeath = x$Xq[ci,]
 DeathTime  = BirthTime+AgeAtDeath
 nCat       = ncol(x$Zcat)
+CatNames   = colnames(x$Zcat)
 
 par(mfrow=c(nCat,1))
 for(nc in 1:nCat){
     plot(c(min(BirthTime),max(BirthTime)),c(0,max(AgeAtDeath)),type="n",axes=T,xlab=xlab,ylab=ylab,xlim=c(min(BirthTime),max(DeathTime)))
-
+    title(main=CatNames[nc])
     ssbt  = BirthTime[x$Zcat[,nc]==1]
     ssdt  = DeathTime[x$Zcat[,nc]==1]
     ssaad = ssdt-ssbt
