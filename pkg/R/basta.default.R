@@ -319,13 +319,34 @@ if (is.element(model, c("EX"))&!is.element(shape, c("simple"))) {
     return(par)
   }
 
+  # 3.6 Function to update jumps:
+  UpdateJumps <- function(oldJumps, parMat, updates, targetUpdate, targetAutocor) {
+    updateRate <- sum(updates) / length(updates)
+    newJumps <- oldJumps
+    if (updateRate > 0) {
+      if (!is.null(dim(parMat))) {
+        nr <- nrow(parMat)
+        autoCor <- abs(apply(parMat, 2, function(x) 
+                        cor(x[1:(nr-thinning)], x[(thinning + 1):nr])))
+      } else {
+        nr <- length(parMat)
+        autoCor <- abs(cor(parMat[1:(nr-thinning)], parMat[(thinning + 1):nr]))
+      }
+      autoCor[autoCor <= targetAutocor] <- targetAutocor
+    } else {
+      autoCor <- 1
+    }
+    newJumps <- oldJumps * updateRate / targetUpdate * autoCor / targetAutocor
+  	return(newJumps)
+  }
+
   parallelVars               <- c("CalculateBasicMx", "CalculateBasicSx", 
                                   "CalculateFullFx", "CalculateFullMx", 
                                   "CalculateFullSx", "BuildAliveMatrix", 
                                   "CalculateLowC", "name.theta", 
                                   "length.theta0", "length.theta", 
                                   "studyStart", "studyEnd", "recaptTrans", 
-                                  "progrPlots")
+                                  "progrPlots", "UpdateJumps")
 	
   # 3.6 Check when all covariates in mortality:
   if (covarsStruct == "all.in.mort") {
@@ -548,6 +569,7 @@ if (is.element(model, c("EX"))&!is.element(shape, c("simple"))) {
     CalculateFullSx(x, Ztheta.p, Zgamma.p) / Ex
   }
   rm(list=c("dxx", "xx", "zza", "zzc"))
+  
 
   # d) Detection probability:
   idpi                       <- findInterval(study.years, recaptTrans)
@@ -641,6 +663,11 @@ if (is.element(model, c("EX"))&!is.element(shape, c("simple"))) {
 		
 	
     # Output tables:
+    if (niter > 2000 & thinning > 1000) {
+      updJumpSeq <- seq(1000, min(thinning, 3000), 500)
+    } else {
+      updJumpSeq <- -100
+    }
     thin.seq                 <- seq(burnin, niter, by = thinning)
     theta.mat                <- matrix(NA,niter,length.full.theta)
     colnames(theta.mat)      <- name.full.theta
@@ -661,6 +688,7 @@ if (is.element(model, c("EX"))&!is.element(shape, c("simple"))) {
     Ztheta.g                 <- Zcat %*% theta.g
     Zgamma.g                 <- Zcont %*% gamma.g
     lag                      <- 0.01
+    updVec                   <- rep(0, niter)
     
     # Juvenile and adult ages:
     IminAge                  <- ifelse(minAge > 0, 1, 0)
@@ -769,6 +797,7 @@ if (is.element(model, c("EX"))&!is.element(shape, c("simple"))) {
       	   p.thg              <- p.thn
       	   gamma.g            <- gamma.n
       	   Zgamma.g           <- Zgamma.n
+           updVec[g]          <- 1
       	 }
       }
       
@@ -898,6 +927,15 @@ if (is.element(model, c("EX"))&!is.element(shape, c("simple"))) {
       posterior.mat[g, ]     <- c(p.thg, sum(p.bdg), p.thg + 
                                  sum((Og - lfi) %*% log(1 - Pig)))
   
+      # Update Jumps:
+      if (g %in% updJumpSeq) {
+        theta.jump <- UpdateJumps(theta.jump, theta.mat[g - (499:0), ], 
+                                  updVec[g - (499:0)], 0.4, 0.2)
+        if (Cont) {
+          gamma.jump <- UpdateJumps(gamma.jump, gamma.mat[g - (499:0), ], 
+                                    updVec[g - (499:0)], 0.4, 0.2)
+        }
+      }
       # Progress plot:
       if (g %in% round(seq(1, niter, length = 100)) & progrPlots) {
       	 par(mar        = rep(0, 4))
