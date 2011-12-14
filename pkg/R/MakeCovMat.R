@@ -1,5 +1,14 @@
 MakeCovMat <-
 function(x, data){
+  if (colnames(data)[1] %in% c("id", "Id", "ID")) {
+    ID <- data[, 1]
+    data <- data[, -1]
+  } else {
+    ID <- rownames(data)
+    if (is.null(ID)) {
+      ID <- 1:nrow(data)
+    }
+  }
   if(missing(x)){
     x            <- 1:ncol(data)
   }
@@ -50,7 +59,7 @@ function(x, data){
       covs       <- as.formula(paste("~", paste(x, " - 1")[2], sep = ""))
     }
   }
-  covmat         <- cbind(model.matrix(covs, data = data))
+  covmat         <- cbind(ID, model.matrix(covs, data = data))
   return(covmat)
 }
 
