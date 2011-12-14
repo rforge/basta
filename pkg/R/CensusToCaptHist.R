@@ -27,6 +27,8 @@ yr  = c(yr,dyr)
 
 mat        = as.matrix(table(ID,yr))
 mat[mat>0] = 1
+ID         = rownames(mat)
+mat        = as.data.frame(cbind(ID, mat))
 
 #Remove the dummy row
 mat        = mat[-which(rownames(mat)=="XdummyX"),]
