@@ -32,6 +32,7 @@ PlotLexis(x,ci=1,ji=0.5,col="#007FFF15",xlab="Year",ylab="Age (yrs)")
 
 \author{
 Owen R. Jones \email{jones@demogr.mpg.de}
+}
 
 \seealso{
 \code{\link{basta}}
