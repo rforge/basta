@@ -7,7 +7,7 @@ Function to plot a Lexis diagram from a Bayesian Survival Trajectory Analysis (B
 \description{
 This function produces a Lexis diagram from the predicted birth and death times within a basta object.}
 \usage{
-PlotLexis(x,ci=1,ji=0.5,col="#007FFF15",xlab="Year",ylab="Age (yrs)")
+PlotLexis(x, ci = 1, ji = 0.5, ...)
 }
 
 \arguments{
@@ -18,11 +18,7 @@ PlotLexis(x,ci=1,ji=0.5,col="#007FFF15",xlab="Year",ylab="Age (yrs)")
 
 \item{ji }{A jitter value, to separate the lines when there are many individuals with the same birth times.}
 
-\item{col }{The colour for the lines of the Lexis diagram.}
-
-\item{xlab }{x axis label for the plot.}
-
-\item{ylab }{y axis label for the plot.}
+\item{... }{Additional plotting commands such as \code{col}, \code{xlab}, \code{ylab}, etc.}
 
 }
 
