@@ -22,10 +22,6 @@ PlotLexis(x, ci = 1, ji = 0.5, ...)
 
 }
 
-\details{}
-
-\value{ }
-
 \author{
 Owen R. Jones \email{jones@demogr.mpg.de}
 }
