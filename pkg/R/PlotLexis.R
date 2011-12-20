@@ -1,4 +1,4 @@
-PlotLexis <- function(x,ci=1,ji=0.5,lw=3,col=c("#FF000015","#007FFF15"),...){
+PlotLexis <- function(x, ci = 1, ji = 0.5, ...){
 
 BirthTime  = x$Bq[ci,]
 AgeAtDeath = x$Xq[ci,]
