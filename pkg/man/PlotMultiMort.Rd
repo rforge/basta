@@ -13,7 +13,6 @@ PlotMultiMort(modList)
 \arguments{
   \item{modList}{A list of the names of basta objects.}
  }
-\details{}
 
 \author{
 Owen R. Jones \email{jones@demogr.mpg.de}
