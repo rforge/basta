@@ -7,11 +7,11 @@ Plots mortality trajectories for multiple BaSTA objects.}
 This function produces a plot that plots the mortality trajectories of multiple BaSTA models on the same axes.
 }
 \usage{
-PlotMultiMort(x)
+PlotMultiMort(modList)
 }
 
 \arguments{
-  \item{x}{A list of the names of basta objects.}
+  \item{modList}{A list of the names of basta objects.}
  }
 \details{}
 
