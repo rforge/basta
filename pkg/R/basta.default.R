@@ -56,8 +56,9 @@ basta.default <-
         " 'fused', 'prop.haz' or 'all.in.mort'.\n", call. = FALSE)
   }
   
-  if (is.element(model, c("EX"))&!is.element(shape, c("simple"))) {
-    stop("\nModel misspecification: EX model can only be fitted with a simple shape", call. = FALSE)
+  if (model == "EX" & shape != "simple") {
+    stop("\nModel misspecification: EX model can only be fitted with a",
+        " simple shape", call. = FALSE)
   }
   
   # 3. Functions:
@@ -153,8 +154,8 @@ basta.default <-
     }
     CalculateFullSx          <- function(x, theta, gamma) {
       (exp(exp(theta[, 1]) / theta[, 2] * (exp(-theta[, 2] * x) - 1) - 
-                    theta[, 3] * x) * CalculateBasicSx(x, matrix(theta[, -c(1:3)], 
-                    ncol = length.theta0)))^exp(gamma)
+               theta[, 3] * x) * CalculateBasicSx(x, matrix(theta[, -c(1:3)], 
+                 ncol = length.theta0)))^exp(gamma)
     } 
     length.theta             <- length.theta0 + 3
     ini.theta                <- c(-0.1, 0.5, 0, ini.theta0)
@@ -320,7 +321,8 @@ basta.default <-
   }
   
   # 3.6 Function to update jumps:
-  UpdateJumps <- function(jObject, updateVec, targetUpdate, g, updateInt, nPar, updateLen) {
+  UpdateJumps <- function(jObject, updateVec, targetUpdate, g, 
+                          updateInt, nPar, updateLen) {
     gUpdate <- which(updateInt == g)
     parCount <- seq(nPar, nPar * 10, nPar) - gUpdate
     parCount <- nPar - parCount[which(parCount >= 0)][1]
