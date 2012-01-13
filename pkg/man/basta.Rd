@@ -89,7 +89,7 @@ basta(object, \dots)
 \item{progrPlots }{A logical argument indicating wheter to draw progress plots or not. If \code{TRUE}, small plots are displayed showing the percent progress achieved for each MCMC simulation. }
   
 
-\item{updateJumps }{A logical argument indicating wheter to update jumps until an update rate of 0.2 is acheived. }
+\item{updateJumps }{A logical argument indicating wheter to update jumps until an update rate of 0.2 is achieved. }
   
 
 \item{\dots }{Ignored.}
