@@ -17,7 +17,7 @@ basta(object, \dots)
          thetaStart = NULL, thetaJumps = NULL, thetaPriors = NULL, 
          gammaStart = NULL, gammaJumps = NULL, gammaPriors = NULL, 
          nsim = 1, parallel = FALSE, ncpus = 2, lifeTable = TRUE, 
-         progrPlots = FALSE, \dots)
+         progrPlots = FALSE, updateJumps = TRUE, \dots)
 }
 
 \arguments{
@@ -88,7 +88,10 @@ basta(object, \dots)
   
 \item{progrPlots }{A logical argument indicating wheter to draw progress plots or not. If \code{TRUE}, small plots are displayed showing the percent progress achieved for each MCMC simulation. }
   
+
+\item{updateJumps }{A logical argument indicating wheter to update jumps until an update rate of 0.2 is acheived. }
   
+
 \item{\dots }{Ignored.}
 }
 
