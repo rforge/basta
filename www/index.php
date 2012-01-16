@@ -93,7 +93,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
                 <tr class="title"><td colspan="2" class="section">Project summary</td></tr>
                 <tr style="background:#FFFFFF">
                   <td class="main">
-                    <p class="parag"><b>BaSTA</b> is an R package (R Development Core Team 2011) that allows drawing inference on age-specific survival and mortality patterns from capture-recapture/recovery data when a large number of individuals (or all) have missing age information (Colchero, Jones and Rebke <i>in prep</i>). <b>BaSTA</b> is based on a model developed by Colchero and Clark (<i>in press</i>), which extends inference from parameter estimates to the estimation of unknown (i.e. latent) times of birth and death. The package also allows testing the effect of categorical and continuous individual covariates on mortality and survival (for an example see Fig. 1). Version 1.0 of the package is now availale on CRAN. An alpha version of BaSTA 1.1 is available via R-Forge. This version might still be unstable, but for those who wish to try it, it can be installed by opening the R console and typing: <br></p>
+                    <p class="parag"><b>BaSTA</b> is an R package (R Development Core Team 2011) that allows users to draw inference on age-specific survival and mortality patterns from capture-recapture/recovery data when a large number of individuals (or all) have missing age information (Colchero, Jones and Rebke <i>In press</i>). <b>BaSTA</b> is based on a model developed by Colchero and Clark (2012), which extends inference from parameter estimates to the estimation of unknown (i.e. latent) times of birth and death. The package also allows testing the effect of categorical and continuous individual covariates on mortality and survival (for an example see Fig. 1). Version 1.0 of the package is now availale on CRAN. An alpha version of BaSTA 1.1 is available via R-Forge. This version might still be unstable, but for those who wish to try it, it can be installed by opening the R console and typing: <br></p>
 										<p><code>install.packages("BaSTA", repos = "http://R-Forge.R-project.org", type = "source")</code>
 <br></p>
 
@@ -114,7 +114,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
                 <tr class="title"><td colspan="2" class="section">Package description</td></tr>
                 <tr style="background:#FFFFFF">
                   <td class="main">
-                    <p class="parag"><b>BaSTA</b> requires conventional data input (equivalent to other common capture-recapture softwares) and minimum user input (Fig. 2). The data consist of a single table, in data frame format (see <a href="http://cran.r-project.org/doc/manuals/R-intro.html#Lists-and-data-frames"  rel="nofollow" class="intext">Introduction to R</a> on how to build data frames), where each row corresponds to an individual history. This table consist of a first column with individual id's, the next two columns for the times of birth and death, respectively, followed by the traditional capture history matrix. This capture history includes one column for each year of the study and assigns 1 when individuals are detected and 0 otherwise. The last columns are optional, and should include covariates such as sex, location id, birth weight, etc.<br><br>The current version includes:</p>
+                    <p class="parag"><b>BaSTA</b> requires conventional data input (equivalent to other common capture-recapture softwares) and minimum user input (Fig. 2). The data consist of a single table, where each row corresponds to an individual history. This table consist of a first column with individual id's, the next two columns for the times of birth and death, respectively, followed by the traditional capture history matrix. This capture history includes one column for each year of the study and assigns 1 when individuals are detected and 0 otherwise. The last columns are optional, and should include covariates such as sex, location id, birth weight, etc.<br><br>The current version includes:</p>
                     <ul>
                       <li>Functions for data formatting.</li>
                       <li>Data checking and correction of common data errors.</li>
@@ -122,6 +122,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
                       <li>Estimates of yearly recapture probabilities.</li>
                       <li>Estimates latent (i.e. unknown) times of birth and death.</li>
                       <li>Allows testing four different mortality functions (Exponential, Gompertz, Weibull and logistic) and to extend the model to Makeham or bathtub shapes (Gompertz 1925, Siler 1979, Cox and Oakes 1984, Pletcher 1999).</li>
+                      <li>Evaluates the effects of time-independent categorical and continuous covariates on survival.</li>
                     </ul>
                     <p><br></p>
                     <a href="#top" class="totop">Back to top</a>
@@ -130,7 +131,6 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
                     <img style="margin:0px;padding:0px;border:none;width:420px" align="middle" src="BastaGeneralChart.jpg?width=420px">
                     <p class="caption">Fig. 2. <b>BaSTA</b> general package chart.</p><br>
                     <ul>
-                      <li>Evaluates the effects of time-independent categorical and continuous covariates on survival.</li>
                       <li>Runs multiple simulations either in parallel (using package snowfall; Knaus 2010) or in series.</li>
                       <li>Calculates basic diagnostics on MCMC performance such as parameter update rates and serial autocorrelation.</li>
                       <li>Uses multiple simulations to estimate convergence (i.e. potential scale reduction factor; Gelman <i>et al.</i>2004).</li>
@@ -171,8 +171,8 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
                 <tr style="background:#FFFFFF">
                   <td style="vertical-align:middle;padding:40px" width="420px">
                     <p class="Refs">Clark, J.S. (2007) <b>Models for ecological data</b>. Princeton University Press, Princeton, New Jersey, USA.<br><br></p>
-                    <p class="Refs">Colchero, F. and J.S. Clark (2011) <b>Bayesian inference on age-specific survival for censored and truncated data.</b> <i>Journal of Animal Ecology,</i> 81, 139-149 (<a href="http://onlinelibrary.wiley.com/doi/10.1111/j.1365-2656.2011.01898.x/abstract" rel="nofollow" style="color:#84002E" target="_blank">publication</a>).<br><br></p>
-                    <p class="Refs">Colchero, F., O.R. Jones and M. Rebke (<i>Submitted</i>) <b>BaSTA: an R package for Bayesian estimation of age-specific survival from incomplete mark-recapture/recovery data with covariates.</b><br><br></p>
+                    <p class="Refs">Colchero, F. and J.S. Clark (2012) <b>Bayesian inference on age-specific survival for censored and truncated data.</b> <i>Journal of Animal Ecology,</i> 81, 139-149 (<a href="http://onlinelibrary.wiley.com/doi/10.1111/j.1365-2656.2011.01898.x/abstract" rel="nofollow" style="color:#84002E" target="_blank">publication</a>).<br><br></p>
+                    <p class="Refs">Colchero, F., O.R. Jones and M. Rebke (<i>In press</i>) <b>BaSTA: an R package for Bayesian estimation of age-specific survival from incomplete mark-recapture/recovery data with covariates.</b> <i>Methods in Ecology and Evolution</i><br><br></p>
 										<p class="Refs">Cox, D. R., and Oakes D. (1984) <b>Analysis of Survival Data</b>. Chapman and Hall, London.</b><br><br></p>
                     <p class="Refs">Gimenez, O., Bonner, S., King, R., Parker, R.A., Brooks, S.P., Jamieson, L.E., Grosbois, V., Morgan, B.J.T., Thomas, L. (2009) <b>WinBUGS for population ecologists: Bayesian modeling using Markov Chain Monte Carlo methods</b>. <u>In</u><i> Modeling Demographic Processes in Marked Populations. Ecological and Environmental Statistics Series, vol 3</i> (eds D.L. Thomson, E.G. Cooch &amp; M.J. Conroy), pp. 883-915. Springer, Berlin, Germany.<br><br></p>
                     
