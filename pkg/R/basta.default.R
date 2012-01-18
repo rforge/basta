@@ -154,8 +154,8 @@ basta.default <-
     }
     CalculateFullSx          <- function(x, theta, gamma) {
       (exp(exp(theta[, 1]) / theta[, 2] * (exp(-theta[, 2] * x) - 1) - 
-               theta[, 3] * x) * CalculateBasicSx(x, matrix(theta[, -c(1:3)], 
-                 ncol = length.theta0)))^exp(gamma)
+                    theta[, 3] * x) * CalculateBasicSx(x, matrix(theta[, -c(1:3)], 
+                    ncol = length.theta0)))^exp(gamma)
     } 
     length.theta             <- length.theta0 + 3
     ini.theta                <- c(-0.1, 0.5, 0, ini.theta0)
@@ -322,7 +322,7 @@ basta.default <-
   
   # 3.6 Function to update jumps:
   UpdateJumps <- function(jObject, updateVec, targetUpdate, g, 
-                          updateInt, nPar, updateLen) {
+      updateInt, nPar, updateLen) {
     gUpdate <- which(updateInt == g)
     parCount <- seq(nPar, nPar * 10, nPar) - gUpdate
     parCount <- nPar - parCount[which(parCount >= 0)][1]
@@ -388,7 +388,8 @@ basta.default <-
     }
   }
   
-  parallelVars               <- c(parallelVars, "model", "shape", "covarsStruct")
+  parallelVars               <- c(parallelVars, "model", "shape", 
+                                  "covarsStruct")
   
   # 4 Data formatting:
   # 4.1 Extract raw data and create BaSTA data tables:
@@ -433,6 +434,10 @@ basta.default <-
       colnames(Zcat)         <- "NoCat"
       Cat                    <- FALSE
       Cont                   <- TRUE
+      if (model == "GO" & !is.null(covariate.type$cat)) {
+        Zcont                <- Zcont[, -covariate.type$cat[1]]
+        covariate.type       <- FindCovariateType(Zcont)
+      }
     } else {
       # If all covariates should be included in the mortality section:
       if (covarsStruct == "all.in.mort" & !is.null(covariate.type$cont)) {
@@ -663,39 +668,7 @@ basta.default <-
   multiMCMC  <- function(sim) {
     if (parallel){
       for(ii in 1:(sim * 2)) {}
-    } 
-    nlow                     <- low.full.theta
-    if (nsim > 1) {
-      
-      if (model == "EX") {
-        thetaJitter <- theta.g * 0 + 0.1
-      } else {
-        thetaJitter <- theta.g * 0 + 0.5
-      }
-      
-      thetaJitter[theta.jump==0] <- 0
-      if (covarsStruct=="all.in.mort") {
-        thetaJitter[covariate.type$cont, ] <- 0.05
-      }
-      theta.n                <- matrix(rtnorm(length.full.theta, theta.g, 
-              thetaJitter, lower=nlow), length.cat, 
-          length.theta, dimnames=dimnames(theta.g))
-      if (shape!="simple") {
-        nlow[, 'c']          <- apply(theta.n, 1, CalculateLowC)
-        idc.low              <- which(theta.n[, 'c'] < nlow[, 'c'])
-        if (length(idc.low)>0) {
-          for(cc in idc.low) {
-            theta.n[cc,'c']  <- c(rtnorm(1, theta.g[cc, 'c'], 0.5, 
-                    lower = nlow[cc, 'c']))
-          }
-        }
-      }
-      if (Cont) {
-        gamma.g              <- rnorm(length.cont, gamma.g, 0.5)      
-      }
-      theta.g                <- theta.n
-    }
-    
+    }     
     
     # Output tables:
     thin.seq                 <- seq(burnin, niter, by = thinning)
@@ -715,9 +688,6 @@ basta.default <-
     if (Cont) {
       gamma.mat[1, ]         <- gamma.g
     }
-    Ztheta.g                 <- Zcat %*% theta.g
-    Zgamma.g                 <- Zcont %*% gamma.g
-    lag                      <- 0.01
     updVec                   <- rep(0, niter)
     updateLen                <- 500
     updateInt                <- 1000 + 0:(nPar * 8 - 1) * updateLen
@@ -740,9 +710,56 @@ basta.default <-
     idtr                     <- which(bg + minAge < studyStart)
     xatg[idtr]               <- studyStart - (bg[idtr] + minAge)
     
+    # Start parameters from different values:
+    nlow                     <- low.full.theta
+    if (nsim > 1) {
+      
+      thetaJitter <- theta.g * 0 + 0.5
+      thetaJitter[theta.jump == 0] <- 0
+      InfPost <- TRUE
+      while (InfPost) {
+        theta.n                <- matrix(rtnorm(length.full.theta, theta.g, 
+                thetaJitter, lower=nlow), length.cat, 
+            length.theta, dimnames=dimnames(theta.g))
+        if (shape != "simple") {
+          nlow[, 'c']          <- apply(theta.n, 1, CalculateLowC)
+          idc.low              <- which(theta.n[, 'c'] < nlow[, 'c'])
+          if (length(idc.low) > 0) {
+            for(cc in idc.low) {
+              theta.n[cc,'c']  <- c(rtnorm(1, theta.g[cc, 'c'], thetaJitter[cc, 'c'], 
+                      lower = nlow[cc, 'c']))
+            }
+          }
+        }
+        if (Cont) {
+          gamma.n              <- rnorm(length.cont, gamma.g, 0.5)      
+        } else {
+          gamma.n              <- gamma.g
+        }
+        Ztheta.n               <- Zcat %*% theta.n
+        Zgamma.n               <- Zcont %*% gamma.n
+        
+        post                   <- sum((log(CalculateFullFx(xag, 
+                          Ztheta.n, Zgamma.n)) -
+                  log(CalculateFullSx(xatg, 
+                          Ztheta.n, Zgamma.n))) * Iag)
+        if(post == -Inf) {
+          InfPost <- TRUE
+        } else {
+          InfPost <- FALSE
+        }
+        
+      }
+    }
+    theta.g                  <- theta.n
+    if(Cont) gamma.g         <- gamma.n
+    Ztheta.g                 <- Zcat %*% theta.g
+    Zgamma.g                 <- Zcont %*% gamma.g
+    lag                      <- 0.01
+    
     # Run Gibbs sampler:
     naflag                   <- FALSE
-    g                        <- 2
+#    g                        <- 2
     gg                       <- 1
     if (progrPlots) {
       if (.Platform$OS.type=="unix") {
@@ -754,7 +771,7 @@ basta.default <-
       progrpl                <- dev.cur()
       par(mar = rep(0,4))
     }
-    while(g <= niter & !naflag) {
+    for(g in 1:niter) {
       
       # 1.- SAMPLING:
       # a) Sample survival parameters:
@@ -791,7 +808,7 @@ basta.default <-
             log(CalculateFullSx(xatg, 
                     Ztheta.g, Zgamma.g))) * Iag 
       # - Correct for precision limit:
-      p.thg[p.thg==-Inf]     <- -1e200
+#      p.thg[p.thg==-Inf]     <- -1e200
       # - Priors:
       p.thg                  <- sum(p.thg) + sum(dtnorm(c(theta.g), 
                   c(theta.prior), theta.sd, 
@@ -805,7 +822,7 @@ basta.default <-
             log(CalculateFullSx(xatg, 
                     Ztheta.n, Zgamma.n))) * Iag
       # - Correct for precision limit:
-      p.thn[p.thn==-Inf]     <- -1e200
+#      p.thn[p.thn==-Inf]     <- -1e200
       # - Priors:
       p.thn                  <- sum(p.thn) + sum(dtnorm(c(theta.n), 
                   c(theta.prior), theta.sd, 
@@ -816,11 +833,7 @@ basta.default <-
       r                      <- exp(p.thn-p.thg)
       z                      <- runif (1,0,1)
       
-      if (is.na(r) & g==1) {
-        if (progrPlots) dev.off(progrpl)
-        naflag               <- TRUE 
-      } else if (is.na(r) & g > 1) {
-        if (progrPlots) dev.off(progrpl)
+      if (is.na(r)) {
         naflag               <- TRUE 
       } else {
         if (r>z) {
@@ -876,36 +889,31 @@ basta.default <-
       p.bdg                  <- (log(lag) * Ijg - lag * xjg) * IminAge + 
           log(CalculateFullFx(xag, 
                   Ztheta.g, Zgamma.g)) * Iag
-      p.bdg[p.bdg==-Inf]     <- -1e200
       p.bdg                  <- p.bdg + (Og - lfi) %*% log(1 - Pig) + 
           log(v.x(xag + 0.5 * Dx)) * Iag
+      
       # - New ages:
       p.bdn                  <- (log(lag) * Ijn - lag * xjn) * IminAge  + 
           log(CalculateFullFx(xan, 
                   Ztheta.g, Zgamma.g)) * Ian
-      p.bdn[p.bdn==-Inf]     <- -1e200
       p.bdn                  <- p.bdn + (On - lfi) %*% log(1 - Pig) + 
           log(v.x(xan + 0.5 * Dx)) * Ian
       
       r                      <- exp(p.bdn-p.bdg)
-      if (length(which(is.na(r)))>0) {
-        if (progrPlots) dev.off(progrpl) 
-        naflag               <- TRUE 
-      } else {
-        z                    <- runif (n, 0, 1)
-        idrz                 <- which(r > z)
-        bg[idrz]             <- bn[idrz]
-        dg[idrz]             <- dn[idrz]
-        xg[idrz]             <- xn[idrz]
-        p.bdg[idrz]          <- p.bdn[idrz]
-        Og[idrz, ]           <- On[idrz, ]
-        xjg[idrz]            <- xjn[idrz]
-        xjtg[idrz]           <- xjtn[idrz]
-        xag[idrz]            <- xan[idrz]
-        xatg[idrz]           <- xatn[idrz]
-        Iag[idrz]            <- Ian[idrz]
-        Ijg[idrz]            <- Ijn[idrz]
-      }
+      idNa                   <- which(!is.na(r))
+      z                      <- runif (length(idNa), 0, 1)
+      idrz                   <- which(r[idNa] > z)
+      bg[idNa[idrz]]         <- bn[idNa[idrz]]
+      dg[idNa[idrz]]         <- dn[idNa[idrz]]
+      xg[idNa[idrz]]         <- xn[idNa[idrz]]
+      p.bdg[idNa[idrz]]      <- p.bdn[idNa[idrz]]
+      Og[idNa[idrz], ]       <- On[idNa[idrz], ]
+      xjg[idNa[idrz]]        <- xjn[idNa[idrz]]
+      xjtg[idNa[idrz]]       <- xjtn[idNa[idrz]]
+      xag[idNa[idrz]]        <- xan[idNa[idrz]]
+      xatg[idNa[idrz]]       <- xatn[idNa[idrz]]
+      Iag[idNa[idrz]]        <- Ian[idNa[idrz]]
+      Ijg[idNa[idrz]]        <- Ijn[idNa[idrz]]
       
       # c) Sample recapture probability(ies):
       rho1g                  <- rho1 + t(t(Y) %*% rep(1, n))
@@ -995,10 +1003,6 @@ basta.default <-
             labels    = paste(round(g / niter * 100), "%", sep = ""), 
             cex       = 0.8)
       }
-      g                      <- g + 1
-    }
-    if (g == niter + 1) {
-      g                      <- niter
     }
     if (progrPlots) {
       dev.off(progrpl)
