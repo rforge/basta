@@ -329,7 +329,7 @@ basta.default <-
     updateRate <- sum(updateVec[g + c(-(updateLen - 1):0)]) / updateLen
     if (updateRate == 0) updateRate <- 1e-3
     if (gUpdate == 1) {
-      jObject$jumpsMat <- jump
+      jObject$jumpsMat <- jObject$startJump
       jObject$updateRateVec <- updateRate
     } else {
       jObject$jumpsMat <- rbind(jObject$jumpsMat, jObject$jump)
@@ -549,6 +549,7 @@ basta.default <-
   if (covarsStruct == "all.in.mort" & is.null(thetaJumps)) {
     theta.jump[names(covariate.type$cont), ] <- 0.001
   }
+  idUpdJump                  <- which(theta.jump > 0)
   
   # c) Priors:
   theta.prior                <- CheckParsMort(prior.theta, thetaPriors, "priors")
@@ -575,7 +576,7 @@ basta.default <-
     gamma.prior              <- 0
   }
   
-  jump <- c(theta.jump)
+  jump <- c(theta.jump[idUpdJump])
   if (Cont) jump <- c(jump, gamma.jump)
   nPar <- length(jump)
   jumpObject <- list(jump = jump, jumpsMat = matrix(NA, 0, nPar), 
@@ -585,7 +586,7 @@ basta.default <-
   
   parallelVars               <- c(parallelVars, "theta.g", "theta.jump", 
       "theta.prior", "gamma.g", "gamma.jump", 
-      "gamma.prior", "jump", "nPar", "jumpObject") 
+      "gamma.prior", "jump", "nPar", "jumpObject", "idUpdJump") 
   
   # 5.3 Define final priors:
   # a) Survival parameters:
@@ -690,7 +691,7 @@ basta.default <-
     }
     updVec                   <- rep(0, niter)
     updateLen                <- 500
-    updateInt                <- 1000 + 0:(nPar * 8 - 1) * updateLen
+    updateInt                <- 1000 + 0:(nPar * 15 - 1) * updateLen
     
     # Juvenile and adult ages:
     IminAge                  <- ifelse(minAge > 0, 1, 0)
@@ -717,10 +718,10 @@ basta.default <-
       thetaJitter <- theta.g * 0 + 0.5
       thetaJitter[theta.jump == 0] <- 0
       InfPost <- TRUE
+      theta.n <- theta.g
       while (InfPost) {
-        theta.n                <- matrix(rtnorm(length.full.theta, theta.g, 
-                thetaJitter, lower=nlow), length.cat, 
-            length.theta, dimnames=dimnames(theta.g))
+        theta.n[idUpdJump]     <- rtnorm(length(idUpdJump), theta.g[idUpdJump], 
+                thetaJitter[idUpdJump], lower=nlow[idUpdJump])
         if (shape != "simple") {
           nlow[, 'c']          <- apply(theta.n, 1, CalculateLowC)
           idc.low              <- which(theta.n[, 'c'] < nlow[, 'c'])
@@ -759,7 +760,6 @@ basta.default <-
     
     # Run Gibbs sampler:
     naflag                   <- FALSE
-#    g                        <- 2
     gg                       <- 1
     if (progrPlots) {
       if (.Platform$OS.type=="unix") {
@@ -807,12 +807,11 @@ basta.default <-
                     Ztheta.g, Zgamma.g)) -
             log(CalculateFullSx(xatg, 
                     Ztheta.g, Zgamma.g))) * Iag 
-      # - Correct for precision limit:
-#      p.thg[p.thg==-Inf]     <- -1e200
+
       # - Priors:
-      p.thg                  <- sum(p.thg) + sum(dtnorm(c(theta.g), 
-                  c(theta.prior), theta.sd, 
-                  lower = low.full.theta, log = TRUE)) + 
+      p.thg                  <- sum(p.thg) + sum(dtnorm(c(theta.g[idUpdJump]), 
+                  c(theta.prior[idUpdJump]), theta.sd, 
+                  lower = low.full.theta[idUpdJump], log = TRUE)) + 
           sum(dnorm(gamma.g, gamma.prior, gamma.sd, 
                   log = TRUE))
       
@@ -821,12 +820,11 @@ basta.default <-
                     Ztheta.n, Zgamma.n)) -
             log(CalculateFullSx(xatg, 
                     Ztheta.n, Zgamma.n))) * Iag
-      # - Correct for precision limit:
-#      p.thn[p.thn==-Inf]     <- -1e200
+
       # - Priors:
-      p.thn                  <- sum(p.thn) + sum(dtnorm(c(theta.n), 
-                  c(theta.prior), theta.sd, 
-                  lower = low.full.theta, log=TRUE)) + 
+      p.thn                  <- sum(p.thn) + sum(dtnorm(c(theta.n[idUpdJump]), 
+                  c(theta.prior[idUpdJump]), theta.sd, 
+                  lower = low.full.theta[idUpdJump], log=TRUE)) + 
           sum(dnorm(gamma.n, gamma.prior, gamma.sd,
                   log=TRUE))
       
@@ -972,9 +970,9 @@ basta.default <-
         jumpObject <- UpdateJumps(jObject = jumpObject, updateVec = updVec, 
             targetUpdate = 0.2, g, 
             updateInt, nPar, updateLen)
-        theta.jump[1:length.full.theta] <- jumpObject$jump[1:length.full.theta]
+        theta.jump[idUpdJump] <- jumpObject$jump[1:length(idUpdJump)]
         if (Cont) {
-          gamma.jump <- jumpObject$jump[-c(1:length.full.theta)]
+          gamma.jump <- jumpObject$jump[-c(1:length(idUpdJump))]
         }
       }
       # Progress plot:
@@ -1211,6 +1209,7 @@ basta.default <-
         names(modSel)        <- c("D.ave", "D.mode", "pD", "k", "DIC")
         cat("Survival parameters converged appropriately.",
             "\nDIC was calculated.\n")
+
         # 8.3.3 Inference on parameter estimates:
         # Kullback-Leibler distances for categorical covariates:
         if (is.null(covariate.type$cat)) {
@@ -1413,15 +1412,20 @@ basta.default <-
           collapse = ", "))
   names(ModelSpecs)          <- c("model", "shape", "Covar. structure", 
       "Categorical", "Continuous")
-  Jumps                      <- matrix(NA, nPar, nsim)
-  for (JJ in 1:nsim) {
-    Jumps[, JJ] <- basta.out[[JJ]]$jObject$jump
-  }
   Priors                     <- c(theta.prior)
   jumpPriorName              <- name.full.theta
   if (Cont) {
     Priors                   <- c(Priors, gamma.prior)
     jumpPriorName            <- c(jumpPriorName, name.gamma)
+  }
+  Jumps                      <- matrix(0, length(jumpPriorName), nsim)
+  
+  for (JJ in 1:nsim) {
+    Jumps[idUpdJump, JJ] <- basta.out[[JJ]]$jObject$jump[1:length(idUpdJump)]
+    if (Cont) {
+    	Jumps[-c(1:length.full.theta)] <- 
+    	     basta.out[[JJ]]$jObject$jump[-c(1:length(idUpdJump))]
+    }
   }
   JumpPriors                 <- cbind(Priors, Jumps)
   dimnames(JumpPriors)       <- list(jumpPriorName, 
