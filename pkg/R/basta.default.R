@@ -713,12 +713,13 @@ basta.default <-
     
     # Start parameters from different values:
     nlow                     <- low.full.theta
+    theta.n <- theta.g
+    if (Cont) gamma.n <- gamma.g
     if (nsim > 1) {
       
       thetaJitter <- theta.g * 0 + 0.5
       thetaJitter[theta.jump == 0] <- 0
       InfPost <- TRUE
-      theta.n <- theta.g
       while (InfPost) {
         theta.n[idUpdJump]     <- rtnorm(length(idUpdJump), theta.g[idUpdJump], 
                 thetaJitter[idUpdJump], lower=nlow[idUpdJump])
