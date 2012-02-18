@@ -324,8 +324,12 @@ basta.default <-
   UpdateJumps <- function(jObject, updateVec, targetUpdate, g, 
       updateInt, nPar, updateLen) {
     gUpdate <- which(updateInt == g)
-    parCount <- seq(nPar, nPar * 10, nPar) - gUpdate
-    parCount <- nPar - parCount[which(parCount >= 0)][1]
+    if (nPar > 1) {
+      parCount <- seq(nPar, nPar * 10, nPar) - gUpdate
+      parCount <- nPar - parCount[which(parCount >= 0)][1]
+    } else {
+      parCount <- 1
+    }
     updateRate <- sum(updateVec[g + c(-(updateLen - 1):0)]) / updateLen
     if (updateRate == 0) updateRate <- 1e-3
     if (gUpdate == 1) {
