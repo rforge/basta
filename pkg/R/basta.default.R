@@ -325,7 +325,7 @@ basta.default <-
       updateInt, nPar, updateLen) {
     gUpdate <- which(updateInt == g)
     if (nPar > 1) {
-      parCount <- seq(nPar, nPar * 10, nPar) - gUpdate
+      parCount <- seq(nPar, nPar * 100, nPar) - gUpdate
       parCount <- nPar - parCount[which(parCount >= 0)][1]
     } else {
       parCount <- 1
