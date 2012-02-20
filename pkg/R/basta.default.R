@@ -68,7 +68,7 @@ basta.default <-
     CalculateBasicMx         <- function(x, theta) theta
     CalculateBasicSx         <- function(x, theta) exp(- theta * x)
     length.theta0            <- 1
-    low.theta0               <- -Inf
+    low.theta0               <- 0
     ini.theta0               <- 0.01
     jump.theta0              <- 0.005
     prior.theta0             <- 0.01
@@ -340,8 +340,8 @@ basta.default <-
       jObject$updateRateVec <- c(jObject$updateRateVec, updateRate)
     }
     if (gUpdate > nPar) {
-      idTarget <- which(jObject$updateRateVec[gUpdate - 2:0] > targetUpdate * 0.9 &
-              jObject$updateRateVec[gUpdate - 2:0] < targetUpdate * 1.1)
+      idTarget <- which(jObject$updateRateVec[gUpdate - (nPar - 1):0] > targetUpdate * 0.9 &
+              jObject$updateRateVec[gUpdate - (nPar - 1):0] < targetUpdate * 1.1)
     } else {
       idTarget <- 0
     }
