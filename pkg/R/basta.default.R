@@ -167,11 +167,7 @@ basta.default <-
     }
     name.theta               <- c("a0", "a1", "c", name.theta0)
   }
-  
-#  CalculateFullFx            <- function(x, theta, gamma) {
-#    CalculateFullMx(x, theta, gamma) * CalculateFullSx(x, theta, gamma)
-#  }
-  
+    
   CalculateFullFx            <- function(x, theta, gamma) {
     CalculateFullSx(x, theta, gamma) - CalculateFullSx(x + Dx, theta, gamma)
   }
