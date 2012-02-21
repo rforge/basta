@@ -42,6 +42,12 @@ Gelman, A., Carlin, J.B., Stern, H.S. and Rubin, D.B. (2004) \emph{Bayesian data
 McCulloch, R.E. (1989) Local model influence. \emph{Journal of the American Statistical Association}, 84, 473-478.
 
 Spiegelhalter, D.J., Best, N.G., Carlin, B.P. and Van Der Linde, A. (2002) Bayesian measures of model complexity and fit. \emph{Journal of the Royal Statistical Society: Series B} 64, 583-639.
+
+See also:
+
+Colchero, F. and J.S. Clark (2011) Bayesian inference on age-specific survival from capture-recapture data for censored and truncated data. \emph{Journal of Animal Ecology}. 81(1):139–149. DOI: 10.1111/j.1365-2656.2011.01898.x
+
+Colchero, F., O.R. Jones and M. Rebke. (2012) BaSTA: an R package for Bayesian estimation of age-specific survival from incomplete mark-recapture/recovery data with covariates. \emph{Method in Ecology and Evolution}. DOI: 10.1111/j.2041-210X.2012.00186.x
 }
 \author{
 Fernando Colchero \email{colchero@demogr.mpg.de}, Owen R. Jones \email{jones@demogr.mpg.de} and Maren Rebke \email{rebke@demogr.mpg.de}
