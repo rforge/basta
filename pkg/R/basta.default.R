@@ -1270,9 +1270,9 @@ basta.default <-
               p.vec          <- seq(full.range[1], full.range[2], length = 500)
               dp             <- p.vec[2] - p.vec[1]
               dens.p1        <- dtnorm(p.vec, mean = mean(p1), sd = sd(p1), 
-                  low = p.low[i])  
+                  lower = p.low[i])  
               dens.p2        <- dtnorm(p.vec, mean = mean(p2), sd = sd(p2), 
-                  low = p.low[i])  
+                  lower = p.low[i])  
               kl.12[j, i]    <- sum(dens.p1*log(dens.p1/dens.p2) * 
                       dp)
               kl.21[j, i]    <- sum(dens.p2*log(dens.p2/dens.p1) * 
