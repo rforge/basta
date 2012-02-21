@@ -93,8 +93,8 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
                 <tr class="title"><td colspan="2" class="section">Project summary</td></tr>
                 <tr style="background:#FFFFFF">
                   <td class="main">
-                    <p class="parag"><b>BaSTA</b> is an R package (R Development Core Team 2011) that allows users to draw inference on age-specific survival and mortality patterns from capture-recapture/recovery data when a large number of individuals (or all) have missing age information (Colchero, Jones and Rebke <i>In press</i>). <b>BaSTA</b> is based on a model developed by Colchero and Clark (2012), which extends inference from parameter estimates to the estimation of unknown (i.e. latent) times of birth and death. The package also allows testing the effect of categorical and continuous individual covariates on mortality and survival (for an example see Fig. 1). Version 1.0 of the package is now availale on CRAN. An alpha version of BaSTA 1.1 is available via R-Forge. This version might still be unstable, but for those who wish to try it, it can be installed by opening the R console and typing: <br></p>
-										<p><code>install.packages("BaSTA", repos = "http://R-Forge.R-project.org", type = "source")</code>
+                    <p class="parag"><b>BaSTA</b> is an R package (R Development Core Team 2011) that allows users to draw inference on age-specific survival and mortality patterns from capture-recapture/recovery data when a large number of individuals (or all) have missing age information (Colchero, Jones and Rebke <i>In press</i>). <b>BaSTA</b> is based on a model developed by Colchero and Clark (2012), which extends inference from parameter estimates to the estimation of unknown (i.e. latent) times of birth and death. The package also allows testing the effect of categorical and continuous individual covariates on mortality and survival (for an example see Fig. 1). Version 1.1 of the package is now availale on CRAN and can be installed as source by typing the following line of code into the R console: <br></p>
+										<p><code>install.packages("BaSTA", type="source")</code>
 <br></p>
 
                     <a href="#top" class="totop">Back to top</a>
@@ -133,8 +133,8 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
                     <ul>
                       <li>Runs multiple simulations either in parallel (using package snowfall; Knaus 2010) or in series.</li>
                       <li>Calculates basic diagnostics on MCMC performance such as parameter update rates and serial autocorrelation.</li>
-                      <li>Uses multiple simulations to estimate convergence (i.e. potential scale reduction factor; Gelman <i>et al.</i>2004).</li>
-                      <li>Calculates basic measures for model selection (DIC; Spiegelhalter <i>et al.</i>2002).</li>
+                      <li>Uses multiple simulations to estimate convergence (i.e. potential scale reduction factor; Gelman <i>et al.</i> 2004).</li>
+                      <li>Calculates basic measures for model selection (DIC; Spiegelhalter <i>et al.</i> 2002).</li>
                     </ul>
                     <p style="text-align:justify;line-height:1.75;font-size:18px">Future versions will include:</p>
                     <ul style="text-align:justify;line-height:1.75;font-size:18px">
