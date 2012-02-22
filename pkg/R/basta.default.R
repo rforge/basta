@@ -497,7 +497,7 @@ basta.default <-
   # 3.6 Check when all covariates in mortality:
   if (covarsStruct == "all.in.mort") {
     if (!is.null(covariate.type$cont)) {
-      if (model != "GO") {
+      if (model != "GO" & shape != "simple") {
         warning("For effects of all covariate types on mortality parameters ",
             "only a simple Gompertz (GO) model can be used. ",
             "Model and shape arguments were changed to 'GO' and 'simple',",
