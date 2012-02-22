@@ -61,7 +61,7 @@ basta.default <-
         " simple shape", call. = FALSE)
   }
 
-  if (covarsStruct == "all.in.mort" & model != "GO" | shape != "simple") {
+  if (covarsStruct == "all.in.mort" & (model != "GO" | shape != "simple")) {
     stop("Model misspecification: all.in.mort is only available with",
         " Gompertz (GO) models and simple shape.", call. = FALSE)
   }
