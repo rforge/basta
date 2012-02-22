@@ -61,9 +61,9 @@ basta.default <-
         " simple shape", call. = FALSE)
   }
 
-  if (covarsStruct == "all.in.mort" & model != "GO") {
+  if (covarsStruct == "all.in.mort" & model != "GO" & shape != "simple") {
     stop("Model misspecification: all.in.mort is only available with",
-        " Gompertz (GO) models.", call. = FALSE)
+        " Gompertz (GO) models and simple shape.", call. = FALSE)
   }
   
   # 3. Functions:
@@ -341,8 +341,10 @@ basta.default <-
       jObject$updateRateVec <- c(jObject$updateRateVec, updateRate)
     }
     if (gUpdate > nPar) {
-      idTarget <- which(jObject$updateRateVec[gUpdate - (nPar - 1):0] > targetUpdate * 0.9 &
-              jObject$updateRateVec[gUpdate - (nPar - 1):0] < targetUpdate * 1.1)
+      idTarget <- which(jObject$updateRateVec[gUpdate - (nPar - 1):0] > 
+              targetUpdate * 0.9 &
+              jObject$updateRateVec[gUpdate - (nPar - 1):0] < 
+              targetUpdate * 1.1)
     } else {
       idTarget <- 0
     }
@@ -413,6 +415,11 @@ basta.default <-
     Z                        <- as.matrix(object[, 
             (study.length + 4):ncol(object)])
     covariate.type           <- FindCovariateType(Z)
+    if (covarsStruct == "all.in.mort" & is.null(covariate.type$cont)) {
+      warning("No continuous covariates were included in the data. Argument",
+          " 'covarsStruct' will be set to 'fused'.\n", call. = FALSE)
+      covarsStruct           <- 'fused'
+    }
     if (covarsStruct == "prop.haz") {
       Zcont                  <- Z
       Zcat                   <- matrix(1, n, 1)
@@ -492,27 +499,7 @@ basta.default <-
   length.cont                <- ncol(Zcont)
   
   parallelVars               <- c(parallelVars, "Zcat", "Zcont", "Cont", 
-      "length.cat", "length.cont", "covariate.type") 
-
-  # 3.6 Check when all covariates in mortality:
-  if (covarsStruct == "all.in.mort") {
-    if (!is.null(covariate.type$cont)) {
-      if (model != "GO" & shape != "simple") {
-        warning("For effects of all covariate types on mortality parameters ",
-            "only a simple Gompertz (GO) model can be used. ",
-            "Model and shape arguments were changed to 'GO' and 'simple',",
-            " respectively.\n", call. = FALSE)
-      }
-      model                  <- "GO"
-      shape                  <- "simple"
-    } else {
-      warning("No continuous covariates were included in the data. Argument",
-          " 'covarsStruct' will be set to 'fused'.\n", call. = FALSE)
-      covarsStruct           <- 'fused'
-    }
-  }
-  
-  parallelVars               <- c(parallelVars, "model", "shape", 
+      "length.cat", "length.cont", "covariate.type", "model", "shape", 
                                   "covarsStruct")
   
   
