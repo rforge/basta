@@ -30,39 +30,39 @@ basta.default <-
   data.check                 <- DataCheck(object, studyStart, studyEnd, 
       silent = TRUE)
   if (!data.check[[1]]) {
-    stop("\nYou have an error in Dataframe 'object',\nplease use function ",
+    stop("You have an error in Dataframe 'object',\nplease use function ",
         "'DataCheck'\n", call. = FALSE)
   }
   
   # 2.2 Check that niter, burnin, and thinning are compatible.
   if (burnin > niter) {
-    stop("\nObject 'burnin' larger than 'niter'.", call. = FALSE)
+    stop("Object 'burnin' larger than 'niter'.", call. = FALSE)
   }
   if (thinning > niter) {
-    stop("\nObject 'thinning' larger than 'niter'.", call. = FALSE)
+    stop("Object 'thinning' larger than 'niter'.", call. = FALSE)
   }
   
   # 2.3 Model type, shape and covariate structure:
   if (!is.element(model, c("EX","GO","WE","LO"))) {
-    stop("\nModel misspecification: specify available models", 
+    stop("Model misspecification: specify available models", 
         " (i.e. 'EX', 'GO', 'WE' or 'LO')\n", call. = FALSE)
   }
   if (!is.element(shape, c("simple","Makeham","bathtub"))) {
-    stop("\nshape misspecification. Appropriate arguments are:",
+    stop("shape misspecification. Appropriate arguments are:",
         " 'simple', 'Makeham' or 'bathtub'.\n", call. = FALSE)
   }
   if (!is.element(covarsStruct, c("fused", "prop.haz", "all.in.mort"))) {
-    stop("\nCovariate structure misspecification. Appropriate arguments are:",
+    stop("Covariate structure misspecification. Appropriate arguments are:",
         " 'fused', 'prop.haz' or 'all.in.mort'.\n", call. = FALSE)
   }
   
   if (model == "EX" & shape != "simple") {
-    stop("\nModel misspecification: EX model can only be fitted with a",
+    stop("Model misspecification: EX model can only be fitted with a",
         " simple shape", call. = FALSE)
   }
 
   if (covarsStruct == "all.in.mort" & model != "GO") {
-    stop("\nModel misspecification: all.in.mort is only available with",
+    stop("Model misspecification: all.in.mort is only available with",
         " Gompertz (GO) models.", call. = FALSE)
   }
   
