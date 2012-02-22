@@ -60,6 +60,11 @@ basta.default <-
     stop("\nModel misspecification: EX model can only be fitted with a",
         " simple shape", call. = FALSE)
   }
+
+  if (covarsStruct == "all.in.mort" & model != "GO") {
+    stop("\nModel misspecification: all.in.mort is only available with",
+        " Gompertz (GO) models.", call. = FALSE)
+  }
   
   # 3. Functions:
   # 3.1 Survival, mort, pdf:
