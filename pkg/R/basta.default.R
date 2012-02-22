@@ -298,7 +298,7 @@ basta.default <-
     if (is.null(user.par)) {
       par               <- rep(0, length.cont)
       if (par.name == "gamma jumps") {
-        par <- rep(0.001, length.cont)
+        par <- rep(0.01, length.cont)
       }
       names(par)        <- colnames(Zcont)
     } else {
@@ -370,26 +370,6 @@ basta.default <-
       "studyStart", "studyEnd", "recaptTrans", 
       "progrPlots", "UpdateJumps", "updateJumps")
   
-  # 3.6 Check when all covariates in mortality:
-  if (covarsStruct == "all.in.mort") {
-    if (!is.null(covariate.type$cont)) {
-      if (model != "GO") {
-        warning("For effects of all covariate types on mortality parameters ",
-            "only simple Gompertz (GO) model can be used. ",
-            "Model and shape arguments were changed to 'GO' and 'simple',",
-            " respectively.\n", call. = FALSE)
-      }
-      model                  <- "GO"
-      shape                  <- "simple"
-    } else {
-      warning("No continuous covariates were included in the data. Argument",
-          " 'covarsStruct' will be set to 'fused'.\n", call. = FALSE)
-      covarsStruct           <- 'fused'
-    }
-  }
-  
-  parallelVars               <- c(parallelVars, "model", "shape", 
-                                  "covarsStruct")
   
   # 4 Data formatting:
   # 4.1 Extract raw data and create BaSTA data tables:
@@ -435,7 +415,8 @@ basta.default <-
       Cat                    <- FALSE
       Cont                   <- TRUE
       if (model == "GO" & !is.null(covariate.type$cat)) {
-        Zcont                <- Zcont[, -covariate.type$cat[1]]
+        Zcont                <- as.matrix(Zcont[, -covariate.type$cat[1]])
+        colnames(Zcont)      <- colnames(Z)[-1] 
         covariate.type       <- FindCovariateType(Zcont)
       }
     } else {
@@ -507,6 +488,27 @@ basta.default <-
   
   parallelVars               <- c(parallelVars, "Zcat", "Zcont", "Cont", 
       "length.cat", "length.cont", "covariate.type") 
+
+  # 3.6 Check when all covariates in mortality:
+  if (covarsStruct == "all.in.mort") {
+    if (!is.null(covariate.type$cont)) {
+      if (model != "GO") {
+        warning("For effects of all covariate types on mortality parameters ",
+            "only a simple Gompertz (GO) model can be used. ",
+            "Model and shape arguments were changed to 'GO' and 'simple',",
+            " respectively.\n", call. = FALSE)
+      }
+      model                  <- "GO"
+      shape                  <- "simple"
+    } else {
+      warning("No continuous covariates were included in the data. Argument",
+          " 'covarsStruct' will be set to 'fused'.\n", call. = FALSE)
+      covarsStruct           <- 'fused'
+    }
+  }
+  
+  parallelVars               <- c(parallelVars, "model", "shape", 
+                                  "covarsStruct")
   
   
   # 5. MCMC prep:
