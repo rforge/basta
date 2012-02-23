@@ -57,6 +57,10 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
     stop("Model misspecification: EX model can only be fitted with a", 
         " simple shape", call. = FALSE)
   }
+  if (model == "EX" & covarsStruct != "fused") {
+    stop("Model misspecification: EX model can only be fitted with a", 
+        " fused covariate structure", call. = FALSE)
+  }
   if (covarsStruct == "all.in.mort" & sum(model == "GO", shape == 
           "simple") < 2) {
     stop("Model misspecification: all.in.mort is only available with", 
