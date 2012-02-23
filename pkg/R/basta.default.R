@@ -1,5 +1,4 @@
-basta.default <- 
-    function(object, studyStart, studyEnd, minAge = 0, model = "GO", 
+basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO", 
         shape = "simple", covarsStruct = "fused", niter = 50000, 
         burnin = 5001, thinning = 50, recaptTrans = studyStart, 
         thetaStart = NULL, thetaJumps = NULL, thetaPriors = NULL, 
@@ -61,10 +60,10 @@ basta.default <-
         " simple shape", call. = FALSE)
   }
 
-  if (covarsStruct == "all.in.mort" & (model != "GO" | shape != "simple")) {
-    stop("Model misspecification: all.in.mort is only available with",
+if(covarsStruct=="all.in.mort" & sum(model == "GO", shape == "simple") < 2){
+stop("Model misspecification: all.in.mort is only available with",
         " Gompertz (GO) models and simple shape.", call. = FALSE)
-  }
+        }
   
   # 3. Functions:
   # 3.1 Survival, mort, pdf:
