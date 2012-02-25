@@ -1421,5 +1421,15 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
     output$Lambda <- la.mat
   }
   class(output) <- "basta"
+
+## Check Makeham terms, return warning if the Makeham (c) terms overlap 0.
+  if(shape=="Makeham"){
+    MakehamCoefRow = substr(rownames(out$coef),1,1)=="c"
+    MakehamLower95pcCI   = out$coef[MakehamCoefRow,c(3)]
+    #Number of coefficients where Lower95%CI < 0?
+    NLower = sum(MakehamLower95pcCI < 0)
+    warning(paste(NLower, " of the Makeham coefficients have 95%CI overlapping 0.\nMakeham models may not be appropriate",sep=""), call. = FALSE)
+  }
+  
   return(output)
 }
