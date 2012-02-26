@@ -1424,7 +1424,7 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
 
   ## Check Makeham terms, return warning if the Makeham (c) terms overlap 0.
   if(shape=="Makeham"){
-    MakehamCoefRow = substr(rownames(output$coef),1,1)=="c"
+    MakehamCoefRow <- substr(rownames(output$coef), 1, 1) == "c"
     MakehamLower95pcCI <- output$coef[MakehamCoefRow, 3]
     MakehamUpper95pcCI <- output$coef[MakehamCoefRow, 4]
     # Number of coefficients where Lower95%CI < 0 & Upper95%CI > 0?
