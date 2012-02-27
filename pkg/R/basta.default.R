@@ -433,7 +433,8 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
       colnames(Zcat) <- "NoCat"
       Cat <- FALSE
       Cont <- TRUE
-      if (model == "GO" & !is.null(covariate.type$cat)) {
+#      if (model == "GO" & !is.null(covariate.type$cat)) {
+      if (!is.null(covariate.type$cat)) {
         Zcont <- as.matrix(Zcont[, -covariate.type$cat[1]])
         colnames(Zcont) <- colnames(Z)[-1] 
         covariate.type <- FindCovariateType(Zcont)
