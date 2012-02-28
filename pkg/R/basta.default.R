@@ -1345,7 +1345,10 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
           idza <- which(Z[, zaname[i]] == 1 &  bq[1, ] >= studyStart)
         }
         x <- xq[1, idza]
-        LT[[zaname[i]]] <- MakeLifeTable(x, ax = 0.5, n = 1)
+        tempLT <- MakeLifeTable(x, ax = 0.5, n = 1)
+        tempLT <- subset(tempLT,StartAge>=minAge)
+        rownames(tempLT) <- NULL
+        LT[[zaname[i]]] <- tempLT
       }
     } else {
       LT <- NULL
