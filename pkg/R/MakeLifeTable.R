@@ -3,7 +3,7 @@ function(DeathAges, ax = 0.5, n = 1) {
     
     # DeathAges should be a numeric integer vector (e.g. years)
     #
-    # ax is a vector describing the average proportion of year lived by an individual
+    # ax is a vector describing the average proportion of INTERVAL lived by an individual
     # dying during the interval. It is only necessary to put the first few values -
     # further values are extrapolated to the correct dimensions.
     # e.g. if ax is set as c(0.3, 0.5) and there are 5 rows in the life tables, ax
@@ -55,14 +55,12 @@ function(DeathAges, ax = 0.5, n = 1) {
     qx = dx/lx
     qx[length(qx)] = 1
     px = 1 - qx
-    Lx = ((lx - dx) * nx) + (ax * dx)
+    Lx = ((lx - dx) * nx) + ((ax*nx) * dx)
     mx = dx/Lx
     Tx = rev(cumsum(rev(Lx)))
     ex = Tx/lx
     
-#    return(data.frame(cbind(int, Nx, Dx, mx, ax, qx, px, lx, 
-#        dx, Lx, Tx, ex)))
-    return(data.frame(cbind(int, lx, dx, mx, ax, qx, px,  
+    return(data.frame(cbind(int, nx, lx, dx, mx, ax=(ax*nx), qx, px,  
         Lx, Tx, ex)))
 }
 
