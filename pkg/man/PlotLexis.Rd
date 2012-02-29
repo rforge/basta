@@ -5,9 +5,10 @@
 Function to plot a Lexis diagram from a Bayesian Survival Trajectory Analysis (BaSTA) analysis object.
 }
 \description{
-This function produces a Lexis diagram from the predicted birth and death times within a basta object.}
+This function produces a Lexis diagram from the predicted birth and death times within a basta object.
+}
 \usage{
-PlotLexis(x, ji = 0.5, trans=50, q = 0.5, lw = 2, ...)
+PlotLexis(x, ji = 0.5, trans = 50, q = 0.5, lw = 2, ...)
 }
 
 \arguments{
@@ -18,7 +19,7 @@ PlotLexis(x, ji = 0.5, trans=50, q = 0.5, lw = 2, ...)
 
 \item{trans }{The level of transparency to be used when plotting the lines for each individual. A value of 'NULL' plots lines with no transparency.}
  
-\item{q }{Defines the quantile to be plotted. The default value is 0.5, to plot the 50% quantile}
+\item{q }{Defines the quantile to be plotted. The default value is 0.5, to plot the 50\% quantile}
 
 \item{lw }{Line width for the plot.}
 
