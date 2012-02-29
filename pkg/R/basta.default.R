@@ -1427,19 +1427,19 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
   class(output) <- "basta"
 
   ## Check Makeham terms, return warning if the Makeham (c) terms overlap 0.
-  if(shape=="Makeham"){
-    MakehamCoefRow <- substr(rownames(output$coef), 1, 1) == "c"
-    MakehamLower95pcCI <- output$coef[MakehamCoefRow, 3]
-    MakehamUpper95pcCI <- output$coef[MakehamCoefRow, 4]
+#  if(shape=="Makeham"){
+#    MakehamCoefRow <- substr(rownames(output$coef), 1, 1) == "c"
+#    MakehamLower95pcCI <- output$coef[MakehamCoefRow, 3]
+#    MakehamUpper95pcCI <- output$coef[MakehamCoefRow, 4]
     # Number of coefficients where Lower95%CI < 0 & Upper95%CI > 0?
-    NLower <- length(which(MakehamLower95pccCI <= 0 & 
-                MakehamUpper95pccCI >= 0))
+#    NLower <- length(which(MakehamLower95pccCI <= 0 & 
+#                MakehamUpper95pccCI >= 0))
 #    NLower <- sum(MakehamLower95pcCI <= 0)
-    if (NLower > 0) {
-    warning(paste(NLower, " of the Makeham coefficients have 95% CI\n",
-              "overlapping 0. Makeham models may not be appropriate", sep = ""), 
-          call. = FALSE)
-    }
-  }
+#    if (NLower > 0) {
+#    warning(paste(NLower, " of the Makeham coefficients have 95% CI\n",
+#              "overlapping 0. Makeham models may not be appropriate", sep = ""), 
+#          call. = FALSE)
+#    }
+#  }
   return(output)
 }
