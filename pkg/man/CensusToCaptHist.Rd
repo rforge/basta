@@ -22,14 +22,15 @@ A vector of dates when each individual was observed.
 Defines the date format for \code{d} when \code{d} is of class \code{character}.
 }
   \item{timeInt }{
-A one character string specifying which time interval should be used between capture occasions. Arguments are \dQuote\code{Y}} for years, \dQuote\code{M}} for months,  \dQuote{\code{W}} for weeks and \dQuote{\code{D}} for days.  
+A one character string specifying which time interval should be used between capture occasions. Arguments are \dQuote{\code{Y}} for years, \dQuote{\code{M}} for months, \dQuote{\code{W}} for weeks and \dQuote{\code{D}} for days. 
+}
 }
 \details{
 The \code{d} argument can be specified as an object of class \code{POSIXct} or \code{POSIXlt}, as a vector of integer time intervals or as a character string indicating the day, month and year. (e.g. \code{dd/mm/yyyy}, \code{mmddyyyy}, \code{mm-dd-yyyy} etc.). When \code{d} is of class \code{character} then argument \code{dformat} needs to be specified using the same conventions as in function \code{\link{format}} for objects of class \code{POSIXct} or \code{POSIXlt}.  
 }
 
 \author{
-Owen R. Jones \email{jones@demogr.mpg.de}
+Owen R. Jones \email{jones@demogr.mpg.de} and Maren Rebke \email{rebke@demogr.mpg.de}
 }
 
 \seealso{
