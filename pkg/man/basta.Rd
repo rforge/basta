@@ -6,7 +6,7 @@ Parametric Bayesian estimation of age-specific survival for left-truncated and r
 }
 
 \description{
-This function performs multiple Markov Chain Monte Carlo (MCMC) algorithms for the Bayesian estimation of age-specific mortality and survival trends when a large proportion of (or all) records have unknown times of birth and/or death. Survival parameters and unknown (i.e. latent) birth and death times are estimated, allowing the user to test a range of mortality patterns, and to test the effect of continuous and/or discrete covariates following Colchero and Clark's (2011) approach.}
+This function performs multiple Markov Chain Monte Carlo (MCMC) algorithms for the Bayesian estimation of age-specific mortality and survival trends when a large proportion of (or all) records have unknown times of birth and/or death. Survival parameters and unknown (i.e. latent) birth and death times are estimated, allowing the user to test a range of mortality patterns, and to test the effect of continuous and/or discrete covariates following Colchero and Clark's (2012) approach.}
 
 \usage{
 basta(object, \dots)
@@ -245,10 +245,8 @@ new.dat  <- DataCheck(sim1, studyStart = 51,
 
 ## Run short version of BaSTA on the data:
 out      <- basta(sim1, studyStart = 51, studyEnd = 70, 
-            model = "GO", shape = "simple", covarsStruct = "fused", 
-            niter = 200, burnin = 11, thinning = 10, 
-            thetaJumps = c(0.025,0.01), gammaJumps = 0.01, 
-            progrPlots=TRUE)
+            niter = 200, burnin = 11, thinning = 10,  
+            progrPlots = TRUE)
 
 ## Print results:
 summary(out, digits = 3)
@@ -260,7 +258,7 @@ plot(out)
 plot(out, trace.name = "gamma")
 
 ## Plot survival and mortality curves:
-plot(out, plot.trace=FALSE)
+plot(out, plot.trace = FALSE)
 }
 
 \keyword{ methods }
