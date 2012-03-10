@@ -9,7 +9,7 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
   # This function estimates age-specific mortality from capture-recapture/
   # recovery (CRR) data when a large proportion of (or all) the records have
   # unknown times of birth and death. It uses the framework described by
-  # Colchero & Clark (2011) Journal of Animal Ecology. The code is organized
+  # Colchero & Clark (2012) Journal of Animal Ecology. The code is organized
   # as follows:
   # - Section 1 (line   24): load packages
   # - Section 2 (line   27): Define functions
@@ -1346,7 +1346,7 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
         }
         x <- xq[1, idza]
         tempLT <- MakeLifeTable(x, ax = 0.5, n = 1)
-        tempLT <- subset(tempLT,StartAge>=minAge)
+        tempLT <- subset(tempLT, tempLT$StartAge >= minAge)
         rownames(tempLT) <- NULL
         LT[[zaname[i]]] <- tempLT
       }
