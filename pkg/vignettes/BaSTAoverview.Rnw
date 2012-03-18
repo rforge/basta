@@ -57,7 +57,7 @@
 \section{Introduction}
 
 
-Here we present BaSTA (Bayesian Survival Trajectory Analysis), a free open-source R package \citep{R} that implements the hierarchical Bayesian model described by \cite{ColcheroClark2011}.  This package facilitates drawing inference on age-specific mortality from capture-recapture/recovery (CRR) data when a large proportion (or all) of the records have missing information on times of birth and death. In addition, BaSTA allows users to evaluate the effect of continuous and categorical covariates on mortality. To cite this package, please refer to the paper by Colchero, Jones \& Rebke that will shortly be published in Methods in Ecology and Evolution. This document is based on the Supporting Information (appendix) published with that paper. 
+Here we present BaSTA (Bayesian Survival Trajectory Analysis; \citet{BaSTA2011}), a free open-source R package \citep{R} that implements the hierarchical Bayesian model described by \cite{ColcheroClark2011}.  This package facilitates drawing inference on age-specific mortality from capture-recapture/recovery (CRR) data when a large proportion (or all) of the records have missing information on times of birth and death. In addition, BaSTA allows users to evaluate the effect of continuous and categorical covariates on mortality. To cite this package, please refer to the paper by Colchero, Jones \& Rebke that will shortly be published in Methods in Ecology and Evolution. This document is based on the Supporting Information (appendix) published with that paper. 
 
 <<setup, print=FALSE, echo=FALSE>>=
 library(BaSTA)
@@ -102,18 +102,17 @@ If the table was saved in .csv format, it can be read as:
 <<eval=FALSE>>=
 censusMat <- read.csv("location of census table.csv", header = TRUE)
 @
-Here is an example of a simulated dataset for table called \mverb{censusMat} which includes five individuals captured between 1990 and 1995. We can use the command \mverb{head()} to look at the first few rows of data:
+Here is an example of a simulated dataset in a table called \mverb{censusMat} which includes five individuals captured between 1990 and 1995. We can use the command \mverb{head()} to look at the first few rows of data:
 <<>>=
 head(censusMat)
 @
 
 This data can then be used as the input for the \mverb{CensusToCaptHist()} function in order to construct the recapture matrix required by BaSTA:
 <<>>=
-Y <- CensusToCaptHist(ID = censusMat[, 1],  
-                      d = censusMat[, 2], dformat = "yyyy")
+Y <- CensusToCaptHist(ID = censusMat[, 1], d = censusMat[, 2])
 @
 
-The \mverb{ID} argument in the \mverb{CensusToCaptHist()} function, takes a vector with the individual IDs, in this case the first column in \mverb{censusMat}, along with the \mverb{d} argument, which is a vector of dates on which each individual was detected (i.e. the second column in \mverb{censusMat}), and argument \mverb{dformat} which is (optionally) used to specify the date format used in \mverb{d}.
+The \mverb{ID} argument in the \mverb{CensusToCaptHist()} function, takes a vector with the individual IDs, in this case the first column in \mverb{censusMat}, along with the \mverb{d} argument, which is a vector of dates on which each individual was detected (i.e. the second column in \mverb{censusMat}), and argument \mverb{dformat} which is (optionally) used to specify the date format used in \mverb{d}. In case the \mverb{d} argument is a character string based on a date format, or of class \mverb{date}, the minimun time interval can be specified with argument \mverb{timeInt}, which takes a single character value, with the folowing options: ``\mverb{Y}'' for years (default); ``\mverb{M}'' for months; ``\mverb{W}'' for weeks; and ``\mverb{D}'' for days. 
 
 The resulting capture history matrix (\mverb{Y}) looks like this:
 
