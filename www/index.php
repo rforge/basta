@@ -93,8 +93,11 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
                 <tr class="title"><td colspan="2" class="section">Project summary</td></tr>
                 <tr style="background:#FFFFFF">
                   <td class="main">
-                    <p class="parag"><b>BaSTA</b> is an R package (R Development Core Team 2011) that allows users to draw inference on age-specific survival and mortality patterns from capture-recapture/recovery data when a large number of individuals (or all) have missing age information (Colchero, Jones and Rebke <i>In press</i>). <b>BaSTA</b> is based on a model developed by Colchero and Clark (2012), which extends inference from parameter estimates to the estimation of unknown (i.e. latent) times of birth and death. The package also allows testing the effect of categorical and continuous individual covariates on mortality and survival (for an example see Fig. 1). Version 1.1 of the package is now availale on CRAN and can be installed as source by typing the following line of code into the R console: <br></p>
-										<p><code>install.packages("BaSTA", type="source")</code>
+                    <p class="parag"><b>BaSTA</b> is an R package (R Development Core Team 2011) that allows users to draw inference on age-specific survival and mortality patterns from capture-recapture/recovery data when a large number of individuals (or all) have missing age information (Colchero, Jones and Rebke 2012). <b>BaSTA</b> is based on a model developed by Colchero and Clark (2012), which extends inference from parameter estimates to the estimation of unknown (i.e. latent) times of birth and death. The package also allows testing the effect of categorical and continuous individual covariates on mortality and survival (for an example see Fig. 1). Version 1.1 of the package is now availale on CRAN and can be installed as source by typing the following line of code into the R console: <br></p>
+										<p><code>install.packages("BaSTA")</code>
+<br></p>
+										<p class="parag">Also, the latest version of <b>BaSTA</b> (vers. 1.2) can be installed from R forge by typing:<br></p>
+										<p><code>install.packages("BaSTA", repos="http://R-Forge.R-project.org")</code>
 <br></p>
 
                     <a href="#top" class="totop">Back to top</a>
@@ -135,11 +138,13 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
                       <li>Calculates basic diagnostics on MCMC performance such as parameter update rates and serial autocorrelation.</li>
                       <li>Uses multiple simulations to estimate convergence (i.e. potential scale reduction factor; Gelman <i>et al.</i> 2004).</li>
                       <li>Calculates basic measures for model selection (DIC; Spiegelhalter <i>et al.</i> 2002).</li>
+                      <li>Performs dynamic update of jump standard deviations, improving convergence without the need of several trials.</li>
                     </ul>
                     <p style="text-align:justify;line-height:1.75;font-size:18px">Future versions will include:</p>
                     <ul style="text-align:justify;line-height:1.75;font-size:18px">
                       <li>Time-dependent covariates.</li>
-                      <li>Covariates on recapture probabilities.</li>
+											<li>Cohort effects on mortality</li>
+                      <li>Covariates on recapture and recovery probabilities.</li>
                       <li>Model selection through Reversible Jump MCMC (RJMCMC; King and Brooks 2002; Gimenez <i>et al.</i> 2009).</li>
                     </ul>
                   </td>
