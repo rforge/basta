@@ -93,7 +93,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
                 <tr class="title"><td colspan="2" class="section">Project summary</td></tr>
                 <tr style="background:#FFFFFF">
                   <td class="main">
-                    <p class="parag"><b>BaSTA</b> is an R package (R Development Core Team 2011) that allows users to draw inference on age-specific survival and mortality patterns from capture-recapture/recovery data when a large number of individuals (or all) have missing age information (Colchero, Jones and Rebke 2012). <b>BaSTA</b> is based on a model developed by Colchero and Clark (2012), which extends inference from parameter estimates to the estimation of unknown (i.e. latent) times of birth and death. The package also allows testing the effect of categorical and continuous individual covariates on mortality and survival (for an example see Fig. 1). Version 1.1 of the package is now availale on CRAN and can be installed as source by typing the following line of code into the R console: <br></p>
+                    <p class="parag"><b>BaSTA</b> is an R package (R Development Core Team 2011) that allows users to draw inference on age-specific survival and mortality patterns from capture-recapture/recovery data when a large number of individuals (or all) have missing age information (Colchero, Jones and Rebke 2012). <b>BaSTA</b> is based on a model developed by Colchero and Clark (2012), which extends inference from parameter estimates to the estimation of unknown (i.e. latent) times of birth and death. The package also allows testing the effect of categorical and continuous individual covariates on mortality and survival (for an example see Fig. 1). Below we feature a video hosted by the journal Methods in Ecology and Evolution, that explains the context in which BaSTA can be useful and the way the package can be implemented. Version 1.1 of the package is now availale on CRAN and can be installed as source by typing the following line of code into the R console: <br></p>
 										<p><code>install.packages("BaSTA")</code>
 <br></p>
 										<p class="parag">Also, the latest version of <b>BaSTA</b> (vers. 1.2) can be installed from R forge by typing:<br></p>
@@ -107,6 +107,15 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
                     <p class="caption">Fig. 1. <b>BaSTA</b> model output for sex differences in Kestrel mortality using a Gompertz survival model (Rebke <i>et al. in prep</i>). The left panel shows posterior distributions for the two survival parameters while the right panel shows the resulting survival probabilities and the mortality rates for males and females.</p>
 										<p class="parag">We have set up a <a href="mailto:Basta-users@lists.r-forge.r-project.org"  rel="nofollow" style="color:#84002E">BaSTA Users mailing</a> list so users can ask questions or provide comments, suggestions or criticism that can help us improve the package. Users can register by <a href="https://lists.r-forge.r-project.org/cgi-bin/mailman/listinfo/basta-users"  rel="nofollow" class="intext">clicking here</a>.<br></p>
                   </td>
+                </tr>
+              </tbody>
+            </table>
+            <table  valign="middle" width="1050px" style="table-layout:fixed;background:#FFFFFF">
+              <tbody>
+                <tr style="background:#FFFFFF">
+									<td>
+<img src="https://www.google.com/chart?chc=sites&amp;cht=d&amp;chdp=sites&amp;chl=%5B%5BYouTube+video'%3D20'f%5Cv'a%5C%3D0'10'%3D425'0'dim'%5Cbox1'b%5CF6F6F6'fC%5CF6F6F6'eC%5C0'sk'%5C%5B'%5D'a%5CV%5C%3D12'f%5C%5DV%5Cta%5C%3D10'%3D0'%3D426'%3D352'dim'%5C%3D10'%3D10'%3D426'%3D352'vdim'%5Cbox1'b%5Cva%5CF6F6F6'fC%5CC8C8C8'eC%5C'a%5C%5Do%5CLauto'f%5C&amp;sig=1kZZm6Qdm0n3cd5cO3Yf-w81vmg" data-origsrc="OLFzY3vHVOQ" data-type="youtube" data-props="align:center;wrap:false;" width="853" height="480" style="display:block;margin:5px auto;text-align:center;">
+									</td>
                 </tr>
               </tbody>
             </table>
