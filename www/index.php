@@ -114,7 +114,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
               <tbody>
                 <tr style="background:#FFFFFF">
 									<td>
-										<iframe width="853" height="480" src="http://www.youtube.com/embed/OLFzY3vHVOQ" frameborder="0" allowfullscreen style="display:block;margin:5px auto;text-align:center;"></iframe>
+										<iframe width="640" height="360" src="http://www.youtube.com/embed/OLFzY3vHVOQ" frameborder="0" allowfullscreen style="display:block;margin:5px auto;text-align:center;"></iframe>
 									</td>
                 </tr>
               </tbody>
