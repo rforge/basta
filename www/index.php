@@ -114,7 +114,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
               <tbody>
                 <tr style="background:#FFFFFF">
 									<td>
-<img src="https://www.google.com/chart?chc=sites&amp;cht=d&amp;chdp=sites&amp;chl=%5B%5BYouTube+video'%3D20'f%5Cv'a%5C%3D0'10'%3D425'0'dim'%5Cbox1'b%5CF6F6F6'fC%5CF6F6F6'eC%5C0'sk'%5C%5B'%5D'a%5CV%5C%3D12'f%5C%5DV%5Cta%5C%3D10'%3D0'%3D426'%3D352'dim'%5C%3D10'%3D10'%3D426'%3D352'vdim'%5Cbox1'b%5Cva%5CF6F6F6'fC%5CC8C8C8'eC%5C'a%5C%5Do%5CLauto'f%5C&amp;sig=1kZZm6Qdm0n3cd5cO3Yf-w81vmg" data-origsrc="OLFzY3vHVOQ" data-type="youtube" data-props="align:center;wrap:false;" width="853" height="480" style="display:block;margin:5px auto;text-align:center;">
+										<iframe width="853" height="480" src="http://www.youtube.com/embed/OLFzY3vHVOQ" frameborder="0" allowfullscreen style="display:block;margin:5px auto;text-align:center;"></iframe>
 									</td>
                 </tr>
               </tbody>
