@@ -78,8 +78,7 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
     ini.theta0 <- 0.01
     jump.theta0 <- 0.005
     prior.theta0 <- 0.01
-  }
-  else if (model == "GO") {
+  } else if (model == "GO") {
     CalculateBasicMx <- function(x, theta) {
       exp(theta[, 1] + theta[, 2] * x)
     }
@@ -92,8 +91,7 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
     ini.theta0 <- c(-3, 0.01)
     jump.theta0 <- c(0.05, 0.025)
     prior.theta0 <- c(-3, 0.01)
-  }
-  else if (model == "WE") {
+  } else if (model == "WE") {
     CalculateBasicMx <- function(x, theta) {
       theta[, 1] * theta[, 2]^theta[, 1] * x^(theta[, 1] - 
             1)
@@ -106,8 +104,7 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
     ini.theta0 <- c(1.5, 0.1)
     jump.theta0 <- c(0.01, 0.001)
     prior.theta0 <- c(1, 0.01)
-  }
-  else if (model == "LO") {
+  } else if (model == "LO") {
     CalculateBasicMx <- function(x, theta) {
       exp(theta[, 1] + theta[, 2] * x)/(1 + theta[, 3] * 
             exp(theta[, 1])/theta[, 2] * (exp(theta[, 2] * 
@@ -142,8 +139,7 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
     jump.theta <- jump.theta0
     prior.theta <- prior.theta0
     name.theta <- name.theta0
-  }
-  else if (shape == "Makeham") {
+  } else if (shape == "Makeham") {
     CalculateFullMx <- function(x, theta, gamma) {
       (theta[, 1] + CalculateBasicMx(x, matrix(theta[, 
                         -1], ncol = length.theta0))) * exp(gamma)
@@ -158,8 +154,7 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
     prior.theta <- c(0, prior.theta0)
     low.theta <- c(-Inf, low.theta0)
     name.theta <- c("c", name.theta0)
-  }
-  else if (shape == "bathtub") {
+  } else if (shape == "bathtub") {
     CalculateFullMx <- function(x, theta, gamma) {
       (exp(theta[, 1] - theta[, 2] * x) + theta[, 3] + 
             CalculateBasicMx(x, matrix(theta[, -c(1:3)], 
@@ -735,7 +730,7 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
                           Ztheta.n, Zgamma.n)) -
                   log(CalculateFullSx(xatg, 
                           Ztheta.n, Zgamma.n))) * Iag)
-        if(post == -Inf) {
+        if(post == -Inf | is.na(post)) {
           InfPost <- TRUE
         } else {
           InfPost <- FALSE
