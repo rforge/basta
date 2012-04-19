@@ -404,7 +404,7 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
   rm("ytemp")
 
   # 4.1.3 Define study duration:
-  Dx <- (study.years[2] - study.years[1])
+  Dx <- 1 #(study.years[2] - study.years[1])
   Tm <- matrix(study.years, n, study.length, byrow = TRUE)
 
   parallelVars  <- c(parallelVars, "niter", "burnin", "thinning", "bi", "di", 
