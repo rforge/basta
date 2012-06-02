@@ -34,9 +34,9 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
   </script>
   </head>
 
-  <body style="background:#CCCCCC">
+  <body style="background:#E5F5E0">
     <a name="top"></a>
-    <table style="vertical-align:middle;background:#CCCCCC" width="100%" height="100%">
+    <table style="vertical-align:middle;background:#E5F5E0" width="100%" height="100%">
       <tbody>
         <tr align="center">
           <td>
