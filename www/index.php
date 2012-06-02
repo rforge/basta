@@ -96,7 +96,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
                     <a href="#top" class="totop">Back to top</a>
                   </td>
                   <td class="main">
-                    <p><img style="margin:0px;padding:0px;border:none" width="400px" align="middle" src="sheep.png?width=400px"><br><br></p>
+                    <p><img style="margin:0px;padding:0px;border:none" width="400px" align="middle" src="Sheep.png?width=400px"><br><br></p>
                     <p class="caption">Fig. 1. <b>BaSTA</b> model output for sex differences in Soay sheep mortality using a Siler survival model (Colchero & Clark 2012). The left panel shows posterior distributions for the survival and recapture parameters while the right panel shows the resulting survival probabilities and the mortality rates for males and females.</p>
 										<p class="parag">We have set up a <a href="mailto:Basta-users@lists.r-forge.r-project.org"  rel="nofollow" style="color:#84002E">BaSTA Users mailing</a> list so users can ask questions or provide comments, suggestions or criticism that can help us improve the package. Users can register by <a href="https://lists.r-forge.r-project.org/cgi-bin/mailman/listinfo/basta-users"  rel="nofollow" class="intext">clicking here</a>.<br></p>
                   </td>
