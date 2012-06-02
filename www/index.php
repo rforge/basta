@@ -43,16 +43,10 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
             <table style="vertical-align:middle;background:#1F1209" width="1055px">
               <tbody><tr align="center"><td>
             <!-- 1.- HEADER:-->
-            <table style="background-color:#47697E" width="1050"  style="table-layout:fixed">
+            <table width="1050"  style="table-layout:fixed">
               <tbody>
                 <tr>
-                  <td width="10px">&nbsp;</td>
-                  <td valign="middle" width="100px"><img alt="BaSTA logo" border="0" width="100px" src="bastalogo.jpg?width=100px"></td>
-                  <td width="20px">&nbsp;</td>
-                  <td width="920px" style="vertical-align:middle">
-                    <p style="white-space:nowrap;vertical-align:middle;margin-top:0px;margin-bottom:0px;font-size:38px;letter-spacing:0.25em;color:#FFCC33">BaSTA</p>
-                    <p style="white-space:nowrap;vertical-align:middle;font-size:24px;color:#FCF1D1">Bayesian Survival Trajectory Analysis</p>
-                  </td>
+                  <td style="padding:0px;outline-width:0px"><img alt="BaSTA logo" border="0" width="1045px" src="bastalogo.jpg?"></td>
                 </tr>
               </tbody>
             </table>
@@ -68,16 +62,15 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
               </tbody>
             </table>
             <!-- 3.- LOCAL LINKS:-->
-            <table width="1045px" style="table-layout:fixed;background:#FFFFFF" cellpadding="10">
+            <table width="1045px" style="table-layout:fixed;background:#FFFFFF" cellpadding="20">
               <tbody>
                 <tr>
                   <td align="center" valign="top" width="350">
-                    <p><br></p>
-                    <img alt="Sooty tern banding" border="0" width="350px" src="BastaPhotos.jpg">
-                    <p align="left"><br>&nbsp<a href="http://r-forge.r-project.org/"><img height="30px" src="Rforgelogo.png" border="0" alt="R-Forge Logo"></a></p>
+                    <img alt="Sooty tern banding" border="0" width="400px" style="vertical-align:top;outline-width:0px" src="BastaPhotos.jpg">
+                    <p align="left">&nbsp<a href="http://r-forge.r-project.org/"><img height="30px" src="Rforgelogo.png" border="0" alt="R-Forge Logo"></a></p>
                   </td>
                   <td width="400" valign="top">
-                    <h1><b>BaSTA</b></h1>
+                    <!--<h1><b>BaSTA</b></h1>-->
                     <p style="font-size:16px;line-height:1.25"><b>Authors:</b><br><br>Fernando Colchero <a href="mailto:Colchero@demogr.mpg.de" rel="nofollow" style="color:#84002E">Colchero@demogr.mpg.de</a><br>Owen R. Jones <a href="mailto:Colchero@demogr.mpg.de" rel="nofollow" style="color:#84002E">Jones@demogr.mpg.de</a><br>Maren Rebke <a href="mailto:Colchero@demogr.mpg.de" rel="nofollow" style="color:#84002E">Rebke@demogr.mpg.de</a><br></p>
                     <p style="font-size:16px;line-height:1.25;text-align:justify"><br><b>Developed at:</b><br><br><a href="http://www.demogr.mpg.de" rel="nofollow" style="color:#84002E;font-family:verdana" target="_blank">Max Planck Institute for Demographic Research</a><br>(<i>Max Planck Independent Research Group Modeling the Evolution of Aging and Laboratory of Evolutionary Biodemography</i>).</p>
                   </td>
