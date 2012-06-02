@@ -36,11 +36,11 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 
   <body style="background:#E5F5E0">
     <a name="top"></a>
-    <table style="vertical-align:middle;background:#E5F5E0" width="100%" height="100%">
+    <table style="vertical-align:middle;background:#E5F5E0;padding:0px;outline-width:0px" width="100%" height="100%">
       <tbody>
         <tr align="center">
           <td>
-            <table style="vertical-align:middle;background:#1F1209" width="1055px">
+            <table style="vertical-align:middle;background:#FFFFFF" width="1050px">
               <tbody><tr align="center"><td>
             <!-- 1.- HEADER:-->
             <table width="1050"  style="table-layout:fixed">
@@ -51,7 +51,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
               </tbody>
             </table>
             <!-- 2.- LINKS:-->
-            <table width="1050px" style="table-layout:fixed;vertical-align:middle" cellspacing="5px">
+            <table width="1050px" style="table-layout:fixed;vertical-align:middle;background:#FFFFFF" cellspacing="5px">
               <tbody>
                 <tr>
                   <td class="button"><a href="#summary" class="button">SUMMARY</a></td>
@@ -81,9 +81,13 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
             <!-- 4.- SECTIONS:-->
             <!-- 4.1- Summary:-->
             <a name="summary"></a>
-            <table  valign="middle" width="1050px" style="table-layout:fixed;background:#1F1209">
+            <table  valign="middle" width="1050px" style="table-layout:fixed;background:#FFFFFF">
               <tbody>
                 <td style="padding:0px;outline-width:0px"><img alt="Summary" border="0" width="1045px" src="summary.jpg?"></td>
+							</tbody>
+						</table>
+            <table  valign="middle" width="1050px" style="table-layout:fixed;background:#FFFFFF">
+              <tbody>
                 <tr style="background:#FFFFFF">
                   <td class="main">
                     <p class="parag"><b>BaSTA</b> is an R package (R Development Core Team 2011) that allows users to draw inference on age-specific survival and mortality patterns from capture-recapture/recovery data when a large number of individuals (or all) have missing age information (Colchero, Jones and Rebke 2012). <b>BaSTA</b> is based on a model developed by Colchero and Clark (2012), which extends inference from parameter estimates to the estimation of unknown (i.e. latent) times of birth and death. The package also allows testing the effect of categorical and continuous individual covariates on mortality and survival (for an example see Fig. 1). Below we feature a video hosted by the journal Methods in Ecology and Evolution, that explains the context in which BaSTA can be useful and the way the package can be implemented. Version 1.1 of the package is now availale on CRAN and can be installed as source by typing the following line of code into the R console: <br></p>
@@ -96,7 +100,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
                     <a href="#top" class="totop">Back to top</a>
                   </td>
                   <td class="main">
-                    <p><img style="margin:0px;padding:0px;border:none" width="400px" align="middle" src="Sheep.png?width=400px"><br><br></p>
+                    <p><img style="margin:0px;padding:0px;border:none" width="400px" align="middle" src="Sheep.png"><br><br></p>
                     <p class="caption">Fig. 1. <b>BaSTA</b> model output for sex differences in Soay sheep mortality using a Siler survival model (Colchero & Clark 2012). The left panel shows posterior distributions for the survival and recapture parameters while the right panel shows the resulting survival probabilities and the mortality rates for males and females.</p>
 										<p class="parag">We have set up a <a href="mailto:Basta-users@lists.r-forge.r-project.org"  rel="nofollow" style="color:#84002E">BaSTA Users mailing</a> list so users can ask questions or provide comments, suggestions or criticism that can help us improve the package. Users can register by <a href="https://lists.r-forge.r-project.org/cgi-bin/mailman/listinfo/basta-users"  rel="nofollow" class="intext">clicking here</a>.<br></p>
                   </td>
@@ -114,9 +118,13 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
             </table>
             <!-- 4.2- Package:-->
             <a name="description"></a>
-            <table  valign="middle" width="1050px" style="table-layout:fixed;background:#1F1209">
+            <table  valign="middle" width="1050px" style="table-layout:fixed;background:#FFFFFF">
               <tbody>
                 <td style="padding:0px;outline-width:0px"><img alt="Package" border="0" width="1045px" src="package.jpg?"></td>
+							</tbody>
+						</table>
+            <table  valign="middle" width="1050px" style="table-layout:fixed;background:#FFFFFF">
+              <tbody>
                 <tr style="background:#FFFFFF">
                   <td class="main">
                     <p class="parag"><b>BaSTA</b> requires conventional data input (equivalent to other common capture-recapture softwares) and minimum user input (Fig. 2). The data consist of a single table, where each row corresponds to an individual history. This table consist of a first column with individual id's, the next two columns for the times of birth and death, respectively, followed by the traditional capture history matrix. This capture history includes one column for each year of the study and assigns 1 when individuals are detected and 0 otherwise. The last columns are optional, and should include covariates such as sex, location id, birth weight, etc.<br><br>The current version includes:</p>
@@ -155,9 +163,13 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
             </table>
             <!-- 4.3- Model:-->
             <a name="model"></a>
-            <table  valign="middle" width="1050px" style="table-layout:fixed;background:#1F1209">
+            <table  valign="middle" width="1050px" style="table-layout:fixed;background:#FFFFFF">
               <tbody>
                 <td style="padding:0px;outline-width:0px"><img alt="Model" border="0" width="1045px" src="model.jpg?"></td>
+							</tbody>
+						</table>
+            <table  valign="middle" width="1050px" style="table-layout:fixed;background:#FFFFFF">
+              <tbody>
                 <tr style="background:#FFFFFF">
                   <td class="main">
                     <p class="parag">The core of the model is a Monte Carlo Markov Chain (MCMC) algorithm that combines Metropolis sampling for survival parameters and latent states (i.e. unknown times of birth and death) and direct sampling for recapture probabilities (Clark 2007, Colchero and Clark <i>in press</i>). The main function performs several diagnostics on the user's inputs such as checking that the data is consistent with the model's requirements, verifies that the number of iterations, the burnin sequence and the thinning gap are consistent and finally verifies that the initial parameters and jumps provided by the user allow the model to run properly (Fig. 3). After running these diagnostics, the function can run multiple MCMC simulations. In case convergence is not acheived or some or all simulations failed, neither convergence nor model selection diagnostics are calculated.<br></p>
@@ -172,9 +184,13 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
             </table>
             <!-- 4.4- References:-->
             <a name="refs"></a>
-            <table  valign="middle" width="1050px" style="table-layout:fixed;background:#1F1209">
+            <table  valign="middle" width="1050px" style="table-layout:fixed;background:#FFFFFF;padding:0px;outline-width:0px">
               <tbody>
                 <td style="padding:0px;outline-width:0px"><img alt="References" border="0" width="1045px" src="references.jpg?"></td>
+							</tbody>
+						</table>
+            <table  valign="middle" width="1050px" style="table-layout:fixed;background:#FFFFFF">
+              <tbody>
                 <tr style="background:#FFFFFF">
                   <td style="vertical-align:middle;padding:40px" width="420px">
                     <p class="Refs">Clark, J.S. (2007) <b>Models for ecological data</b>. Princeton University Press, Princeton, New Jersey, USA.<br><br></p>
@@ -196,7 +212,6 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
                 </tr>
               </tbody>
             </table>
-            <p><br><br></p>
           </td>
         </tr>
       </tbody>
