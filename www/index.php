@@ -86,7 +86,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
                 <td style="padding:0px;outline-width:0px"><img alt="Summary" border="0" width="1045px" src="summary.jpg?"></td>
 							</tbody>
 						</table>
-            <table  valign="middle" width="1050px" style="table-layout:fixed;background:#FFFFFF">
+            <table  valign="top" width="1050px" style="table-layout:fixed;background:#FFFFFF">
               <tbody>
                 <tr style="background:#FFFFFF">
                   <td class="main">
@@ -100,7 +100,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
                     <a href="#top" class="totop">Back to top</a>
                   </td>
                   <td class="main">
-                    <p><img style="margin:0px;padding:0px;border:none" width="400px" align="middle" src="Sheep.png"><br><br></p>
+                    <p><br><img style="margin:0px;padding:0px;border:none" width="400px" align="middle" src="Sheep.png"><br><br></p>
                     <p class="caption">Fig. 1. <b>BaSTA</b> model output for sex differences in Soay sheep mortality using a Siler survival model (Colchero & Clark 2012). The left panel shows posterior distributions for the survival and recapture parameters while the right panel shows the resulting survival probabilities and the mortality rates for males and females.</p>
 										<p class="parag">We have set up a <a href="mailto:Basta-users@lists.r-forge.r-project.org"  rel="nofollow" style="color:#84002E">BaSTA Users mailing</a> list so users can ask questions or provide comments, suggestions or criticism that can help us improve the package. Users can register by <a href="https://lists.r-forge.r-project.org/cgi-bin/mailman/listinfo/basta-users"  rel="nofollow" class="intext">clicking here</a>.<br></p>
                   </td>
@@ -141,7 +141,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
                     <a href="#top" class="totop">Back to top</a>
                   </td>
                   <td style="vertical-align:top;padding:40px" width="420px">
-                    <img style="margin:0px;padding:0px;border:none;width:420px" align="middle" src="BastaGeneralChart.jpg?width=420px">
+                    <p><br><img style="margin:0px;padding:0px;border:none;width:420px" align="middle" src="BastaGeneralChart.jpg?width=420px"></p>
                     <p class="caption">Fig. 2. <b>BaSTA</b> general package chart.</p><br>
                     <ul>
                       <li>Runs multiple simulations either in parallel (using package snowfall; Knaus 2010) or in series.</li>
@@ -176,7 +176,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
                     <a href="#top" class="totop">Back to top</a>
                   </td>
                   <td style="vertical-align:top;padding:40px" width="420px">
-                    <img width="420px" align="middle" border="0" src="bastaChart.jpg?width=420px">
+                    <p><br><img width="420px" align="middle" border="0" src="bastaChart.jpg?width=420px"></p>
                     <p class="caption">Fig. 3. <b>BaSTA</b> model chart.</p>
                   </td>
                 </tr>
