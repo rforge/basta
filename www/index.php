@@ -83,7 +83,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
             <a name="summary"></a>
             <table  valign="middle" width="1050px" style="table-layout:fixed;background:#1F1209">
               <tbody>
-                <tr class="title"><td colspan="2" class="section">Project summary</td></tr>
+                <td style="padding:0px;outline-width:0px"><img alt="Summary" border="0" width="1045px" src="summary.jpg?"></td>
                 <tr style="background:#FFFFFF">
                   <td class="main">
                     <p class="parag"><b>BaSTA</b> is an R package (R Development Core Team 2011) that allows users to draw inference on age-specific survival and mortality patterns from capture-recapture/recovery data when a large number of individuals (or all) have missing age information (Colchero, Jones and Rebke 2012). <b>BaSTA</b> is based on a model developed by Colchero and Clark (2012), which extends inference from parameter estimates to the estimation of unknown (i.e. latent) times of birth and death. The package also allows testing the effect of categorical and continuous individual covariates on mortality and survival (for an example see Fig. 1). Below we feature a video hosted by the journal Methods in Ecology and Evolution, that explains the context in which BaSTA can be useful and the way the package can be implemented. Version 1.1 of the package is now availale on CRAN and can be installed as source by typing the following line of code into the R console: <br></p>
@@ -116,7 +116,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
             <a name="description"></a>
             <table  valign="middle" width="1050px" style="table-layout:fixed;background:#1F1209">
               <tbody>
-                <tr class="title"><td colspan="2" class="section">Package description</td></tr>
+                <td style="padding:0px;outline-width:0px"><img alt="Package" border="0" width="1045px" src="package.jpg?"></td>
                 <tr style="background:#FFFFFF">
                   <td class="main">
                     <p class="parag"><b>BaSTA</b> requires conventional data input (equivalent to other common capture-recapture softwares) and minimum user input (Fig. 2). The data consist of a single table, where each row corresponds to an individual history. This table consist of a first column with individual id's, the next two columns for the times of birth and death, respectively, followed by the traditional capture history matrix. This capture history includes one column for each year of the study and assigns 1 when individuals are detected and 0 otherwise. The last columns are optional, and should include covariates such as sex, location id, birth weight, etc.<br><br>The current version includes:</p>
@@ -157,7 +157,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
             <a name="model"></a>
             <table  valign="middle" width="1050px" style="table-layout:fixed;background:#1F1209">
               <tbody>
-                <tr class="title"><td colspan="2" class="section">Model description</td></tr>
+                <td style="padding:0px;outline-width:0px"><img alt="Model" border="0" width="1045px" src="model.jpg?"></td>
                 <tr style="background:#FFFFFF">
                   <td class="main">
                     <p class="parag">The core of the model is a Monte Carlo Markov Chain (MCMC) algorithm that combines Metropolis sampling for survival parameters and latent states (i.e. unknown times of birth and death) and direct sampling for recapture probabilities (Clark 2007, Colchero and Clark <i>in press</i>). The main function performs several diagnostics on the user's inputs such as checking that the data is consistent with the model's requirements, verifies that the number of iterations, the burnin sequence and the thinning gap are consistent and finally verifies that the initial parameters and jumps provided by the user allow the model to run properly (Fig. 3). After running these diagnostics, the function can run multiple MCMC simulations. In case convergence is not acheived or some or all simulations failed, neither convergence nor model selection diagnostics are calculated.<br></p>
@@ -174,7 +174,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
             <a name="refs"></a>
             <table  valign="middle" width="1050px" style="table-layout:fixed;background:#1F1209">
               <tbody>
-                <tr class="title"><td colspan="2" class="section">References</td></tr>
+                <td style="padding:0px;outline-width:0px"><img alt="References" border="0" width="1045px" src="references.jpg?"></td>
                 <tr style="background:#FFFFFF">
                   <td style="vertical-align:middle;padding:40px" width="420px">
                     <p class="Refs">Clark, J.S. (2007) <b>Models for ecological data</b>. Princeton University Press, Princeton, New Jersey, USA.<br><br></p>
