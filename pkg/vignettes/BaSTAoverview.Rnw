@@ -22,7 +22,6 @@
 \usepackage{longtable}
 \usepackage{fancyvrb}
 \usepackage{graphicx}
-\usepackage{array}
 \usepackage{caption}
 \captionsetup{margin=20pt,font=small,labelfont=bf}
 \makeindex
