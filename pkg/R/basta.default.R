@@ -517,8 +517,11 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
   if (length.cont == 1) {
     name.gamma <- "gamma"
   }
-  name.pi <- ifelse(length(recaptTrans) == 1, "pi", 
-      paste("pi[", recaptTrans, "]", sep = ""))
+  if (length(recapTrans) == 1) {
+    name.pi <- "pi"
+  } else {
+    name.pi <- paste("pi[", recaptTrans, "]", sep = "")
+  }
   name.post <- c("post[theta,gamma]", "post[X0]", "post[full]")
   
   parallelVars <- c(parallelVars, "length.theta", "length.full.theta", 
