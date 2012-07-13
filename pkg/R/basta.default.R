@@ -517,7 +517,7 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
   if (length.cont == 1) {
     name.gamma <- "gamma"
   }
-  if (length(recapTrans) == 1) {
+  if (length(recaptTrans) == 1) {
     name.pi <- "pi"
   } else {
     name.pi <- paste("pi[", recaptTrans, "]", sep = "")
