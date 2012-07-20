@@ -90,10 +90,10 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
               <tbody>
                 <tr style="background:#FFFFFF">
                   <td class="main">
-                    <p class="parag"><b>BaSTA</b> is an R package (R Development Core Team 2011) that allows users to draw inference on age-specific survival and mortality patterns from capture-recapture/recovery data when a large number of individuals (or all) have missing age information (Colchero, Jones and Rebke 2012). <b>BaSTA</b> is based on a model developed by Colchero and Clark (2012), which extends inference from parameter estimates to the estimation of unknown (i.e. latent) times of birth and death. The package also allows testing the effect of categorical and continuous individual covariates on mortality and survival (for an example see Fig. 1). Below we feature a video hosted by the journal Methods in Ecology and Evolution, that explains the context in which BaSTA can be useful and the way the package can be implemented. Version 1.1 of the package is now availale on CRAN and can be installed as source by typing the following line of code into the R console: <br></p>
+                    <p class="parag"><b>BaSTA</b> is an R package (R Development Core Team 2011) that allows users to draw inference on age-specific survival and mortality patterns from capture-recapture/recovery data when a large number of individuals (or all) have missing age information (Colchero, Jones and Rebke 2012). <b>BaSTA</b> is based on a model developed by Colchero and Clark (2012), which extends inference from parameter estimates to the estimation of unknown (i.e. latent) times of birth and death. The package also allows testing the effect of categorical and continuous individual covariates on mortality and survival (for an example see Fig. 1). Below we feature a video hosted by the journal Methods in Ecology and Evolution, that explains the context in which BaSTA can be useful and the way the package can be implemented. Version 1.2 of the package is now availale on CRAN and can be installed as source by typing the following line of code into the R console: <br></p>
 										<p><code>install.packages("BaSTA")</code>
 <br></p>
-										<p class="parag">Also, the latest version of <b>BaSTA</b> (vers. 1.2) can be installed from R forge by typing:<br></p>
+										<p class="parag">Also, the latest version of <b>BaSTA</b> (vers. 1.3) can be installed from R forge by typing:<br></p>
 										<p><code>install.packages("BaSTA", repos="http://R-Forge.R-project.org")</code>
 <br></p>
 
