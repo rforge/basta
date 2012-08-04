@@ -999,7 +999,7 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
   }
   Start <- Sys.time()
   if (parallel) {
-    avail.pkgs <- available.packages()
+    avail.pkgs <- installed.packages()
     if (!is.element("snowfall", avail.pkgs)) {
       warning("\nPackage 'snowfall' is not installed.\nSimulations ",
           "will not be ran in parallel (computing time will ",
