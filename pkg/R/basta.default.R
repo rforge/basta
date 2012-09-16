@@ -167,7 +167,7 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
     }
     length.theta <- length.theta0 + 3
     ini.theta <- c(-0.1, 0.5, 0, ini.theta0)
-    jump.theta <- c(0.001, 0.001, 0.01, jump.theta0)
+    jump.theta <- c(0.01, 0.01, 0.01, jump.theta0)
     prior.theta <- c(-2, 0.01, 0, prior.theta0)
     low.theta <- c(-Inf, 0, -1, low.theta0)
     if (model == "GO") {
