@@ -51,6 +51,7 @@
 \newcommand{\ba}{\mathbf{a}}
 
 \begin{document}
+\SweaveOpts{concordance=TRUE}
 \maketitle
 \tableofcontents
 \section{Introduction}
