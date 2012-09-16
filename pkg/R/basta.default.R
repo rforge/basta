@@ -1,10 +1,10 @@
 basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO", 
-        shape = "simple", covarsStruct = "fused", niter = 50000, 
-        burnin = 5001, thinning = 50, recaptTrans = studyStart, 
-        thetaStart = NULL, thetaJumps = NULL, thetaPriors = NULL, 
-        gammaStart = NULL, gammaJumps = NULL, gammaPriors = NULL, 
-        nsim = 1, parallel = FALSE, ncpus = 2, lifeTable = TRUE, 
-        progrPlots = FALSE, updateJumps = TRUE,...) {
+    shape = "simple", covarsStruct = "fused", niter = 50000, 
+    burnin = 5001, thinning = 50, recaptTrans = studyStart, 
+    thetaStart = NULL, thetaJumps = NULL, thetaPriors = NULL, 
+    gammaStart = NULL, gammaJumps = NULL, gammaPriors = NULL, 
+    nsim = 1, parallel = FALSE, ncpus = 2, lifeTable = TRUE, 
+    progrPlots = FALSE, updateJumps = TRUE,...) {
   
   # This function estimates age-specific mortality from capture-recapture/
   # recovery (CRR) data when a large proportion of (or all) the records have
@@ -152,7 +152,7 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
     ini.theta <- c(0, ini.theta0)
     jump.theta <- c(0.01, jump.theta0)
     prior.theta <- c(0, prior.theta0)
-    low.theta <- c(-Inf, low.theta0)
+    low.theta <- c(-1, low.theta0)
     name.theta <- c("c", name.theta0)
   } else if (shape == "bathtub") {
     CalculateFullMx <- function(x, theta, gamma) {
@@ -169,9 +169,9 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
     ini.theta <- c(-0.1, 0.5, 0, ini.theta0)
     jump.theta <- c(0.001, 0.001, 0.01, jump.theta0)
     prior.theta <- c(-2, 0.01, 0, prior.theta0)
-    low.theta <- c(-Inf, 0, -Inf, low.theta0)
+    low.theta <- c(-Inf, 0, -1, low.theta0)
     if (model == "GO") {
-      low.theta <- c(-Inf, 0, -Inf, -Inf, 0)
+      low.theta <- c(-Inf, 0, -1, -Inf, 0)
     }
     name.theta <- c("a0", "a1", "c", name.theta0)
   }
@@ -187,7 +187,7 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
     CalculateFullMx(xv, matrix(theta, ncol = length.theta), 
         gaa)
   }
-
+  
   # 3.2 Covariate type (i.e. categorical and continuous):
   FindCovariateType <- function(Z) {
     # This functions finds and returns if an intercecpt was included 
@@ -226,41 +226,8 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
     Lm[Lm > 0] <- 0
     return(Fm * (-Lm))
   }
-
-  # 3.4 Calculate lower bound for 'c' parameter:
-  CalculateLowC <- function(theta) {
-    if (shape == "Makeham") {
-      if (model == "GO") {
-        c.low <- ifelse(theta[3] > 0, -exp(theta[2]), 
-            0)
-      }
-      else if (model == "WE") {
-        c.low <- 0
-      }
-      else if (model == "LO") {
-        c.low <- ifelse(theta[2] > theta[3] * exp(theta[1]), 
-            -exp(theta[2]), 0)
-      }
-    }
-    if (shape == "bathtub") {
-      if (model == "GO") {
-        x.min <- (theta[1] + log(theta[2]) - theta[4] - 
-              log(theta[5]))/(theta[2] + theta[5])
-      }
-      else if (model == "LO" | model == "WE") {
-        x.vec <- seq(0, 100, 0.1)
-        mort <- CalculateFullMx(x.vec, matrix(theta, 
-                length(x.vec), length.theta, byrow = TRUE), 
-            0)
-        x.min <- x.vec[which(mort == min(mort))[1]]
-      }
-      c.low <- -exp(theta[1] - theta[2] * x.min) - CalculateBasicMx(x.min, 
-          matrix(theta[-c(1:3)], 1, length.theta0))
-    }
-    return(c.low)
-  }
-
-  # 3.5 Check if input values for parameters, jumps and priors are consistent:
+  
+  # 3.4 Check if input values for parameters, jumps and priors are consistent:
   # a) Mortality:
   CheckParsMort <- function(par, user.par, par.name) {
     if (is.null(user.par)) {
@@ -324,7 +291,7 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
     return(par)
   }
   
-  # 3.6 Function to update jumps:
+  # 3.5 Function to update jumps:
   UpdateJumps <- function(jObject, updateVec, targetUpdate, g, 
       updateInt, nPar, updateLen) {
     gUpdate <- which(updateInt == g)
@@ -374,8 +341,7 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
   
   parallelVars <- c("CalculateBasicMx", "CalculateBasicSx", 
       "CalculateFullFx", "CalculateFullMx", 
-      "CalculateFullSx", "BuildAliveMatrix", 
-      "CalculateLowC", "name.theta", 
+      "CalculateFullSx", "BuildAliveMatrix", "name.theta", 
       "length.theta0", "length.theta", 
       "studyStart", "studyEnd", "recaptTrans", 
       "progrPlots", "UpdateJumps", "updateJumps")
@@ -392,7 +358,7 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
   bd <- as.matrix(object[, 2:3])
   bi <- bd[, 1]
   di <- bd[, 2]
-
+  
   # 4.1.2 Calculate first and last time observed 
   #       and total number of times observed:
   ytemp <- t(t(Y) * study.years)
@@ -402,11 +368,11 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
   first.obs[first.obs == 10000] <- 0
   oi <- Y %*% rep(1, study.length)
   rm("ytemp")
-
+  
   # 4.1.3 Define study duration:
   Dx <- 1 #(study.years[2] - study.years[1])
   Tm <- matrix(study.years, n, study.length, byrow = TRUE)
-
+  
   parallelVars  <- c(parallelVars, "niter", "burnin", "thinning", "bi", "di", 
       "Dx", "Tm", "last.obs", "first.obs", "study.years", "study.length", 
       "n", "bd", "Y", "oi") 
@@ -428,7 +394,6 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
       colnames(Zcat) <- "NoCat"
       Cat <- FALSE
       Cont <- TRUE
-#      if (model == "GO" & !is.null(covariate.type$cat)) {
       if (!is.null(covariate.type$cat)) {
         Zcont <- as.matrix(Zcont[, -covariate.type$cat[1]])
         colnames(Zcont) <- colnames(Z)[-1] 
@@ -625,14 +590,17 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
   # d) Times of birth and death:
   bi0 <- which(bi==0)
   bg  <- bi
-  bg[bi == 0 & first.obs > 0]<- first.obs[bi == 0 & first.obs > 0] - 1
-  bg[bi == 0 & first.obs == 0 & di > 0] <- 
-      di[bi == 0 & first.obs == 0 & di > 0] - 1
+  idb0f1 <- which(bi == 0 & first.obs > 0)
+  bg[idb0f1] <- first.obs[idb0f1] - sample(1:6, length(idb0f1), replace = TRUE)
+  idb0f0 <- which(bi == 0 & first.obs == 0 & di > 0)
+  bg[idb0f0] <- di[idb0f0] - sample(1:6, length(idb0f0), replace = TRUE)
   
   di0 <- which(di==0)
   dg <- di
-  dg[di == 0 & last.obs > 0] <- last.obs[di == 0 & last.obs > 0] + 1
-  dg[di == 0 & last.obs == 0]<- bi[di == 0 & last.obs == 0] + 1
+  idd0l1 <- which(di == 0 & last.obs > 0)
+  dg[idd0l1] <- last.obs[idd0l1] + sample(1:6, length(idd0l1), replace = TRUE)
+  idd0l0 <- which(di == 0 & last.obs == 0)
+  dg[idd0l0]<- bi[idd0l0] + sample(1:6, length(idd0l0), replace = TRUE)
   dg[dg < studyStart]<- studyStart + 1
   
   xg <- dg - bg
@@ -710,17 +678,7 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
       InfPost <- TRUE
       while (InfPost) {
         theta.n[idUpdJump] <- rtnorm(length(idUpdJump), theta.g[idUpdJump], 
-                thetaJitter[idUpdJump], lower=nlow[idUpdJump])
-        if (shape != "simple") {
-          nlow[, 'c'] <- apply(theta.n, 1, CalculateLowC)
-          idc.low <- which(theta.n[, 'c'] < nlow[, 'c'])
-          if (length(idc.low) > 0) {
-            for(cc in idc.low) {
-              theta.n[cc,'c'] <- c(rtnorm(1, theta.g[cc, 'c'], thetaJitter[cc, 'c'], 
-                      lower = nlow[cc, 'c']))
-            }
-          }
-        }
+            thetaJitter[idUpdJump], lower=nlow[idUpdJump])
         if (Cont) {
           gamma.n <- rnorm(length.cont, gamma.g, 0.5)      
         } else {
@@ -769,16 +727,6 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
               theta.jump, lower = low.full.theta), 
           length.cat, length.theta, 
           dimnames = dimnames(theta.g))
-      if (shape!="simple") {
-        nlow[, 'c'] <- apply(theta.n, 1, CalculateLowC)
-        idc.low <- which(theta.n[, 'c'] < nlow[, 'c'])
-        if (length(idc.low)>0) {
-          for(cc in idc.low) {
-            theta.n[cc,'c'] <- c(rtnorm(1, theta.g[cc,'c'], 0.5, 
-                    lower=nlow[cc,'c']))
-          }
-        }
-      }
       
       if (Cont) {
         gamma.n <- rnorm(length.cont, gamma.g, gamma.jump) 
@@ -796,7 +744,7 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
                     Ztheta.g, Zgamma.g)) -
             log(CalculateFullSx(xatg, 
                     Ztheta.g, Zgamma.g))) * Iag 
-
+      
       # - Priors:
       p.thg <- sum(p.thg) + sum(dtnorm(c(theta.g[idUpdJump]), 
                   c(theta.prior[idUpdJump]), theta.sd, 
@@ -809,7 +757,7 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
                     Ztheta.n, Zgamma.n)) -
             log(CalculateFullSx(xatg, 
                     Ztheta.n, Zgamma.n))) * Iag
-
+      
       # - Priors:
       p.thn <- sum(p.thn) + sum(dtnorm(c(theta.n[idUpdJump]), 
                   c(theta.prior[idUpdJump]), theta.sd, 
@@ -1147,7 +1095,7 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
       coef[, ncol(coef)] <- conv[, 'Rhat']
       
       # Report if convergence was reached:
-      idnconv <- which(conv[, 'Rhat']< 0.95 | conv[, 'Rhat']>1.1)
+      idnconv <- which(conv[, 'Rhat'] < 0.95 | conv[, 'Rhat'] > 1.15)
       if (length(idnconv) > 0) {
         modSel <- NULL
         kl.list <- NULL
@@ -1170,7 +1118,7 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
         names(modSel) <- c("D.ave", "D.mode", "pD", "k", "DIC")
         cat("Survival parameters converged appropriately.",
             "\nDIC was calculated.\n")
-
+        
         # 8.3.3 Inference on parameter estimates:
         # Kullback-Leibler distances for categorical covariates:
         if (is.null(covariate.type$cat)) {
@@ -1386,8 +1334,8 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
   for (JJ in 1:nsim) {
     Jumps[idUpdJump, JJ] <- basta.out[[JJ]]$jObject$jump[1:length(idUpdJump)]
     if (Cont) {
-    	Jumps[-c(1:length.full.theta)] <- 
-    	     basta.out[[JJ]]$jObject$jump[-c(1:length(idUpdJump))]
+      Jumps[-c(1:length.full.theta)] <- 
+          basta.out[[JJ]]$jObject$jump[-c(1:length(idUpdJump))]
     }
   }
   JumpPriors <- cbind(Priors, Jumps)
@@ -1423,21 +1371,5 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
     output$Lambda <- la.mat
   }
   class(output) <- "basta"
-
-  ## Check Makeham terms, return warning if the Makeham (c) terms overlap 0.
-#  if(shape=="Makeham"){
-#    MakehamCoefRow <- substr(rownames(output$coef), 1, 1) == "c"
-#    MakehamLower95pcCI <- output$coef[MakehamCoefRow, 3]
-#    MakehamUpper95pcCI <- output$coef[MakehamCoefRow, 4]
-    # Number of coefficients where Lower95%CI < 0 & Upper95%CI > 0?
-#    NLower <- length(which(MakehamLower95pccCI <= 0 & 
-#                MakehamUpper95pccCI >= 0))
-#    NLower <- sum(MakehamLower95pcCI <= 0)
-#    if (NLower > 0) {
-#    warning(paste(NLower, " of the Makeham coefficients have 95% CI\n",
-#              "overlapping 0. Makeham models may not be appropriate", sep = ""), 
-#          call. = FALSE)
-#    }
-#  }
   return(output)
 }
