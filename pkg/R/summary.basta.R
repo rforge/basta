@@ -45,7 +45,7 @@ function(object,...){
     digits        <- 4
   }
   cat("\nMean Kullback-Leibler\ndiscrepancy calibration (KLDC):\n")
-  if (!is.null(object$K)){
+  if (object$K != "Not calculated") {
     mean.q        <- (object$K$q12 + object$K$q21) / 2
     print.default(mean.q, digits = digits)
   } else {
@@ -53,7 +53,8 @@ function(object,...){
       cat("KLDC was not calculated due to insufficient number",
           " of simulations to estimate convergence.\n")
     } else {
-      cat("KLDC was not calculated due to lack of convergence,","or because covariates were not included in the model.\n")
+      cat("KLDC was not calculated due to lack of convergence,",
+          "or because covariates were not included in the model.\n")
     }
   }
   
@@ -62,10 +63,11 @@ function(object,...){
   print.default(object$coefficients, digits = digits)
 
   cat("\nConvergence:\n")
-  if (is.null(object$DIC)){
+  if (object$Conv == "Not reached"){
     if (object$set['nsim'] == 1) {
       cat("\nConvergence calculations require more than one run.",
-          "\nTo estimate potential scale reduction run at least two simulations.\n")
+          "\nTo estimate potential scale reduction run at least",
+          "two simulations.\n")
     } else {
       cat("\nWarning: Convergence not reached for some parameters",
           " (i.e. 'PotScaleReduc' values larger than 1.1).",
@@ -75,12 +77,12 @@ function(object,...){
     cat("Appropriate convergence reached for all parameters.\n")
   } 
   cat("\nDIC:\n")
-  if (!is.null(object$DIC)){
+  if (object$DIC != "Not calculated"){
     cat(object$DIC["DIC"],"\n")
   } else {
     if (object$set['nsim'] == 1) {
       cat("DIC was not calculated due to insufficient number",
-          " of simulations to estimate convergence.\n")
+          "of simulations to estimate convergence.\n")
     } else {
       cat("DIC was not calculated due to lack of convergence.\n")
     }
