@@ -89,7 +89,7 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
     length.theta0 <- 2
     low.theta0 <- c(-Inf, -Inf)
     ini.theta0 <- c(-3, 0.01)
-    jump.theta0 <- c(0.05, 0.025)
+    jump.theta0 <- c(0.05, 0.05)
     prior.theta0 <- c(-3, 0.01)
   } else if (model == "WE") {
     CalculateBasicMx <- function(x, theta) {
@@ -102,7 +102,7 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
     length.theta0 <- 2
     low.theta0 <- c(0, 0)
     ini.theta0 <- c(1.5, 0.1)
-    jump.theta0 <- c(0.01, 0.001)
+    jump.theta0 <- c(0.05, 0.05)
     prior.theta0 <- c(1, 0.01)
   } else if (model == "LO") {
     CalculateBasicMx <- function(x, theta) {
@@ -117,7 +117,7 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
     length.theta0 <- 3
     low.theta0 <- c(-Inf, 0, 0)
     ini.theta0 <- c(-3, 0.01, 1e-04)
-    jump.theta0 <- c(0.001, 0.001, 0.001)
+    jump.theta0 <- c(0.05, 0.05, 0.05)
     prior.theta0 <- c(-3, 0.01, 1e-10)
   }
   name.theta0 <- paste("b", (1:length.theta0) - 1, sep = "")
@@ -150,7 +150,7 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
     }
     length.theta <- length.theta0 + 1
     ini.theta <- c(0, ini.theta0)
-    jump.theta <- c(0.01, jump.theta0)
+    jump.theta <- c(0.05, jump.theta0)
     prior.theta <- c(0, prior.theta0)
     low.theta <- c(-1, low.theta0)
     name.theta <- c("c", name.theta0)
@@ -167,7 +167,7 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
     }
     length.theta <- length.theta0 + 3
     ini.theta <- c(-0.1, 0.5, 0, ini.theta0)
-    jump.theta <- c(0.01, 0.01, 0.01, jump.theta0)
+    jump.theta <- c(0.05, 0.05, 0.05, jump.theta0)
     prior.theta <- c(-2, 0.01, 0, prior.theta0)
     low.theta <- c(-Inf, 0, -1, low.theta0)
     if (model == "GO") {
@@ -344,7 +344,7 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
       "CalculateFullSx", "BuildAliveMatrix", "name.theta", 
       "length.theta0", "length.theta", 
       "studyStart", "studyEnd", "recaptTrans", 
-      "progrPlots", "UpdateJumps", "updateJumps")
+      "progrPlots", "UpdateJumps")
   
   
   # 4 Data formatting:
@@ -622,14 +622,14 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
   parallelVars <- c(parallelVars, "Fg", "Lg", "Og", "lfi") 
   
   # 6.  Multiple MCMC function:
-  multiMCMC  <- function(sim) {
+  multiMCMC  <- function(sim, updJumpSim = FALSE, niter, burnin, ...) {
     if (parallel){
       for(ii in 1:(sim * 2)) {}
     }     
     
     # Output tables:
     thin.seq <- seq(burnin, niter, by = thinning)
-    theta.mat <- matrix(NA,niter,length.full.theta)
+    theta.mat <- matrix(NA, niter, length.full.theta)
     colnames(theta.mat) <- name.full.theta
     gamma.mat <- matrix(0, niter, length.cont)
     colnames(gamma.mat) <- name.gamma
@@ -718,15 +718,26 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
       progrpl <- dev.cur()
       par(mar = rep(0,4))
     }
-    for(g in 1:niter) {
-      
+    keepRunning <- TRUE
+    g <- 0
+    while(keepRunning) {
+#    for(g in 1:niter) {
+      g <- g + 1
+      #print(g)
       # 1.- SAMPLING:
       # a) Sample survival parameters:
       # i) Metropolis draw for params:
+      negMort <- TRUE
+      while(negMort) {
       theta.n <- matrix(rtnorm(length.full.theta, theta.g, 
               theta.jump, lower = low.full.theta), 
           length.cat, length.theta, 
           dimnames = dimnames(theta.g))
+      xRange <- 0:max(xg)
+      mortTest <- apply(theta.n, 1, function(th) 
+            CalculateFullMx(xRange, matrix(th, nrow = 1), 0))
+      negMort <- ifelse(all(mortTest >= 0), FALSE, TRUE)
+      }
       
       if (Cont) {
         gamma.n <- rnorm(length.cont, gamma.g, gamma.jump) 
@@ -883,47 +894,57 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
       
       # 2.- STORE RESULTS:
       # Parameters and latent states:
+      if (!updJumpSim) {
+        pi.mat[g, ] <- pi.g
+        if (minAge > 0) {
+          la.vec[g] <- lag
+        }
+        if (g %in% thin.seq) {
+          bi.mat[gg, ] <- bg
+          di.mat[gg, ] <- dg
+          gg <- gg + 1
+        }
+        # Conditional posteriors: 
+        posterior.mat[g, ] <- c(p.thg, sum(p.bdg), p.thg + 
+                sum((Og - lfi) %*% log(1 - Pig)))
+      }
       theta.mat[g, ] <- theta.g
-      pi.mat[g, ] <- pi.g
       if (Cont) {
         gamma.mat[g, ] <- gamma.g
       }
-      if (minAge > 0) {
-        la.vec[g] <- lag
-      }
-      if (g %in% thin.seq) {
-        bi.mat[gg, ] <- bg
-        di.mat[gg, ] <- dg
-        gg <- gg + 1
-      }
       
-      # Conditional posteriors: 
-      posterior.mat[g, ] <- c(p.thg, sum(p.bdg), p.thg + 
-              sum((Og - lfi) %*% log(1 - Pig)))
       
       # Update Jumps:
-      if (g %in% updateInt & jumpObject$update & updateJumps) {
-        jumpObject <- UpdateJumps(jObject = jumpObject, updateVec = updVec, 
-            targetUpdate = 0.2, g, 
-            updateInt, nPar, updateLen)
-        theta.jump[idUpdJump] <- jumpObject$jump[1:length(idUpdJump)]
-        if (Cont) {
-          gamma.jump <- jumpObject$jump[-c(1:length(idUpdJump))]
+      if (updJumpSim) {
+        if (g %in% updateInt) {
+          jumpObject <- UpdateJumps(jObject = jumpObject, updateVec = updVec, 
+              targetUpdate = 0.15, g, updateInt, nPar, updateLen)
+          theta.jump[idUpdJump] <- jumpObject$jump[1:length(idUpdJump)]
+          if (Cont) {
+            gamma.jump <- jumpObject$jump[-c(1:length(idUpdJump))]
+          }
         }
       }
       # Progress plot:
-      if (g %in% round(seq(1, niter, length = 100)) & progrPlots) {
-        par(mar = rep(0, 4))
-        plot(x  = c(0, niter * 1.1), y = c(0, 1), axes = FALSE, col = NA, 
-            xlab = "", ylab = "")
-        polygon(x = c(0, niter, niter, 0), y = c(0.35, 0.35, 0.65, 0.65), 
-            col = NA, border = 'dark red')
-        polygon(x = c(0, g, g, 0), y = c(0.35, 0.35, 0.65, 0.65), 
-            col = 'dark red', border = 'dark red')
-        text(x  = niter / 2, y = 0.85, labels = paste("MCMC progress (Sim. ", 
-                sim, ")", sep = ""), cex = 0.9)
-        text(x = g, y = 0.15, labels = paste(round(g / niter * 100), 
-                "%", sep = ""), cex = 0.8)
+      if (!updJumpSim) {
+        if (g %in% round(seq(1, niter, length = 100)) & progrPlots) {
+          par(mar = rep(0, 4))
+          plot(x  = c(0, niter * 1.1), y = c(0, 1), axes = FALSE, col = NA, 
+              xlab = "", ylab = "")
+          polygon(x = c(0, niter, niter, 0), y = c(0.35, 0.35, 0.65, 0.65), 
+              col = NA, border = 'dark red')
+          polygon(x = c(0, g, g, 0), y = c(0.35, 0.35, 0.65, 0.65), 
+              col = 'dark red', border = 'dark red')
+          text(x  = niter / 2, y = 0.85, labels = paste("MCMC progress (Sim. ", 
+                  sim, ")", sep = ""), cex = 0.9)
+          text(x = g, y = 0.15, labels = paste(round(g / niter * 100), 
+                  "%", sep = ""), cex = 0.8)
+        }
+      }
+      if (updJumpSim) {
+        keepRunning <- ifelse(jumpObject$update & g < niter, TRUE, FALSE)
+      } else {
+        keepRunning <- ifelse(g < niter, TRUE, FALSE)
       }
     }
     if (progrPlots) {
@@ -940,29 +961,45 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
   if (nsim == 1) {
     parallel <- FALSE
   }
+  Start <- Sys.time()
+  if (updateJumps & nsim > 1) {
+    cat("Starting simulation to find jump sd's...\n")
+    op <- options()
+    options(warn = -1)
+    jumpNiter <- min(25000, niter)
+    jumpBurnin <- min(10000, burnin)
+    jumpOut <- multiMCMC(sim = 1, updJumpSim = TRUE, niter = jumpNiter,
+        burnin = jumpBurnin)
+    options(op)
+    jumpObject$jump <- jumpOut$jObject$jump
+    cat(paste("Jump simulation finished after ", jumpOut$g, " steps...\n\n", 
+            sep = ""))
+  }
   if (nsim > 1) {
     cat("Multiple simulations started...\n\n") 
   } else {
     cat("Simulation started...\n\n")
   }
-  Start <- Sys.time()
   if (parallel) {
     avail.pkgs <- installed.packages()
     if (!is.element("snowfall", avail.pkgs)) {
       warning("\nPackage 'snowfall' is not installed.\nSimulations ",
           "will not be ran in parallel (computing time will ",
           "be longer...)\n")
-      basta.out <- lapply(1:nsim, multiMCMC)
+      basta.out <- lapply(1:nsim, multiMCMC, updJumpSim = FALSE, niter = niter,
+      burnin = burnin)
     } else {
       require(snowfall)
       sfInit(parallel = TRUE, cpus = ncpus);
       sfExport(list = c(parallelVars, "parallel", "nsim", "minAge"))
       sfLibrary(msm)
-      basta.out <- sfClusterApplyLB(1:nsim, multiMCMC)
+      basta.out <- sfClusterApplyLB(1:nsim, multiMCMC, updJumpSim = FALSE,
+      niter = niter, burnin = burnin)
       sfStop()
     }
   } else {
-    basta.out <- lapply(1:nsim, multiMCMC)
+    basta.out <- lapply(1:nsim, multiMCMC, updJumpSim = FALSE,
+      niter = niter, burnin = burnin)
   }
   End <- Sys.time()
   
@@ -1095,7 +1132,7 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
       coef[, ncol(coef)] <- conv[, 'Rhat']
       
       # Report if convergence was reached:
-      idnconv <- which(conv[, 'Rhat'] < 0.95 | conv[, 'Rhat'] > 1.15)
+      idnconv <- which(conv[, 'Rhat'] > 1.15)
       if (length(idnconv) > 0) {
         modSel <- NULL
         kl.list <- NULL
@@ -1329,23 +1366,33 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
     Priors <- c(Priors, gamma.prior)
     jumpPriorName <- c(jumpPriorName, name.gamma)
   }
-  Jumps <- matrix(0, length(jumpPriorName), nsim)
-  
-  for (JJ in 1:nsim) {
-    Jumps[idUpdJump, JJ] <- basta.out[[JJ]]$jObject$jump[1:length(idUpdJump)]
-    if (Cont) {
-      Jumps[-c(1:length.full.theta)] <- 
-          basta.out[[JJ]]$jObject$jump[-c(1:length(idUpdJump))]
-    }
+  Jumps <- matrix(0, length(jumpPriorName), 1)
+  Jumps[idUpdJump, 1] <- basta.out[[1]]$jObject$jump[1:length(idUpdJump)]
+  if (Cont) {
+    Jumps[-c(1:length.full.theta)] <- 
+        basta.out[[1]]$jObject$jump[-c(1:length(idUpdJump))]
   }
+
   JumpPriors <- cbind(Priors, Jumps)
   dimnames(JumpPriors) <- list(jumpPriorName, 
-      c("Mean.priors", paste("Jump.sd.sim.", 1:nsim, sep = "")))
+      c("Mean.priors", "Jump.sd.sim."))
   output <- list()
   output$coefficients <- coef
-  output$DIC <- modSel
-  output$Convergence <- conv
-  output$KullbackLeibler <- kl.list
+  if (is.null(conv)) {
+    output$Convergence <- "Not reached"
+  } else {
+    output$Convergence <- conv
+  }
+  if (is.null(modSel) ) {
+    output$DIC <- "Not calculated"
+  } else {
+    output$DIC <- modSel
+  }
+  if (is.null(kl.list)) {
+    output$KullbackLeibler <- "Not calculated"
+  } else {
+    output$KullbackLeibler <- kl.list
+  }
   output$settings <- Settings
   output$ModelSpecs <- ModelSpecs
   output$JumpPriors <- JumpPriors
