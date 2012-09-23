@@ -89,7 +89,7 @@ basta(object, \dots)
 \item{progrPlots }{A logical argument indicating wheter to draw progress plots or not. If \code{TRUE}, small plots are displayed showing the percent progress achieved for each MCMC simulation. }
   
 
-\item{updateJumps }{A logical argument indicating wheter to update jumps until an update rate of 0.2 is achieved. }
+\item{updateJumps }{A logical argument indicating wheter to update jumps until an update rate of 0.25 is achieved (see \code{details}). }
   
 
 \item{\dots }{Ignored.}
@@ -151,6 +151,8 @@ The \code{thinning} argument specifies the number of steps to be skipped in orde
 The number of parameters in \code{thetaStart} is a vector or matrix that defines the initial values for each \eqn{\theta} parameter of the mortality function. The number of parameters will depend on the model chosen with \code{model} (see above). If the number of parameters specified does not match the number of parameters inherent to the model and shape selected, the function returns an error. If no \code{thetaStart} argument is specified (i.e. default is \code{NULL}), the model randomly generates a set of initial parameters. 
 
 As described above, the number of parameters for the \code{gammaStart} argument (i.e. section b), namely the proportional hazards section, will be a function of the number of continuous covariates if argument \code{covarsStruct} is \dQuote{\code{fused}}, or to the total number of covariates when \code{covarsStruct} is \dQuote{\code{prop.haz}}.
+
+The \code{updateJumps} argument specifies weather to run a simulation to find appropriate jump standard deviations for theta and gamma parameters. If argument \dQuote{\code{nsim}} is set to 1, then the simulation runs with the update jumps routine active. If \dQuote{\code{nsim}} is larger than 1, then an initial simulation is ran to find apropriate jumps before the main analysis is ran. 
 }
 
 \value{  
