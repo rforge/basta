@@ -4,7 +4,7 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
     thetaStart = NULL, thetaJumps = NULL, thetaPriors = NULL, 
     gammaStart = NULL, gammaJumps = NULL, gammaPriors = NULL, 
     nsim = 1, parallel = FALSE, ncpus = 2, lifeTable = TRUE, 
-    progrPlots = FALSE, updateJumps = TRUE,...) {
+    progrPlots = FALSE, updateJumps = FALSE,...) {
   
   # This function estimates age-specific mortality from capture-recapture/
   # recovery (CRR) data when a large proportion of (or all) the records have
@@ -76,7 +76,7 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
     length.theta0 <- 1
     low.theta0 <- 0
     ini.theta0 <- 0.01
-    jump.theta0 <- 0.01
+    jump.theta0 <- 0.025
     prior.theta0 <- 0.01
   } else if (model == "GO") {
     CalculateBasicMx <- function(x, theta) {
@@ -89,7 +89,7 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
     length.theta0 <- 2
     low.theta0 <- c(-Inf, -Inf)
     ini.theta0 <- c(-3, 0.01)
-    jump.theta0 <- c(0.01, 0.01)
+    jump.theta0 <- c(0.025, 0.025)
     prior.theta0 <- c(-3, 0.01)
   } else if (model == "WE") {
     CalculateBasicMx <- function(x, theta) {
@@ -102,7 +102,7 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
     length.theta0 <- 2
     low.theta0 <- c(0, 0)
     ini.theta0 <- c(1.5, 0.1)
-    jump.theta0 <- c(0.01, 0.01)
+    jump.theta0 <- c(0.025, 0.025)
     prior.theta0 <- c(1, 0.01)
   } else if (model == "LO") {
     CalculateBasicMx <- function(x, theta) {
@@ -117,7 +117,7 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
     length.theta0 <- 3
     low.theta0 <- c(-Inf, 0, 0)
     ini.theta0 <- c(-3, 0.01, 1e-04)
-    jump.theta0 <- c(0.01, 0.01, 0.01)
+    jump.theta0 <- c(0.025, 0.025, 0.025)
     prior.theta0 <- c(-3, 0.01, 1e-10)
   }
   name.theta0 <- paste("b", (1:length.theta0) - 1, sep = "")
@@ -150,7 +150,7 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
     }
     length.theta <- length.theta0 + 1
     ini.theta <- c(0, ini.theta0)
-    jump.theta <- c(0.001, jump.theta0)
+    jump.theta <- c(0.005, jump.theta0)
     prior.theta <- c(0, prior.theta0)
     low.theta <- c(-1, low.theta0)
     name.theta <- c("c", name.theta0)
@@ -167,11 +167,11 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
     }
     length.theta <- length.theta0 + 3
     ini.theta <- c(-0.1, 0.5, 0, ini.theta0)
-    jump.theta <- c(0.01, 0.01, 0.001, jump.theta0)
+    jump.theta <- c(0.025, 0.025, 0.005, jump.theta0)
     prior.theta <- c(-2, 0.01, 0, prior.theta0)
-    low.theta <- c(-Inf, 0, -1, low.theta0)
+    low.theta <- c(-Inf, 0, -Inf, low.theta0)
     if (model == "GO") {
-      low.theta <- c(-Inf, 0, -1, -Inf, 0)
+      low.theta <- c(-Inf, 0, -Inf, -Inf, 0)
     }
     name.theta <- c("a0", "a1", "c", name.theta0)
   }
@@ -694,9 +694,9 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
         if (shape != "simple") {
           lowC <-  sapply(1:nrow(theta.n), 
               function(cc) CalcLowC(t(as.matrix(theta.n[cc, ])), xRange))
+          theta.n[, 'c'] <- rtnorm(1:length.cat, theta.g[, 'c'], 
+              thetaJitter[, 'c'], lower = lowC)
         }
-        theta.n[, 'c'] <- rtnorm(1:length.cat, theta.g[, 'c'], 
-            thetaJitter[, 'c'], lower = lowC)
         mortTest <- apply(theta.n, 1, function(th) 
               CalculateFullMx(xRange, matrix(th, nrow = 1), 0))
         negMort <- ifelse(all(mortTest >= 0), FALSE, TRUE)
@@ -743,9 +743,9 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
         if (shape != "simple") {
           lowC <-  sapply(1:nrow(theta.n), 
               function(cc) CalcLowC(t(as.matrix(theta.n[cc, ])), xRange))
+          theta.n[, 'c'] <- rtnorm(1:length.cat, theta.g[, 'c'], 
+              theta.jump[, 'c'], lower = lowC)
         }
-        theta.n[, 'c'] <- rtnorm(1:length.cat, theta.g[, 'c'], 
-            theta.jump[, 'c'], lower = lowC)
         mortTest <- apply(theta.n, 1, function(th) 
               CalculateFullMx(xRange, matrix(th, nrow = 1), 0))
         negMort <- ifelse(all(mortTest >= 0), FALSE, TRUE)
