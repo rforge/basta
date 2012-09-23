@@ -17,7 +17,7 @@ basta(object, \dots)
          thetaStart = NULL, thetaJumps = NULL, thetaPriors = NULL, 
          gammaStart = NULL, gammaJumps = NULL, gammaPriors = NULL, 
          nsim = 1, parallel = FALSE, ncpus = 2, lifeTable = TRUE, 
-         progrPlots = FALSE, updateJumps = TRUE, \dots)
+         progrPlots = FALSE, updateJumps = FALSE, \dots)
 }
 
 \arguments{
