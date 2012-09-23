@@ -326,7 +326,7 @@ out <- basta(object = inputMat, studyStart = 1990, studyEnd = 1995,
 @
 
 \subsubsection{Defining recapture probabilities: argument \mverb{recaptTrans}}
-Currently BaSTA allows the user to test if recapture probability should be constant (default) or if it should change time dependent. This could be useful when the recapture effort is not sustained equally in time. For example, to specify that recapture probabilities changed after year 1993 for our simulated data set above, argument \mverb{recaptTrans} needs a two element vector with the first element being the first year of the study (in this case 1990) and the second element the year when recapture probabilities changed (i.e. 1993). Thus, the model can be specified as:
+Currently BaSTA allows the user to test if recapture probability should be constant (default) or if it should be time dependent. This could be useful when the recapture effort is not sustained equally in time. For example, to specify that recapture probabilities changed after year 1993 for our simulated data set above, argument \mverb{recaptTrans} needs a two element vector with the first element being the first year of the study (in this case 1990) and the second element the year when recapture probabilities changed (i.e. 1993). Thus, the model can be specified as:
 <<eval=FALSE>>=
 out <- basta(object = inputMat, studyStart = 1990, studyEnd = 1995,
              recaptTrans = c(1990, 1993))
@@ -374,6 +374,17 @@ print(new.jumps)
 out <- basta(object = inputMat, studyStart = 1990, studyEnd = 1995, 
              model = "LO", shape = "simple", thetaJumps = new.jumps)
 @
+
+\subsubsection{Updating jumps: argument \mverb{updateJumps}}
+A difficult issue with hierarchical models that use Metropolis algorithms to sample parameters is to find the appropriate combination of jump standard deviations for these parameters. BaSTA uses this type of sampling scheme for all mortality parameters. A new feature in BaSTA is the possibility of asking the algorithm to find the right combination of jump sd's without having to manually run it several times before finding the jumps. This can be achieved by setting argument \mverb{updateJumps} as \mverb{TRUE}. If the user has specified to run several simulations (i.e. argument \mverb{nsim} $> 1$) and \mverb{updateJumps} is \mverb{TRUE}, then BaSTA runs an initial simulation only to find the appropriate combination of jumps. This initial run has a maximum value of 50,000 steps after which, if the right combination of jumps has not been found, it reports this and starts the multiple simulations that will constitute the final results of the analysis. For example, to set this routine on our hypothetical dataset and to run the model for two simulations in parallel, the code can be specified as folows:
+
+<<eval=FALSE>>=
+out <- basta(object = inputMat, studyStart = 1990, studyEnd = 1995, 
+             model = "LO", shape = "simple", nsim = 2, 
+             parallel = TRUE, ncpus = 2, updateJumps = TRUE)
+@
+
+As you can note, it is not necesary to specify jumps, however, if the user has a general idea of where the jumps should lie, then they can be specified. This will only change the initial values were the jumps are tested. If, on the other hand, only one simulation has been specified (i.e. argument \mverb{nsim} $= 1$) then BaSTA runs the update jump routine on the main simulation. This can be useful in case the user wants to find appropriate jumps manually. 
 
 \subsubsection{Multiple runs: arguments \mverb{nsim}, \mverb{parallel} and \mverb{ncpus}}
 
@@ -543,7 +554,7 @@ This model has been used on wild and captive bird populations \citep{Ricklefs:20
 
 The logistic model implemented in BaSTA depicts an initially exponential increase in mortality that decelerates after an inflection age until it reaches a plateau. The $b_2$ parameter describes the degree of deceleration in mortality with age. When this parameter is equal to 0, the model becomes a simple Gompertz model (Fig.~\ref{Fig8}).
 
-Logistic models (which are also known as Perks models; \citet{Perks:1932}) are characterized a slackening of mortality with advancing age, such that there is an asymptote or plateau at older ages (Fig.~\ref{Fig8}). The models are usually formulated as an extension of the Gompertz-Makeham model but with an extra term that governs the rate of decline and the level of the asymptote. The slackening of mortality can be interpreted as a real phenomenon (i.e. an improvement in the individuals with age; \citealt{Pletcher1999}), or as an artefact caused by heterogeneity among individuals in the population \citep{Vaupel:1979p1800}. \citet{Beard1959} was the first to note that Perks' model had a logistic form (\citet{Perks:1932} does not describe them as such), and that it could arise from heterogeneity among individuals in the population. He showed that if the individuals in the population were subject to Makeham mortality, but with the initial mortality parameter varying according to a gamma distribution, then the population-level average would be logistic in form. This result, a ``Gamma-Makeham'' model, was later independently discovered and developed by \citet{Vaupel:1979p1800} in a model he described as a ``frailty model''. 
+Logistic models (which are also known as Perks models; \citet{Perks:1932}) are characterized a slackening of mortality with advancing age, such that there is an asymptote or plateau at older ages (Fig.~\ref{Fig8}). The models are usually formulated as an extension of the Gompertz-Makeham model but with an extra term that governs the rate of decline and the level of the asymptote. The slackening of mortality can be interpreted as a real phenomenon (i.e. an improvement in the individuals with age; \citealt{Pletcher1999}), or as an artifact caused by heterogeneity among individuals in the population \citep{Vaupel:1979p1800}. \citet{Beard1959} was the first to note that Perks' model had a logistic form (\citet{Perks:1932} does not describe them as such), and that it could arise from heterogeneity among individuals in the population. He showed that if the individuals in the population were subject to Makeham mortality, but with the initial mortality parameter varying according to a gamma distribution, then the population-level average would be logistic in form. This result, a ``Gamma-Makeham'' model, was later independently discovered and developed by \citet{Vaupel:1979p1800} in a model he described as a ``frailty model''. 
 
 
 \begin{figure}[h!]
@@ -597,7 +608,7 @@ If all parameters have converged, BaSTA calculates the deviance information crit
 \mathrm{DIC} = 2\hat{D}_{avg}(y) - D_{\hat{\theta}}(y),
 \end{equation*}
 
-\noindent where $y$ denotes the observed data, $\hat{D}_{avg}(y)$ is the mean discrepancy between the data and the model as a function of the parameters $\theta$, averaged over the posterior distribution, and $D_{\hat{\theta}}(y)$ is the discrepancy at the posterior mode (here represented by the point estimate $\hat{\theta}$). It is important to realise that the use of DICs is still controversial and, therefore, the results should to be taken with caution (see responses in \citealt{Spiegelhalter2002}). In order to improve the measure provided, BaSTA's DIC is calculated as an approximation of the group-marginalized DIC presented by \citet{Millar2009}. 
+\noindent where $y$ denotes the observed data, $\hat{D}_{avg}(y)$ is the mean discrepancy between the data and the model as a function of the parameters $\theta$, averaged over the posterior distribution, and $D_{\hat{\theta}}(y)$ is the discrepancy at the posterior mode (here represented by the point estimate $\hat{\theta}$). It is important to realize that the use of DICs is still controversial and, therefore, the results should to be taken with caution (see responses in \citealt{Spiegelhalter2002}). In order to improve the measure provided, BaSTA's DIC is calculated as an approximation of the group-marginalized DIC presented by \citet{Millar2009}. 
 
 \subsection{Parameter comparison for categorical covariates}
 
