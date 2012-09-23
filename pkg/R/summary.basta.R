@@ -63,18 +63,24 @@ function(object,...){
   print.default(object$coefficients, digits = digits)
 
   cat("\nConvergence:\n")
-  if (object$Conv == "Not reached"){
+  if (object$Conv[1] == "Not calculated") {
     if (object$set['nsim'] == 1) {
       cat("\nConvergence calculations require more than one run.",
           "\nTo estimate potential scale reduction run at least",
           "two simulations.\n")
     } else {
       cat("\nWarning: Convergence not reached for some parameters",
-          " (i.e. 'PotScaleReduc' values larger than 1.1).",
+          " (i.e. 'PotScaleReduc' values larger than 1.15).",
           "\nThese estimates should not be used for inference.\n")
     }
   } else {
-    cat("Appropriate convergence reached for all parameters.\n")
+    if (all(object$Conv[, "Rhat"] < 1.15)) {
+      cat("Appropriate convergence reached for all parameters.\n")
+    } else {
+      cat("\nWarning: Convergence not reached for some parameters",
+          " (i.e. 'PotScaleReduc' values larger than 1.15).",
+          "\nThese estimates should not be used for inference.\n")
+    }
   } 
   cat("\nDIC:\n")
   if (object$DIC != "Not calculated"){
@@ -87,5 +93,11 @@ function(object,...){
       cat("DIC was not calculated due to lack of convergence.\n")
     }
   }
+  ans <- c(list(coefficients = object$coef, DIC = object$DIC,
+          KullbackLeibler = object$KullbackLeibler, 
+          Convergence = object$Convergence,
+          modelSpecs = object$ModelSpecs, settings = object$set, 
+          ))
+  return(invisible(ans))
 }
 
