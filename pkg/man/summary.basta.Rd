@@ -36,6 +36,21 @@ Function \code{summary} includes all the previous elements, as well as a summary
 
 Function \code{plot} takes objects of class \code{basta} to create trace plots or, if the argument for \code{plot.trace} is set to \code{FALSE}, it plots estimated survival probabilities and mortality rates with their 95\% predictive intervals. 
 }
+
+\value{  
+\item{coefficients }{A matrix with estimated coefficients (i.e. mean values per parameter on the thinned sequences after burnin), which includes standard errors, upper and lower 95\% credible intervals, update rates per parameter (commonly the same for all survival and proportional hazards parameters), serial autocorrelation on the thinned sequences and the potential scale reduction factor for convergence (see \code{Convergence} value below). }
+  
+\item{DIC }{Basic deviance information criterion (DIC) calculations to be used for model selection (Spiegelhalter \emph{et al.} 2002).}
+	
+\item{Convergence }{A matrix with convergence coefficients based on potential scale reduction as described by Gelman \emph{et al.} (2004). If only one simulation was ran, then the returned value is \dQuote{\code{Not calculated}}.}
+  
+\item{KullbackLeibler } List with Kullback-Leibler discrepancy matrices between pair of parameters for categorical covariates (McCulloch 1989, Burnham and Anderson 2001) and McCulloch's (1989) calibration measure. If only one simulation was ran or if no convergence was reached, then the returned value is \dQuote{\code{Not calculated}}.}
+  
+\item{settings } A vector indicating the number of iterations for each MCMC, the burn in sequence, the thinning interval, and the number of simulations that were run.}
+	
+\item{ModelSpecs }{Model specifications inidicating the \code{model}, the \code{shape} and the covariate structure that were specified by the user.}
+}
+
 \references{
 Gelman, A., Carlin, J.B., Stern, H.S. and Rubin, D.B. (2004) \emph{Bayesian data analysis}. 2nd edn. Chapman & Hall/CRC, Boca Raton, Florida, USA.
 
