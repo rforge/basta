@@ -45,7 +45,7 @@ function(object,...){
     digits        <- 4
   }
   cat("\nMean Kullback-Leibler\ndiscrepancy calibration (KLDC):\n")
-  if (object$K != "Not calculated") {
+  if (object$K[1] != "Not calculated") {
     mean.q        <- (object$K$q12 + object$K$q21) / 2
     print.default(mean.q, digits = digits)
   } else {
@@ -83,7 +83,7 @@ function(object,...){
     }
   } 
   cat("\nDIC:\n")
-  if (object$DIC != "Not calculated"){
+  if (object$DIC[1] != "Not calculated"){
     cat(object$DIC["DIC"],"\n")
   } else {
     if (object$set['nsim'] == 1) {
@@ -96,8 +96,7 @@ function(object,...){
   ans <- c(list(coefficients = object$coef, DIC = object$DIC,
           KullbackLeibler = object$KullbackLeibler, 
           Convergence = object$Convergence,
-          modelSpecs = object$ModelSpecs, settings = object$set, 
-          ))
+          modelSpecs = object$ModelSpecs, settings = object$set))
   return(invisible(ans))
 }
 
