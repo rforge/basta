@@ -270,7 +270,7 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
     if (is.null(user.par)) {
       par <- rep(0, length.cont)
       if (par.name == "gamma jumps") {
-        par <- rep(0.01, length.cont)
+        par <- rep(0.02, length.cont)
       }
       names(par) <- colnames(Zcont)
     } else {
