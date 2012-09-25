@@ -83,18 +83,16 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
       exp(theta[, 1] + theta[, 2] * x)
     }
     CalculateBasicSx <- function(x, theta) {
-      exp(exp(theta[, 1])/theta[, 2] * (1 - exp(theta[, 
-                        2] * x)))
+      exp(exp(theta[, 1])/theta[, 2] * (1 - exp(theta[, 2] * x)))
     }
     length.theta0 <- 2
     low.theta0 <- c(-Inf, -Inf)
     ini.theta0 <- c(-3, 0.01)
-    jump.theta0 <- c(0.025, 0.025)
+    jump.theta0 <- c(0.05, 0.025)
     prior.theta0 <- c(-3, 0.01)
   } else if (model == "WE") {
     CalculateBasicMx <- function(x, theta) {
-      theta[, 1] * theta[, 2]^theta[, 1] * x^(theta[, 1] - 
-            1)
+      theta[, 1] * theta[, 2]^theta[, 1] * x^(theta[, 1] - 1)
     }
     CalculateBasicSx <- function(x, theta) {
       exp(-(theta[, 2] * x)^theta[, 1])
@@ -102,7 +100,7 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
     length.theta0 <- 2
     low.theta0 <- c(0, 0)
     ini.theta0 <- c(1.5, 0.1)
-    jump.theta0 <- c(0.025, 0.025)
+    jump.theta0 <- c(0.075, 0.025)
     prior.theta0 <- c(1, 0.01)
   } else if (model == "LO") {
     CalculateBasicMx <- function(x, theta) {
@@ -117,7 +115,7 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
     length.theta0 <- 3
     low.theta0 <- c(-Inf, 0, 0)
     ini.theta0 <- c(-3, 0.01, 1e-04)
-    jump.theta0 <- c(0.025, 0.025, 0.025)
+    jump.theta0 <- c(0.05, 0.025, 0.025)
     prior.theta0 <- c(-3, 0.01, 1e-10)
   }
   name.theta0 <- paste("b", (1:length.theta0) - 1, sep = "")
@@ -150,9 +148,9 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
     }
     length.theta <- length.theta0 + 1
     ini.theta <- c(0, ini.theta0)
-    jump.theta <- c(0.005, jump.theta0)
+    jump.theta <- c(0.01, jump.theta0)
     prior.theta <- c(0, prior.theta0)
-    low.theta <- c(-1, low.theta0)
+    low.theta <- c(-Inf, low.theta0)
     name.theta <- c("c", name.theta0)
   } else if (shape == "bathtub") {
     CalculateFullMx <- function(x, theta, gamma) {
@@ -167,7 +165,7 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
     }
     length.theta <- length.theta0 + 3
     ini.theta <- c(-0.1, 0.5, 0, ini.theta0)
-    jump.theta <- c(0.025, 0.025, 0.005, jump.theta0)
+    jump.theta <- c(0.1, 0.05, 0.02, jump.theta0)
     prior.theta <- c(-2, 0.01, 0, prior.theta0)
     low.theta <- c(-Inf, 0, -Inf, low.theta0)
     if (model == "GO") {
@@ -176,8 +174,7 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
     name.theta <- c("a0", "a1", "c", name.theta0)
   }
   CalculateFullFx <- function(x, theta, gamma) {
-    CalculateFullSx(x, theta, gamma) - CalculateFullSx(x + 
-            Dx, theta, gamma)
+    CalculateFullSx(x, theta, gamma) - CalculateFullSx(x + Dx, theta, gamma)
   }
   CalculateMultiSx <- function(theta) {
     CalculateFullSx(xv, matrix(theta, ncol = length.theta), 
@@ -339,7 +336,7 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
     return(jObject)
   }
   
-  # 3.6 Function to find lowerbound for c:
+  # 3.6 Function to find lower bound for c:
   CalcLowC <- function(theta, x) {
     theta[, 'c'] <- 0
     mort <- CalculateFullMx(x, theta, 0)
@@ -656,7 +653,7 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
     }
     updVec <- rep(0, niter)
     updateLen <- 500
-    updateInt <- 1000 + 0:(nPar * 15 - 1) * updateLen
+    updateInt <- 5000 + 0:(nPar * 15 - 1) * updateLen
     
     # Juvenile and adult ages:
     IminAge <- ifelse(minAge > 0, 1, 0)
