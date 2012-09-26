@@ -599,14 +599,14 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
   idb0f1 <- which(bi == 0 & first.obs > 0)
   bg[idb0f1] <- first.obs[idb0f1] - sample(1:6, length(idb0f1), replace = TRUE)
   idb0f0 <- which(bi == 0 & first.obs == 0 & di > 0)
-  bg[idb0f0] <- di[idb0f0] - sample(1:6, length(idb0f0), replace = TRUE)
+  bg[idb0f0] <- di[idb0f0] - sample(0:6, length(idb0f0), replace = TRUE)
   
   di0 <- which(di==0)
   dg <- di
   idd0l1 <- which(di == 0 & last.obs > 0)
   dg[idd0l1] <- last.obs[idd0l1] + sample(1:6, length(idd0l1), replace = TRUE)
   idd0l0 <- which(di == 0 & last.obs == 0)
-  dg[idd0l0]<- bi[idd0l0] + sample(1:6, length(idd0l0), replace = TRUE)
+  dg[idd0l0]<- bi[idd0l0] + sample(0:6, length(idd0l0), replace = TRUE)
   dg[dg < studyStart]<- studyStart + 1
   
   xg <- dg - bg
