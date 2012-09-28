@@ -195,15 +195,20 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
                     <p class="parag">After setting up the dataset, which we will call <code  style="color:#006600">myDataset</code>, and defining the years of start and end of the study, say, 1995 and 2005 respectively, a basic BaSTA analysis with a Gompertz mortality model (default) can be performed by typing into the R gui the following command: <br></p>
 										<p><code  style="color:#006600">&nbsp;&nbsp;&nbsp;&nbsp;out <- basta(object = myDataset, studyStart = 1995, studyEnd = 2005)</code>
 <br></p>
-                    <p class="parag">In this case, BaSTA runs a single simulation for 50,000 iterations. To visualize the result, the user only needs to type:</p>
+                    <p class="parag">In this case, BaSTA runs a single simulation for 50,000 iterations. To visualize the result, the user only needs to type either <code  style="color:#006600">out</code> or, for additional information:</p>
 										<p><code  style="color:#006600">&nbsp;&nbsp;&nbsp;&nbsp;summary(out)</code>
 <br></p>
-										<p class="parag">Which prints to the screen the relevant information such as the call of the model, the coefficients with standard errors and lower and upper bounds, if the model converged and if so, the value of model fit (DIC, which can be used for model selection). To plot the resulting traces for the parameters, just type on the R console:<br></p>
+										<p class="parag">Which prints to the screen the relevant information such as the call of the model, the coefficients with standard errors and lower and upper bounds, if the model converged and if so, the value of model fit (DIC, which can be used for model selection; Fig. 6).
+                    <p style="text-align:center"><br><img align="center" style="margin:0px;padding:0px;border:none;width:700px" align="middle" src="printOutput.png?"></p>
+                    <p class="caption">Fig. 6. BaSTA output printed by typing <code style="color:#006600">out</code> into the R console. Additional information can be obtained by typing <code style="color:#006600">summary(out)</code>.</p><br>
+										<p class="parag">To plot the resulting traces for the parameters (Fig. 7 left panel), just type on the R console:<br></p>
 										<p><code  style="color:#006600">&nbsp;&nbsp;&nbsp;&nbsp;plot(out)</code>
 <br></p>
-										<p class="parag">And to visualize the resulting mortality and survival probability functions, the function <code style="color:#006600">plot()</code> can be modified as:<br></p>
+										<p class="parag">And to visualize the resulting mortality and survival probability functions (Fig. 7 right panel), the function <code style="color:#006600">plot()</code> can be modified as:<br></p>
 										<p><code  style="color:#006600">&nbsp;&nbsp;&nbsp;&nbsp;plot(out, plot.trace = FALSE)</code>
 <br></p>
+                    <p style="text-align:center"><br><img align="center" style="margin:0px;padding:0px;border:none;width:700px" align="middle" src="examplePlotOutput.jpg?"></p>
+                    <p class="caption">Fig. 7. Example of an output from a Gompertz model with bathtub shape on a Rook (<i>Corvus frugilegus</i>) dataset (Jones & Colchero <i>unpublished data</i>). The left panel shows the traces for the mortality parameters while the right panel shows the resulting survival probability and mortality trajectories for locations X1 and X2. Both plots were produced with the R built-in function <code style="color:#006600">plot()</code>.</p><br>
 										<p class="parag">As we mentioned above, convergence can only be estimated by running more than one simulation. When running multiple simulations, we strongly recomend to use the routine that updates jump sd's. This will make the run longer, but will greatly increase the chances of getting convergence from the first try. To run 4 simulations of the same model as shown above with the jumps update routine on, the user only needs to type:<br></p>
 										<p><code  style="color:#006600">&nbsp;&nbsp;&nbsp;&nbsp;out <- basta(object = myDataset, studyStart = 1995, studyEnd = 2005, </code><br>
 										<p><code  style="color:#006600">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>nsim = 4, parallel = TRUE, ncpus = 4, updateJumps = TRUE</b>)</code>
