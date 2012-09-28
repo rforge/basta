@@ -104,10 +104,10 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
               <tbody>
                 <tr style="background:#FFFFFF">
                   <td class="main">
-										<p class="parag">Version 1.3 of the package is now availale on CRAN and can be installed as source by typing the following line of code into the R console: <br></p>
+										<p class="parag">Version 1.4 of the package is now availale on CRAN and can be installed as source by typing the following line of code into the R console: <br></p>
 										<p><code  style="color:#006600">&nbsp;&nbsp;&nbsp;&nbsp;install.packages("BaSTA")</code>
 <br></p>
-										<p class="parag">Also, the latest version of <b>BaSTA</b> (vers. 1.4) can be installed from R forge by typing:<br></p>
+										<p class="parag">Also, the latest version of <b>BaSTA</b> (vers. 1.5) can be installed from R forge by typing:<br></p>
 										<p><code  style="color:#006600">&nbsp;&nbsp;&nbsp;&nbsp;install.packages("BaSTA", repos="http://R-Forge.R-project.org", type = "source")</code>
 <br></p>
 										<p class="parag">We have set up a <a href="mailto:Basta-users@lists.r-forge.r-project.org"  rel="nofollow" style="color:#84002E">BaSTA Users mailing</a> list so users can ask questions or provide comments, suggestions or criticism that can help us improve the package. Users can register by <a href="https://lists.r-forge.r-project.org/cgi-bin/mailman/listinfo/basta-users"  rel="nofollow" class="intext">clicking here</a>. Also, you can see below a video hosted by the journal <a href="http://www.methodsinecologyandevolution.org/" rel="nofollow" style="color:#84002E;font-family:verdana" target="_blank">Methods in Ecology and Evolution</a> where we explain the rational behind the package and some general applications.<br></p> 
@@ -224,7 +224,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 										<p><code style="color:#006600">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;shape = "bathtub", <b>minAge = 1</b>, covarsStruct = "prop.haz", nsim = 4, </code>
 										<p><code style="color:#006600">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;parallel = TRUE, ncpus = 4, updateJumps = TRUE)</code>
 <br></p>
-										<p class="parag">In case things are not working or you have any doubts or problems, please contact us by registering to the <a href="mailto:Basta-users@lists.r-forge.r-project.org"  rel="nofollow" style="color:#84002E">BaSTA Users mailing</a>.<br></p>
+										<p class="parag">In case models are not working properly or you have any doubts or problems, please contact us by registering to the <a href="mailto:Basta-users@lists.r-forge.r-project.org"  rel="nofollow" style="color:#84002E">BaSTA Users mailing</a>.<br></p>
 										<p><br></p>
                     <a href="#top" class="totop">Back to top</a>
                     <p></p>
@@ -243,13 +243,24 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
               <tbody>
                 <tr style="background:#FFFFFF">
                   <td class="main">
-                    <p class="parag">the latest version, <b>BaSTA 1.4</b>, includes the following updates: <br></p>
+                    <p class="parag">The latest stable version available on CRAN, <b>BaSTA 1.4</b>, includes the following updates: <br></p>
 										<ul>
 											<li>Update jump routine for multiple simulations runs before the main analysis, this improves convergence and consistency between multiple simulations.</li>
 											<li>Improved convergence by fixing several bugs in the MCMC routine.</li>
 											<li>Fixed reporting of DIC values with function <code style="color:#006600">summary()</code>.</li>
 											<li>Function <code style="color:#006600">summary()</code> ouputs the basic information, which can be stored instead of the main output. This reduces storage problems due to the size of the output.</li>
 										</ul>
+										<p><br></p>
+										<hr>
+                    <p class="parag">The newest version, <b>BaSTA 1.5</b>, only available on R-Forge, includes the following updates: <br></p>
+										<ul>
+											<li>Fixed an issue when assigning times of birth and death that prevented the model to estimate deaths between ages 0 and 1.</li>
+											<li>We are currently improving the performance of the update jumps algorithm to allow it to work appropriately even with very large datasets.</li>
+											<li>Additional bug fixes to be announced shortly.</li>
+										</ul>
+                    <p class="parag">Although not fully tested, users can intall <b>BaSTA 1.5</b> as source from R-Forge by typing: <br></p>
+										<p><code  style="color:#006600">&nbsp;&nbsp;&nbsp;&nbsp;install.packages("BaSTA", repos="http://R-Forge.R-project.org", type = "source")</code>
+<br></p>
 										<p><br></p>
                     <a href="#top" class="totop">Back to top</a>
                     <p></p>
