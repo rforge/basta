@@ -315,7 +315,7 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
     } else {
       idTarget <- 0
     }
-    if (length(idTarget) < 4) {
+    if (length(idTarget) < 5) {
       if (parCount == 1) {
         updateDiff <- abs(targetUpdate - jObject$shortUpdVec)
         jObject$updateOrder <- sort.int(updateDiff, index.return = TRUE)$ix
@@ -808,7 +808,7 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
       bn[bi0][oi[bi0] > 0] <- apply(cbind(bn[bi0][oi[bi0] > 0],
               first.obs[bi0][oi[bi0] > 0] - 1), 1, min)
       bn[bi0][oi[bi0] == 0] <- apply(cbind(bn[bi0][oi[bi0] == 0],
-              dg[bi0][oi[bi0] == 0] - 1), 1, min)
+              dg[bi0][oi[bi0] == 0]), 1, min)
       dn <- dg 
       dn[di0] <- dg[di0] + sample(-1:1, length(di0), 
           replace = TRUE) 
