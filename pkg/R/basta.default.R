@@ -1367,12 +1367,12 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
   # 9. Return a list object of class 'basta':
   Settings <- c(niter, burnin, thinning, nsim)
   names(Settings) <- c("niter", "burnin", "thinning", "nsim") 
-  ModelSpecs <- c(model, shape, covarsStruct, 
+  ModelSpecs <- c(model, shape, covarsStruct, minAge,
       paste(names(covariate.type$cat), 
           collapse = ", "), 
       paste(names(covariate.type$cont), 
           collapse = ", "))
-  names(ModelSpecs) <- c("model", "shape", "Covar. structure", 
+  names(ModelSpecs) <- c("model", "shape", "Covar. structure", "minAge", 
       "Categorical", "Continuous")
   Priors <- c(theta.prior)
   jumpPriorName <- name.full.theta
