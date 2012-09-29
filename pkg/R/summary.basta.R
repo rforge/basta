@@ -4,9 +4,10 @@ function(object,...){
   cat("\nCall:\n")
   cat(paste("Model             \t\t: ", object$ModelSpecs[1], "\n", sep = ""))
   cat(paste("Shape             \t\t: ", object$ModelSpecs[2], "\n", sep = ""))
-  cat(paste("Covars. structure \t\t: ", object$ModelSpecs[3], "\n", sep = ""))
-  cat(paste("Cat. covars.      \t\t: ", object$ModelSpecs[4], "\n", sep = ""))
-  cat(paste("Cont. covars.     \t\t: ", object$ModelSpecs[5], "\n", 
+  cat(paste("Minimum age       \t\t: ", object$ModelSpecs[3], "\n", sep = ""))
+  cat(paste("Covars. structure \t\t: ", object$ModelSpecs[4], "\n", sep = ""))
+  cat(paste("Cat. covars.      \t\t: ", object$ModelSpecs[5], "\n", sep = ""))
+  cat(paste("Cont. covars.     \t\t: ", object$ModelSpecs[6], "\n", 
             collapse = ""))
 
   cat("\nModel settings:\n")
