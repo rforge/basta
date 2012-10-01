@@ -373,6 +373,7 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
   first.obs <- c(apply(ytemp, 1, min))
   first.obs[first.obs == 10000] <- 0
   oi <- Y %*% rep(1, study.length)
+  toi <- t(t(Y) %*% rep(1, n))
   rm("ytemp")
   
   # 4.1.3 Define study duration:
@@ -576,11 +577,11 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
   idpi <- findInterval(study.years, recaptTrans)
   names(idpi) <- study.years
   npi <- length(unique(idpi))
-  rho1 <- 0.1
+  Rho1 <- tapply(0.1 + toi, idpi, sum)
   rho2 <- 0.1
   
   parallelVars <- c(parallelVars, "Ztheta.p", "theta.sd", "Zgamma.p", 
-      "gamma.sd", "Ex", "v.x", "idpi", "npi", "rho1", "rho2") 
+      "gamma.sd", "Ex", "v.x", "idpi", "npi", "Rho1", "rho2") 
   
   # 5.4 Starting values:
   # a) Matrix of survival parameters:
@@ -870,9 +871,7 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
       Ijg[idNa[idrz]] <- Ijn[idNa[idrz]]
       
       # c) Sample recapture probability(ies):
-      rho1g <- rho1 + t(t(Y) %*% rep(1, n))
       rho2g <- rho2 + t(t(Og - Y) %*% rep(1, n))
-      Rho1 <- tapply(rho1g, idpi, sum)
       Rho2 <- tapply(rho2g, idpi, sum)
       pi.g <- rbeta(npi, Rho1, Rho2)
       if (1 %in% pi.g) {
