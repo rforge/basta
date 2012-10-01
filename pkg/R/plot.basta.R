@@ -130,7 +130,7 @@ function(x, plot.trace = TRUE, trace.name = "theta", ...){
          ylim        = ylmx,
          xlab        = "Age (x)", 
          ylab        = expression(mu(x)), 
-         main        = "Mortality rate", 
+         main        = "Mortality", 
          frame.plot  = FALSE, ...)
     for(i in 1:length.cat){
       xv            <- x$xv[[i]]
