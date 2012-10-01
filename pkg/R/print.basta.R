@@ -4,8 +4,10 @@ function(x, ...){
   cat(paste("Model             \t\t: ", x$ModelSpecs[1], "\n", sep = ""))
   cat(paste("Shape             \t\t: ", x$ModelSpecs[2], "\n", sep = ""))
   cat(paste("Covars. structure \t\t: ", x$ModelSpecs[3], "\n", sep = ""))
-  cat(paste("Cat. covars.      \t\t: ", x$ModelSpecs[4], "\n", sep = ""))
-  cat(paste("Cont. covars.     \t\t: ", x$ModelSpecs[5], "\n", collapse = ""))
+  cat(paste("Minimum age       \t\t: ", x$ModelSpecs[4], "\n", sep = ""))
+  cat(paste("Cat. covars.      \t\t: ", x$ModelSpecs[5], "\n", sep = ""))
+  cat(paste("Cont. covars.     \t\t: ", x$ModelSpecs[6], "\n", 
+          collapse = ""))
 
   cat("\nRuns:\n")
   id.failed      <- which(x$finished == 0)
@@ -28,13 +30,13 @@ function(x, ...){
   }
   cat("\nCoefficients:\n")
   print.default(x$coefficients, ...)
-  if (is.null(x$DIC)){
+  if (x$DIC[1] == "Not calculated"){
     if (x$set['nsim'] == 1) {
       cat("\nConvergence calculations require more than one run.",
           "\nTo estimate potential scale reduction run at least two simulations.\n")
     } else {
       cat("\nWarning: Convergence not reached for some parameters",
-          " (i.e. 'PotScaleReduc' values larger than 1.1).",
+          " (i.e. 'PotScaleReduc' values larger than 1.15).",
           "\nThese estimates should not be used for inference.\n")
     }
   } else {
