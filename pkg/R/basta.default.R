@@ -20,10 +20,7 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
   # - Section 7 (line  856): Run multiple BaSTA MCMCs
   # - Section 8 (line  928): Calculate diagnostics
   # - Section 9 (line 1202): Create output object
-  
-  # 1. Load package msm:
-  require(msm)
-  
+    
   # 2. Initial error checking:
   # 2.1 Data errors:
   data.check <- DataCheck(object, studyStart, studyEnd, silent = TRUE)
@@ -1002,13 +999,16 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
       basta.out <- lapply(1:nsim, multiMCMC, updJumpSim = FALSE, niter = niter,
           burnin = burnin)
     } else {
+      op <- options()
+      options(warn = -1)
       require(snowfall)
       sfInit(parallel = TRUE, cpus = ncpus);
       sfExport(list = c(parallelVars, "parallel", "nsim", "minAge"))
-      sfLibrary(msm)
+      sfLibrary(msm, warn.conflicts = FALSE)
       basta.out <- sfClusterApplyLB(1:nsim, multiMCMC, updJumpSim = FALSE,
           niter = niter, burnin = burnin)
       sfStop()
+      options(op)
     }
   } else {
     basta.out <- lapply(1:nsim, multiMCMC, updJumpSim = FALSE,
@@ -1030,9 +1030,9 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
   if (nsim==1) {
     if (full.runs==1) {
       cat("MCMC finished running\n")
-      cat(paste("Total MCMC computing time:", 
+      cat(paste("Total MCMC computing time: ", 
               round(as.numeric(End-Start, units = units(End - Start)), 2), 
-              units(End - Start), ".\n\n", sep = " "))
+              " ", units(End - Start), ".\n\n", sep = ""))
       all.ran <- TRUE
     } else {
       cat(paste("MCMC stopped at step ", basta.out[[1]]$g,
@@ -1052,9 +1052,9 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
     } else {
       all.ran <- TRUE
       cat("\nMultiple simulations finished.\n")
-      cat(paste("Total MCMC computing time:", 
+      cat(paste("Total MCMC computing time: ", 
               round(as.numeric(End-Start, units = units(End - Start)), 2), 
-              units(End - Start), ".\n\n", sep = " "))
+              " ", units(End - Start), ".\n\n", sep = ""))
     }
   }	
   
