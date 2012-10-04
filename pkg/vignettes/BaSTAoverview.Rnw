@@ -262,7 +262,7 @@ The \mverb{model} argument can be used to choose between four basic mortality ra
 \begin{figure}[h!]
   \begin{center}
     \includegraphics[width=14cm]{Fig2}
-  \caption{Mortality rates, $\mu(x | \theta)$, resulting from the four basic models included in BaSTA: a) exponential; b) Gompertz; c) Weibull; and d) logistic. The three different lines in each plot (except in a) show examples of the shapes that can be tested with BaSTA, namely: `simple'; `Makeham'; and `bathtub'. Modified from Colchero, Jones \& Rebke (\emph{In press}).}
+  \caption{Mortality rates, $\mu(x | \theta)$, resulting from the four basic models included in BaSTA: a) exponential; b) Gompertz; c) Weibull; and d) logistic. The three different lines in each plot (except in a) show examples of the shapes that can be tested with BaSTA, namely: `simple'; `Makeham'; and `bathtub'. Modified from Colchero, Jones \& Rebke (2012).}
     \label{Fig2}
   \end{center}
 \end{figure}
@@ -384,7 +384,7 @@ out <- basta(object = inputMat, studyStart = 1990, studyEnd = 1995,
              parallel = TRUE, ncpus = 2, updateJumps = TRUE)
 @
 
-As you can note, it is not necesary to specify jumps, however, if the user has a general idea of where the jumps should lie, then they can be specified. This will only change the initial values were the jumps are tested. If, on the other hand, only one simulation has been specified (i.e. argument \mverb{nsim} $= 1$) then BaSTA runs the update jump routine on the main simulation. This can be useful in case the user wants to find appropriate jumps manually. 
+As you can note, it is not necesary to specify jumps, however, if the user has a general idea of where the jumps should lie, then they can be specified. This will only change the initial values where the jumps are tested. If, on the other hand, only one simulation has been specified (i.e. argument \mverb{nsim} $= 1$) then BaSTA runs the update jump routine on the main simulation. This can be useful in case the user wants to find appropriate jumps manually. 
 
 \subsubsection{Multiple runs: arguments \mverb{nsim}, \mverb{parallel} and \mverb{ncpus}}
 
