@@ -85,7 +85,7 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
     length.theta0 <- 2
     low.theta0 <- c(-Inf, -Inf)
     ini.theta0 <- c(-3, 0.01)
-    jump.theta0 <- c(0.05, 0.025)
+    jump.theta0 <- c(0.1, 0.025)
     prior.theta0 <- c(-3, 0.01)
   } else if (model == "WE") {
     CalculateBasicMx <- function(x, theta) {
@@ -316,10 +316,10 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
       jObject$update <- FALSE
     } else {
       if (parCount == 1) {
-        updateDiff <- abs(updObj$targ - jObject$shortUpdVec)
+        updateDiff <- abs(targetUpdate - jObject$shortUpdVec)
         jObject$updateOrder <- sort.int(updateDiff, index.return = TRUE)$ix
       }
-      if (gUpdate <= jObject$nPar) {
+      if (gUpdate <= nPar) {
         jObject$jump <- jObject$startJump
       } 
       if (gUpdate > 1) {
@@ -327,7 +327,7 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
       }
       jObject$parNum <- jObject$updateOrder[parCount]
       jObject$jump[jObject$parNum] <- jObject$jump[jObject$parNum] * 
-          updateRate / updObj$targ
+          updateRate / targetUpdate
       jObject$gUpdate <- gUpdate
     }
     return(jObject)
