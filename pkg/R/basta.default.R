@@ -306,18 +306,20 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
     }
     if (gUpdate > nPar) {
       idTarget <- which(jObject$updateRateVec[gUpdate - (nPar - 1):0] > 
-              targetUpdate * 0.9 &
+              targetUpdate * 0.8 &
               jObject$updateRateVec[gUpdate - (nPar - 1):0] < 
-              targetUpdate * 1.1)
+              targetUpdate * 1.2)
     } else {
       idTarget <- 0
     }
-    if (length(idTarget) < 5) {
+    if (length(idTarget) == 6 & all(diff(idTarget) == 1)) {
+      jObject$update <- FALSE
+    } else {
       if (parCount == 1) {
-        updateDiff <- abs(targetUpdate - jObject$shortUpdVec)
+        updateDiff <- abs(updObj$targ - jObject$shortUpdVec)
         jObject$updateOrder <- sort.int(updateDiff, index.return = TRUE)$ix
       }
-      if (gUpdate <= nPar) {
+      if (gUpdate <= jObject$nPar) {
         jObject$jump <- jObject$startJump
       } 
       if (gUpdate > 1) {
@@ -325,10 +327,8 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
       }
       jObject$parNum <- jObject$updateOrder[parCount]
       jObject$jump[jObject$parNum] <- jObject$jump[jObject$parNum] * 
-          updateRate / targetUpdate
+          updateRate / updObj$targ
       jObject$gUpdate <- gUpdate
-    } else {
-      jObject$update <- FALSE
     }
     return(jObject)
   }
@@ -650,7 +650,7 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
       gamma.mat[1, ] <- gamma.g
     }
     updVec <- rep(0, niter)
-    updateLen <- 500
+    updateLen <- 200
     updateInt <- 5000 + 0:(nPar * 15 - 1) * updateLen
     
     # Juvenile and adult ages:
