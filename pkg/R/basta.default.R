@@ -312,7 +312,7 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0, model = "GO"
     } else {
       idTarget <- 0
     }
-    if (length(idTarget) == 6 & all(diff(idTarget) == 1)) {
+    if (length(idTarget) > 6 & all(diff(idTarget) == 1)) {
       jObject$update <- FALSE
     } else {
       if (parCount == 1) {
