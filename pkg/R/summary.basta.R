@@ -1,54 +1,46 @@
 summary.basta <-
-function(object,...){
+    function(object,...){
   extraArgs       <- list(...)
-  cat("\nCall:\n")
-  cat(paste("Model             \t\t: ", object$ModelSpecs[1], "\n", sep = ""))
-  cat(paste("Shape             \t\t: ", object$ModelSpecs[2], "\n", sep = ""))
-  cat(paste("Covars. structure \t\t: ", object$ModelSpecs[3], "\n", sep = ""))
-  cat(paste("Minimum age       \t\t: ", object$ModelSpecs[4], "\n", sep = ""))
-  cat(paste("Cat. covars.      \t\t: ", object$ModelSpecs[5], "\n", sep = ""))
-  cat(paste("Cont. covars.     \t\t: ", object$ModelSpecs[6], "\n", 
-            collapse = ""))
-
-  cat("\nModel settings:\n")
-  print(object$set)
-
-  cat("\nRuns:\n")
-  id.failed      <- which(object$finished == 0)
-  if (object$set['nsim'] == 1){
-    if (length(id.failed) == 0) {
-      cat("The simulation finished.\n") 
-    } else {
-      cat("The simulation failed.\n")
-    }
-  } else {
-    if (sum(object$finished) == length(object$finished)) {
-      cat("All simulations finished.\n")
-    } else if (length(id.failed) == 1) {
-      cat(paste("Simulation number ", id.failed, " failed.\n", sep = ""))
-    } else {
-      cat(paste("Simulations number ", 
-          paste(id.failed[-length(id.failed)], collapse = ", "),
-          " and ", id.failed[length(id.failed)], " failed.\n", sep = ""))
-    }
-  }
-	
-  cat("\nJumps and priors:\n")
-  print(object$JumpP)
-  
   if (length(extraArgs) > 0) {
     if (!is.element('digits', names(extraArgs))){
-      digits      <- 4
+      digits <- 4
     } else {
-      digits      <- extraArgs$digits
+      digits <- extraArgs$digits
     }
   } else {
-    digits        <- 4
+    digits <- 4
   }
+  if ("ModelSpecs" %in% names(object)) {
+    object$modelSpecs <- object$ModelSpecs
+  }
+  cat("\nCall:\n")
+  cat(paste("Model             \t\t: ", object$modelSpecs[1], "\n", sep = ""))
+  cat(paste("Shape             \t\t: ", object$modelSpecs[2], "\n", sep = ""))
+  cat(paste("Covars. structure \t\t: ", object$modelSpecs[3], "\n", sep = ""))
+  cat(paste("Minimum age       \t\t: ", object$modelSpecs[4], "\n", sep = ""))
+  cat(paste("Cat. covars.      \t\t: ", object$modelSpecs[5], "\n", sep = ""))
+  cat(paste("Cont. covars.     \t\t: ", object$modelSpecs[6], "\n", 
+          collapse = ""))
+  
+  cat("\nModel settings:\n")
+  print(object$set)
+  
+  
+  cat("\nJumps and priors:\n")
+  if ("jumpPrior" %in% names(object)) {
+    print(object$jumpPriors)
+  } else {
+    print(object$JumpP)
+  }
+  
   cat("\nMean Kullback-Leibler\ndiscrepancy calibration (KLDC):\n")
   if (object$K[1] != "Not calculated") {
-    mean.q        <- (object$K$q12 + object$K$q21) / 2
-    print.default(mean.q, digits = digits)
+    if ("qkl1" %in% names(object$K)) {
+      meanKLcalib  <- t((object$K$qkl1 + object$K$qkl2) / 2)
+    } else {
+      meanKLcalib  <- (object$K$q12 + object$K$q21) / 2
+    }
+    print.default(meanKLcalib, digits = digits)
   } else {
     if (object$set['nsim'] == 1) {
       cat("KLDC was not calculated due to insufficient number",
@@ -59,33 +51,43 @@ function(object,...){
     }
   }
   
-
+  
   cat("\nCoefficients:\n")
   print.default(object$coefficients, digits = digits)
-
+  
   cat("\nConvergence:\n")
-  if (object$Conv[1] == "Not calculated") {
+  if ("Convergence" %in% names(object)) {
+    object$convergence <- object$Convergence
+  }
+  if (object$convergence[1] == "Not calculated") {
     if (object$set['nsim'] == 1) {
       cat("\nConvergence calculations require more than one run.",
           "\nTo estimate potential scale reduction run at least",
           "two simulations.\n")
     } else {
       cat("\nWarning: Convergence not reached for some parameters",
-          " (i.e. 'PotScaleReduc' values larger than 1.15).",
+          " (i.e. 'PotScaleReduc' values larger than 1.1).",
           "\nThese estimates should not be used for inference.\n")
     }
   } else {
-    if (all(object$Conv[, "Rhat"] < 1.15)) {
+    if (all(object$convergence[, "Rhat"] < 1.1)) {
       cat("Appropriate convergence reached for all parameters.\n")
     } else {
       cat("\nWarning: Convergence not reached for some parameters",
-          " (i.e. 'PotScaleReduc' values larger than 1.15).",
+          " (i.e. 'PotScaleReduc' values larger than 1.1).",
           "\nThese estimates should not be used for inference.\n")
     }
   } 
   cat("\nDIC:\n")
   if (object$DIC[1] != "Not calculated"){
     cat(object$DIC["DIC"],"\n")
+    if ("Convergence" %in% names(object)) {
+      warning("Model fit in versions older than BaSTA 1.5 had a mistake in the",
+          "\ncalculation of DIC values. In case you are interested in\n",
+          "comparing the fit of different models, please try to run them\n",
+          "with BaSTA versions 1.5 or above.",
+          " We apologise for the inconvenience.", call. = FALSE)
+    }
   } else {
     if (object$set['nsim'] == 1) {
       cat("DIC was not calculated due to insufficient number",
@@ -96,8 +98,8 @@ function(object,...){
   }
   ans <- c(list(coefficients = object$coef, DIC = object$DIC,
           KullbackLeibler = object$KullbackLeibler, 
-          Convergence = object$Convergence,
-          modelSpecs = object$ModelSpecs, settings = object$set))
+          convergence = object$convergence,
+          modelSpecs = object$modelSpecs, settings = object$set))
   return(invisible(ans))
 }
 
