@@ -1498,7 +1498,7 @@ basta <-
     qxMat <- qdMat - qbMat
   }
   ageRan <- range(qxMat[1, qxMat[1, ] >= .algObj$minAge]) - .algObj$minAge
-  ageVec <- seq(ageRan[1], ageRan[2], length = 100)
+  ageVec <- seq(0, ageRan[2], length = 100)
   mxq <- Sxq <- list()
   if (is.null(.covObj$cat)) {
     covNames <- c("noCov")
