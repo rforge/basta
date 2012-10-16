@@ -663,7 +663,7 @@ basta <-
     ageObjNew$ages[.dataObj$idNoD, 'death'] <- 
         apply(cbind(ageObjNew$ages[.dataObj$idNoD, 'death'],
                 ageObjNew$ages[.dataObj$idNoD, 'birth'], 
-                .dataObj$lastObs[.dataObj$idNoD] + 1), 1, max) 
+                .dataObj$lastObs[.dataObj$idNoD]), 1, max) 
     
   }
   ageObjNew$ages[.dataObj$idNoA, "age"] <- 
