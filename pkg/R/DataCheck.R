@@ -133,17 +133,17 @@ function(object, studyStart, studyEnd, autofix = rep(0, 7), silent=TRUE) {
   }
     
   # 7. Year of death should be a zero in recapture matrix Y
-  idd              <- which(bd[, 2] > 0 & bd[, 2] >= Ti)
-  dcol             <- bd[idd, 2] - Ti
-  dpos             <- dcol * n + idd
-  type7            <- as.vector(idd[which(Y[dpos] == 1)])
-  if (length(type7) != 0) {
-    cat("The following rows have a one in the recapture matrix in the death year:\n")
-    print(type7)
+#  idd              <- which(bd[, 2] > 0 & bd[, 2] >= Ti)
+#  dcol             <- bd[idd, 2] - Ti
+#  dpos             <- dcol * n + idd
+#  type7            <- as.vector(idd[which(Y[dpos] == 1)])
+#  if (length(type7) != 0) {
+#    cat("The following rows have a one in the recapture matrix in the death year:\n")
+#    print(type7)
         
     # Actions - put a zero.
-    if (autofix[7] == 1) Y[dpos] = 0
-  }   
+#    if (autofix[7] == 1) Y[dpos] = 0
+#  }   
 
 	n               <- nrow(Y)   
 
