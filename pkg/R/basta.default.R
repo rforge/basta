@@ -75,7 +75,7 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0,
         require(snowfall)
         sfInit(parallel = TRUE, cpus = ncpus)
         sfExport(list = bastaIntVars)
-        sfLibrary(BaSTA)
+        sfLibrary("BaSTA", character.only = TRUE, warn.conflicts = FALSE)
         sfLibrary(msm, warn.conflicts = FALSE)
         bastaOut <- sfClusterApplyLB(1:nsim, .RunBastaMCMC)
         sfRemoveAll(hidden = TRUE)
