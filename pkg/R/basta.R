@@ -1326,7 +1326,7 @@ basta <-
   if (class(.parsIni)[1] == "thegam") {
     newJumps$gamma <- avejumps[idGam]
   }
-  cat("done...\n")
+  cat(" done.\n\n")
   return(list(updJumps = newJumps, jObject = jumpObj, m = m))
 }
 
