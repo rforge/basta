@@ -149,7 +149,7 @@ basta <-
   if (.dataObj$updD) {
     idDi0Li1 <- which(.dataObj$di == 0 & .dataObj$lastObs > 0)
     death[idDi0Li1] <- .dataObj$lastObs[idDi0Li1] + 
-        sample(1:6, length(idDi0Li1), replace = TRUE)
+        sample(0:6, length(idDi0Li1), replace = TRUE)
     idDi0Li0 <- which(.dataObj$di == 0 & .dataObj$lastObs == 0) 
     death[idDi0Li0] <- .dataObj$bi[idDi0Li0] + 
         sample(0:6, length(idDi0Li0), replace = TRUE)
@@ -162,7 +162,7 @@ basta <-
   
   # 5.5 Full observation matrix:
   firstObs <- c(apply(cbind(.algObj$start, birth + 1), 1, max))
-  lastObs <- c(apply(cbind(.algObj$end, death - 1), 1, min))
+  lastObs <- c(apply(cbind(.algObj$end, death), 1, min))
   alive <- .BuildAliveMatrix(firstObs, lastObs, .dataObj)
   ageObj$alive <- alive
   class(ageObj) <- c(class(.dataObj), "noMinAge")
@@ -672,7 +672,7 @@ basta <-
   firstAlive <- c(apply(cbind(.algObj$start, 
               ageObjNew$ages[, "birth"] + 1), 1, max))
   lastAlive <- c(apply(cbind(.algObj$end, 
-              ageObjNew$ages[, "death"] - 1), 1, min))
+              ageObjNew$ages[, "death"]), 1, min))
   alive <- .BuildAliveMatrix(firstAlive, lastAlive, .dataObj)
   ageObjNew$alive <- alive
   return(ageObjNew)
