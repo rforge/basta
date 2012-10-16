@@ -6,18 +6,19 @@ Parametric Bayesian estimation of age-specific survival for left-truncated and r
 }
 
 \description{
-This function performs multiple Markov Chain Monte Carlo (MCMC) algorithms for the Bayesian estimation of age-specific mortality and survival trends when a large proportion of (or all) records have unknown times of birth and/or death. Survival parameters and unknown (i.e. latent) birth and death times are estimated, allowing the user to test a range of mortality patterns, and to test the effect of continuous and/or discrete covariates following Colchero and Clark's (2012) approach.}
+This function performs multiple Markov Chain Monte Carlo (MCMC) simulations for the Bayesian estimation of age-specific mortality and survival trends when a large proportion of (or all) records have unknown times of birth and/or death. Survival parameters and unknown (i.e. latent) birth and death times are estimated, allowing the user to test a range of mortality patterns, and to test the effect of continuous and/or discrete covariates following Colchero and Clark's (2012) approach.}
 
 \usage{
 basta(object, \dots)
 
-\method{basta}{default}(object, studyStart, studyEnd, minAge = 0, model = "GO", 
-         shape = "simple", covarsStruct = "fused", niter = 50000,
-         burnin = 5001, thinning = 50, recaptTrans = studyStart, 
-         thetaStart = NULL, thetaJumps = NULL, thetaPriors = NULL, 
-         gammaStart = NULL, gammaJumps = NULL, gammaPriors = NULL, 
-         nsim = 1, parallel = FALSE, ncpus = 2, lifeTable = TRUE, 
-         progrPlots = FALSE, updateJumps = FALSE, \dots)
+\method{basta}{default}(object, studyStart, studyEnd, minAge = 0, 
+    model = "GO", shape = "simple", covarsStruct = "fused", niter = 20000, 
+    burnin = 5001, thinning = 20, recaptTrans = studyStart, 
+    thetaStart = NULL, thetaJumps = NULL, thetaPriorMean = NULL, 
+    thetaPriorSd = NULL, gammaStart = NULL, gammaJumps = NULL, 
+    gammaPriorMean = NULL, gammaPriorSd = NULL, 
+    nsim = 1, parallel = FALSE, ncpus = 2, lifeTable = TRUE, 
+    progrPlots = FALSE, updateJumps = TRUE, \dots)
 }
 
 \arguments{
@@ -59,23 +60,22 @@ basta(object, \dots)
 \item{thetaStart }{A vector defining the initial values for each parameter in the survival model. The number of parameters should be: 2 for Gompertz, 3 for Gompertz-Makeham, and 5 for Siler (see \code{details}). The default is set to \code{NULL} and thus a set of random parameters is generated for each simulation.}
   
   
-\item{thetaJumps }{A vector defining the size of jumps for each survival model parameter (i.e. the standard error in the Metropolis step). The number of parameters will depend on the model selected, as with \code{thetaStart}. As with \code{thetaStart}, the default is set to \code{NULL} and thus default values are assigned (i.e. all equal to 0).}
+\item{thetaJumps }{A vector defining the size of jumps for each survival model parameter (i.e. the standard error in the Metropolis step). The number of parameters will depend on the model selected, as with \code{thetaStart}. As with \code{thetaStart}, the default is set to \code{NULL} and thus default values are assigned.}
   
   
-\item{thetaPriors }{A vector defining the priors for each survival parameter. The vector takes the same format as described for \code{thetaStart}. As with \code{thetaStart}, the default is set to \code{NULL} and thus default values are assigned (i.e. all equal to 0).}
+\item{thetaPriorMean }{A vector defining the prior means for each survival parameter. The vector takes the same format as described for \code{thetaStart}. If set to \code{NULL}, default values are assigned.}
   
+\item{thetaPriorSd }{A vector defining the prior standard deviations for each survival parameter. This vector is constructed as \code{thetaStart}. If set to \code{NULL} (default), default values are assigned.}
   
 \item{gammaStart }{A vector of initial parameters for the proportional hazards section of the model. These can be specified when \code{Prop.Hazards} is \code{TRUE} or when continuous covariates are evaluated under a \dQuote{\code{fused}} covariate structure (see \code{details}). As with \code{thetaStart}, the default is set to \code{NULL} and thus default values are assigned (i.e. all equal to 0).}
   
-  
 \item{gammaJumps }{A vector of jump standard errors for the proportional hazards parameters. The number of jumps will be equal to the number of covariates when the argument \code{covarsStruct} is set to \dQuote{\code{prop.haz}}, or to the number of continuous covariates to be evaluated when \code{covarsStruct} is set to \dQuote{\code{fused}}. In case any of these two conditions are met and the default is used (i.e. NULL), the model automatically assigns built-in jump values.}
   
+\item{gammaPriorMean }{A vector of prior means for the proportional hazards parameters. The specification follows the same rules as \code{gammaJumps}.}
   
-\item{gammaPriors }{A vector of mean priors for the proportional hazards parameters. The specification follows the same rules as \code{gammaJumps}.}
-  
-  
+\item{gammaPriorSd }{A vector of prior standard deviations for the proportional hazards parameters. The specification follows the same rules as \code{gammaJumps}.}
+    
 \item{nsim }{A numerical value for the number of simulations to be run.}
-  
   
 \item{parallel }{A logical argument indicating whether the multiple simulations should be run in parallel or not. If \code{TRUE}, package \pkg{snowfall} is called and multiple simulations are run in parallel. If \pkg{snowfall} is not installed, the model is ran in series.}
   
@@ -89,7 +89,7 @@ basta(object, \dots)
 \item{progrPlots }{A logical argument indicating wheter to draw progress plots or not. If \code{TRUE}, small plots are displayed showing the percent progress achieved for each MCMC simulation. }
   
 
-\item{updateJumps }{A logical argument indicating wheter to update jumps until an update rate of 0.25 is achieved (see \code{details}). }
+\item{updateJumps }{A logical argument indicating wheter to update jump standard deviations (adaptive independent Metropolis) until an update rate of 0.25 is achieved (see \code{details}). }
   
 
 \item{\dots }{Ignored.}
@@ -156,53 +156,35 @@ The \code{updateJumps} argument specifies weather to run a simulation to find ap
 }
 
 \value{  
-\item{coefficients }{A matrix with estimated coefficients (i.e. mean values per parameter on the thinned sequences after burnin), which includes standard errors, upper and lower 95\% credible intervals, update rates per parameter (commonly the same for all survival and proportional hazards parameters), serial autocorrelation on the thinned sequences and the potential scale reduction factor for convergence (see \code{Convergence} value below). }
+\item{coefficients }{A matrix with estimated coefficients (i.e. mean values per parameter on the thinned sequences after burnin), which includes standard errors, upper and lower 95\% credible intervals, update rates per parameter, serial autocorrelation on the thinned sequences and the potential scale reduction factor for convergence (see \code{Convergence} value below). }
 	
 \item{DIC }{Basic deviance information criterion (DIC) calculations to be used for model selection (Spiegelhalter \emph{et al.} 2002). Small differences between values should only be used a reference (see comments in Spiegelhalter \emph{et al.} 2002). If all or some of the simulations failed, then the returned value is \dQuote{\code{Not calculated}}.}
 	
-\item{Convergence }{If requested, a matrix with convergence coefficients based on potential scale reduction as described by Gelman \emph{et al.} (2004). If only one simulation was ran, then the returned value is \dQuote{\code{Not calculated}}.}
+\item{convergence }{If requested, a matrix with convergence coefficients based on potential scale reduction as described by Gelman \emph{et al.} (2004). If only one simulation was ran, then the returned value is \dQuote{\code{Not calculated}}.}
   
 \item{KullbackLeibler }{If called by \code{\link{summary}}, list with Kullback-Leibler discrepancy matrices between pair of parameters for categorical covariates (McCulloch 1989, Burnham and Anderson 2001) and McCulloch's (1989) calibration measure. If only one simulation was ran or if no convergence is reached, then the returned value is \dQuote{\code{Not calculated}}.}
   
+\item{params }{If requested, a matrix with the thinned, converged parameter traces of all runs. This matrix is used to calculate quantiles for parameters, survival probability and mortality (see below).}
+
 \item{settings }{If called by \code{\link{summary}}, this is a vector indicating the number of iterations for each MCMC, the burn in sequence, the thinning interval, and the number of simulations that were run.}
 	
-\item{ModelSpecs }{Model specifications inidicating the \code{model}, the \code{shape} and the covariate structure that were specified by the user.}
+\item{modelSpecs }{Model specifications inidicating the \code{model}, the \code{shape}, the covariate structure and the minimum age that were specified by the user.}
 	
-\item{JumpPriors }{If requested or called by functions \code{summary} or \code{\link{summary.basta}}, a matrix with the jumps and priors used in the model.}
+\item{jumpPriors }{If requested or called by functions \code{summary} or \code{\link{summary.basta}}, a matrix with the jump standard deviations and prior means and standard deviation for the parameters.}
 	
-\item{Params }{If requested, the full matrix of parameter estimates. The row names indicate the simulation to which they correspond.}
+\item{birthQuant }{If requested, summary matrix of estimated times of birth including median and upper and lower 95\% predictive intervals.}
 	
-\item{Bis }{If requested, the full matrix of estimates of times of birth. The row names indicate the simulation to which they correspond.}
+\item{deathQuant }{If requested, summary matrix of estimated times of birth including median and upper and lower 95\% predictive intervals.}
 	
-\item{Dis }{If requested, the full matrix of estimates of times of death. The row names indicate the simulation to which they correspond.}
+\item{agesQuant }{If requested, summary matrix of estimated ages at death including median and upper and lower 95\% predictive intervals.}
+  	
+\item{mortQuant }{If requested or called by functions \code{plot} or \code{\link{plot.basta}} median and 95\% predictive intervals for the estimated mortality rates.}
+
+\item{survQuant }{If requested or called by functions \code{plot} or \code{\link{plot.basta}} median and 95\% predictive intervals for the estimated survival probability.}
 	
-\item{Bq }{If requested, summary matrix of estimated times of birth including median and upper and lower 95\% predictive intervals.}
-	
-\item{Xq }{If requested, summary matrix of estimated ages at death including median and upper and lower 95\% predictive intervals.}
-	
-\item{Sx }{If requested or called by functions \code{plot} or \code{\link{plot.basta}} median and 95\% predictive intervals for the estimated survival probability.}
-	
-\item{mx }{If requested or called by functions \code{plot} or \code{\link{plot.basta}} median and 95\% predictive intervals for the estimated mortality rates.}
-	
-\item{xv }{If requested, list with vectors of ages at death for each categorical covariate.}
-  
-\item{bd }{If requested, the matrix with individual times of birth and death.}
-  
-\item{Y }{If requested, the capture-recapture matrix.}
-  
-\item{Za }{If requested, the matrix of categorical covariates. When no categorical covariates are included the model returns a one column matrix of ones.}
-  
-\item{Zc }{If requested, the matrix of continuous covariates. When no continuous covariates are included the model returns a one column matrix of ones.}
-  
-\item{ststart }{If requested, the first year of the study.}
-  
-\item{stend }{If requested, the last year of the study.}
-  
-\item{finished }{Vector of binary values indicating which simulations ran to the end.}
-  
+\item{parsForPlot }{If requested or called by functions \code{plot} or \code{\link{plot.basta}} thinned sequences, including burn-in, of parameter traces used to plot outputs.}
+
 \item{lifeTable }{If requested and specified in the argument \code{lifeTable}, a cohort life table calculated from the estimated ages at death.}
-  
-\item{lambda }{If argument \code{minAge} is larger than 0 and if requested, matrix with lambda parameter estimates for early changes in distribution of ages at death.}
 }
 
 \references{
@@ -245,8 +227,7 @@ new.dat  <- DataCheck(sim1, studyStart = 51,
 
 ## Run short version of BaSTA on the data:
 out      <- basta(sim1, studyStart = 51, studyEnd = 70, 
-            niter = 200, burnin = 11, thinning = 10,  
-            progrPlots = TRUE)
+            niter = 200, burnin = 11, thinning = 10)
 
 ## Print results:
 summary(out, digits = 3)
