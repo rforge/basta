@@ -293,7 +293,7 @@ basta <-
     startTh <- 0.2 
     jumpTh <- 0.1
     priorMean <- 0.01
-    priorSd <- 0.5
+    priorSd <- 1
     nameTh <- "b0"
     lowTh <- 0
     jitter <- 0.05
@@ -301,8 +301,8 @@ basta <-
     nTh <- 2 
     startTh <- c(-2, 0.01) 
     jumpTh <- c(0.1, 0.1)
-    priorMean <- c(-6, 0.001)
-    priorSd <- c(1, 0.25)
+    priorMean <- c(-3, 0.01)
+    priorSd <- c(1, 1)
     nameTh <- c("b0", "b1")
     lowTh <- c(-Inf, -Inf)
     jitter <- c(0.1, 0.05) 
@@ -312,8 +312,8 @@ basta <-
   } else if (.algObj$model == "WE") {
     nTh <- 2
     startTh <- c(1.5, 0.2) 
-    jumpTh <- c(0.1, 0.1)
-    priorMean <- c(1, 0.05)
+    jumpTh <- c(0.1, 0.01)
+    priorMean <- c(1, 1)
     priorSd <- c(0.5, 0.1)
     nameTh <- c("b0", "b1")
     lowTh <- c(0, 0)
@@ -322,8 +322,8 @@ basta <-
     nTh <- 3 
     startTh <- c(-2, 0.01, 1e-04) 
     jumpTh <- c(0.1, 0.1, 0.1) 
-    priorMean <- c(-6, 0.001, 1e-10)
-    priorSd <- c(1, 0.1, 0.1)
+    priorMean <- c(-3, 0.01, 1e-10)
+    priorSd <- c(1, 1, 1)
     nameTh <- c("b0", "b1", "b2")
     lowTh <- c(-Inf, 0, 0)
     jitter <- c(0.1, 0.1, 0.1) 
@@ -341,7 +341,7 @@ basta <-
     nTh <- nTh + 3 
     startTh <- c(-0.1, 0.6, 0, startTh)
     jumpTh <- c(0.1, 0.1, 0.1, jumpTh) 
-    priorMean <- c(-2, 0.001, 0, priorMean)
+    priorMean <- c(-2, 0.01, 0, priorMean)
     priorSd <- c(0.5, 0.1, 0.1, priorSd)
     nameTh <- c("a0", "a1", "c", nameTh)
     lowTh <- c(-Inf, 0, -Inf, lowTh)
@@ -742,7 +742,7 @@ basta <-
           parObjNew$theta[, 'c'], .05, lower = lowC)
     }
     if (class(parObj)[1] == "theGam") {
-      parObjNew$gamma <- rnorm(length(parObj$gamma), parObj$gamma, 0.5)
+      parObjNew$gamma <- rnorm(length(parObj$gamma), parObj$gamma, 0.25)
     }
     parsCovNew <- .CalcParCovObj(.covObj, parObjNew, parsCovObj)
     postNew <- .CalcLike(ageObj, parObjNew, postObj, parsCovNew, 1:.dataObj$n)
@@ -1023,62 +1023,127 @@ basta <-
   postObj <- .CalcPostPi(parObj, postObj, ageObj, ind)
   postObj <- .CalcPostLambda(parObj, postObj, ageObj, ind)  
   postObj$mat[ind, "vx"] <- 
-      .CalcPriorAgeDist(ageObj, ind)
+      .CalcPriorAgeDist(.covObj, ageObj, ind)
   postObj <- .SumPosts(postObj, ind)
   return(postObj)
 }
 
 # Prior age distribution
-.SetPriorAgeDist <- function(ageObj) {
-  priorMean <- .fullParObj$theta$priorMean[1, ]
-  priorSd <- .fullParObj$theta$priorSd[1, ]
-  low <- .fullParObj$theta$low[1, ]
-  maxAge <- max(ageObj$ages[, "age"]) * 5
-  xvdisc <- 0:maxAge
-  nPriors <- ncol(.fullParObj$theta$priorMean)
-  priorRange <- lapply(1:nPriors, function(th) 
-        seq(qtnorm(0.0001, mean = priorMean[th], sd = priorSd[th], 
-                lower = low[th]),
-            qtnorm(0.9999, mean = priorMean[th], sd = priorSd[th], 
-                lower = low[th]), length = 10))
-  names(priorRange) <- names(priorMean)
-  priorDens <- lapply(1:nPriors, function(th) dtnorm(priorRange[[th]], 
-            mean = priorMean[th], sd = priorSd[th], lower = low[th]))
-  Dprior <- sapply(1:nPriors, function(th) priorRange[[th]][2] -
-            priorRange[[th]][1])
-  names(Dprior) <- names(priorMean)
-  names(priorDens) <- names(priorMean)
-  priorCombs <- as.matrix(expand.grid(priorRange))
-  priorDens <- expand.grid(priorDens)
-  xMat <- matrix(xvdisc, nrow(priorCombs), length(xvdisc), byrow = TRUE)
-  if (.algObj$shape != "simple") {
-    nPriorComb <- priorCombs
-    nPriorComb[, "c"] <- 0
-    lowsC <- - apply(.CalcMort(xMat, nPriorComb), 1, min)
-    idC <- which(priorCombs[, "c"] < lowsC)
-    priorCombs[idC, "c"] <- lowsC[idC]
+
+.SetPriorAgeDist <- function() {
+  dxx <- 0.001
+  xx <- seq(0,100,dxx)
+  parsPrior <- list()
+  parsPrior$theta <- .fullParObj$theta$priorMean
+  if (class(.parsIni)[1] == "theGam") {
+    parsPrior$gamma <- .fullParObj$gamma$priorMean
   }
-  
-  xv   <- seq(0, maxAge, length = 200)
-  dx <- xv[2] - xv[1]
-  lifeExpec <- c(sapply(xv, function(xx) .CalcSurv(xx, priorCombs) * dx) %*% 
-          rep(1, length(xv)))
-  .priorAgeDist <- apply(.CalcSurv(xMat, priorCombs) / lifeExpec * 
-          apply(priorDens, 1, prod) * prod(Dprior), 2, sum) 
-  .priorAgeDist <- log(.priorAgeDist / sum(.priorAgeDist))
-  names(.priorAgeDist) <- xvdisc
-  return(.priorAgeDist)
+  parsPriorCov <- list()
+  if (class(.covObj)[1] == "noCov") {
+    Ex <- sum(.CalcSurv(xx, parsPrior$theta) * dxx)
+    lifeExp <- rep(Ex, .dataObj$n)
+  } else if (class(.covObj)[1] == "inMort") {
+    if (class(.covObj)[2] == "bothCov") {
+      meanCont <- apply(matrix(.covObj$inMort[, names(.covObj$cont)], 
+              ncol = length(.covObj$cont)), 2, mean)
+      thetaCont <- matrix(parsPrior$theta[.covObj$cont, ], 
+          nrow = length(.covObj$cont)) %*% meanCont
+    } else {
+      thetaCont <- 0
+    }
+    Ex <- sapply(1:length(.covObj$cat), 
+        function(pp) sum(.CalcSurv(xx, t(parsPrior$theta[pp, ] + thetaCont)) * 
+                  dxx))
+    names(Ex) <- names(.covObj$cat)
+    lifeExp <- .covObj$inMor[, names(.covObj$cat)] %*% Ex
+  } else if (class(.covObj)[1] == "fused") {
+    meanCont <- apply(.covObj$propHaz, 2, mean)
+    gam <- sum(parsPrior$gamma * meanCont)
+    Ex <- sapply(1:length(.covObj$cat), 
+        function(pp) 
+          sum(.CalcSurv(xx, t(parsPrior$theta[pp, ]))^exp(gam) * dxx))
+    names(Ex) <- names(.covObj$cat)
+    lifeExp <- .covObj$inMor %*% Ex
+  } else {
+    if (class(.covObj)[2] == "bothCov") {
+      meanCont <- apply(matrix(.covObj$propHaz[, names(.covObj$cont)], 
+              ncol = length(.covObj$cont)), 2, mean)
+      gam <- c(0, parsPrior$gamma[names(.covObj$cat)[-1]]) + 
+          sum(parsPrior$gamma * meanCont)
+      Ex <- sapply(1:(length(gam)), 
+          function(pp) 
+            sum(.CalcSurv(xx, parsPrior$theta)^exp(gam[pp]) * dxx))
+      names(Ex) <- names(.covObj$cat[-1])
+      lifeExp <- .covObj$propHaz[, .covObj$cat] %*% Ex
+    } else if (class(.covObj)[2] == "cateCov"){
+      gam <- c(0, parsPrior$gamma[names(.covObj$cat)[-1]])
+      Ex <- sapply(1:(length(gam)), 
+          function(pp) 
+            sum(.CalcSurv(xx, parsPrior$theta)^exp(gam[pp]) * dxx))
+      names(Ex) <- names(.covObj$cat)
+      lifeExp <- cbind(0, .covObj$propHaz[, names(.covObj$cat[-1])]) %*% Ex
+    } else {
+      meanCont <- apply(matrix(.covObj$propHaz[, names(.covObj$cont)], 
+              ncol = length(.covObj$cont)), 2, mean)
+      gam <- sum(parsPrior$gamma * meanCont)
+      Ex <- sum(.CalcSurv(xx, parsPrior$theta)^exp(gam) * dxx)
+      lifeExp <- rep(Ex, .dataObj$n)
+    }
+  }
+  priorCov <- .CalcParCovObj(.covObj, parsPrior, .parsCovIni)
+  priorAgeObj <- list(lifeExp = lifeExp, theta = priorCov$theta)
+  if (class(.covObj)[1] %in% c("fused", "propHaz")) {
+    priorAgeObj$gamma <- priorCov$gamma
+  }
+  return(priorAgeObj)
 }
 
-.CalcPriorAgeDist <- function(ageObj, ...) UseMethod(".CalcPriorAgeDist")
+.CalcPriorAgeDist <- function(.covObj, ...) UseMethod(".CalcPriorAgeDist")
 
-.CalcPriorAgeDist.minAge <- function(ageObj, ind) {
-  .priorAgeDist[ageObj$ages[ind, "ageAd"] + 1] * ageObj$ages[ind, "indAd"]
+.CalcPriorAgeDist.noCov <- function(.covObj, ageObj, ind) {
+  ageList <- .ExtractAgesForPad(ageObj, ind)
+  priorAgeDist <- .CalcSurv(ageList$age, .priorAgeObj$theta) / 
+      .priorAgeObj$lifeExp[ind] * ageList$idAd
+  return(priorAgeDist)
+} 
+
+.CalcPriorAgeDist.fused <- function(.covObj, ageObj, ind) {
+  ageList <- .ExtractAgesForPad(ageObj, ind)
+  priorAgeDist <- (.CalcSurv(ageList$age, 
+            .priorAgeObj$theta[ind, ])^exp(.priorAgeObj$gamma[ind, ])) / 
+      .priorAgeObj$lifeExp[ind] * ageList$idAd
+  return(priorAgeDist)
+} 
+
+.CalcPriorAgeDist.inMort <- function(.covObj, ageObj, ind) {
+  ageList <- .ExtractAgesForPad(ageObj, ind)
+  priorAgeDist <- .CalcSurv(ageList$age, .priorAgeObj$theta[ind, ]) / 
+      .priorAgeObj$lifeExp[ind] * ageList$idAd
+  return(priorAgeDist)
+} 
+
+.CalcPriorAgeDist.propHaz <- function(.covObj, ageObj, ind) {
+  ageList <- .ExtractAgesForPad(ageObj, ind)
+  priorAgeDist <- (.CalcSurv(ageList$age, 
+            .priorAgeObj$theta)^exp(.priorAgeObj$gamma[ind, ])) / 
+      .priorAgeObj$lifeExp[ind] * ageList$idAd
+  return(priorAgeDist)
+} 
+
+
+
+.ExtractAgesForPad <- function(ageObj, ...) UseMethod(".ExtractAgesForPad")
+
+.ExtractAgesForPad.minAge <- function(ageObj, ind) {
+  return(list(age = ageObj$ages[ind, "ageAd"], 
+          idAd = ageObj$ages[ind, "indAd"]))
 }
 
-.CalcPriorAgeDist.noMinAge <- function(ageObj, ind) {
-  .priorAgeDist[ageObj$ages[ind, "age"] + 1]
+.ExtractAgesForPad.noMinAge <- function(ageObj, ind) {
+  return(list(age = ageObj$ages[ind, "age"], 
+          idAd = 1))
 }
+
 
 # Fill in outObj$par:
 .FillParMat <- function(parObj) {
@@ -1109,7 +1174,7 @@ basta <-
   outObj$par[1, ] <- .FillParMat(parsNow)
   outObj$post <- rep(0, niter)
   outObj$post[1] <- sum(postNow$mat[, 'fx'] - postNow$mat[, 'Sx'] + 
-          postNow$mat[, 'px'])
+          postNow$mat[, 'px'] + postNow$mat[, 'vx'])
   thinSeq <- seq(burnin, niter, thinning)
   lenThin <- length(thinSeq)
   if (class(.dataObj) == "ageUpd") {
@@ -1190,7 +1255,7 @@ basta <-
       }
     }
     outObj$post[m] <- sum(postNow$mat[, 'fx'] - postNow$mat[, 'Sx'] + 
-            postNow$mat[, 'px'])
+            postNow$mat[, 'px'] + postNow$mat[, "lx"])
   }
   options(op)
   return(outObj)
@@ -1323,7 +1388,7 @@ basta <-
   aveJumps <- apply(matrix(jumpObj$jumpsMat[nrow(jumpObj$jumpsMat) -
                   c(100:0), ], ncol = ncol(jumpObj$jumpsMat)), 2, mean)
   newJumps$theta[1:.fullParObj$theta$len] <- aveJumps[1:.fullParObj$theta$len]
-  if (class(.parsIni)[1] == "thegam") {
+  if (class(.parsIni)[1] == "theGam") {
     newJumps$gamma <- avejumps[idGam]
   }
   cat(" done.\n\n")
