@@ -13,7 +13,7 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0,
   # Colchero & Clark (2012) J Anim Ecol.
   bastaIntVars <- c(".algObj", ".defTheta", ".CalcMort", ".CalcSurv", 
       ".dataObj", ".covObj", ".userPars", ".fullParObj", ".agesIni", 
-      ".parsIni", ".priorAgeDist", ".parsCovIni", ".postIni", 
+      ".parsIni", ".priorAgeObj", ".parsCovIni", ".postIni", 
       ".Random.seed",  ".jumps", ".jumpObjIni")
   idDel <- which(bastaIntVars %in% ls(all.names = TRUE))
   if (length(idDel) > 0) {
@@ -43,12 +43,12 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0,
   objList <- list(.algObj = .algObj, .dataObj = .dataObj, .covObj = .covObj, 
       .defTheta = .defTheta, .userPars = .userPars, .CalcMort = .CalcMort, 
       .CalcSurv = .CalcSurv, .parsIni = .parsIni, .parsCovIni = .parsCovIni, 
-      .agesIni = .agesIni, .fullParObj = .fullParObj, .priorAgeDist = NA, 
+      .agesIni = .agesIni, .fullParObj = .fullParObj, .priorAgeObj = NA, 
       .postIni = NA, .jumps = .jumps, .jumpObjIni = NA)
   .AssignVarsToEnv(objList)
   cat("Calculating prior age distribution... ")
-  .priorAgeDist <- .SetPriorAgeDist(.agesIni)
-  assign(".priorAgeDist", .priorAgeDist, envir = .GlobalEnv)
+  .priorAgeObj <- .SetPriorAgeDist()
+  assign(".priorAgeObj", .priorAgeObj, envir = .GlobalEnv)
   cat(" done.\n\n")
   .postIni <- .BuildPostObj(.agesIni, .parsIni, .parsCovIni)
   assign(".postIni", .postIni, envir = .GlobalEnv)
@@ -118,9 +118,9 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0,
         bastaOut[[pp]]$par[seq(1, niter, thinning), ]
   }
   bastaResults$lifeTable <- .CalcLifeTable(bastaResults, lifeTable, object)
-  rm(list = bastaIntVars, envir = .GlobalEnv)
   # Define class for output object:
   class(bastaResults) <- "basta"
+  rm(list = bastaIntVars, envir = .GlobalEnv)
   return(bastaResults)
 }
 
