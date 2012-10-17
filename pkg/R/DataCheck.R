@@ -144,7 +144,7 @@ function(object, studyStart, studyEnd, autofix = rep(0, 7), silent=TRUE) {
     # Actions - put a zero.
 #    if (autofix[7] == 1) Y[dpos] = 0
 #  }   
-
+  type7 <- c()
 	n               <- nrow(Y)   
 
   # All OK:
