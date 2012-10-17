@@ -27,7 +27,7 @@ summary.basta <-
   
   
   cat("\nJumps and priors:\n")
-  if ("jumpPrior" %in% names(object)) {
+  if ("jumpPriors" %in% names(object)) {
     print(object$jumpPriors)
   } else {
     print(object$JumpP)
