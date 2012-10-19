@@ -1366,6 +1366,7 @@ basta <-
       if (class(parsNow)[1] == "theGam") {
         newJumps$gamma <- jumpObj$jump[-c(1:.fullParObj$theta$len)]
       }
+    }
   }
   options(op)
   aveJumps <- apply(matrix(jumpObj$jumpsMat[nrow(jumpObj$jumpsMat) -
