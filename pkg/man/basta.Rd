@@ -128,7 +128,7 @@ with \eqn{b_0, b_1, b_2 > 0}.
 The \code{shape} argument allows the user to extend these models in order to explore more complex mortality shapes. The default value is \dQuote{\code{simple}} which leaves the model as defined above. With value \dQuote{\code{Makeham}}, a constant is added to the mortality rate, making the model equal to \eqn{\mu_0(x | \theta)= \mu_b(x | b) + c}, where \eqn{\theta = [c, b]}. With value \dQuote{\code{bathtub}}, concave shapes in mortality can be explored. This is achieved by adding a declining Gompertz term and a constant parameter to the basic mortality model, namely:
 
 \deqn{\mu_0(x | \theta) = exp(a_0 - a_1 x) + c + \mu_b(x | b)}.
-with \eqn{-\infty < a_0 < \infty}, \eqn{a_1 > 0} and \eqn{c > - (exp(a_0 - a_1 x_m) + \mu_b(x_m | b))}, where \eqn{x_m} is the age at which \eqn{\mu_0(x | \theta)} reaches the mininum vale.
+with \eqn{-\infty < a_0 < \infty}, \eqn{a_1 \leq 0} and \eqn{c \leq 0}.
 
 To incorporate covariates into the inference process, the mortality model is further extended by including a proportional hazards structure, of the form: 
 
