@@ -182,17 +182,17 @@ plot.basta <-
         idRange <- length(xv)
       } else {
         xlim <- list(...)$xlim
-        idRange <- which(abs(xv - xlim[2]) == min(abs(xv - xlim[2])))
+        idRange <- which(abs(xv - xlim[2]) == min(abs(xv - xlim[2])))[1]
         xv <- xv[1:idRange]
       }
       for (dem in c("survQuant", "mortQuant")) {
         ylim <- c(0, max(sapply(1:length(x[[dem]]), function(idem) 
-                      max(x[[dem]][[idem]][, 1:idRange]))))
+                      max(x[[dem]][[idem]][, 2:idRange]))))
         xlab <- ifelse(dem == "mortQuant", "Age", "")
         ylab <- ifelse(dem == "mortQuant", expression(mu(x)), expression(S(x)))
         main <- ifelse(dem == "mortQuant", "Mortality", "Survival")
         plot(xlim, ylim, col = NA, xlab = xlab, ylab = ylab, 
-            frame.plot = FALSE, main = main)
+            frame.plot = FALSE, main = main, ylim = c(0, ylim[2]))
         for (cov in 1:length(x$mortQuant)) {
           polygon(c(xv[1:idRange], rev(xv[1:idRange])), 
               c(x[[dem]][[cov]][2, 1:idRange], 
