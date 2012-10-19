@@ -1366,10 +1366,6 @@ basta <-
       if (class(parsNow)[1] == "theGam") {
         newJumps$gamma <- jumpObj$jump[-c(1:.fullParObj$theta$len)]
       }
-    par(mfrow = c(5, 2))
-    for (pl in 1:10) plot(jumpObj$jumpsMat[, pl], type = 'l', main = 
-              .fullParObj$allNames[pl])
-    }
   }
   options(op)
   aveJumps <- apply(matrix(jumpObj$jumpsMat[nrow(jumpObj$jumpsMat) -
