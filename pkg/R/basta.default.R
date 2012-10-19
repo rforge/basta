@@ -1,16 +1,14 @@
 basta.default <- function(object, studyStart, studyEnd, minAge = 0, 
     model = "GO", shape = "simple", covarsStruct = "fused", niter = 11000, 
     burnin = 1001, thinning = 20, recaptTrans = studyStart, 
-    thetaStart = NULL, thetaJumps = NULL, thetaPriorMean = NULL, 
-    thetaPriorSd = NULL, gammaStart = NULL, gammaJumps = NULL, 
-    gammaPriorMean = NULL, gammaPriorSd = NULL, 
     nsim = 1, parallel = FALSE, ncpus = 2, lifeTable = TRUE, 
-    progrPlots = FALSE, updateJumps = TRUE, ...) {
+    updateJumps = TRUE, ...) {
   
   # This function estimates age-specific mortality from capture-recapture/
   # recovery (CRR) data when a large proportion of (or all) the records have
   # unknown times of birth and death. It uses the framework described by
   # Colchero & Clark (2012) J Anim Ecol.
+  argList <- list(...)
   bastaIntVars <- c(".algObj", ".defTheta", ".CalcMort", ".CalcSurv", 
       ".dataObj", ".covObj", ".userPars", ".fullParObj", ".agesIni", 
       ".parsIni", ".priorAgeObj", ".parsCovIni", ".postIni", 
@@ -28,8 +26,7 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0,
   .CalcSurv <- .DefineSurv(.algObj)
   .covObj <- .CreateCovObj(object, .dataObj, .algObj)
   .algObj$covStruc <- class(.covObj)[1]
-  .userPars <- .CreateUserPar(.covObj, thetaStart, thetaJumps,thetaPriorMean,
-      thetaPriorSd, gammaStart, gammaJumps, gammaPriorMean, gammaPriorSd)
+  .userPars <- .CreateUserPar(.covObj, argList)
   .fullParObj <- .BuildFullParObj(.covObj, .defTheta, .algObj, .userPars, 
       .dataObj)
   .jumps <- list()

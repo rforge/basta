@@ -19,14 +19,25 @@ basta <-
           thinning = thinning, updJump = updateJumps, nsim = nsim))
 }
 
-.CreateUserPar <- function(.covObj, thetaStart, thetaJumps,thetaPriorMean,
-    thetaPriorSd, gammaStart, gammaJumps, gammaPriorMean, gammaPriorSd) {
+.CreateUserPar <- function(.covObj, argList) {
   .userPars <- list()
-  .userPars$theta <- list(start = thetaStart, jump = thetaJumps, 
-      priorMean = thetaPriorMean, priorSd = thetaPriorSd)
-  if (class(.covObj)[1] %in% c("fused", "propHaz")) {
-    .userPars$gamma <- list(start = gammaStart, jump = gammaJumps, 
-        priorMean = gammaPriorMean, priorSd = gammaPriorSd)
+  genParName <- c("theta", "gamma")
+  parTypes <- c("Start", "Jumps", "PriorMean", "PriorSd")
+  parTypesList <- c("start", "jump", "priorMean", "priorSd")
+  for (genPp in 1:2) {
+    if (all(genPp == 2 & class(.covObj)[1] %in% c("fused", "propHaz")) |
+        genPp == 1) {
+      .userPars[[genParName[genPp]]] <- list()
+      for (pp in 1:4) {
+        usrPar <- paste(genParName[genPp], parTypes[pp], sep = "")
+        if (usrPar %in% names(argList)) {
+          .userPars[[genParName[genPp]]][[parTypesList[pp]]] <- 
+              argList[[usrPar]]
+        } else {
+          .userPars[[genParName[genPp]]][[parTypesList[pp]]] <- NULL 
+        }
+      }
+    }    
   }
   return(.userPars)
 }
@@ -305,7 +316,7 @@ basta <-
     priorSd <- c(0.5, 0.25)
     nameTh <- c("b0", "b1")
     lowTh <- c(-Inf, -Inf)
-    jitter <- c(0.5, 0.5) 
+    jitter <- c(0.5, 0.2) 
     if (.algObj$shape == "bathtub") {
       lowTh <- c(-Inf, 0)
     }
@@ -317,7 +328,7 @@ basta <-
     priorSd <- c(0.5, 0.25)
     nameTh <- c("b0", "b1")
     lowTh <- c(0, 0)
-    jitter <- c(0.5, 0.5) 
+    jitter <- c(0.5, 0.2) 
   } else if (.algObj$model == "LO") {
     nTh <- 3 
     startTh <- c(-2, 0.01, 1e-04) 
@@ -326,7 +337,7 @@ basta <-
     priorSd <- c(0.5, 0.25, 0.25)
     nameTh <- c("b0", "b1", "b2")
     lowTh <- c(-Inf, 0, 0)
-    jitter <- c(0.5, 0.5, 0.5) 
+    jitter <- c(0.5, 0.2, 0.2) 
   }
   if (.algObj$shape == "Makeham") {
     nTh <- nTh + 1 
@@ -336,7 +347,7 @@ basta <-
     priorSd <- c(0.25, priorSd)
     nameTh <- c("c", nameTh)
     lowTh <- c(0, lowTh)
-    jitter <- c(0.5, jitter) 
+    jitter <- c(0.25, jitter) 
   } else if (.algObj$shape == "bathtub") {
     nTh <- nTh + 3 
     startTh <- c(-0.1, 0.6, 0, startTh)
@@ -345,7 +356,7 @@ basta <-
     priorSd <- c(0.5, 0.25, 0.25, priorSd)
     nameTh <- c("a0", "a1", "c", nameTh)
     lowTh <- c(-Inf, 0, 0, lowTh)
-    jitter <- c(0.5, 0.5, 0.5, jitter) 
+    jitter <- c(0.5, 0.2, 0.2, jitter) 
   }
   defaultTheta  <- list(length = nTh, start = startTh, jump = jumpTh, 
       priorMean = priorMean, priorSd = priorSd, name = nameTh, 
