@@ -14,85 +14,46 @@ basta(object, \dots)
 \method{basta}{default}(object, studyStart, studyEnd, minAge = 0, 
     model = "GO", shape = "simple", covarsStruct = "fused", niter = 11000, 
     burnin = 1001, thinning = 20, recaptTrans = studyStart, 
-    thetaStart = NULL, thetaJumps = NULL, thetaPriorMean = NULL, 
-    thetaPriorSd = NULL, gammaStart = NULL, gammaJumps = NULL, 
-    gammaPriorMean = NULL, gammaPriorSd = NULL, 
     nsim = 1, parallel = FALSE, ncpus = 2, lifeTable = TRUE, 
-    progrPlots = FALSE, updateJumps = TRUE, \dots)
+    updateJumps = TRUE, \dots)
 }
 
 \arguments{
   
-  
 \item{object }{A \code{data.frame} to be used as an input data file for BaSTA. The first column is a vector of individual unique IDs, the second and third columns are birth and death years respectively. Columns 4-(nt-1) represent the observation window of nt years.  This is followed (optionally) by columns for categorical and continuous covariates (see \code{details}). }
  
-  
 \item{studyStart }{The first year of the study.}
-  
   
 \item{studyEnd }{The last year of the study.}
   
-  
 \item{minAge }{Age at which the analysis should start (see \code{details})}
-  
   
 \item{model }{The underlying mortality model to be used. "EX" = exponential, "GO"= Gompertz, "WE" = Weibull and "LO" = logistic (see \code{details}).}
   
-  
 \item{shape }{The overall shape of the model. Values are: \code{simple} = no extra parameters added; \code{Makeham} = a constant parameter is added to the mortality rate; and \code{bathtub} = a Gompertz declining mortality for early ages and a constant parameter are added to the mortality model (see \code{details}).}
-  
   
 \item{covarsStruct }{Character string that indicates how covariates should be evaluated. The options are: \dQuote{\code{fused}}, which defines all categorical variables as covariates for each mortality parameter and all continuous covariates under a proportional hazards structure; \dQuote{\code{prop.haz}}, which puts all covariates under a proportional hazards structure; and \dQuote{\code{all.in.mort}} puts all covariates as a multilevel function of the mortality parameters (see \code{details}).}
   
-  
 \item{niter }{The total number of MCMC steps.}
-  
   
 \item{burnin }{The number of iterations for the burn in (see \code{details}).}
   
-  
 \item{thinning }{The number of skipped MCMC steps to minimize serial autocorrelation (see \code{details}).}
   
-  
 \item{recaptTrans }{A vector (of length npi) defining the recapture probability transition times (RPTP). These are points (years) where the recapture probability is thought to change.  The default setting is for the recapture probability to be constant throughout the study, so the \code{recaptTrans} is simply defined as a single element vector of the first year of the observation period (e.g. c(1985)). If recapture probabilities were known to change at year say, 1990, the RPTP should be defined as c(1985, 1990).}
-  
-  
-\item{thetaStart }{A vector defining the initial values for each parameter in the survival model. The number of parameters should be: 2 for Gompertz, 3 for Gompertz-Makeham, and 5 for Siler (see \code{details}). The default is set to \code{NULL} and thus a set of random parameters is generated for each simulation.}
-  
-  
-\item{thetaJumps }{A vector defining the size of jumps for each survival model parameter (i.e. the standard error in the Metropolis step). The number of parameters will depend on the model selected, as with \code{thetaStart}. As with \code{thetaStart}, the default is set to \code{NULL} and thus default values are assigned.}
-  
-  
-\item{thetaPriorMean }{A vector defining the prior means for each survival parameter. The vector takes the same format as described for \code{thetaStart}. If set to \code{NULL}, default values are assigned.}
-  
-\item{thetaPriorSd }{A vector defining the prior standard deviations for each survival parameter. This vector is constructed as \code{thetaStart}. If set to \code{NULL} (default), default values are assigned.}
-  
-\item{gammaStart }{A vector of initial parameters for the proportional hazards section of the model. These can be specified when \code{Prop.Hazards} is \code{TRUE} or when continuous covariates are evaluated under a \dQuote{\code{fused}} covariate structure (see \code{details}). As with \code{thetaStart}, the default is set to \code{NULL} and thus default values are assigned (i.e. all equal to 0).}
-  
-\item{gammaJumps }{A vector of jump standard errors for the proportional hazards parameters. The number of jumps will be equal to the number of covariates when the argument \code{covarsStruct} is set to \dQuote{\code{prop.haz}}, or to the number of continuous covariates to be evaluated when \code{covarsStruct} is set to \dQuote{\code{fused}}. In case any of these two conditions are met and the default is used (i.e. NULL), the model automatically assigns built-in jump values.}
-  
-\item{gammaPriorMean }{A vector of prior means for the proportional hazards parameters. The specification follows the same rules as \code{gammaJumps}.}
-  
-\item{gammaPriorSd }{A vector of prior standard deviations for the proportional hazards parameters. The specification follows the same rules as \code{gammaJumps}.}
     
 \item{nsim }{A numerical value for the number of simulations to be run.}
   
 \item{parallel }{A logical argument indicating whether the multiple simulations should be run in parallel or not. If \code{TRUE}, package \pkg{snowfall} is called and multiple simulations are run in parallel. If \pkg{snowfall} is not installed, the model is ran in series.}
   
-  
 \item{ncpus }{a numerical value that indicates the number of cpus to be used if \code{parallel} is \code{TRUE} and package \pkg{snowfall} is installed. The default is 2 cpus. If package pkg{snowfall} is not installed, the simulations are run in series.}
-  
   
 \item{lifeTable }{A logical argument indicating whether or not to produce life tables. If \code{TRUE}, a cohort life table is calculated using function \code{\link{MakeLifeTable}}.}
   
-  
-\item{progrPlots }{A logical argument indicating wheter to draw progress plots or not. If \code{TRUE}, small plots are displayed showing the percent progress achieved for each MCMC simulation. }
-  
-
 \item{updateJumps }{A logical argument indicating wheter to update jump standard deviations (adaptive independent Metropolis) until an update rate of 0.25 is achieved (see \code{details}). }
-  
 
-\item{\dots }{Ignored.}
+\item{\dots }{Additional arguments to be passed to function \code{basta} (see \code{details})}
+
 }
 
 \details{
@@ -148,11 +109,14 @@ The \code{burnin} argument represents the number of steps at the begining of the
 
 The \code{thinning} argument specifies the number of steps to be skipped in order to reduce serial autocorrelation. The thinned sequence, which only includes steps after burn in, is then used to calculate convergence statistics and model for selection.
 
-The number of parameters in \code{thetaStart} is a vector or matrix that defines the initial values for each \eqn{\theta} parameter of the mortality function. The number of parameters will depend on the model chosen with \code{model} (see above). If the number of parameters specified does not match the number of parameters inherent to the model and shape selected, the function returns an error. If no \code{thetaStart} argument is specified (i.e. default is \code{NULL}), the model randomly generates a set of initial parameters. 
+The \code{updateJumps} argument specifies wether to run a simulation to find appropriate jump standard deviations for theta and gamma parameters. If argument \dQuote{\code{nsim}} is set to 1, then the simulation runs with the update jumps routine active. If \dQuote{\code{nsim}} is larger than 1, then an initial simulation is ran to find apropriate jumps before the main analysis is ran. 
 
-As described above, the number of parameters for the \code{gammaStart} argument (i.e. section b), namely the proportional hazards section, will be a function of the number of continuous covariates if argument \code{covarsStruct} is \dQuote{\code{fused}}, or to the total number of covariates when \code{covarsStruct} is \dQuote{\code{prop.haz}}.
+Additional arguments for priors, jumps and start values can be passed on the \dots section. For instance, argument \code{thetaStart} can be specified as a vector defining the initial values for each parameter in the survival model. If this argument is not specified, a set of random parameters is generated for each simulation. Similarly, argument \code{gammaStart} can be specified for all parameters in the proportional hazards section of the model. Jump standard deviations (i.e. the standard error in the Metropolis step) can be specified with arguments \code{thetaJumps} and \code{gammaJumps}. As with \code{thetaStart}, default values are assigned if these arguments are not specified. Arguments \code{thetaPriorMean}, \code{thetaPriorSd}, \code{gammaPriorMean} and \code{gammaPriorSd} can be used to specify prior means and standard errors for each survival and proportional hazards parameters. Again, if not specified, default values are assigned.
 
-The \code{updateJumps} argument specifies weather to run a simulation to find appropriate jump standard deviations for theta and gamma parameters. If argument \dQuote{\code{nsim}} is set to 1, then the simulation runs with the update jumps routine active. If \dQuote{\code{nsim}} is larger than 1, then an initial simulation is ran to find apropriate jumps before the main analysis is ran. 
+The number of parameters in \code{thetaStart}, \code{thetaJumps}, \code{thetaPriorMean} and \code{thetaPriorSd} should be a vector or matrix for the parameters in the mortality function. The number of parameters will depend on the model chosen with \code{model} (see above). If the number of parameters specified does not match the number of parameters inherent to the model and shape selected, the function returns an error. 
+
+As described above, the number of parameters for \code{gammaStart}, \code{gammaJumps}, \code{gammaPriorMean} and \code{gammaPriorSd} arguments (i.e. section b), namely the proportional hazards section, will be a function of the number of continuous covariates if argument \code{covarsStruct} is \dQuote{\code{fused}}, or to the total number of covariates when \code{covarsStruct} is \dQuote{\code{prop.haz}}.
+
 }
 
 \value{  
