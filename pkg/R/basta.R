@@ -1287,7 +1287,7 @@ basta <-
 }
 
 
-.RunIniUpdJump <- function() {
+.RunIniUpdJump <- function(argList) {
   cat("Starting simulation to find jump sd's... ")
   jumpObj <- .jumpObjIni
   parsNow <- .parsIni
@@ -1306,7 +1306,9 @@ basta <-
   }
   idGam <- which(substr(.fullParObj$allNames, 1, 2) == "ga")
   nMp <- length(idMp)
-  updObj <- list(len = 50, targ = .44)
+  updObj <- list(len = 50)
+  updObj$targ <- ifelse("updateRate" %in% names(argList), 
+      argList$updateRate, 0.25)
   niter <- updObj$len * 125
   updObj$int <- seq(updObj$len, niter, updObj$len) 
   updObj$updVec <- matrix(0, niter, nMp)

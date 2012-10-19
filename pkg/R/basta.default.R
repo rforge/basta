@@ -51,7 +51,7 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0,
   if(updateJumps) {
     .jumpObjIni <- .PrepJumpObj(.fullParObj, .covObj)
     assign(".jumpObjIni", .jumpObjIni, envir = .GlobalEnv)
-    updatedJumps <- .RunIniUpdJump()
+    updatedJumps <- .RunIniUpdJump(argList)
     .jumps <- updatedJumps$updJumps
     assign(".jumps", .jumps, envir = .GlobalEnv)
   } 
