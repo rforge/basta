@@ -46,10 +46,8 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0,
       .agesIni = .agesIni, .fullParObj = .fullParObj, .priorAgeObj = NA, 
       .postIni = NA, .jumps = .jumps, .jumpObjIni = NA)
   .AssignVarsToEnv(objList)
-  cat("Calculating prior age distribution... ")
   .priorAgeObj <- .SetPriorAgeDist()
   assign(".priorAgeObj", .priorAgeObj, envir = .GlobalEnv)
-  cat(" done.\n\n")
   .postIni <- .BuildPostObj(.agesIni, .parsIni, .parsCovIni)
   assign(".postIni", .postIni, envir = .GlobalEnv)
   Start <- Sys.time()
@@ -75,7 +73,6 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0,
         require(snowfall)
         sfInit(parallel = TRUE, cpus = ncpus)
         sfExport(list = bastaIntVars)
-#        sfSource("/users/fernando/FERNANDO/PROJECTS/4.PACKAGES/BaSTA/workspace/developBasta/code/loadBaSTA.R")
         sfLibrary("BaSTA", character.only = TRUE, warn.conflicts = FALSE)
         sfLibrary(msm, warn.conflicts = FALSE)
         bastaOut <- sfClusterApplyLB(1:nsim, .RunBastaMCMC)
@@ -115,7 +112,7 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0,
   bastaResults$parsForPlot <- list()
   for (pp in names(bastaOut)) {
     bastaResults$parsForPlot[[pp]] <- 
-        bastaOut[[pp]]$par[seq(1, niter, thinning), ]
+        bastaOut[[pp]]$par[seq(1, .algObj$niter, .algObj$thinning), ]
   }
   bastaResults$lifeTable <- .CalcLifeTable(bastaResults, lifeTable, object)
   # Define class for output object:
