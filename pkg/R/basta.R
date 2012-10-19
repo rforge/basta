@@ -296,7 +296,7 @@ basta <-
     priorSd <- 1
     nameTh <- "b0"
     lowTh <- 0
-    jitter <- 0.05
+    jitter <- 0.5
   } else if (.algObj$model == "GO") {
     nTh <- 2 
     startTh <- c(-2, 0.01) 
@@ -305,14 +305,14 @@ basta <-
     priorSd <- c(1, 1)
     nameTh <- c("b0", "b1")
     lowTh <- c(-Inf, -Inf)
-    jitter <- c(0.1, 0.05) 
+    jitter <- c(0.5, 0.1) 
     if (.algObj$shape == "bathtub") {
       lowTh <- c(-Inf, 0)
     }
   } else if (.algObj$model == "WE") {
     nTh <- 2
     startTh <- c(1.5, 0.2) 
-    jumpTh <- c(0.1, 0.01)
+    jumpTh <- c(.01, 0.1)
     priorMean <- c(1, 1)
     priorSd <- c(0.5, 0.1)
     nameTh <- c("b0", "b1")
@@ -326,7 +326,7 @@ basta <-
     priorSd <- c(1, 1, 1)
     nameTh <- c("b0", "b1", "b2")
     lowTh <- c(-Inf, 0, 0)
-    jitter <- c(0.1, 0.1, 0.1) 
+    jitter <- c(0.5, 0.1, 0.1) 
   }
   if (.algObj$shape == "Makeham") {
     nTh <- nTh + 1 
@@ -335,7 +335,7 @@ basta <-
     priorMean <- c(0, priorMean)
     priorSd <- c(0.1, priorSd)
     nameTh <- c("c", nameTh)
-    lowTh <- c(-Inf, lowTh)
+    lowTh <- c(0, lowTh)
     jitter <- c(0.1, jitter) 
   } else if (.algObj$shape == "bathtub") {
     nTh <- nTh + 3 
@@ -344,8 +344,8 @@ basta <-
     priorMean <- c(-2, 0.01, 0, priorMean)
     priorSd <- c(0.5, 0.1, 0.1, priorSd)
     nameTh <- c("a0", "a1", "c", nameTh)
-    lowTh <- c(-Inf, 0, -Inf, lowTh)
-    jitter <- c(0.1, 0.1, 0.1) 
+    lowTh <- c(-Inf, 0, 0, lowTh)
+    jitter <- c(0.5, 0.1, 0.1, jitter) 
   }
   defaultTheta  <- list(length = nTh, start = startTh, jump = jumpTh, 
       priorMean = priorMean, priorSd = priorSd, name = nameTh, 
@@ -725,54 +725,38 @@ basta <-
 }
 
 # Sample parameters:
-.JitterPars <- function(parObj, ageObj, postObj, parsCovObj) {
-  parObjNew <- parObj
+.JitterPars <- function() {
+  parObjNew <- .parsIni
   negMort <- TRUE
+  theJitter <- matrix(.defTheta$jitter, nrow(.parsIni$theta), 
+      ncol(.parsIni$theta), dimnames = dimnames(.parsIni$theta), 
+      byrow = TRUE)
   while(negMort) {
-    parObjNew$theta <- matrix(rtnorm(length(parObj$theta), parObj$theta, 
-            .5, lower = .fullParObj$theta$low), 
-        nrow(parObj$theta), ncol(parObj$theta), 
-        dimnames = dimnames(parObj$theta))
-    xRange <- ceiling(0:max(ageObj$ages[, "age"]) * 1.1)
-    if (.algObj$shape != "simple") {
-      lowC <-  sapply(1:nrow(parObj$theta), 
-          function(cc) .CalcLowC(t(parObjNew$theta[cc, ]),
-                xRange))
-      parObjNew$theta[, 'c'] <- rtnorm(1:nrow(parObj$theta), 
-          parObjNew$theta[, 'c'], .05, lower = lowC)
+    parObjNew$theta <- matrix(rtnorm(length(.parsIni$theta), .parsIni$theta, 
+            theJitter, lower = .fullParObj$theta$low), 
+        nrow(.parsIni$theta), ncol(.parsIni$theta), 
+        dimnames = dimnames(.parsIni$theta))
+    xRange <- ceiling(0:max(.agesIni$ages[, "age"]) * 2)
+    if (class(.parsIni)[1] == "theGam") {
+      parObjNew$gamma <- rnorm(length(.parsIni$gamma), .parsIni$gamma, 0.25)
     }
-    if (class(parObj)[1] == "theGam") {
-      parObjNew$gamma <- rnorm(length(parObj$gamma), parObj$gamma, 0.25)
-    }
-    parsCovNew <- .CalcParCovObj(.covObj, parObjNew, parsCovObj)
-    postNew <- .CalcLike(ageObj, parObjNew, postObj, parsCovNew, 1:.dataObj$n)
+    parsCovNew <- .CalcParCovObj(.covObj, parObjNew, .parsCovIni)
+    postNew <- .CalcLike(.agesIni, parObjNew, .postIni, parsCovNew, 
+        1:.dataObj$n)
     negMort <- ifelse(postNew$mortPars == -Inf | is.na(postNew$mortPars), 
         TRUE, FALSE)
   }
   return(parObjNew)
 }
 
+
 .ProposeThetaPars <- function(parObj, ageObj, jumps, idPar) {
   parObjNew <- parObj
-  negMort <- TRUE
-  nRow <- idPar - floor((idPar - 1) / nrow(parObj$theta)) * 
-      nrow(parObj$theta)
-  while(negMort) {
-    xRange <- 0:100
-    if (.algObj$shape != "simple" & 
-        substr(.fullParObj$allNames[idPar], 1, 1) == "c") {
-      lowC <-  .CalcLowC(t(parObjNew$theta[nRow, ]), xRange)
-      parObjNew$theta[idPar] <- rtnorm(1, parObj$theta[idPar], 
-          jumps$theta[idPar], lower = lowC)
-    } else {
-      parObjNew$theta[idPar] <- rtnorm(1, parObj$theta[idPar], 
-          jumps$theta[idPar], lower = .fullParObj$theta$low[idPar])
-    }
-    mortTest <- .CalcMort(xRange, t(parObjNew$theta[nRow, ]))
-    negMort <- ifelse(all(mortTest >= 0), FALSE, TRUE)
-  }
+  parObjNew$theta[idPar] <- rtnorm(1, parObj$theta[idPar], 
+      jumps$theta[idPar], lower = .fullParObj$theta$low[idPar])
   return(parObjNew)
 }
+
 
 .ProposeGammaPars <- function(parObj, jumps, idPar) {
   parObjNew <- parObj
@@ -1162,7 +1146,7 @@ basta <-
   rm(".Random.seed", envir = .GlobalEnv)
   runif(1); assign(".Random.seed", .Random.seed, envir = .GlobalEnv)
   agesNow <- .agesIni
-  parsNow <- .JitterPars(.parsIni, .agesIni, .postIni, .parsCovIni)
+  parsNow <- .JitterPars()
   parsCovNow <- .CalcParCovObj(.covObj, parsNow, .parsCovIni)
   postNow <- .CalcLike(agesNow, parsNow, .postIni, parsCovNow, 1:.dataObj$n)
   niter <- .algObj$niter
@@ -1186,16 +1170,22 @@ basta <-
     }
   }
   idMp <- which(substr(.fullParObj$allNames, 1, 2) != "pi")
+  if (.algObj$shape != "simple") {
+    idC <- which(substr(.fullParObj$allNames, 1, 1) ==  "c")
+    idMp <- c(idMp[-idC], idMp[idC]) 
+  }
   nMp <- length(idMp)
   op <- options()
   options(warn = -1)
   for (m in 2:niter) {
     # Sample theta (and gamma) parameters:
-    for (mp in 1:nMp) {
+    for (mp in idMp) {
       parsNew <- .ProposeMortPars(parsNow, agesNow, .jumps, mp)
+      newPar <- ifelse(c(parsNew$theta, parsNew$gamma)[mp] != 
+              c(parsNow$theta, parsNow$gamma)[mp], TRUE, FALSE)
       parsCovNew <- .CalcParCovObj(.covObj, parsNew, parsCovNow)
       postNew <- .CalcLike(agesNow, parsNew, postNow, parsCovNew, 1:.dataObj$n)
-      if (!is.na(postNew$mortPars)) {
+      if (!is.na(postNew$mortPars) & newPar) {
         acceptCrit <- exp(postNew$mortPars - postNow$mortPars)
         acceptProb <- runif(1)
         if (acceptCrit > acceptProb) {
@@ -1271,18 +1261,15 @@ basta <-
       apply(matrix(updObj$updVec[step + c(-(updObj$len - 1):0), ], 
               ncol = length(jumpObj$jump)), 2, function(upd) sum(upd)) / 
       updObj$len
-#  jumpObj$updateRate[jumpObj$updateRate == 0] <- 1e-2
   delt <- min(0.01, pNum^(-1/2))
   idLow <- which(jumpObj$updateRate < updObj$targ)
   jumpObj$jump[idLow] <- jumpObj$jump[idLow] * exp(-delt)
-  jumpObj$jump[-idLow] <- jumpObj$jump[-idLow] * exp(delt)
+  idUp <- which(jumpObj$updateRate > updObj$targ)
+  jumpObj$jump[idUp] <- jumpObj$jump[idUp] * exp(delt)
   jumpObj$jump <- jumpObj$jump * exp(jumpObj$updateRate - updObj$targ)
+#  jumpObj$updateRate[jumpObj$updateRate == 0] <- 1e-2
 #  jumpObj$jump <- jumpObj$jump * jumpObj$updateRate / updObj$targ
   jumpObj$jumpsMat <- rbind(jumpObj$jumpsMat, jumpObj$jump)
-  if (all(jumpObj$updateRate > updObj$targ * 0.9) &
-      all(jumpObj$updateRate < updObj$targ * 1.1)) {
-    jumpObj$update <- FALSE
-  }
   return(jumpObj)
 }
 
@@ -1311,9 +1298,13 @@ basta <-
     newJumps$gamma <- .fullParObj$gamma$jump
   }
   idMp <- which(substr(.fullParObj$allNames, 1, 2) != "pi")
+  if (.algObj$shape != "simple") {
+    idC <- which(substr(.fullParObj$allNames, 1, 1) ==  "c")
+    idMp <- c(idMp[-idC], idMp[idC]) 
+  }
   idGam <- which(substr(.fullParObj$allNames, 1, 2) == "ga")
   nMp <- length(idMp)
-  updObj <- list(len = 50, targ = 0.25)
+  updObj <- list(len = 50, targ = .44)
   niter <- updObj$len * 125
   updObj$int <- seq(updObj$len, niter, updObj$len) 
   updObj$updVec <- matrix(0, niter, nMp)
@@ -1321,11 +1312,13 @@ basta <-
   options(warn = -1)
   for (m in 1:niter) {
     # Sample theta (and gamma) parameters:
-    for (mp in 1:nMp) {
+    for (mp in idMp) {
       parsNew <- .ProposeMortPars(parsNow, agesNow, newJumps, mp)
+      newPar <- ifelse(c(parsNew$theta, parsNew$gamma)[mp] != 
+              c(parsNow$theta, parsNow$gamma)[mp], TRUE, FALSE)
       parsCovNew <- .CalcParCovObj(.covObj, parsNew, parsCovNow)
       postNew <- .CalcLike(agesNow, parsNew, postNow, parsCovNew, 1:.dataObj$n)
-      if (!is.na(postNew$mortPars)) {
+      if (!is.na(postNew$mortPars) & newPar) {
         acceptCrit <- exp(postNew$mortPars - postNow$mortPars)
         acceptProb <- runif(1)
         if (acceptCrit > acceptProb) {
@@ -1382,6 +1375,9 @@ basta <-
       if (class(parsNow)[1] == "theGam") {
         newJumps$gamma <- jumpObj$jump[-c(1:.fullParObj$theta$len)]
       }
+    par(mfrow = c(5, 2))
+    for (pl in 1:10) plot(jumpObj$jumpsMat[, pl], type = 'l', main = 
+              .fullParObj$allNames[pl])
     }
   }
   options(op)
@@ -1389,7 +1385,7 @@ basta <-
                   c(100:0), ], ncol = ncol(jumpObj$jumpsMat)), 2, mean)
   newJumps$theta[1:.fullParObj$theta$len] <- aveJumps[1:.fullParObj$theta$len]
   if (class(.parsIni)[1] == "theGam") {
-    newJumps$gamma <- avejumps[idGam]
+    newJumps$gamma <- aveJumps[idGam]
   }
   cat(" done.\n\n")
   return(list(updJumps = newJumps, jObject = jumpObj, m = m))
@@ -1563,7 +1559,7 @@ basta <-
     qxMat <- qdMat - qbMat
   }
   ageRan <- range(qxMat[1, qxMat[1, ] >= .algObj$minAge]) - .algObj$minAge
-  ageVec <- seq(0, ageRan[2], length = 100)
+  ageVec <- seq(0.001, ageRan[2], length = 100)
   mxq <- Sxq <- list()
   if (is.null(.covObj$cat)) {
     covNames <- c("noCov")
