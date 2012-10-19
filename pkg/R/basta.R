@@ -305,7 +305,7 @@ basta <-
     priorSd <- c(1, 1)
     nameTh <- c("b0", "b1")
     lowTh <- c(-Inf, -Inf)
-    jitter <- c(0.5, 0.1) 
+    jitter <- c(0.5, 0.5) 
     if (.algObj$shape == "bathtub") {
       lowTh <- c(-Inf, 0)
     }
@@ -314,10 +314,10 @@ basta <-
     startTh <- c(1.5, 0.2) 
     jumpTh <- c(.01, 0.1)
     priorMean <- c(1, 1)
-    priorSd <- c(0.5, 0.1)
+    priorSd <- c(1, 1)
     nameTh <- c("b0", "b1")
     lowTh <- c(0, 0)
-    jitter <- c(0.1, 0.1) 
+    jitter <- c(0.5, 0.5) 
   } else if (.algObj$model == "LO") {
     nTh <- 3 
     startTh <- c(-2, 0.01, 1e-04) 
@@ -326,26 +326,26 @@ basta <-
     priorSd <- c(1, 1, 1)
     nameTh <- c("b0", "b1", "b2")
     lowTh <- c(-Inf, 0, 0)
-    jitter <- c(0.5, 0.1, 0.1) 
+    jitter <- c(0.5, 0.5, 0.5) 
   }
   if (.algObj$shape == "Makeham") {
     nTh <- nTh + 1 
     startTh <- c(0, startTh) 
     jumpTh <- c(0.1, jumpTh) 
     priorMean <- c(0, priorMean)
-    priorSd <- c(0.1, priorSd)
+    priorSd <- c(1, priorSd)
     nameTh <- c("c", nameTh)
     lowTh <- c(0, lowTh)
-    jitter <- c(0.1, jitter) 
+    jitter <- c(0.5, jitter) 
   } else if (.algObj$shape == "bathtub") {
     nTh <- nTh + 3 
     startTh <- c(-0.1, 0.6, 0, startTh)
     jumpTh <- c(0.1, 0.1, 0.1, jumpTh) 
     priorMean <- c(-2, 0.01, 0, priorMean)
-    priorSd <- c(0.5, 0.1, 0.1, priorSd)
+    priorSd <- c(1, 1, 1, priorSd)
     nameTh <- c("a0", "a1", "c", nameTh)
     lowTh <- c(-Inf, 0, 0, lowTh)
-    jitter <- c(0.5, 0.1, 0.1, jitter) 
+    jitter <- c(0.5, 0.5, 0.5, jitter) 
   }
   defaultTheta  <- list(length = nTh, start = startTh, jump = jumpTh, 
       priorMean = priorMean, priorSd = priorSd, name = nameTh, 
@@ -1115,7 +1115,6 @@ basta <-
 } 
 
 
-
 .ExtractAgesForPad <- function(ageObj, ...) UseMethod(".ExtractAgesForPad")
 
 .ExtractAgesForPad.minAge <- function(ageObj, ind) {
@@ -1255,20 +1254,12 @@ basta <-
 # 3.6 Function to update jumps:
 
 .UpdateJumps <- function(jumpObj, updObj, step) {
-  # Based on Roberts & Rosenthal (2009).
-  pNum <- (step - updObj$int[1]) / updObj$len
   jumpObj$updateRate <- 
       apply(matrix(updObj$updVec[step + c(-(updObj$len - 1):0), ], 
               ncol = length(jumpObj$jump)), 2, function(upd) sum(upd)) / 
       updObj$len
-  delt <- min(0.01, pNum^(-1/2))
-  idLow <- which(jumpObj$updateRate < updObj$targ)
-  jumpObj$jump[idLow] <- jumpObj$jump[idLow] * exp(-delt)
-  idUp <- which(jumpObj$updateRate > updObj$targ)
-  jumpObj$jump[idUp] <- jumpObj$jump[idUp] * exp(delt)
-  jumpObj$jump <- jumpObj$jump * exp(jumpObj$updateRate - updObj$targ)
-#  jumpObj$updateRate[jumpObj$updateRate == 0] <- 1e-2
-#  jumpObj$jump <- jumpObj$jump * jumpObj$updateRate / updObj$targ
+  jumpObj$updateRate[jumpObj$updateRate == 0] <- 1e-2
+  jumpObj$jump <- jumpObj$jump * jumpObj$updateRate / updObj$targ
   jumpObj$jumpsMat <- rbind(jumpObj$jumpsMat, jumpObj$jump)
   return(jumpObj)
 }
