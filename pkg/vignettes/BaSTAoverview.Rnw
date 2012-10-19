@@ -498,14 +498,14 @@ Additional terms can be added to explore more complex shapes in the mortality fu
 S_0(x | \bb, c) & = & e^{-c x} S_b(x | \bb),  \label{eq:Smak}
 \end{eqnarray}
 \end{subequations}
-with $c > 0$ if $\mu(x)$ is declining (i.e. $\frac{d\mu(x)}{dx} < 0$) or $c > - \mu(0)$ otherwise. A family of bathtub shapes can also be explored (e.g.~\citealt{Siler:1979}). In BaSTA, these are constructed by adding a declining Gompertz function and a constant to the basic mortality, which yields:
+with $c \leq 0$. A family of bathtub shapes can also be explored (e.g.~\citealt{Siler:1979}). In BaSTA, these are constructed by adding a declining Gompertz function and a constant to the basic mortality, which yields:
 \begin{subequations}\label{eq:muSbath}
 \begin{eqnarray}
 \mu_0(x | \bb,  \ba, c) & = & e^{a_0 - a_1 x} + c + \mu_b(x | \bb), \label{eq:mubath}\\
 S_0(x | \bb,  \ba, c) & = & \exp\left[\frac{e^{a_0}}{a_1}(e^{-a_1 x} - 1) -c x\right] S_b(x | \bb),  \label{eq:Sbath}
 \end{eqnarray}
 \end{subequations}
-with $-\infty < a_0 < \infty$ , $a_1 > 0$, and $c > -\left[e^{a_0 - a_1 x_{min}} + \mu_b(x_{min} | \bb)\right]$, where $x_{min}$ is the age at which equation \ref{eq:mubath} is at its lowest values (i.e. $\frac{d\mu(x)}{dx} = 0$). 
+with $-\infty < a_0 < \infty$ , $a_1 > 0$, and $c \leq 0$. 
 
 \subsection{General properties of the mortality models}
 Each of the mortality functions evaluated in BaSTA can describe different trends in age-specific mortality (see Fig.~\ref{Fig2}). For example, the exponential model (\mverb{EX}), assumes that mortality is constant with age, which translates into an exponential decay of the survival probability in equation \ref{eq:Sx}.
