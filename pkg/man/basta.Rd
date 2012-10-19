@@ -12,8 +12,8 @@ This function performs multiple Markov Chain Monte Carlo (MCMC) simulations for 
 basta(object, \dots)
 
 \method{basta}{default}(object, studyStart, studyEnd, minAge = 0, 
-    model = "GO", shape = "simple", covarsStruct = "fused", niter = 20000, 
-    burnin = 5001, thinning = 20, recaptTrans = studyStart, 
+    model = "GO", shape = "simple", covarsStruct = "fused", niter = 11000, 
+    burnin = 1001, thinning = 20, recaptTrans = studyStart, 
     thetaStart = NULL, thetaJumps = NULL, thetaPriorMean = NULL, 
     thetaPriorSd = NULL, gammaStart = NULL, gammaJumps = NULL, 
     gammaPriorMean = NULL, gammaPriorSd = NULL, 
