@@ -107,8 +107,11 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 										<p class="parag">Version 1.4 of the package is now availale on CRAN and can be installed as source by typing the following line of code into the R console: <br></p>
 										<p><code  style="color:#006600">&nbsp;&nbsp;&nbsp;&nbsp;install.packages("BaSTA")</code>
 <br></p>
-										<p class="parag">Also, the latest version of <b>BaSTA</b> (vers. 1.5) can be installed from R forge by typing:<br></p>
+										<p class="parag">However, we strongly recomend users to install the latest stable version, <b>BaSTA</b> (vers. 1.5), either from from R forge by typing:<br></p>
 										<p><code  style="color:#006600">&nbsp;&nbsp;&nbsp;&nbsp;install.packages("BaSTA", repos="http://R-Forge.R-project.org", type = "source")</code>
+<br></p>
+										<p class="parag">or by clicking <a href="BaSTA_1.5.tar.gz" rel="nofollow" style="color:#84002E;font-family:verdana" target="_blank">here</a>. Save the file in a folder of your choice, say ``C:/Documents/BaSTAtemp/'' for windows users, and then type on the R console:<br></p>
+										<p><code  style="color:#006600">&nbsp;&nbsp;&nbsp;&nbsp;install.packages("C:/Documents/BaSTAtemp/BaSTA_1.5.tar.gz", type = "source")</code>
 <br></p>
 										<p class="parag">We have set up a <a href="mailto:Basta-users@lists.r-forge.r-project.org"  rel="nofollow" style="color:#84002E">BaSTA Users mailing</a> list so users can ask questions or provide comments, suggestions or criticism that can help us improve the package. Users can register by <a href="https://lists.r-forge.r-project.org/cgi-bin/mailman/listinfo/basta-users"  rel="nofollow" class="intext">clicking here</a>. Also, you can see below a video hosted by the journal <a href="http://www.methodsinecologyandevolution.org/" rel="nofollow" style="color:#84002E;font-family:verdana" target="_blank">Methods in Ecology and Evolution</a> where we explain the rational behind the package and some general applications.<br></p> 
 										<p><br></p>
@@ -151,14 +154,14 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
                       <li>Data checking and correction of common data errors.</li>
                       <li>Estimates of age-specific survival parameters.</li>
                       <li>Estimates of yearly recapture probabilities.</li>
-                      <li>Estimates latent (i.e. unknown) times of birth and death.</li>
+                      <li>Estimates of latent (i.e. unknown) times of birth and death.</li>
                       <li>Allows testing four different mortality functions (Exponential, Gompertz, Weibull and logistic) and to extend the model to Makeham or bathtub shapes (Gompertz 1925, Siler 1979, Cox and Oakes 1984, Pletcher 1999).</li>
                       <li>Evaluates the effects of time-independent categorical and continuous covariates on survival.</li>
                       <li>Runs multiple simulations either in parallel (using package snowfall; Knaus 2010) or in series.</li>
                       <li>Calculates basic diagnostics on MCMC performance such as parameter update rates and serial autocorrelation.</li>
                       <li>Uses multiple simulations to estimate convergence (i.e. potential scale reduction factor; Gelman <i>et al.</i> 2004).</li>
                       <li>Calculates basic measures for model selection (DIC; Spiegelhalter <i>et al.</i> 2002).</li>
-                      <li>Performs dynamic update of jump standard deviations, improving convergence without the need of several trials.</li>
+                      <li>Finds jump standard deviations automatically through adaptive independent Metropolis (Roberts and Rosenthal 2009).</li>
                     </ul>
                     <p style="text-align:justify;line-height:1.75;font-size:18px">Future versions will include:</p>
                     <ul style="text-align:justify;line-height:1.75;font-size:18px">
@@ -257,15 +260,12 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 										</ul>
 										<p><br></p>
 										<hr>
-                    <p class="parag">The newest version, <b>BaSTA 1.5</b>, only available on R-Forge, includes the following updates: <br></p>
+                    <p class="parag">The newest version, <b>BaSTA 1.5</b>, only available on R-Forge or by clicking <a href="BaSTA_1.5.tar.gz" rel="nofollow" style="color:#84002E;font-family:verdana" target="_blank">here</a>, includes the following updates: <br></p>
 										<ul>
 											<li>Fixed an issue when assigning times of birth and death that prevented the model to estimate deaths between ages 0 and 1.</li>
-											<li>We are currently improving the performance of the update jumps algorithm to allow it to work appropriately even with very large datasets.</li>
-											<li>Additional bug fixes to be announced shortly.</li>
+											<li>Improved the updateJumps algorithm and the estimation of mortality parameters. This upgrade greatly reduces the number of iterations needed for convergence and the time required to run the analysis.</li>
+											<li>Improved the <code style="color:#006600">plot()</code> function to allow zooming to different ranges of ages when plotting survival and mortality.</li>
 										</ul>
-                    <p class="parag">Although not fully tested, users can intall <b>BaSTA 1.5</b> as source from R-Forge by typing: <br></p>
-										<p><code  style="color:#006600">&nbsp;&nbsp;&nbsp;&nbsp;install.packages("BaSTA", repos="http://R-Forge.R-project.org", type = "source")</code>
-<br></p>
 										<p><br></p>
                     <a href="#top" class="totop">Back to top</a>
                     <p></p>
