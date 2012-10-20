@@ -303,7 +303,7 @@ basta <-
     nTh <- 1
     startTh <- 0.2 
     jumpTh <- 0.1
-    priorMean <- 0.01
+    priorMean <- 0.06
     priorSd <- 0.5
     nameTh <- "b0"
     lowTh <- 0
