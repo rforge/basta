@@ -185,28 +185,43 @@ plot.basta <-
         idRange <- which(abs(xv - xlim[2]) == min(abs(xv - xlim[2])))[1]
         xv <- xv[1:idRange]
       }
+      if ("noCI" %in% names(list(...))) {
+        noCI <- list(...)$noCI
+        if (class(noCI) != "logical") {
+          noCI <- FALSE
+        }
+      } else {
+        noCI <- FALSE
+      }
       for (dem in c("survQuant", "mortQuant")) {
+        if (noCI) {
+          idQuants <- 1
+        } else {
+          idQuants <- 1:3
+        }
         ylim <- c(0, max(sapply(1:length(x[[dem]]), function(idem) 
-                      max(x[[dem]][[idem]][, 2:idRange]))))
+                      max(x[[dem]][[idem]][idQuants, 2:idRange]))))
         xlab <- ifelse(dem == "mortQuant", "Age", "")
         ylab <- ifelse(dem == "mortQuant", expression(mu(x)), expression(S(x)))
         main <- ifelse(dem == "mortQuant", "Mortality", "Survival")
         plot(xlim, ylim, col = NA, xlab = xlab, ylab = ylab, 
             frame.plot = FALSE, main = main, ylim = c(0, ylim[2]))
-        for (cov in 1:length(x$mortQuant)) {
-          polygon(c(xv[1:idRange], rev(xv[1:idRange])), 
-              c(x[[dem]][[cov]][2, 1:idRange], 
-                  rev(x[[dem]][[cov]][3, 1:idRange])),
-              col = Cols[cov], border = Bord[cov], lwd = 0.5, lty = 1)
-          if (dem == "survQuant" & length(x$mortQuant) > 1) {
-            legend('topright', substr(names(x$mortQuant), 2, 
-                    nchar(names(x$mortQuant))), 
-                col = Bord, lwd = 3, bty = 'n')
+        if (!noCI) {
+          for (cov in 1:length(x$mortQuant)) {
+            polygon(c(xv[1:idRange], rev(xv[1:idRange])), 
+                c(x[[dem]][[cov]][2, 1:idRange], 
+                    rev(x[[dem]][[cov]][3, 1:idRange])),
+                col = Cols[cov], border = Bord[cov], lwd = 0.5, lty = 1)
           }
         }
         for (cov in 1:length(x$mortQuant)) {
           lines(xv[1:idRange], x[[dem]][[cov]][1, 1:idRange], col = Bord[cov],
               lwd = 3)
+        }
+        if (dem == "survQuant" & length(x$mortQuant) > 1) {
+          legend('topright', substr(names(x$mortQuant), 2, 
+                  nchar(names(x$mortQuant))), 
+              col = Bord, lwd = 3, bty = 'n')
         }
       }
     }
