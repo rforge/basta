@@ -32,7 +32,7 @@ The summary element \code{coefficients} prints out the estimated coefficients fo
 
 Function \code{summary} includes all the previous elements, as well as a summary description of the priors and jump standard deviations for all survival parameters, a calibration of the Kullback-Leibler discrepancy as a measure of parameter similarities for those parameters associated to categorical covariates (McCulloch 1989), and a measure of model fit based on the deviance information criterion (DIC) (Spiegelhalter \emph{et al.} 2002). 
 
-Function \code{plot} takes objects of class \code{basta} to create trace plots or, if the argument for \code{plot.trace} is set to \code{FALSE}, it plots estimated survival probabilities and mortality rates with their 95\% predictive intervals. If argument \code{plot.trace} is set to \code{FALSE}, argument \code{xlim} can be used to define a range of ages to visualize survival and mortality trends.
+Function \code{plot} takes objects of class \code{basta} to create trace plots or, if the argument for \code{plot.trace} is set to \code{FALSE}, it plots estimated survival probabilities and mortality rates with their 95\% predictive intervals. If argument \code{plot.trace} is set to \code{FALSE}, argument \code{xlim} can be used to define a range of ages to visualize survival and mortality trends. Also, if logical argument \code{noCI} is set to \code{TRUE}, credible intervals around survival and mortality are not plotted, leaving only the mean trends. This can be handy when several categorical covariates have been evaluated and the plots get too crowded.  
 }
 
 \value{ 
