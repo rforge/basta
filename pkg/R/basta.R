@@ -126,7 +126,6 @@ basta <-
     .dataObj$oi <- .dataObj$Y %*% rep(1, .dataObj$studyLen)
     
     # 4.1.3 Define study duration:
-    .dataObj$Dx <- 1 #(study.years[2] - study.years[1])
     .dataObj$Tm <- matrix(.dataObj$study, .dataObj$n, 
         .dataObj$studyLen, byrow = TRUE)
     fii <- .dataObj$firstObs
@@ -141,6 +140,7 @@ basta <-
     .dataObj$obsMat[lii == 0 | fii == 0, ] <- 0
     class(.dataObj) <- "ageUpd"
   }  
+  .dataObj$Dx <- 1 #(study.years[2] - study.years[1])
   return(.dataObj)
 }
 
@@ -313,7 +313,7 @@ basta <-
     startTh <- c(-2, 0.01) 
     jumpTh <- c(0.1, 0.1)
     priorMean <- c(-3, 0.01)
-    priorSd <- c(0.5, 0.25)
+    priorSd <- c(1, 0.25)
     nameTh <- c("b0", "b1")
     lowTh <- c(-Inf, -Inf)
     jitter <- c(0.5, 0.2) 
@@ -334,7 +334,7 @@ basta <-
     startTh <- c(-2, 0.01, 1e-04) 
     jumpTh <- c(0.1, 0.1, 0.1) 
     priorMean <- c(-3, 0.01, 1e-10)
-    priorSd <- c(0.5, 0.25, 0.25)
+    priorSd <- c(1, 0.25, 0.25)
     nameTh <- c("b0", "b1", "b2")
     lowTh <- c(-Inf, 0, 0)
     jitter <- c(0.5, 0.2, 0.2) 
@@ -353,7 +353,7 @@ basta <-
     startTh <- c(-0.1, 0.6, 0, startTh)
     jumpTh <- c(0.1, 0.1, 0.1, jumpTh) 
     priorMean <- c(-2, 0.01, 0, priorMean)
-    priorSd <- c(0.5, 0.25, 0.25, priorSd)
+    priorSd <- c(1, 0.25, 0.25, priorSd)
     nameTh <- c("a0", "a1", "c", nameTh)
     lowTh <- c(-Inf, 0, 0, lowTh)
     jitter <- c(0.5, 0.2, 0.2, jitter) 
@@ -583,24 +583,10 @@ basta <-
     allParNames <- c(allParNames, paste("gamma", colnames(.covObj$propHaz), 
             sep = "."))
   }
-  
-  # d) Detection probability:
-  .fullParObj$pi <- list()
-  idpi <- findInterval(.algObj$start:.algObj$end, .algObj$recap)
-  names(idpi) <- .algObj$start:.algObj$end
-  npi <- length(unique(idpi))
-  .fullParObj$pi$start <- rep(0.5, npi)
-  names(.fullParObj$pi$start) <- .algObj$recap
-  .fullParObj$pi$idpi <- idpi
-  .fullParObj$pi$n <- npi
-  .fullParObj$pi$prior2 <- 0.1
-  .fullParObj$pi$Prior1 <- tapply(0.1 + t(t(.dataObj$Y) %*% rep(1, .dataObj$n)),
-      idpi, sum)
-  
-  .fullParObj$pi$len <- length(.fullParObj$pi$start)
-  .fullParObj$allNames <- c(allParNames, paste("pi", .algObj$recap, sep = "."))
   Classes <- ifelse(class(.covObj)[1] %in% c("inMort", "noCov"), "theta",  
       "theGam")
+  
+  # Minimum age's lambda:
   if (.algObj$minAge > 0) {
     .fullParObj$lambda <- list(start = 0.01, priorMean = 0.01, priorSd = 1, 
         jump = 0.01)
@@ -608,7 +594,28 @@ basta <-
   } else {
     Classes <- c(Classes, "noLambda")
   }
-  Classes <- c(Classes, "pi", "noEta")
+  
+  # Detection probability:
+  if (class(.dataObj) == "ageUpd") {
+    .fullParObj$pi <- list()
+    idpi <- findInterval(.algObj$start:.algObj$end, .algObj$recap)
+    names(idpi) <- .algObj$start:.algObj$end
+    npi <- length(unique(idpi))
+    .fullParObj$pi$start <- rep(0.5, npi)
+    names(.fullParObj$pi$start) <- .algObj$recap
+    .fullParObj$pi$idpi <- idpi
+    .fullParObj$pi$n <- npi
+    .fullParObj$pi$prior2 <- 0.1
+    .fullParObj$pi$Prior1 <- tapply(0.1 + t(t(.dataObj$Y) %*% rep(1, .dataObj$n)),
+        idpi, sum)
+    
+    .fullParObj$pi$len <- length(.fullParObj$pi$start)
+    .fullParObj$allNames <- c(allParNames, paste("pi", .algObj$recap, sep = "."))
+    Classes <- c(Classes, "pi", "noEta")
+  } else {
+    .fullParObj$allNames <- allParNames
+    Classes <- c(Classes, "noPi", "noEta")
+  }
   .fullParObj$class <- Classes
   return(.fullParObj)
 }
