@@ -313,7 +313,7 @@ basta <-
     startTh <- c(-2, 0.01) 
     jumpTh <- c(0.1, 0.1)
     priorMean <- c(-3, 0.01)
-    priorSd <- c(1, 0.25)
+    priorSd <- c(1, 0.5)
     nameTh <- c("b0", "b1")
     lowTh <- c(-Inf, -Inf)
     jitter <- c(0.5, 0.2) 
@@ -325,7 +325,7 @@ basta <-
     startTh <- c(1.5, 0.2) 
     jumpTh <- c(.01, 0.1)
     priorMean <- c(1.5, .05)
-    priorSd <- c(0.5, 0.25)
+    priorSd <- c(0.5, 0.5)
     nameTh <- c("b0", "b1")
     lowTh <- c(0, 0)
     jitter <- c(0.5, 0.2) 
@@ -334,10 +334,10 @@ basta <-
     startTh <- c(-2, 0.01, 1e-04) 
     jumpTh <- c(0.1, 0.1, 0.1) 
     priorMean <- c(-3, 0.01, 1e-10)
-    priorSd <- c(1, 0.25, 0.25)
+    priorSd <- c(1, 0.5, 0.5)
     nameTh <- c("b0", "b1", "b2")
     lowTh <- c(-Inf, 0, 0)
-    jitter <- c(0.5, 0.2, 0.2) 
+    jitter <- c(0.5, 0.2, 0.5) 
   }
   if (.algObj$shape == "Makeham") {
     nTh <- nTh + 1 
