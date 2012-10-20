@@ -324,7 +324,7 @@ basta <-
     nTh <- 2
     startTh <- c(1.5, 0.2) 
     jumpTh <- c(.01, 0.1)
-    priorMean <- c(1, 1)
+    priorMean <- c(1.5, .05)
     priorSd <- c(0.5, 0.25)
     nameTh <- c("b0", "b1")
     lowTh <- c(0, 0)
