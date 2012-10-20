@@ -190,8 +190,9 @@ new.dat  <- DataCheck(sim1, studyStart = 51,
             studyEnd = 70, autofix = rep(1,7))
 
 ## Run short version of BaSTA on the data:
-out      <- basta(sim1, studyStart = 51, studyEnd = 70, 
-            niter = 200, burnin = 11, thinning = 10)
+out <- basta(sim1, studyStart = 51, studyEnd = 70, 
+             niter = 200, burnin = 11, thinning = 10,
+             updateJumps = FALSE)
 
 ## Print results:
 summary(out, digits = 3)
