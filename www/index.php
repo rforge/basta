@@ -166,7 +166,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
                       <li>Time-dependent covariates.</li>
 											<li>Cohort effects on mortality</li>
                       <li>Covariates on recapture and recovery probabilities.</li>
-                      <li>Model selection either through Reversible Jump MCMC (RJMCMC; King and Brooks 2002; Gimenez <i>et al.</i> 2009) or by adapting Link and Barker's (2009) model averaging approach.</li>
+                      <li>Model selection either through Reversible Jump MCMC (RJMCMC; King and Brooks 2002; Gimenez <i>et al.</i> 2009) or by adapting Barker and Link's (2010) Bayes factors approach.</li>
                     </ul>
 										<p><br></p>
                     <a href="#top" class="totop">Back to top</a>
@@ -280,23 +280,24 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
             <table  valign="middle" width="1050px" style="table-layout:fixed;background:#FFFFFF">
               <tbody>
                 <tr style="background:#FFFFFF">
-                  <td style="vertical-align:middle;padding:40px" width="420px">
-                    <p class="Refs">Clark, J.S. (2007) <b>Models for ecological data</b>. Princeton University Press, Princeton, New Jersey, USA.<br><br></p>
-                    <p class="Refs">Colchero, F. and J.S. Clark (2012) <b>Bayesian inference on age-specific survival for censored and truncated data.</b> <i>Journal of Animal Ecology,</i> 81, 139-149 (<a href="http://onlinelibrary.wiley.com/doi/10.1111/j.1365-2656.2011.01898.x/abstract" rel="nofollow" style="color:#84002E" target="_blank">publication</a>).<br><br></p>
-                    <p class="Refs">Colchero, F., O.R. Jones and M. Rebke (2012) <b>BaSTA: an R package for Bayesian estimation of age-specific survival from incomplete mark-recapture/recovery data with covariates.</b> <i>Methods in Ecology and Evolution</i>. DOI: 10.1111/j.2041-210X.2012.00186.x (<a href="http://onlinelibrary.wiley.com/doi/10.1111/j.2041-210X.2012.00186.x/abstract" rel="nofollow" style="color:#84002E" target="_blank">publication</a>).<br><br></p>
-										<p class="Refs">Cox, D. R., and Oakes D. (1984) <b>Analysis of Survival Data</b>. Chapman and Hall, London.<br><br></p>
-                    <p class="Refs">Gimenez, O., Bonner, S., King, R., Parker, R.A., Brooks, S.P., Jamieson, L.E., Grosbois, V., Morgan, B.J.T., Thomas, L. (2009) <b>WinBUGS for population ecologists: Bayesian modeling using Markov Chain Monte Carlo methods</b>. <u>In</u><i> Modeling Demographic Processes in Marked Populations. Ecological and Environmental Statistics Series, vol 3</i> (eds D.L. Thomson, E.G. Cooch &amp; M.J. Conroy), pp. 883-915. Springer, Berlin, Germany.<br><br></p>
-                    
-                    <a href="#top" class="totop">Back to top</a>
-                  </td>
-                  <td style="vertical-align:top;padding:40px" width="420px">
+                  <td class="main">
+                    <p class="Refs">Clark, J.S. (2007) <b>Models for ecological data</b>. Princeton University Press, Princeton, New Jersey, USA.<br></p>
+                    <p class="Refs">Colchero, F. and J.S. Clark (2012) <b>Bayesian inference on age-specific survival for censored and truncated data.</b> <i>Journal of Animal Ecology,</i> 81, 139-149 (<a href="http://onlinelibrary.wiley.com/doi/10.1111/j.1365-2656.2011.01898.x/abstract" rel="nofollow" style="color:#84002E" target="_blank">publication</a>).<br></p>
+                    <p class="Refs">Colchero, F., O.R. Jones and M. Rebke (2012) <b>BaSTA: an R package for Bayesian estimation of age-specific survival from incomplete mark-recapture/recovery data with covariates.</b> <i>Methods in Ecology and Evolution</i>. 3: 466-470 (<a href="http://onlinelibrary.wiley.com/doi/10.1111/j.2041-210X.2012.00186.x/abstract" rel="nofollow" style="color:#84002E" target="_blank">publication</a>).<br></p>
+										<p class="Refs">Cox, D. R., and Oakes D. (1984) <b>Analysis of Survival Data</b>. Chapman and Hall, London.<br></p>
+                    <p class="Refs">Gimenez, O., Bonner, S., King, R., Parker, R.A., Brooks, S.P., Jamieson, L.E., Grosbois, V., Morgan, B.J.T., Thomas, L. (2009) <b>WinBUGS for population ecologists: Bayesian modeling using Markov Chain Monte Carlo methods</b>. <u>In</u><i> Modeling Demographic Processes in Marked Populations. Ecological and Environmental Statistics Series, vol 3</i> (eds D.L. Thomson, E.G. Cooch &amp; M.J. Conroy), pp. 883-915. Springer, Berlin, Germany.<br></p>
 										<p class="Refs">Gompertz, B. (1825) <b>On the nature of the function expressive of the law of human mortality, and on a new mode of determining the value of life contingencies</b>. <i>Philosophical Transactions of the Royal Society of London</i>, 115, 513-583.<br></p>
 										<p class="Refs">Jones, O.R., Coulson, T., Clutton-Brock T. & Godfray, H.C.J. (2008) <b>A web resource for the UK's long-term individual-based time-series (LITS) data</b>. <i>Journal of Animal Ecology</i> 77: 612-615<br></p>
-                    <p class="Refs">King, R. and Brooks, S.P. (2002) <b>Bayesian model discrimination for multiple strata capture-recapture data</b>. <i>Biometrika</i>, 89, 785-806.<br><br></p>
-                    <p class="Refs">Knaus, J. (2010). <b>snowfall: Easier cluster computing (based on snow)</b>. R package version 1.84. <a href="http://CRAN.R-project.org/package=snowfall" rel="nofollow" style="color:#84002E" target="_blank">http://CRAN.R-project.org/package=snowfall</a><br><br></p>
-                    <p class="Refs">Pletcher, S. (1999) <b>Model fitting and hypothesis testing for age-specific mortality data</b>. <i>Journal of Evolutionary Biology</i>, 12, 430-439.<br><br></p>
-                    <p class="Refs">R Development Core Team (2011). <b>R: A language and environment for statistical computing</b>. R Foundation for Statistical Computing, Vienna, Austria. ISBN 3-900051-07-0, URL <a href="http://CRAN.R-project.org/" rel="nofollow" style="color:#84002E" target="_blank">http://CRAN.R-project.org/</a>.<br><br></p>
+                    <p class="Refs">King, R. and Brooks, S.P. (2002) <b>Bayesian model discrimination for multiple strata capture-recapture data</b>. <i>Biometrika</i>, 89, 785-806.<br></p>
+                    <p class="Refs">Knaus, J. (2010). <b>snowfall: Easier cluster computing (based on snow)</b>. R package version 1.84. <a href="http://CRAN.R-project.org/package=snowfall" rel="nofollow" style="color:#84002E" target="_blank">http://CRAN.R-project.org/package=snowfall</a><br></p>
+                    <p class="Refs">Barker, R.J. and Link, W.A (2010) <b>Posterior model probabilities computed from model-specific Gibbs output</b>. <i>arXiv preprint</i>arXiv:1012.0073.<br></p>
+                    <p class="Refs">Pletcher, S. (1999) <b>Model fitting and hypothesis testing for age-specific mortality data</b>. <i>Journal of Evolutionary Biology</i>, 12, 430-439.<br></p>
+                    <p class="Refs">R Development Core Team (2011). <b>R: A language and environment for statistical computing</b>. R Foundation for Statistical Computing, Vienna, Austria. ISBN 3-900051-07-0, URL <a href="http://CRAN.R-project.org/" rel="nofollow" style="color:#84002E" target="_blank">http://CRAN.R-project.org/</a>.<br></p>
+                    <p class="Refs">Roberts, G.O. and Rosenthal, J.S. (2009) <b>Examples of adaptive MCMC</b>. <i>Journal of Computational and Graphical Statistics</i>, 18, 349-367.<br></p>
                     <p class="Refs">Siler, W. (1979) <b>A competing-risk model for animal mortality</b>. <i>Ecology</i>, 60, 750-757.<br></p>
+										<p><br></p>
+										<a href="#top" class="totop">Back to top</a>
+										<p><br></p>
                   </td>
                 </tr>
               </tbody>
