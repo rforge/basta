@@ -2,18 +2,18 @@ body {font-family: Verdana, Geneva, sans-serif;font-size: 18px;}
 h1 {font-size:32px;color:#84002E;text-align:left;letter-spacing:0.2em;}
 h2 {font-size:24px;color:#38472A;text-align:left;letter-spacing:0.2em;text-indent:40px;line-height:0px;}
 p {text-align:justify;font-family:verdana;font-size:18px;}
-p.parag{text-align:justify;font-family:verdana;line-height:1.75em;font-size:18px;}
-p.Refs{text-align:justify;margin-left:.5in;text-indent:-.5in;line-height:1.75;font-size:16px;}
+p.parag{text-align:justify;font-family:verdana;line-height:1.75em;font-size:16px;padding-right:30px;padding-left:30px;}
+p.Refs{text-align:justify;margin-left:.5in;text-indent:-.5in;line-height:1.75;font-size:16px;padding-left:60px;padding-right:60px;padding-bottom:10px;}
 p.top{color:#84002E;vertical-align:left;font-size:12px;text-indent:40px;}
-p.caption{font-size:12px;text-align:center;}
+p.caption{font-size:12px;text-align:justify;padding-left:120px;padding-right:120px;}
 p.section{font-size:26px;color:#38472A;text-align:left;letter-spacing:0.2em;text-indent:40px;line-height:0px;font-style:normal;}
-
+li.basta{text-align:justify;font-family:verdana;line-height:1.75em;font-size:16px;padding:20px;}
 tr.title{background:#A3C586;text-align:left;vertical-align:middle;padding:0;height:50px;text-indent:40px;line-height:0%;text-height:text-size;}
 td.button{text-align:center;vertical-align:middle;padding:0px;height:30px;background-color:#1F1209;}
 td.main{vertical-align:top;width:420px;padding-bottom:0px;padding-top:0px;padding-left:40px;padding-right:40px}
 td.section{font-size:26px;color:#38472A;text-align:left;letter-spacing:0.2em;text-indent:40px;line-height:0px;font-style:normal;vertical-align:middle;padding-bottom:0px;padding-top:0px;}
 
-ul{text-align:justify;line-height:1.75;font-size:18px;}
+ul{text-align:justify;line-height:1.75;font-size:16px;padding-right:60px;padding-left:120px;}
 a {target-name:current;}
 
 a.button:link,a.button:visited
@@ -40,7 +40,7 @@ a.intext:visited{color:#84002E;text-decoration:none;}
 a.intext:hover{color:#84002E;text-decoration:none;}
 a.intext:active{color:#84002E;text-decoration:none;}
 
-a.totop:link{color:#84002E;font-size:12px;text-decoration:none;}
-a.totop:visited{color:#84002E;font-size:12px;text-decoration:none;}
-a.totop:hover{color:#84002E;font-size:12px;text-decoration:none;}
-a.totop:active{color:#84002E;font-size:12px;text-decoration:none;}
+a.totop:link{color:#84002E;font-size:14px;text-decoration:none;padding-left:60px;}
+a.totop:visited{color:#84002E;font-size:14px;text-decoration:none;padding-left:60px;}
+a.totop:hover{color:#84002E;font-size:14px;text-decoration:none;padding-left:60px;}
+a.totop:active{color:#84002E;font-size:14px;text-decoration:none;padding-left:60px;}
