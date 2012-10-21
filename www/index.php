@@ -92,7 +92,8 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
               <tbody>
                 <tr style="background:#FFFFFF">
                   <td class="main">
-                    <p class="parag"><b>BaSTA</b> is an R package (R Development Core Team 2011) that allows users to draw inference on age-specific survival and mortality patterns from capture-recapture/recovery data when a large number of individuals (or all) have missing age information (Colchero, Jones and Rebke 2012). <b>BaSTA</b> is based on a model developed by Colchero and Clark (2012), which extends inference from parameter estimates to the estimation of unknown (i.e. latent) times of birth and death. The package also allows testing the effect of categorical and continuous individual covariates on mortality and survival (for an example see Fig. 1). Below we feature a video hosted by the journal Methods in Ecology and Evolution, that explains the context in which BaSTA can be useful and the way the package can be implemented.                   </td>
+                    <p class="parag"><b>BaSTA</b> is an R package (R Development Core Team 2011) that allows users to draw inference on age-specific survival and mortality patterns from capture-recapture/recovery data when a large number of individuals (or all) have missing age information (Colchero, Jones and Rebke 2012). <b>BaSTA</b> is based on a model developed by Colchero and Clark (2012), which extends inference from parameter estimates to the estimation of unknown (i.e. latent) times of birth and death. The package also allows testing the effect of categorical and continuous individual covariates on mortality and survival (for an example see Fig. 1). Below we feature a video hosted by the journal Methods in Ecology and Evolution, that explains the context in which BaSTA can be useful and the way the package can be implemented.</p>
+									</td>
                   <td class="main">
                     <p><br><img style="margin:0px;padding:0px;border:none" width="400px" align="middle" src="Sheep.png"><br><br></p>
                     <p class="caption">Fig. 1. <b>BaSTA</b> model output for sex differences in Soay sheep mortality using a Siler survival model (Colchero & Clark 2012). The left panel shows posterior distributions for the survival and recapture parameters while the right panel shows the resulting survival probabilities and the mortality rates for males and females.</p>
@@ -105,14 +106,11 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
                 <tr style="background:#FFFFFF">
                   <td class="main">
 										<p class="parag">Version 1.4 of the package is now availale on CRAN and can be installed as source by typing the following line of code into the R console: <br></p>
-										<p><code  style="color:#006600">&nbsp;&nbsp;&nbsp;&nbsp;install.packages("BaSTA")</code>
-<br></p>
-										<p class="parag">However, we strongly recomend users to install the latest stable version, <b>BaSTA</b> (vers. 1.5), either from from R forge by typing:<br></p>
-										<p><code  style="color:#006600">&nbsp;&nbsp;&nbsp;&nbsp;install.packages("BaSTA", repos="http://R-Forge.R-project.org", type = "source")</code>
-<br></p>
+										<p><code style="color:#006600">&nbsp;&nbsp;&nbsp;&nbsp;install.packages("BaSTA")</code><br></p>
+										<p class="parag">However, we strongly recomend users to install the latest stable version, <b>BaSTA</b> (vers. 1.5), which should be available on CRAN in the next few days, either from from R forge by typing:<br></p>
+										<p><code style="color:#006600">&nbsp;&nbsp;&nbsp;&nbsp;install.packages("BaSTA", repos="http://R-Forge.R-project.org", type = "source")</code><br></p>
 										<p class="parag">or by clicking <a href="BaSTA_1.5.tar.gz" rel="nofollow" style="color:#84002E;font-family:verdana" target="_blank">here</a>. Save the file in a folder of your choice, say ''C:/Documents/BaSTAtemp/'' for windows users, and then type on the R console:<br></p>
-										<p><code  style="color:#006600">&nbsp;&nbsp;&nbsp;&nbsp;install.packages("C:/Documents/BaSTAtemp/BaSTA_1.5.tar.gz", type = "source")</code>
-<br></p>
+										<p><code style="color:#006600">&nbsp;&nbsp;&nbsp;&nbsp;install.packages("C:/Documents/BaSTAtemp/BaSTA_1.5.tar.gz", type = "source")</code><br></p>
 										<p class="parag">We have set up a <a href="mailto:Basta-users@lists.r-forge.r-project.org"  rel="nofollow" style="color:#84002E">BaSTA Users mailing</a> list so users can ask questions or provide comments, suggestions or criticism that can help us improve the package. Users can register by <a href="https://lists.r-forge.r-project.org/cgi-bin/mailman/listinfo/basta-users"  rel="nofollow" class="intext">clicking here</a>. Also, you can see below a video hosted by the journal <a href="http://www.methodsinecologyandevolution.org/" rel="nofollow" style="color:#84002E;font-family:verdana" target="_blank">Methods in Ecology and Evolution</a> where we explain the rational behind the package and some general applications.<br></p> 
 										<p><br></p>
 										<iframe width="320" height="180" src="http://www.youtube.com/embed/OLFzY3vHVOQ" frameborder="0" allowfullscreen style="display:block;margin:5px auto;text-align:center;"></iframe>
@@ -135,11 +133,11 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
               <tbody>
                 <tr style="background:#FFFFFF">
                   <td class="main">
-                    <p class="parag">The core of the model is a Monte Carlo Markov Chain (MCMC) algorithm that combines Metropolis sampling for survival parameters and latent states (i.e. unknown times of birth and death) and direct sampling for recapture probabilities (Clark 2007, Colchero and Clark <i>in press</i>). The main function performs several diagnostics on the user's inputs such as checking that the data is consistent with the model's requirements, verifies that the number of iterations, the burnin sequence and the thinning gap are consistent and finally verifies that the initial parameters and jumps provided by the user allow the model to run properly (Fig. 2).
+                    <p class="parag">The core of the model is a Monte Carlo Markov Chain (MCMC) algorithm that combines Metropolis sampling for survival parameters and latent states (i.e. unknown times of birth and death) and direct sampling for recapture probabilities (Clark 2007, Colchero and Clark <i>in press</i>). The main function performs several diagnostics on the user's inputs such as checking that the data is consistent with the model's requirements, verifies that the number of iterations, the burnin sequence and the thinning gap are consistent and finally verifies that the initial parameters and jumps provided by the user allow the model to run properly (Fig. 2).</p>
                   </td>
                   <td style="vertical-align:top;padding-top:0px;padding-bottom:0px;padding-left:40px;padding-right:40px" width="420px">
                     <p class="main" align="left"><br><img align="left" style="margin:0px;padding:0px;border:none;width:475px" align="middle" src="BastaGeneralChart.jpg?"></p>
-                    <p class="caption">Fig. 2. <b>BaSTA</b> general package chart.</p><br>
+                    <p class="caption">Fig. 2. <b>BaSTA</b> general package chart.<br></p>
                   </td>
                 </tr>
               </tbody>
@@ -172,12 +170,11 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
                     </ul>
 										<p><br></p>
                     <a href="#top" class="totop">Back to top</a>
-                    <p></p>
+                    <p><br></p>
                   </td>
                 </tr>
               </tbody>
             </table>
-            <table  valign="middle" width="1050px" style="table-layout:fixed;background:#FFFFFF">
             <!-- 4.3- Apply BaSTA:-->
             <a name="use"></a>
             <table  valign="middle" width="1050px" style="table-layout:fixed;background:#FFFFFF">
@@ -273,7 +270,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
                 </tr>
               </tbody>
             </table>
-            <!-- 4.4- References:-->
+            <!-- 4.5- References:-->
             <a name="refs"></a>
             <table  valign="middle" width="1050px" style="table-layout:fixed;background:#FFFFFF;padding:0px;outline-width:0px">
               <tbody>
