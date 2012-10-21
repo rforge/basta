@@ -93,18 +93,8 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
                 <tr style="background:#FFFFFF">
                   <td class="main">
                     <p class="parag"><b>BaSTA</b> is an R package (R Development Core Team 2011) that allows users to draw inference on age-specific survival and mortality patterns from capture-recapture/recovery data when a large number of individuals (or all) have missing age information (Colchero, Jones and Rebke 2012). <b>BaSTA</b> is based on a model developed by Colchero and Clark (2012), which extends inference from parameter estimates to the estimation of unknown (i.e. latent) times of birth and death. The package also allows testing the effect of categorical and continuous individual covariates on mortality and survival (for an example see Fig. 1). Below we feature a video hosted by the journal Methods in Ecology and Evolution, that explains the context in which BaSTA can be useful and the way the package can be implemented.</p>
-									</td>
-                  <td class="main">
-                    <p><br><img style="margin:0px;padding:0px;border:none" width="400px" align="middle" src="Sheep.png"><br><br></p>
+                    <p style="text-align:center"><br><img style="margin:0px;padding:0px;border:none" width="400px" align="middle" src="Sheep.png"><br><br></p>
                     <p class="caption">Fig. 1. <b>BaSTA</b> model output for sex differences in Soay sheep mortality using a Siler survival model (Colchero & Clark 2012). The left panel shows posterior distributions for the survival and recapture parameters while the right panel shows the resulting survival probabilities and the mortality rates for males and females.</p>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-            <table  valign="top" width="1050px" style="table-layout:fixed;background:#FFFFFF;padding-top:0px;padding-bottom:0px">
-              <tbody>
-                <tr style="background:#FFFFFF">
-                  <td class="main">
 										<p class="parag">Version 1.4 of the package is now availale on CRAN and can be installed as source by typing the following line of code into the R console: <br></p>
 										<p><code style="color:#006600">&nbsp;&nbsp;&nbsp;&nbsp;install.packages("BaSTA")</code><br></p>
 										<p class="parag">However, we strongly recomend users to install the latest stable version, <b>BaSTA</b> (vers. 1.5), which should be available on CRAN in the next few days, either from from R forge by typing:<br></p>
@@ -134,18 +124,8 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
                 <tr style="background:#FFFFFF">
                   <td class="main">
                     <p class="parag">The core of the model is a Monte Carlo Markov Chain (MCMC) algorithm that combines Metropolis sampling for survival parameters and latent states (i.e. unknown times of birth and death) and direct sampling for recapture probabilities (Clark 2007, Colchero and Clark <i>in press</i>). The main function performs several diagnostics on the user's inputs such as checking that the data is consistent with the model's requirements, verifies that the number of iterations, the burnin sequence and the thinning gap are consistent and finally verifies that the initial parameters and jumps provided by the user allow the model to run properly (Fig. 2).</p>
-                  </td>
-                  <td style="vertical-align:top;padding-top:0px;padding-bottom:0px;padding-left:40px;padding-right:40px" width="420px">
-                    <p class="main" align="left"><br><img align="left" style="margin:0px;padding:0px;border:none;width:475px" align="middle" src="BastaGeneralChart.jpg?"></p>
+                    <p style="text-align:center"><br><img style="margin:0px;padding:0px;border:none;width:475px" align="middle" src="BastaGeneralChart.jpg?"><br></p>
                     <p class="caption">Fig. 2. <b>BaSTA</b> general package chart.<br></p>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-            <table  valign="middle" width="1050px" style="table-layout:fixed;background:#FFFFFF">
-              <tbody>
-                <tr style="background:#FFFFFF">
-                  <td class="main">
                     <p class="parag">After running these diagnostics, <b>BaSTA</b> uses a dynamic procedure to find adequate jump standard deviations for mortality parameters. This procedure runs before the core of the analysis is performed, keeping the user from having to find these jump sd's by trial and error. After apropriate jumps are found, multiple MCMC simulations can be ran either in parallel or in series. In case convergence is not acheived or some or all simulations failed, neither convergence nor model selection diagnostics are calculated.<br><br>The current version includes:</p>
                     <ul>
                       <li>Functions for data formatting.</li>
