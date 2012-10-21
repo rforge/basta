@@ -104,7 +104,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 													<p><br></p>
 													<p style="text-align:center"><iframe width="320" height="180" src="http://www.youtube.com/embed/OLFzY3vHVOQ" frameborder="0" allowfullscreen style="display:block;margin:5px auto"></iframe></p>
 													<p class="caption" style="text-align:center"><b>BaSTA</b> video hosted by the journal Methods in Ecology and Evolution.</p>
-													<p><br></p>
+													<p></p>
 													<a href="#top" class="totop">Back to top</a>
 													<p></p>
 													<a name="description"></a>
@@ -134,9 +134,9 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 														<li>Covariates on recapture and recovery probabilities.</li>
 														<li>Model selection either through Reversible Jump MCMC (RJMCMC; King and Brooks 2002; Gimenez <i>et al.</i> 2009) or by adapting Barker and Link's (2010) Bayes factors approach.</li>
 													</ul>
-													<p><br></p>
+													<p></p>
 													<a href="#top" class="totop">Back to top</a>
-													<p><br></p>
+													<p></p>
 													<a name="use"></a>
 													<img alt="Application" border="0" width="900px" src="use.jpg?">
 													<p class="parag"><b>BaSTA</b> is considerably easy to apply. The BaSTA vignette, which includes a step by step tutorial, can be accessed <a href="BaSTAoverview.pdf" rel="nofollow" style="color:#84002E;font-family:verdana" target="_blank">here</a>. This vignette provides information on how to setup the dataset in an appropriate format for BaSTA and steps on how to perform a range of analyses. <br><br>Here we provide a very general overview on the different analyses that can be performed with BaSTA and the types of outputs that the user should expect to find. As we mentioned above, BaSTA allows users to test a range of models and functional forms for the mortality function (Fig. 3). <br></p>
@@ -182,7 +182,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 													<p style="font-size:16px;padding-left:60px;padding-right:60px"><code style="color:#006600">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;covarsStruct = "prop.haz", nsim = 4, parallel = TRUE,</code><br></p>
 													<p style="font-size:16px;padding-left:60px;padding-right:60px"><code style="color:#006600">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ncpus = 4, updateJumps = TRUE)</code><br></p>
 													<p class="parag">In case models are not working properly or you have any doubts or problems, please contact us by registering to the <a href="mailto:Basta-users@lists.r-forge.r-project.org"  rel="nofollow" style="color:#84002E">BaSTA Users mailing</a>.<br></p>
-													<p><br></p>
+													<p></p>
 													<a href="#top" class="totop">Back to top</a>
 													<p></p>
 													<a name="bugs"></a>
@@ -204,7 +204,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 														<li>Minor bug fixes.</li>
 													</ul>
 													<p class="parag">We strongly recomend all users to switch to BaSTA 1.5. You won't be disapointed!<br></p>
-													<p><br></p>
+													<p></p>
 													<a href="#top" class="totop">Back to top</a>
 													<p></p>
 													<a name="refs"></a>
@@ -225,7 +225,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 														<p class="Refs">Siler, W. (1979) <b>A competing-risk model for animal mortality</b>. <i>Ecology</i>, 60, 750-757.<br></p>
 														<p><br></p>
 														<a href="#top" class="totop">Back to top</a>
-														<p><br></p>
+														<p></p>
 													</td>
 												</tr>
 											</tbody>
