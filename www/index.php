@@ -204,14 +204,21 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 										<p class="parag">Which prints to the screen the relevant information such as the call of the model, the coefficients with standard errors and lower and upper bounds, if the model converged and if so, the value of model fit (DIC, which can be used for model selection; Fig. 6).
                     <p style="text-align:center"><br><img align="center" style="margin:0px;padding:0px;border:none;width:700px" align="middle" src="printOutput.png?"></p>
                     <p class="caption">Fig. 6. BaSTA output printed by typing <code style="color:#006600">out</code> into the R console. Additional information can be obtained by typing <code style="color:#006600">summary(out)</code>.</p><br>
-										<p class="parag">To plot the resulting traces for the parameters (Fig. 7 left panel), just type on the R console:<br></p>
+										<p class="parag">To plot the resulting traces for the parameters (Fig. 7), just type on the R console:<br></p>
 										<p><code  style="color:#006600">&nbsp;&nbsp;&nbsp;&nbsp;plot(out)</code>
 <br></p>
-										<p class="parag">And to visualize the resulting mortality and survival probability functions (Fig. 7 right panel), the function <code style="color:#006600">plot()</code> can be modified as:<br></p>
+                    <p style="text-align:center"><br><img align="center" style="margin:0px;padding:0px;border:none;width:350px" align="middle" src="kestrelTraces.jpg?"></p>
+                    <p class="caption">Fig. 7. Example of an output from a Weibull model with bathtub shape on a kestrel (<i>Falco tinnunculus</i>) dataset (Jones <i>et al.</i> 2008). The plot shows the traces for the mortality parameters for males (M) and females (F). The plot was produced with the R built-in function <code style="color:#006600">plot()</code>.</p><br>
+										<p class="parag">And to visualize the resulting mortality and survival probability trajectories (Fig. 8), the function <code style="color:#006600">plot()</code> can be modified as:<br></p>
 										<p><code  style="color:#006600">&nbsp;&nbsp;&nbsp;&nbsp;plot(out, plot.trace = FALSE)</code>
 <br></p>
-                    <p style="text-align:center"><br><img align="center" style="margin:0px;padding:0px;border:none;width:700px" align="middle" src="examplePlotOutput.jpg?"></p>
-                    <p class="caption">Fig. 7. Example of an output from a Gompertz model with bathtub shape on a Rook (<i>Corvus frugilegus</i>) dataset (Jones & Colchero <i>unpublished data</i>). The left panel shows the traces for the mortality parameters while the right panel shows the resulting survival probability and mortality trajectories for locations X1 and X2. Both plots were produced with the R built-in function <code style="color:#006600">plot()</code>.</p><br>
+                    <p style="text-align:center"><br><img align="center" style="margin:0px;padding:0px;border:none;width:350px" align="middle" src="kestrelTrajsCI.jpg?"></p>
+                    <p class="caption">Fig. 8. Survival probability and mortality trajectories for male (M) and female (F) kestrels (<i>Falco tinnunculus</i>).</p><br>
+										<p class="parag">In case the survival and probability plots become too crowded when several categorical covariates are evaluated, the function <code style="color:#006600">plot()</code> can be modified using arguments <code  style="color:#006600">xlim</code>, which reduces the range of ages over which the plots are produced, and argument <code  style="color:#006600">noCI</code>, which eliminates credible intervals and only plots the mean expected trajectories (Fig. 9):<br></p>
+										<p><code  style="color:#006600">&nbsp;&nbsp;&nbsp;&nbsp;plot(out, plot.trace = FALSE, xlim = c(0, 3), noCI = TRUE)</code>
+<br></p>
+                    <p style="text-align:center"><br><img align="center" style="margin:0px;padding:0px;border:none;width:350px" align="middle" src="kestrelTrajsNoCI.jpg?"></p>
+                    <p class="caption">Fig. 9. Zoom in on the survival probability and mortality trajectories for male (M) and female (F) kestrels (<i>Falco tinnunculus</i>).</p><br>
 										<p class="parag">As we mentioned above, convergence can only be estimated by running more than one simulation. When running multiple simulations, we strongly recomend to use the routine that updates jump sd's. This will make the run longer, but will greatly increase the chances of getting convergence from the first try. To run 4 simulations of the same model as shown above with the jumps update routine on, the user only needs to type:<br></p>
 										<p><code  style="color:#006600">&nbsp;&nbsp;&nbsp;&nbsp;out <- basta(object = myDataset, studyStart = 1995, studyEnd = 2005, </code><br>
 										<p><code  style="color:#006600">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>nsim = 4, parallel = TRUE, ncpus = 4, updateJumps = TRUE</b>)</code>
@@ -260,12 +267,14 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 										</ul>
 										<p><br></p>
 										<hr>
-                    <p class="parag">The newest version, <b>BaSTA 1.5</b>, only available on R-Forge or by clicking <a href="BaSTA_1.5.tar.gz" rel="nofollow" style="color:#84002E;font-family:verdana" target="_blank">here</a>, includes the following updates: <br></p>
+                    <p class="parag">The newest version, <b>BaSTA 1.5</b> (already submitted to CRAN), available on R-Forge or by clicking <a href="BaSTA_1.5.tar.gz" rel="nofollow" style="color:#84002E;font-family:verdana" target="_blank">here</a>, includes the following updates: <br></p>
 										<ul>
+											<li>Great improvement on the updateJumps algorithm and the estimation of mortality parameters. This upgrade greatly reduces the number of iterations needed for convergence and the time required to run the analysis.</li>
 											<li>Fixed an issue when assigning times of birth and death that prevented the model to estimate deaths between ages 0 and 1.</li>
-											<li>Improved the updateJumps algorithm and the estimation of mortality parameters. This upgrade greatly reduces the number of iterations needed for convergence and the time required to run the analysis.</li>
 											<li>Improved the <code style="color:#006600">plot()</code> function to allow zooming to different ranges of ages when plotting survival and mortality.</li>
+											<li>Minor bug fixes.</li>
 										</ul>
+										<p class="parag">We strongly recomend all users to switch to BaSTA 1.5. You won't be disapointed!<br></p>
 										<p><br></p>
                     <a href="#top" class="totop">Back to top</a>
                     <p></p>
@@ -294,6 +303,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
                   </td>
                   <td style="vertical-align:top;padding:40px" width="420px">
 										<p class="Refs">Gompertz, B. (1825) <b>On the nature of the function expressive of the law of human mortality, and on a new mode of determining the value of life contingencies</b>. <i>Philosophical Transactions of the Royal Society of London</i>, 115, 513-583.<br></p>
+										<p class="Refs">Jones, O.R., Coulson, T., Clutton-Brock T. & Godfray, H.C.J. (2008) <b>A web resource for the UK's long-term individual-based time-series (LITS) data</b>. <i>Journal of Animal Ecology</i> 77: 612-615<br></p>
                     <p class="Refs">King, R. and Brooks, S.P. (2002) <b>Bayesian model discrimination for multiple strata capture-recapture data</b>. <i>Biometrika</i>, 89, 785-806.<br><br></p>
                     <p class="Refs">Knaus, J. (2010). <b>snowfall: Easier cluster computing (based on snow)</b>. R package version 1.84. <a href="http://CRAN.R-project.org/package=snowfall" rel="nofollow" style="color:#84002E" target="_blank">http://CRAN.R-project.org/package=snowfall</a><br><br></p>
                     <p class="Refs">Pletcher, S. (1999) <b>Model fitting and hypothesis testing for age-specific mortality data</b>. <i>Journal of Evolutionary Biology</i>, 12, 430-439.<br><br></p>
