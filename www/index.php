@@ -77,7 +77,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 													<td width="500" valign="top" style="padding-right:40px">
 														<p align="left" style="font-size:16px;line-height:1.25"><b>Authors:</b><br><a href="http://www.colchero.com" rel="nofollow" style="color:#84002E;font-family:verdana" target="_blank">Fernando Colchero</a><br><a href="http://www.owenjon.es" rel="nofollow" style="color:#84002E;font-family:verdana" target="_blank">Owen R. Jones</a><br><a href="http://www.demogr.mpg.de/en/institute/staff_directory_1899/maren_rebke_1430.htm" rel="nofollow" style="color:#84002E;font-family:verdana" target="_blank">Maren Rebke</a><br></p>
 														<p align="left" style="font-size:16px;line-height:1.25;text-align:justify"><br><b>Developed at:</b><br><a href="http://www.demogr.mpg.de" rel="nofollow" style="color:#84002E;font-family:verdana" target="_blank">Max Planck Institute for Demographic Research</a><br></p>
-														<p align="left" style="font-size:16px;line-height:1.25;text-align:justify"><br><b>Mailing list:</b><br>For enquiries, comments or bug reports, please register to the <a href="mailto:Basta-users@lists.r-forge.r-project.org"  rel="nofollow" style="color:#84002E">BaSTA Users mailing</a></p>
+														<p align="left" style="font-size:16px;line-height:1.25;text-align:justify"><br><b>Mailing list:</b><br>For enquiries, comments or bug reports,<br>please register to the <a href="mailto:Basta-users@lists.r-forge.r-project.org"  rel="nofollow" style="color:#84002E">BaSTA Users mailing</a></p>
 														<p></p>
 													</td>
 												</tr>
