@@ -14,13 +14,8 @@
               author = personList(as.person("Fernando Colchero"),
                                   as.person("Owen R. Jones"),
                                   as.person("Maren Rebke")),
-              year = year,
-              journal = journ,
-              volume = volume,
-              pages = pages,
-              note = vers,
-              
-              textVersion =
+              year = year, journal = journ, volume = volume, pages = pages,
+              note = vers,  textVersion =
               paste("Colchero, F., O.R. Jones and M. Rebke (2012). ",
                     "BaSTA: an R package for Bayesian estimation of ",
                    "age-specific mortality from incomplete mark-",
