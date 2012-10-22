@@ -186,23 +186,23 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 													<p></p>
 													<a name="bugs"></a>
 													<img alt="Application" border="0" width="900px" src="bugs.jpg?">
-													<p class="parag">The latest stable version available on CRAN, <b>BaSTA 1.4</b>, includes the following updates: <br></p>
+													<p class="parag">The newest version, <b>BaSTA 1.5</b> (already submitted to CRAN), available on R-Forge or by clicking <a href="BaSTA_1.5.tar.gz" rel="nofollow" style="color:#84002E;font-family:verdana" target="_blank">here</a>, includes the following updates: <br></p>
+													<ul>
+														<li>Great improvement on the updateJumps algorithm and the estimation of mortality parameters. This upgrade greatly reduces the number of iterations needed for convergence and the time required to run the analysis.</li>
+														<li>Fixed an issue when assigning times of birth and death that prevented the model to estimate deaths between ages 0 and 1.</li>
+														<li>Improved the <code style="color:#006600">plot()</code> function to allow zooming to different ranges of ages when plotting survival and mortality and to plot these trajectories with or without credible intervals.</li>
+														<li>Minor bug fixes.</li>
+													</ul>
+													<p class="parag">We strongly recomend all users to switch to BaSTA 1.5. You won't be disapointed!<br></p>
+													<p></p>
+													<hr>
+													<p class="parag">The previous stable version, <b>BaSTA 1.4</b>, still available on CRAN, includes the following updates: <br></p>
 													<ul>
 														<li>Update jump routine for multiple simulations runs before the main analysis, this improves convergence and consistency between multiple simulations.</li>
 														<li>Improved convergence by fixing several bugs in the MCMC routine.</li>
 														<li>Fixed reporting of DIC values with function <code style="color:#006600">summary()</code>.</li>
 														<li>Function <code style="color:#006600">summary()</code> ouputs the basic information, which can be stored instead of the main output. This reduces storage problems due to the size of the output.</li>
 													</ul>
-													<p><br></p>
-													<hr>
-													<p class="parag">The newest version, <b>BaSTA 1.5</b> (already submitted to CRAN), available on R-Forge or by clicking <a href="BaSTA_1.5.tar.gz" rel="nofollow" style="color:#84002E;font-family:verdana" target="_blank">here</a>, includes the following updates: <br></p>
-													<ul>
-														<li>Great improvement on the updateJumps algorithm and the estimation of mortality parameters. This upgrade greatly reduces the number of iterations needed for convergence and the time required to run the analysis.</li>
-														<li>Fixed an issue when assigning times of birth and death that prevented the model to estimate deaths between ages 0 and 1.</li>
-														<li>Improved the <code style="color:#006600">plot()</code> function to allow zooming to different ranges of ages when plotting survival and mortality.</li>
-														<li>Minor bug fixes.</li>
-													</ul>
-													<p class="parag">We strongly recomend all users to switch to BaSTA 1.5. You won't be disapointed!<br></p>
 													<p></p>
 													<a href="#top" class="totop">Back to top</a>
 													<p></p>
