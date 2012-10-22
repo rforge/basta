@@ -4,7 +4,9 @@
      if(!exists("meta") || is.null(meta)) meta <- packageDescription("BaSTA")
      year <- "2012"
      vers <- paste("R package version", meta$Version)
-     journ<- "Methods in Ecology and Evolution"
+     journ <- "Methods in Ecology and Evolution"
+     volume <- "3"
+     pages <- "466-470"
      doi <- "10.1111/j.2041-210X.2012.00186.x"
      
      citEntry(entry="Article",
@@ -14,7 +16,8 @@
                                   as.person("Maren Rebke")),
               year = year,
               journal = journ,
-              doi = doi,
+              volume = volume,
+              pages = pages,
               note = vers,
               
               textVersion =
@@ -22,4 +25,4 @@
                     "BaSTA: an R package for Bayesian estimation of ",
                    "age-specific mortality from incomplete mark-",
                    "recapture/recovery data with covariates. ", 
-                   journ, ". DOI: ", doi, ". ", vers, ". ", sep=""))
+                   journ, ". ", volume, ", ", pages, ". ", vers, ". ", sep=""))
