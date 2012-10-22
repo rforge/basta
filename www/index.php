@@ -210,6 +210,8 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 														<p class="Refs">Colchero, F. and J.S. Clark (2012) <b>Bayesian inference on age-specific survival for censored and truncated data.</b> <i>Journal of Animal Ecology,</i> 81, 139-149 (<a href="http://onlinelibrary.wiley.com/doi/10.1111/j.1365-2656.2011.01898.x/abstract" rel="nofollow" style="color:#84002E" target="_blank">publication</a>).<br></p>
 														<p class="Refs">Colchero, F., O.R. Jones and M. Rebke (2012) <b>BaSTA: an R package for Bayesian estimation of age-specific survival from incomplete mark-recapture/recovery data with covariates.</b> <i>Methods in Ecology and Evolution</i>. 3: 466-470 (<a href="http://onlinelibrary.wiley.com/doi/10.1111/j.2041-210X.2012.00186.x/abstract" rel="nofollow" style="color:#84002E" target="_blank">publication</a>).<br></p>
 														<p class="Refs">Cox, D. R., and Oakes D. (1984) <b>Analysis of Survival Data</b>. Chapman and Hall, London.<br></p>
+														<p class="Refs">Gelman, A., Carlin, J.B., Stern, H.S. & Rubin, D.B. (2004). <b>Bayesian data analysis</b>. 2nd edn. Boca Raton: Chapman &
+Hall/CRC.<br></p>
 														<p class="Refs">Gimenez, O., Bonner, S., King, R., Parker, R.A., Brooks, S.P., Jamieson, L.E., Grosbois, V., Morgan, B.J.T., Thomas, L. (2009) <b>WinBUGS for population ecologists: Bayesian modeling using Markov Chain Monte Carlo methods</b>. <u>In</u><i> Modeling Demographic Processes in Marked Populations. Ecological and Environmental Statistics Series, vol 3</i> (eds D.L. Thomson, E.G. Cooch &amp; M.J. Conroy), pp. 883-915. Springer, Berlin, Germany.<br></p>
 														<p class="Refs">Gompertz, B. (1825) <b>On the nature of the function expressive of the law of human mortality, and on a new mode of determining the value of life contingencies</b>. <i>Philosophical Transactions of the Royal Society of London</i>, 115, 513-583.<br></p>
 														<p class="Refs">Jones, O.R., Coulson, T., Clutton-Brock T. & Godfray, H.C.J. (2008) <b>A web resource for the UK's long-term individual-based time-series (LITS) data</b>. <i>Journal of Animal Ecology</i> 77: 612-615<br></p>
@@ -220,6 +222,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 														<p class="Refs">R Development Core Team (2011). <b>R: A language and environment for statistical computing</b>. R Foundation for Statistical Computing, Vienna, Austria. ISBN 3-900051-07-0, URL <a href="http://CRAN.R-project.org/" rel="nofollow" style="color:#84002E" target="_blank">http://CRAN.R-project.org/</a>.<br></p>
 														<p class="Refs">Roberts, G.O. and Rosenthal, J.S. (2009) <b>Examples of adaptive MCMC</b>. <i>Journal of Computational and Graphical Statistics</i>, 18, 349-367.<br></p>
 														<p class="Refs">Siler, W. (1979) <b>A competing-risk model for animal mortality</b>. <i>Ecology</i>, 60, 750-757.<br></p>
+														<p class="Refs">Spiegelhalter, D.J., Best, N.G., Carlin, B.P. & van der Linde, A. (2002) <b>Bayesian measures of model complexity and fit</b>. <i>Journal of the Royal Statistical Society: Series B</i>, 64, 583-639.
 														<p><br></p>
 														<a href="#top" class="totop">Back to top</a>
 														<p></p>
