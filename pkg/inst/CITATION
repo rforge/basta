@@ -5,7 +5,7 @@
      year <- "2012"
      vers <- paste("R package version", meta$Version)
      journ <- "Methods in Ecology and Evolution"
-     volume <- "3"
+     vol <- "3"
      pages <- "466-470"
      doi <- "10.1111/j.2041-210X.2012.00186.x"
      
@@ -14,10 +14,10 @@
               author = personList(as.person("Fernando Colchero"),
                                   as.person("Owen R. Jones"),
                                   as.person("Maren Rebke")),
-              year = year, journal = journ, volume = volume, pages = pages,
+              year = year, journal = journ, volume = vol, pages = pages,
               note = vers,  textVersion =
               paste("Colchero, F., O.R. Jones and M. Rebke (2012). ",
                     "BaSTA: an R package for Bayesian estimation of ",
                    "age-specific mortality from incomplete mark-",
                    "recapture/recovery data with covariates. ", 
-                   journ, ". ", volume, ", ", pages, ". ", vers, ". ", sep=""))
+                   journ, ". ", vol, ", ", pages, ". ", vers, ". ", sep=""))
