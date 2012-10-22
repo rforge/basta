@@ -20,4 +20,4 @@
                     "BaSTA: an R package for Bayesian estimation of ",
                    "age-specific mortality from incomplete mark-",
                    "recapture/recovery data with covariates. ", 
-                   journ, ". ", vol, ", ", pages, ". ", vers, ". ", sep=""))
+                   journ, ", ", vol, ", ", pages, ". ", vers, ". ", sep=""))
