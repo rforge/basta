@@ -214,6 +214,7 @@ basta <-
   if (ncol(object) > .dataObj$studyLen + 3) {
     covMat <- as.matrix(object[, 
             (.dataObj$studyLen + 4):ncol(object)])
+    colnames(covMat) <- colnames(object)[(.dataObj$studyLen + 4):ncol(object)]
     covType <- .FindCovType(covMat)
     if (.algObj$covStruc == "fused") {
       covClass[1] <- "fused"
@@ -232,7 +233,12 @@ basta <-
         covClass[1] <- "inMort"
       }
     } else if (.algObj$covStruc == "all.in.mort") {
-      covObj$inMort <- covMat
+      if (is.null(covType$int) & is.null(covType$cat)) {
+        covObj$inMort <- cbind(1, covMat)
+        colnames(covObj$inMort) <- c("Intercept", colnames(covMat))
+      } else {
+        covObj$inMort <- covMat
+      }
       covObj$imLen <- ncol(covObj$inMort)
       covClass[1] <- "inMort"
     } else {
@@ -505,10 +511,16 @@ basta <-
   for (i in 1:4) {
     if (class(.covObj)[1] %in% c("inMort", "fused")) {
       if (is.null(.userPars$theta[[parNames[i]]])) {
-        .fullParObj$theta[[parNames[[i]]]] <- 
-            matrix(.defTheta[[parNames[i]]], .covObj$imLen, 
-                .defTheta$length, byrow = TRUE, 
-                dimnames = list(colnames(.covObj$inMort), .defTheta$name))
+        thetaMat <- matrix(.defTheta[[parNames[i]]], .covObj$imLen, 
+            .defTheta$length, byrow = TRUE, 
+            dimnames = list(colnames(.covObj$inMort), .defTheta$name))
+        if (i %in% c(1, 2)) {
+          if (class(.covObj)[1] == "inMort" & 
+              class(.covObj)[2] %in% c("contCov", "bothCov")) {
+            thetaMat[names(.covObj$cont), ] <- 0
+          }
+        }
+        .fullParObj$theta[[parNames[[i]]]] <- thetaMat
       } else {
         if (is.element(length(.userPars$theta[[parNames[i]]]), 
             c(.defTheta$length, .defTheta$length * .covObj$imLen))) {
@@ -1045,19 +1057,24 @@ basta <-
     Ex <- sum(.CalcSurv(xx, parsPrior$theta) * dxx)
     lifeExp <- rep(Ex, .dataObj$n)
   } else if (class(.covObj)[1] == "inMort") {
-    if (class(.covObj)[2] == "bothCov") {
+    if (class(.covObj)[2] %in% c("bothCov", "contCov")) {
       meanCont <- apply(matrix(.covObj$inMort[, names(.covObj$cont)], 
               ncol = length(.covObj$cont)), 2, mean)
-      thetaCont <- matrix(parsPrior$theta[.covObj$cont, ], 
-          nrow = length(.covObj$cont)) %*% meanCont
+      thetaCont <- meanCont %*% matrix(parsPrior$theta[names(.covObj$cont), ], 
+          nrow = length(.covObj$cont))
+      colnames(thetaCont) <- colnames(.fullParObj$theta$priorMean)
     } else {
       thetaCont <- 0
     }
-    Ex <- sapply(1:length(.covObj$cat), 
-        function(pp) sum(.CalcSurv(xx, t(parsPrior$theta[pp, ] + thetaCont)) * 
+    Ex <- sapply(1:(ncol(.covObj$inMort) - length(.covObj$cont)), 
+        function(pp) sum(.CalcSurv(xx, parsPrior$theta[pp, ] + thetaCont) * 
                   dxx))
-    names(Ex) <- names(.covObj$cat)
-    lifeExp <- .covObj$inMor[, names(.covObj$cat)] %*% Ex
+    if (is.null(.covObj$cat)) {
+      lifeExp <- rep(Ex, .dataObj$n)
+    } else {
+      names(Ex) <- names(.covObj$cat)
+      lifeExp <- .covObj$inMor[, names(.covObj$cat)] %*% Ex
+    }
   } else if (class(.covObj)[1] == "fused") {
     meanCont <- apply(.covObj$propHaz, 2, mean)
     gam <- sum(parsPrior$gamma * meanCont)
@@ -1576,8 +1593,7 @@ basta <-
   }
   for (cov in covNames) {
     # Set theta parameters:
-    if (class(.covObj)[1] %in% c('noCov', 'propHaz') | 
-        is.null(.covObj$cat)) {
+    if (class(.covObj)[1] %in% c('noCov', 'propHaz')) {
       thPars <- matrix(bastaResults$params[, .defTheta$name], 
           ncol = .defTheta$length)
     } else if (class(.covObj)[1] == "fused") {
@@ -1585,13 +1601,16 @@ basta <-
       thPars <- matrix(bastaResults$params[, idTh], 
           ncol = length(idTh))
     } else {
-      idTh <- grep(cov, .fullParObj$allNames, fixed = TRUE)
-      thPars <- matrix(bastaResults$params[, idTh], 
-          ncol = length(idTh))
+      if (class(.covObj)[2] %in% c("cateCov", "bothCov")) {
+        idTh <- grep(cov, .fullParObj$allNames, fixed = TRUE)
+      } else {
+        idTh <- grep("Intercept", .fullParObj$allNames, fixed = TRUE)
+      }
+      thPars <- matrix(bastaResults$params[, idTh], ncol = length(idTh))
       if (!is.null(.covObj$cont)) {
-        for (pp in .covObj$cont) {
+        for (pp in names(.covObj$cont)) {
           idCon <- which(substr(.fullParObj$allNames, 
-                  nchar(.fullParObj$allNames) - (nchar(pp) + 1), 
+                  nchar(.fullParObj$allNames) - (nchar(pp)-1), 
                   nchar(.fullParObj$allNames)) == pp)
           thPars <- thPars + 
               matrix(bastaResults$params[, idCon], ncol = length(idCon)) *
