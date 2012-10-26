@@ -69,6 +69,7 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0,
         options(warn = -1)
         require(snowfall)
         sfInit(parallel = TRUE, cpus = ncpus)
+#        sfSource("/Users/fernando/FERNANDO/PROJECTS/4.PACKAGES/BaSTA/workspace/developBasta/code/loadBaSTA.R")
         sfExport(list = bastaIntVars)
         sfLibrary("BaSTA", character.only = TRUE, warn.conflicts = FALSE)
         sfLibrary(msm, warn.conflicts = FALSE)
