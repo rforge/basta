@@ -1064,7 +1064,7 @@ basta <-
           nrow = length(.covObj$cont))
       colnames(thetaCont) <- colnames(.fullParObj$theta$priorMean)
     } else {
-      thetaCont <- 0
+      thetaCont <- t(as.matrix(parsPrior$theta[1, ] * 0))
     }
     Ex <- sapply(1:(ncol(.covObj$inMort) - length(.covObj$cont)), 
         function(pp) sum(.CalcSurv(xx, parsPrior$theta[pp, ] + thetaCont) * 
