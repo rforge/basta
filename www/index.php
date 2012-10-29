@@ -98,10 +98,10 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 													<!--<p class="parag">However, we strongly recomend users to install the latest stable version, <b>BaSTA</b> (vers. 1.5), which should be available on CRAN in the next few days. This last version can be currently installed either from from R forge by typing:<br></p>
 													<p style="font-size:16px;padding-left:60px;padding-right:60px"><code style="color:#006600">&nbsp;&nbsp;&nbsp;&nbsp;install.packages("BaSTA", repos="http://R-Forge.R-project.org",</code><br></p>
 													<p style="font-size:16px;padding-left:60px;padding-right:60px"><code style="color:#006600">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type = "source")</code><br></p> -->
-													<p class="parag">or by clicking <a href="BaSTA_1.5.tar.gz" rel="nofollow" style="color:#84002E;font-family:verdana" target="_blank">here</a>. Save the file in a folder of your choice, say ''C:/Documents/BaSTAtemp/'' for windows users, and then type on the R console:<br></p>
-													<p style="font-size:16px;padding-left:60px;padding-right:60px"><code style="color:#006600">&nbsp;&nbsp;&nbsp;&nbsp;install.packages("C:/Documents/BaSTAtemp/BaSTA_1.5.tar.gz"</code><br></p>
-													<p style="font-size:16px;padding-left:60px;padding-right:60px"><code style="color:#006600">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type = "source")</code><br></p>
 													<p class="parag">A normal installation of BaSTA 1.5 from CRAN is now possible. <b>This last version has important updates and improvements, so we stronlgy recomend users to install it</b>.<br></p>
+													<p class="parag">BaSTA 1.6 can be downloaded by clicking <a href="BaSTA_1.6.tar.gz" rel="nofollow" style="color:#84002E;font-family:verdana" target="_blank">here</a>. Save the file in a folder of your choice, say ''C:/Documents/BaSTAtemp/'' for windows users, and then type on the R console:<br></p>
+													<p style="font-size:16px;padding-left:60px;padding-right:60px"><code style="color:#006600">&nbsp;&nbsp;&nbsp;&nbsp;install.packages("C:/Documents/BaSTAtemp/BaSTA_1.6.tar.gz"</code><br></p>
+													<p style="font-size:16px;padding-left:60px;padding-right:60px"><code style="color:#006600">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type = "source")</code><br></p>
 													<p class="parag">We have set up a <a href="mailto:Basta-users@lists.r-forge.r-project.org"  rel="nofollow" style="color:#84002E">BaSTA Users mailing</a> list so users can ask questions or provide comments, suggestions or criticism that can help us improve the package. Users can register by <a href="https://lists.r-forge.r-project.org/cgi-bin/mailman/listinfo/basta-users"  rel="nofollow" class="intext">clicking here</a>. Also, you can see below a video hosted by the journal <a href="http://www.methodsinecologyandevolution.org/" rel="nofollow" style="color:#84002E;font-family:verdana" target="_blank">Methods in Ecology and Evolution</a> where we explain the rational behind the package and some general applications.<br></p>
 													<p><br></p>
 													<p style="text-align:center"><iframe width="480" height="270" src="http://www.youtube.com/embed/OLFzY3vHVOQ" frameborder="0" allowfullscreen style="display:block;margin:5px auto"></iframe></p>
@@ -185,8 +185,17 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 													<a href="#top" class="totop">Back to top</a>
 													<p></p>
 													<a name="bugs"></a>
-													<img alt="Application" border="0" width="900px" src="bugs.jpg?">
-													<p class="parag">The newest version, <b>BaSTA 1.5</b>, available on CRAN, includes the following updates: <br></p>
+													<img alt="Upgrades" border="0" width="900px" src="bugs.jpg?">
+													<p class="parag">The newest version, <b>BaSTA 1.6</b>, not yet available on CRAN, includes the following updates: <br></p>
+													<ul>
+														<li>Fixed a bug that prevented to calculate quantiles for predicted mortality and survival when only continuous covariates were included.</li>
+														<li>Fixed a series of bugs when evaluating only continuous covariates inMort.</li>
+														<li>Fixed a bug that prevented to plot all the traces from proportional hazard parameters in the same plotting window.</li>
+														<li>Minor bug fixes.</li>
+													</ul>
+													<p></p>
+													<hr>
+													<p class="parag">The current version in CRAN, <b>BaSTA 1.5</b>, includes the following updates: <br></p>
 													<ul>
 														<li>Great improvement on the updateJumps algorithm and the estimation of mortality parameters. This upgrade greatly reduces the number of iterations needed for convergence and the time required to run the analysis.</li>
 														<li>Fixed an issue when assigning times of birth and death that prevented the model to estimate deaths between ages 0 and 1.</li>
@@ -196,7 +205,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 													<p class="parag">We strongly recomend all users to switch to BaSTA 1.5. You won't be disapointed!<br></p>
 													<p></p>
 													<hr>
-													<p class="parag">The previous stable version, <b>BaSTA 1.4</b>, still available on CRAN, includes the following updates: <br></p>
+													<p class="parag">The previous stable version, <b>BaSTA 1.4</b>, included the following updates: <br></p>
 													<ul>
 														<li>Update jump routine for multiple simulations runs before the main analysis, this improves convergence and consistency between multiple simulations.</li>
 														<li>Improved convergence by fixing several bugs in the MCMC routine.</li>
