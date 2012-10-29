@@ -1627,8 +1627,9 @@ basta <-
       gamPar <- matrix(bastaResults$params[, idGam], ncol = length(idGam)) %*% 
           c(apply(.covObj$propHaz, 2, mean, na.rm = TRUE))
     } else {
-      if (cov == sprintf(".%s", names(.covObj$cat)[1]) | 
-          is.null(.covObj$cat)) {
+      if (is.null(.covObj$cat)) {
+        gamPar <- rep(0, nrow(bastaResults$params))
+      } else if (cov == sprintf(".%s", names(.covObj$cat)[1])) {
         gamPar <- rep(0, nrow(bastaResults$params))
       } else {
         gamPar <- bastaResults$params[, grep(cov, .fullParObj$allNames, 
