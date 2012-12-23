@@ -98,7 +98,7 @@ plot.basta <-
       nRows <- ifelse(trace.name == "theta", length(unique(parNames[idPars])),
           ceiling(length(idPars) / 2))
       nCols <- ifelse(trace.name == "theta", table(parNames[idPars])[1], 
-          length(idPars) - floor((length(idPars) - 1) / nRows))
+          ceiling(length(idPars) / nRows))
       yLim <- sapply(colnames(x$params)[idPars], function(par) 
             range(sapply(1:x$settings["nsim"], function(sim)
                       range(x$parsForPlot[[sim]][, par]))))
