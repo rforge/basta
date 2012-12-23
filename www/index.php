@@ -99,8 +99,8 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 													<p style="font-size:16px;padding-left:60px;padding-right:60px"><code style="color:#006600">&nbsp;&nbsp;&nbsp;&nbsp;install.packages("BaSTA", repos="http://R-Forge.R-project.org",</code><br></p>
 													<p style="font-size:16px;padding-left:60px;padding-right:60px"><code style="color:#006600">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type = "source")</code><br></p> -->
 													<p class="parag"><b>BaSTA 1.6 has important updates and improvements, so we stronlgy recomend users to install it</b>.<br></p>
-													<p class="parag">BaSTA 1.6 can also be downloaded by clicking <a href="BaSTA_1.6.tar.gz" rel="nofollow" style="color:#84002E;font-family:verdana" target="_blank">here</a>. Save the file in a folder of your choice, say ''C:/Documents/BaSTAtemp/'' for windows users, and then type on the R console:<br></p>
-													<p style="font-size:16px;padding-left:60px;padding-right:60px"><code style="color:#006600">&nbsp;&nbsp;&nbsp;&nbsp;install.packages("C:/Documents/BaSTAtemp/BaSTA_1.6.tar.gz", type = "source")</code><br></p>
+													<p class="parag">The latest version, BaSTA 1.7 can be downloaded by clicking <a href="BaSTA_1.7.tar.gz" rel="nofollow" style="color:#84002E;font-family:verdana" target="_blank">here</a>. Save the file in a folder of your choice, say ''C:/Documents/BaSTAtemp/'' for windows users, and then type on the R console:<br></p>
+													<p style="font-size:16px;padding-left:60px;padding-right:60px"><code style="color:#006600">&nbsp;&nbsp;&nbsp;&nbsp;install.packages("C:/Documents/BaSTAtemp/BaSTA_1.7.tar.gz", type = "source")</code><br></p>
 													<p class="parag">We have set up a <a href="http://lists.r-forge.r-project.org/mailman/listinfo/basta-users"  rel="nofollow" style="color:#84002E">BaSTA Users mailing list</a> so users can ask questions or provide comments, suggestions or criticism that can help us improve the package. Users can register by <a href="https://lists.r-forge.r-project.org/cgi-bin/mailman/listinfo/basta-users"  rel="nofollow" class="intext">clicking here</a>. Also, you can see below a video hosted by the journal <a href="http://www.methodsinecologyandevolution.org/" rel="nofollow" style="color:#84002E;font-family:verdana" target="_blank">Methods in Ecology and Evolution</a> where we explain the rational behind the package and some general applications.<br></p>
 													<p><br></p>
 													<p style="text-align:center"><iframe width="480" height="270" src="http://www.youtube.com/embed/OLFzY3vHVOQ" frameborder="0" allowfullscreen style="display:block;margin:5px auto"></iframe></p>
@@ -185,6 +185,12 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 													<p></p>
 													<a name="bugs"></a>
 													<img alt="Upgrades" border="0" width="900px" src="bugs.jpg?">
+													<p class="parag">The latest version, <b>BaSTA 1.7</b>, available by clicking <a href="BaSTA_1.7.tar.gz" rel="nofollow" style="color:#84002E;font-family:verdana" target="_blank">here</a>, includes the following update: <br></p>
+													<ul>
+														<li>Fixed a major bug that over-estimated ages at death and underestimated recapture probabilities with proportional hazards models.</li>
+													</ul>
+													<p></p>
+													<hr>
 													<p class="parag">The current version in CRAN, <b>BaSTA 1.6</b>, includes the following updates: <br></p>
 													<ul>
 														<li>Fixed a bug that prevented to calculate quantiles for predicted mortality and survival when only continuous covariates were included.</li>
