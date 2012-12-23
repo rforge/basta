@@ -576,7 +576,7 @@ basta <-
     .fullParObj$gamma <- list()
     for (i in 1:4) {
       if (is.null(.userPars$gamma[[parNames[i]]])) {
-        .fullParObj$gamma[[parNames[i]]] <- rep(c(0.01, 0.01, 1, 0.1)[i],
+        .fullParObj$gamma[[parNames[i]]] <- rep(c(0.01, 0, 1, 0.1)[i],
             .covObj$phLen)
         names(.fullParObj$gamma[[parNames[i]]]) <- colnames(.covObj$propHaz)
       } else {
@@ -921,7 +921,8 @@ basta <-
 
 .CalcPdf.propHazParCov <- function(parCovObj, x, ind) {
   .CalcSurv(x[ind], parCovObj$theta)^exp(parCovObj$gamma[ind]) - 
-      .CalcSurv(x[ind] + .dataObj$Dx, parCovObj$theta)^exp(parCovObj$gamma[ind])
+      .CalcSurv(x[ind] + .dataObj$Dx, 
+          parCovObj$theta)^exp(parCovObj$gamma[ind])
 }
 
 .CalcPdf.fusedParCov <- function(parCovObj, x, ind) {
@@ -1093,14 +1094,28 @@ basta <-
           function(pp) 
             sum(.CalcSurv(xx, parsPrior$theta)^exp(gam[pp]) * dxx))
       names(Ex) <- names(.covObj$cat[-1])
-      lifeExp <- .covObj$propHaz[, .covObj$cat] %*% Ex
+      if (.covObj$phLen == 1) {
+        intercept <- 1 - .covObj$propHaz[, names(.covObj$cat[-1])]
+      } else {
+        intercept <- 1 - 
+            apply(.covObj$propHaz[, names(.covObj$cat[-1])], 1, sum)
+      }
+      lifeExp <- 
+          cbind(intercept, .covObj$propHaz[, names(.covObj$cat[-1])]) %*% Ex
     } else if (class(.covObj)[2] == "cateCov"){
       gam <- c(0, parsPrior$gamma[names(.covObj$cat)[-1]])
       Ex <- sapply(1:(length(gam)), 
           function(pp) 
             sum(.CalcSurv(xx, parsPrior$theta)^exp(gam[pp]) * dxx))
       names(Ex) <- names(.covObj$cat)
-      lifeExp <- cbind(0, .covObj$propHaz[, names(.covObj$cat[-1])]) %*% Ex
+      if (.covObj$phLen == 1) {
+        intercept <- 1 - .covObj$propHaz[, names(.covObj$cat[-1])]
+      } else {
+        intercept <- 1 - 
+            apply(.covObj$propHaz[, names(.covObj$cat[-1])], 1, sum)
+      }
+      lifeExp <- 
+          cbind(intercept, .covObj$propHaz[, names(.covObj$cat[-1])]) %*% Ex
     } else {
       meanCont <- apply(matrix(.covObj$propHaz[, names(.covObj$cont)], 
               ncol = length(.covObj$cont)), 2, mean)
