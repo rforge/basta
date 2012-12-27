@@ -2,13 +2,6 @@ basta <-
     function(object, ... ) UseMethod("basta")
 
 # BaSTA Internal functions:
-.AssignVarsToEnv <- function(objList) {
-  for (obj in 1:length(objList)) {
-    assign(names(objList)[obj], objList[[obj]], envir = .GlobalEnv, 
-        inherits = TRUE)
-  }
-}
-
 # Create initial objects.
 .CreateAlgObj <- function(model, shape, studyStart, studyEnd, 
     minAge, covarsStruct, recaptTrans, niter, burnin, thinning, updateJumps,
@@ -650,11 +643,13 @@ basta <-
 }
 
 
-.BuildPostObj <- function(ageObj, parObj, parCovObj) {
+.BuildPostObj <- function(ageObj, parObj, parCovObj, .dataObj, 
+    .CalcSurv, .priorAgeObj, .fullParObj, .covObj) {
   postObj <- list()
   postObj$mat <- matrix(0, .dataObj$n, 6, 
       dimnames = list(NULL, c("fx", "Sx", "vx", "lx", "px", "postX")))
-  postObj <- .CalcPostX(ageObj, parObj, postObj, parCovObj, 1:.dataObj$n)  
+  postObj <- .CalcPostX(ageObj, parObj, postObj, parCovObj, 1:.dataObj$n, 
+      .CalcSurv, .priorAgeObj, .fullParObj, .covObj)  
   return(postObj)
 }
 
@@ -671,7 +666,7 @@ basta <-
 
 
 # Sample ages:
-.ProposeAges <- function(ageObj) {
+.ProposeAges <- function(ageObj, .dataObj) {
   ageObjNew <- ageObj
   if (.dataObj$updB) {
     ageObjNew$ages[.dataObj$idNoB, 'birth'] <- 
@@ -711,22 +706,22 @@ basta <-
 
 .SampleAges <- function(ageObj, ...) UseMethod(".SampleAges")
 
-.SampleAges.noMinAge <- function(ageObj) {
-  ageObjNew <- .ProposeAges(ageObj)
+.SampleAges.noMinAge <- function(ageObj, .dataObj, .algObj) {
+  ageObjNew <- .ProposeAges(ageObj, .dataObj)
   idtr <- which(ageObjNew$ages[.dataObj$idNoA, "birth"] < .algObj$start)
   ageObjNew$ages[.dataObj$idNoA[idtr], "ageTr"] <- 
       .algObj$start - ageObjNew$ages[.dataObj$idNoA[idtr], "birth"]
   return(ageObjNew)
 }
 
-.SampleAges.minAge <- function(ageObj) {
-  ageObjNew <- .ProposeAges(ageObj)
+.SampleAges.minAge <- function(ageObj, .dataObj, .algObj) {
+  ageObjNew <- .ProposeAges(ageObj, .dataObj)
   ageObjNew$ages[.dataObj$idNoA, ] <- 
-      .SplitByMinAge(ageObjNew$ages[.dataObj$idNoA, ])
+      .SplitByMinAge(ageObjNew$ages[.dataObj$idNoA, ], .algObj)
   return(ageObjNew)
 }
 
-.SplitByMinAge <- function(ages) {
+.SplitByMinAge <- function(ages, .algObj) {
   ages[, "indAd"] <- 0
   ages[, "indJu"] <- 0
   ages[ages[, "age"] >= .algObj$minAge, "indAd"] <- 1
@@ -755,7 +750,8 @@ basta <-
 }
 
 # Sample parameters:
-.JitterPars <- function() {
+.JitterPars <- function(.parsIni, .defTheta, .fullParObj, .agesIni,
+    .parsCovIni, .postIni, .covObj) {
   parObjNew <- .parsIni
   negMort <- TRUE
   theJitter <- matrix(.defTheta$jitter, nrow(.parsIni$theta), 
@@ -772,7 +768,7 @@ basta <-
     }
     parsCovNew <- .CalcParCovObj(.covObj, parObjNew, .parsCovIni)
     postNew <- .CalcLike(.agesIni, parObjNew, .postIni, parsCovNew, 
-        1:.dataObj$n)
+        1:.dataObj$n, .fullParObj)
     negMort <- ifelse(postNew$mortPars == -Inf | is.na(postNew$mortPars), 
         TRUE, FALSE)
   }
@@ -780,7 +776,7 @@ basta <-
 }
 
 
-.ProposeThetaPars <- function(parObj, ageObj, jumps, idPar) {
+.ProposeThetaPars <- function(parObj, ageObj, jumps, .fullParObj, idPar) {
   parObjNew <- parObj
   parObjNew$theta[idPar] <- rtnorm(1, parObj$theta[idPar], 
       jumps$theta[idPar], lower = .fullParObj$theta$low[idPar])
@@ -799,15 +795,15 @@ basta <-
 # Propose all mortality parameters:
 .ProposeMortPars <- function(parObj, ...) UseMethod(".ProposeMortPars")
 
-.ProposeMortPars.theta <- function(parObj, ageObj, jumps, idPar) {
-  parObjNew <- .ProposeThetaPars(parObj, ageObj, jumps, idPar)
+.ProposeMortPars.theta <- function(parObj, ageObj, jumps, .fullParObj, idPar) {
+  parObjNew <- .ProposeThetaPars(parObj, ageObj, jumps, .fullParObj, idPar)
   return(parObjNew)
 }
 
 
-.ProposeMortPars.theGam <- function(parObj, ageObj, jumps, idPar) {
+.ProposeMortPars.theGam <- function(parObj, ageObj, jumps, .fullParObj, idPar) {
   if (idPar <= .fullParObj$theta$len) {
-    parObjNew <- .ProposeThetaPars(parObj, ageObj, jumps, idPar)
+    parObjNew <- .ProposeThetaPars(parObj, ageObj, jumps, .fullParObj, idPar)
   } else {
     parObjNew <- .ProposeGammaPars(parObj, jumps, idPar - 
             .fullParObj$theta$len)
@@ -818,7 +814,7 @@ basta <-
 # Propose pi's:
 .SamplePiPars <- function(parObj, ...) UseMethod(".SamplePiPars")
 
-.SamplePiPars.pi <- function(parObj, ageObj) {
+.SamplePiPars.pi <- function(parObj, ageObj, .fullParObj, .dataObj) {
   rho2 <- .fullParObj$pi$prior2 + 
       t(t(ageObj$alive - .dataObj$Y) %*% rep(1, .dataObj$n))
   Rho2 <- tapply(rho2, .fullParObj$pi$idpi, sum)
@@ -837,15 +833,15 @@ basta <-
   return(parObj)
 }
 
-.ProposeLambda <- function(parObj) UseMethod(".ProposeLambda")
+.ProposeLambda <- function(parObj, ...) UseMethod(".ProposeLambda")
 
-.ProposeLambda.lambda <- function(parObj) {
+.ProposeLambda.lambda <- function(parObj, .fullParObj) {
   parObj$lambda <- rtnorm(n = 1, mean = parObj$lambda, 
       sd = .fullParObj$lambda$jump, lower = 0)
   return(parObj)
 }
 
-.ProposeLambda.noLambda <- function(parObj) {
+.ProposeLambda.noLambda <- function(parObj, ...) {
   return(parObj)
 }
 
@@ -909,23 +905,23 @@ basta <-
 # Calculate pdf of ages at death:
 .CalcPdf <- function(parCovObj, ...) UseMethod(".CalcPdf")
 
-.CalcPdf.noParCov <- function(parCovObj, x, ind) {
+.CalcPdf.noParCov <- function(parCovObj, x, ind, .CalcSurv, .dataObj) {
   .CalcSurv(x[ind], parCovObj$theta) - .CalcSurv(x[ind] + .dataObj$Dx, 
       parCovObj$theta)
 }
 
-.CalcPdf.inMortParCov <- function(parCovObj, x, ind) {
+.CalcPdf.inMortParCov <- function(parCovObj, x, ind, .CalcSurv, .dataObj) {
   .CalcSurv(x[ind], parCovObj$theta[ind, ]) - 
       .CalcSurv(x[ind] + .dataObj$Dx, parCovObj$theta[ind, ])
 }
 
-.CalcPdf.propHazParCov <- function(parCovObj, x, ind) {
+.CalcPdf.propHazParCov <- function(parCovObj, x, ind, .CalcSurv, .dataObj) {
   .CalcSurv(x[ind], parCovObj$theta)^exp(parCovObj$gamma[ind]) - 
       .CalcSurv(x[ind] + .dataObj$Dx, 
           parCovObj$theta)^exp(parCovObj$gamma[ind])
 }
 
-.CalcPdf.fusedParCov <- function(parCovObj, x, ind) {
+.CalcPdf.fusedParCov <- function(parCovObj, x, ind, .CalcSurv, .dataObj) {
   .CalcSurv(x[ind], parCovObj$theta[ind, ])^exp(parCovObj$gamma[ind]) - 
       .CalcSurv(x[ind] + .dataObj$Dx, 
           parCovObj$theta[ind, ])^exp(parCovObj$gamma[ind])
@@ -934,19 +930,19 @@ basta <-
 # Survival at age at truncation:
 .CalcTruSurv <- function(parCovObj, ...) UseMethod(".CalcTruSurv")
 
-.CalcTruSurv.noParCov <- function(parCovObj, x, ind) {
+.CalcTruSurv.noParCov <- function(parCovObj, x, ind, .CalcSurv) {
   .CalcSurv(x[ind], parCovObj$theta)
 }
 
-.CalcTruSurv.inMortParCov <- function(parCovObj, x, ind) {
+.CalcTruSurv.inMortParCov <- function(parCovObj, x, ind, .CalcSurv) {
   .CalcSurv(x[ind], parCovObj$theta[ind, ])
 }
 
-.CalcTruSurv.propHazParCov <- function(parCovObj, x, ind) {
+.CalcTruSurv.propHazParCov <- function(parCovObj, x, ind, .CalcSurv) {
   .CalcSurv(x[ind], parCovObj$theta)^exp(parCovObj$gamma[ind])
 }
 
-.CalcTruSurv.fusedParCov <- function(parCovObj, x, ind) {
+.CalcTruSurv.fusedParCov <- function(parCovObj, x, ind, .CalcSurv) {
   .CalcSurv(x[ind], parCovObj$theta[ind, ])^exp(parCovObj$gamma[ind])
 }
 
@@ -956,27 +952,29 @@ basta <-
 .CalcLike <- function(ageObj, ...) UseMethod(".CalcLike")
 
 
-.CalcLike.minAge <- function(ageObj, parObj, postObj, parCovObj, ind) {
+.CalcLike.minAge <- function(ageObj, parObj, postObj, parCovObj, ind, 
+    .fullParObj) {
   postObj$mat[ind, "fx"] <- log(.CalcPdf(parCovObj, ageObj$ages[, "ageAd"], 
-          ind)) * ageObj$ages[ind, "indAd"]
+          ind, .CalcSurv, .dataObj)) * ageObj$ages[ind, "indAd"]
   postObj$mat[ind, "Sx"] <- log(.CalcTruSurv(parCovObj, 
-          ageObj$ages[, "ageAdTr"], ind)) * ageObj$ages[ind, "indAd"]
-  postObj$mortPars <- .CalcPostMortPars(parObj, postObj)
+          ageObj$ages[, "ageAdTr"], ind, .CalcSurv)) * ageObj$ages[ind, "indAd"]
+  postObj$mortPars <- .CalcPostMortPars(parObj, postObj, .fullParObj)
   return(postObj)
 }
 
-.CalcLike.noMinAge <- function(ageObj, parObj, postObj, parCovObj, ind) {
+.CalcLike.noMinAge <- function(ageObj, parObj, postObj, parCovObj, ind, 
+    .fullParObj) {
   postObj$mat[ind, "fx"] <- log(.CalcPdf(parCovObj, ageObj$ages[, "age"], 
-          ind))
+          ind, .CalcSurv, .dataObj))
   postObj$mat[ind, "Sx"] <- log(.CalcTruSurv(parCovObj, 
-          ageObj$ages[, "ageTr"], ind))
-  postObj$mortPars <- .CalcPostMortPars(parObj, postObj)
+          ageObj$ages[, "ageTr"], ind, .CalcSurv))
+  postObj$mortPars <- .CalcPostMortPars(parObj, postObj, .fullParObj)
   return(postObj)
 }
 
 .CalcPostMortPars <- function(parObj, ...) UseMethod(".CalcPostMortPars")
 
-.CalcPostMortPars.theta <- function(parObj, postObj) {
+.CalcPostMortPars.theta <- function(parObj, postObj, .fullParObj) {
   parPost <- sum(postObj$mat[, "fx"] -
               postObj$mat[, "Sx"]) + 
       sum(dtnorm(c(parObj$theta), c(.fullParObj$theta$priorMean), 
@@ -985,7 +983,7 @@ basta <-
   return(parPost)
 }
 
-.CalcPostMortPars.theGam <- function(parObj, postObj) {
+.CalcPostMortPars.theGam <- function(parObj, postObj, .fullParObj) {
   parPost <- sum(postObj$mat[, "fx"] -
               postObj$mat[, "Sx"]) + 
       sum(dtnorm(c(parObj$theta), c(.fullParObj$theta$priorMean), 
@@ -998,7 +996,7 @@ basta <-
 
 .CalcPostLambda <- function(parObj, ...) UseMethod(".CalcPostLambda") 
 
-.CalcPostLambda.lambda <- function(parObj, postObj, ageObj, ind) {
+.CalcPostLambda.lambda <- function(parObj, postObj, ageObj, ind, .fullParObj) {
   postObj$mat[ind, "lx"] <- 
       log(parObj$lambda) * ageObj$ages[ind, "indJu"] - 
       parObj$lambda * ageObj$ages[ind, "ageJu"] + 
@@ -1016,7 +1014,8 @@ basta <-
 
 .CalcPostPi <- function(parObj, ...) UseMethod(".CalcPostPi")
 
-.CalcPostPi.pi <- function(parObj, postObj, ageObj, ind) {
+.CalcPostPi.pi <- function(parObj, postObj, ageObj, ind, 
+    .fullParObj, .dataObj) {
   postObj$mat[ind, "px"] <- 
       (ageObj$alive - .dataObj$obsMat)[ind, ] %*% 
       log(1 - parObj$pi[.fullParObj$pi$idpi])
@@ -1033,19 +1032,20 @@ basta <-
   return(postObj)
 }
 
-.CalcPostX <- function(ageObj, parObj, postObj, parCovObj, ind) {
-  postObj <- .CalcLike(ageObj, parObj, postObj, parCovObj, ind)
-  postObj <- .CalcPostPi(parObj, postObj, ageObj, ind)
-  postObj <- .CalcPostLambda(parObj, postObj, ageObj, ind)  
+.CalcPostX <- function(ageObj, parObj, postObj, parCovObj, ind, .CalcSurv,
+    .priorAgeObj, .fullParObj, .covObj) {
+  postObj <- .CalcLike(ageObj, parObj, postObj, parCovObj, ind, .fullParObj)
+  postObj <- .CalcPostPi(parObj, postObj, ageObj, ind, .fullParObj, .dataObj)
+  postObj <- .CalcPostLambda(parObj, postObj, ageObj, ind, .fullParObj)  
   postObj$mat[ind, "vx"] <- 
-      .CalcPriorAgeDist(.covObj, ageObj, ind)
+      .CalcPriorAgeDist(.covObj, ageObj, ind, .CalcSurv, .priorAgeObj)
   postObj <- .SumPosts(postObj, ind)
   return(postObj)
 }
 
 # Prior age distribution
-
-.SetPriorAgeDist <- function() {
+.SetPriorAgeDist <- function(.fullParObj, .CalcSurv, .dataObj, .covObj, 
+    .parsIni, .parsCovIni) {
   dxx <- 0.001
   xx <- seq(0,100,dxx)
   parsPrior <- list()
@@ -1124,6 +1124,7 @@ basta <-
       lifeExp <- rep(Ex, .dataObj$n)
     }
   }
+  class(parsPrior) <- class(.parsIni)
   priorCov <- .CalcParCovObj(.covObj, parsPrior, .parsCovIni)
   priorAgeObj <- list(lifeExp = lifeExp, theta = priorCov$theta)
   if (class(.covObj)[1] %in% c("fused", "propHaz")) {
@@ -1134,14 +1135,16 @@ basta <-
 
 .CalcPriorAgeDist <- function(.covObj, ...) UseMethod(".CalcPriorAgeDist")
 
-.CalcPriorAgeDist.noCov <- function(.covObj, ageObj, ind) {
+.CalcPriorAgeDist.noCov <- function(.covObj, ageObj, ind, .CalcSurv,
+    .priorAgeObj) {
   ageList <- .ExtractAgesForPad(ageObj, ind)
   priorAgeDist <- .CalcSurv(ageList$age, .priorAgeObj$theta) / 
       .priorAgeObj$lifeExp[ind] * ageList$idAd
   return(priorAgeDist)
 } 
 
-.CalcPriorAgeDist.fused <- function(.covObj, ageObj, ind) {
+.CalcPriorAgeDist.fused <- function(.covObj, ageObj, ind, .CalcSurv,
+    .priorAgeObj) {
   ageList <- .ExtractAgesForPad(ageObj, ind)
   priorAgeDist <- (.CalcSurv(ageList$age, 
             .priorAgeObj$theta[ind, ])^exp(.priorAgeObj$gamma[ind, ])) / 
@@ -1149,14 +1152,16 @@ basta <-
   return(priorAgeDist)
 } 
 
-.CalcPriorAgeDist.inMort <- function(.covObj, ageObj, ind) {
+.CalcPriorAgeDist.inMort <- function(.covObj, ageObj, ind, .CalcSurv,
+    .priorAgeObj) {
   ageList <- .ExtractAgesForPad(ageObj, ind)
   priorAgeDist <- .CalcSurv(ageList$age, .priorAgeObj$theta[ind, ]) / 
       .priorAgeObj$lifeExp[ind] * ageList$idAd
   return(priorAgeDist)
 } 
 
-.CalcPriorAgeDist.propHaz <- function(.covObj, ageObj, ind) {
+.CalcPriorAgeDist.propHaz <- function(.covObj, ageObj, ind, .CalcSurv,
+    .priorAgeObj) {
   ageList <- .ExtractAgesForPad(ageObj, ind)
   priorAgeDist <- (.CalcSurv(ageList$age, 
             .priorAgeObj$theta)^exp(.priorAgeObj$gamma[ind, ])) / 
@@ -1191,13 +1196,16 @@ basta <-
 }
 
 # MCMC function:
-.RunBastaMCMC <- function(sim) {
-  rm(".Random.seed", envir = .GlobalEnv)
-  runif(1); assign(".Random.seed", .Random.seed, envir = .GlobalEnv)
+.RunBastaMCMC <- function(sim, .algObj, .defTheta, .CalcMort, .CalcSurv, 
+    .dataObj, .covObj, .userPars, .fullParObj, .agesIni, .parsIni, 
+    .priorAgeObj, .parsCovIni, .postIni, .jumps, .jumpObjIni) {
+  rm(".Random.seed", envir = .GlobalEnv); runif(1)
   agesNow <- .agesIni
-  parsNow <- .JitterPars()
+  parsNow <- .JitterPars(.parsIni, .defTheta, .fullParObj, .agesIni,
+      .parsCovIni, .postIni, .covObj)
   parsCovNow <- .CalcParCovObj(.covObj, parsNow, .parsCovIni)
-  postNow <- .CalcLike(agesNow, parsNow, .postIni, parsCovNow, 1:.dataObj$n)
+  postNow <- .CalcLike(agesNow, parsNow, .postIni, parsCovNow, 1:.dataObj$n, 
+      .fullParObj)
   niter <- .algObj$niter
   burnin <- .algObj$burnin
   thinning <- .algObj$thinning
@@ -1229,11 +1237,12 @@ basta <-
   for (m in 2:niter) {
     # Sample theta (and gamma) parameters:
     for (mp in idMp) {
-      parsNew <- .ProposeMortPars(parsNow, agesNow, .jumps, mp)
+      parsNew <- .ProposeMortPars(parsNow, agesNow, .jumps, .fullParObj, mp)
       newPar <- ifelse(c(parsNew$theta, parsNew$gamma)[mp] != 
               c(parsNow$theta, parsNow$gamma)[mp], TRUE, FALSE)
       parsCovNew <- .CalcParCovObj(.covObj, parsNew, parsCovNow)
-      postNew <- .CalcLike(agesNow, parsNew, postNow, parsCovNew, 1:.dataObj$n)
+      postNew <- .CalcLike(agesNow, parsNew, postNow, parsCovNew, 1:.dataObj$n, 
+          .fullParObj)
       if (!is.na(postNew$mortPars) & newPar) {
         acceptCrit <- exp(postNew$mortPars - postNow$mortPars)
         acceptProb <- runif(1)
@@ -1247,13 +1256,15 @@ basta <-
     outObj$par[m, ] <- .FillParMat(parsNow)
     
     # Sample recapture parameters:
-    parsNow <- .SamplePiPars(parsNow, agesNow)
-    postNow <- .CalcPostPi(parsNow, postNow, agesNow, 1:.dataObj$n)
+    parsNow <- .SamplePiPars(parsNow, agesNow, .fullParObj, .dataObj)
+    postNow <- .CalcPostPi(parsNow, postNow, agesNow, 1:.dataObj$n, 
+        .fullParObj, .dataObj)
     
     # Sample early age parameter:
     if (class(parsNow)[2] == "lambda") {
-      parsNew <- .ProposeLambda(parsNow)
-      postNew <- .CalcPostLambda(parsNew, postNow, agesNow, 1:.dataObj$n)
+      parsNew <- .ProposeLambda(parsNow, .fullParObj)
+      postNew <- .CalcPostLambda(parsNew, postNow, agesNow, 1:.dataObj$n, 
+          .fullParObj)
       acceptCrit <- exp(postNew$lambda - postNow$lambda)
       acceptProb <- runif(1)
       if (acceptCrit > acceptProb) {
@@ -1267,16 +1278,16 @@ basta <-
     
     # Sample Missing ages at death:
     if (class(.dataObj) == "ageUpd") {
-      agesNew <- .SampleAges(agesNow)
+      agesNew <- .SampleAges(agesNow, .dataObj, .algObj)
       idNew <- which(agesNew$ages[, 'birth'] != agesNow$ages[, 'birth'] | 
               agesNew$ages[, 'death'] != agesNow$ages[, 'death'])
       postNew <- .CalcPostX(agesNew, parsNow, postNow, parsCovNow, 
-          .dataObj$idNoA) 
+          .dataObj$idNoA, .CalcSurv, .priorAgeObj, .fullParObj, .covObj) 
       idAccept <- .AcceptAges(postNow, postNew, idNew)
       postNow$mat[idAccept, ] <- postNew$mat[idAccept, ]
       agesNow$ages[idAccept, ] <- agesNew$ages[idAccept, ]
       agesNow$alive[idAccept, ] <- agesNew$alive[idAccept, ]
-      postNow$mortPars <- .CalcPostMortPars(parsNow, postNow)
+      postNow$mortPars <- .CalcPostMortPars(parsNow, postNow, .fullParObj)
       if (class(parsNow)[2] == "lambda") {
         postNow$lambda <- sum(postNow$mat[, "lx"]) + 
             dtnorm(parsNow$lambda, mean = .fullParObj$lambda$priorMean, 
@@ -1326,7 +1337,10 @@ basta <-
 }
 
 
-.RunIniUpdJump <- function(argList) {
+.RunIniUpdJump <- function(argList, .algObj, .defTheta, 
+    .CalcMort, .CalcSurv, .dataObj, .covObj, .userPars, .fullParObj, 
+    .agesIni, .parsIni, .priorAgeObj, .parsCovIni, .postIni, .jumps, 
+    .jumpObjIni) {
   cat("Starting simulation to find jump sd's... ")
   jumpObj <- .jumpObjIni
   parsNow <- .parsIni
@@ -1356,11 +1370,12 @@ basta <-
   for (m in 1:niter) {
     # Sample theta (and gamma) parameters:
     for (mp in idMp) {
-      parsNew <- .ProposeMortPars(parsNow, agesNow, newJumps, mp)
+      parsNew <- .ProposeMortPars(parsNow, agesNow, newJumps, .fullParObj, mp)
       newPar <- ifelse(c(parsNew$theta, parsNew$gamma)[mp] != 
               c(parsNow$theta, parsNow$gamma)[mp], TRUE, FALSE)
       parsCovNew <- .CalcParCovObj(.covObj, parsNew, parsCovNow)
-      postNew <- .CalcLike(agesNow, parsNew, postNow, parsCovNew, 1:.dataObj$n)
+      postNew <- .CalcLike(agesNow, parsNew, postNow, parsCovNew, 1:.dataObj$n, 
+          .fullParObj)
       if (!is.na(postNew$mortPars) & newPar) {
         acceptCrit <- exp(postNew$mortPars - postNow$mortPars)
         acceptProb <- runif(1)
@@ -1374,13 +1389,15 @@ basta <-
     }
     
     # Sample recapture parameters:
-    parsNow <- .SamplePiPars(parsNow, agesNow)
-    postNow <- .CalcPostPi(parsNow, postNow, agesNow, 1:.dataObj$n)
+    parsNow <- .SamplePiPars(parsNow, agesNow, .fullParObj, .dataObj)
+    postNow <- .CalcPostPi(parsNow, postNow, agesNow, 1:.dataObj$n, 
+        .fullParObj, .dataObj)
     
     # Sample early age parameter:
     if (class(parsNow)[2] == "lambda") {
-      parsNew <- .ProposeLambda(parsNow)
-      postNew <- .CalcPostLambda(parsNew, postNow, agesNow, 1:.dataObj$n)
+      parsNew <- .ProposeLambda(parsNow, .fullParObj)
+      postNew <- .CalcPostLambda(parsNew, postNow, agesNow, 1:.dataObj$n, 
+          .fullParObj)
       acceptCrit <- exp(postNew$lambda - postNow$lambda)
       acceptProb <- runif(1)
       if (acceptCrit > acceptProb) {
@@ -1394,16 +1411,16 @@ basta <-
     
     # Sample Missing ages at death:
     if (class(.dataObj) == "ageUpd") {
-      agesNew <- .SampleAges(agesNow)
+      agesNew <- .SampleAges(agesNow, .dataObj, .algObj)
       idNew <- which(agesNew$ages[, 'birth'] != agesNow$ages[, 'birth'] | 
               agesNew$ages[, 'death'] != agesNow$ages[, 'death'])
       postNew <- .CalcPostX(agesNew, parsNow, postNow, parsCovNow, 
-          .dataObj$idNoA) 
+          .dataObj$idNoA, .CalcSurv, .priorAgeObj, .fullParObj, .covObj) 
       idAccept <- .AcceptAges(postNow, postNew, idNew)
       postNow$mat[idAccept, ] <- postNew$mat[idAccept, ]
       agesNow$ages[idAccept, ] <- agesNew$ages[idAccept, ]
       agesNow$alive[idAccept, ] <- agesNew$alive[idAccept, ]
-      postNow$mortPars <- .CalcPostMortPars(parsNow, postNow)
+      postNow$mortPars <- .CalcPostMortPars(parsNow, postNow, .fullParObj)
       if (class(parsNow)[2] == "lambda") {
         postNow$lambda <- sum(postNow$mat[, "lx"]) + 
             dtnorm(parsNow$lambda, mean = .fullParObj$lambda$priorMean, 
@@ -1433,7 +1450,8 @@ basta <-
 
 
 # Diagnostics:
-.CalcDiagnost <- function(bastaOut) {
+.CalcDiagnost <- function(bastaOut, .algObj, .covObj, .defTheta, .fullParObj,
+    .dataObj) {
   thinned <- seq(.algObj$burnin, .algObj$niter, .algObj$thinning)
   nthin <- length(thinned)
   parMat <- bastaOut[[1]]$par[thinned, ]
@@ -1489,7 +1507,8 @@ basta <-
       names(modSel) <- c("D.ave", "D.mode", "pD", "k", "DIC")
       cat("Survival parameters converged appropriately.",
           "\nDIC was calculated.\n")
-      kulLeib <- .CalcKulbackLeibler(coef)
+      kulLeib <- .CalcKulbackLeibler(coef, .covObj, .defTheta, .fullParObj, 
+          .algObj, .dataObj)
     } else {
       warning("Convergence not reached for some survival parameters.",
           "\nDIC could not be calculated.\n", call. = FALSE)
@@ -1506,7 +1525,8 @@ basta <-
   return(diagObj)
 }
 
-.CalcKulbackLeibler <- function(coef) {
+.CalcKulbackLeibler <- function(coef, .covObj, .defTheta, .fullParObj, .algObj,
+    .dataObj) {
   if (!is.null(.covObj$cat) & 
       !(length(.covObj$cat) == 2 & class(.covObj)[1] == "propHaz")) {
     if (length(.covObj$cat) > 1) {
@@ -1573,7 +1593,8 @@ basta <-
   return(outList)
 }
 
-.CalcQuants <- function(bastaOut, bastaResults) {
+.CalcQuants <- function(bastaOut, bastaResults, .defTheta, .fullParObj, .algObj,
+    .dataObj, .CalcSurv, .CalcMort, .covObj) {
   if (class(.agesIni)[1] == "ageUpd") {
     nthin <- ceiling((.algObj$niter - .algObj$burnin + 1) / .algObj$thinning)
     bMat <- array(matrix(.dataObj$bi, nthin, .dataObj$n, byrow = TRUE), 
@@ -1677,7 +1698,7 @@ basta <-
   return(bastaResults)
 }
 
-.CalcLifeTable <- function(bastaResults, lifeTable, object) {
+.CalcLifeTable <- function(bastaResults, lifeTable, object, .covObj, .algObj) {
   if (lifeTable) {
     LT  <- list()
     if (is.null(.covObj$cat)) {

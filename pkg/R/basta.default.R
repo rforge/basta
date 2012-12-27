@@ -12,11 +12,7 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0,
   bastaIntVars <- c(".algObj", ".defTheta", ".CalcMort", ".CalcSurv", 
       ".dataObj", ".covObj", ".userPars", ".fullParObj", ".agesIni", 
       ".parsIni", ".priorAgeObj", ".parsCovIni", ".postIni", 
-      ".Random.seed",  ".jumps", ".jumpObjIni")
-  idDel <- which(bastaIntVars %in% ls(all.names = TRUE))
-  if (length(idDel) > 0) {
-    rm(list = bastaIntVars[idDel], envir = .GlobalEnv)
-  }
+      ".jumps", ".jumpObjIni", ".Random.seed")
   .algObj <- .CreateAlgObj(model, shape, studyStart, studyEnd, minAge, 
       covarsStruct, recaptTrans, niter, burnin, thinning, updateJumps, nsim)
   .FindErrors(object, .algObj)
@@ -24,7 +20,7 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0,
   .defTheta <- .SetDefaultTheta(.algObj)
   .CalcMort <- .DefineMort(.algObj)
   .CalcSurv <- .DefineSurv(.algObj)
-  .covObj <- .CreateCovObj(object, .dataObj, .algObj)
+  .covObj <- .CreateCovObj(object, .dataObj, .algObj)#S; print(class(.covObj))
   .algObj$covStruc <- class(.covObj)[1]
   .userPars <- .CreateUserPar(.covObj, argList)
   .fullParObj <- .BuildFullParObj(.covObj, .defTheta, .algObj, .userPars, 
@@ -37,23 +33,18 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0,
   .agesIni <- .PrepAgeObj(.dataObj, .algObj)
   .parsIni <- .DefineIniParObj(.fullParObj)
   .parsCovIni <- .BuildParCovObj(.covObj, .parsIni)
-  objList <- list(.algObj = .algObj, .dataObj = .dataObj, .covObj = .covObj, 
-      .defTheta = .defTheta, .userPars = .userPars, .CalcMort = .CalcMort, 
-      .CalcSurv = .CalcSurv, .parsIni = .parsIni, .parsCovIni = .parsCovIni, 
-      .agesIni = .agesIni, .fullParObj = .fullParObj, .priorAgeObj = NA, 
-      .postIni = NA, .jumps = .jumps, .jumpObjIni = NA)
-  .AssignVarsToEnv(objList)
-  .priorAgeObj <- .SetPriorAgeDist()
-  assign(".priorAgeObj", .priorAgeObj, envir = .GlobalEnv)
-  .postIni <- .BuildPostObj(.agesIni, .parsIni, .parsCovIni)
-  assign(".postIni", .postIni, envir = .GlobalEnv)
+  .priorAgeObj <- .SetPriorAgeDist(.fullParObj, .CalcSurv, .dataObj, .covObj, 
+      .parsIni, .parsCovIni)
+  .postIni <- .BuildPostObj(.agesIni, .parsIni, .parsCovIni, .dataObj, 
+      .CalcSurv, .priorAgeObj, .fullParObj, .covObj)
   Start <- Sys.time()
   if(updateJumps) {
     .jumpObjIni <- .PrepJumpObj(.fullParObj, .covObj)
-    assign(".jumpObjIni", .jumpObjIni, envir = .GlobalEnv)
-    updatedJumps <- .RunIniUpdJump(argList)
+    updatedJumps <- .RunIniUpdJump(argList, .algObj, .defTheta, 
+        .CalcMort, .CalcSurv, .dataObj, .covObj, .userPars, .fullParObj, 
+        .agesIni, .parsIni, .priorAgeObj, .parsCovIni, .postIni, .jumps, 
+        .jumpObjIni)
     .jumps <- updatedJumps$updJumps
-    assign(".jumps", .jumps, envir = .GlobalEnv)
   } 
   if (nsim > 1) {
     cat("Multiple simulations started...\n\n") 
@@ -63,34 +54,46 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0,
         warning("\nPackage 'snowfall' is not installed.\nSimulations ",
             "will not be ran in parallel (computing time will ",
             "be longer...)\n")
-        bastaOut <- lapply(1:nsim, .RunBastaMCMC)
+        bastaOut <- lapply(1:nsim, .RunBastaMCMC, .algObj, .defTheta, 
+            .CalcMort, .CalcSurv, .dataObj, .covObj, .userPars, .fullParObj, 
+            .agesIni, .parsIni, .priorAgeObj, .parsCovIni, .postIni, .jumps, 
+            .jumpObjIni)
       } else {
         opp <- options()
         options(warn = -1)
         require(snowfall)
         sfInit(parallel = TRUE, cpus = ncpus)
-#        sfSource("/Users/fernando/FERNANDO/PROJECTS/4.PACKAGES/BaSTA/workspace/developBasta/code/loadBaSTA.R")
-        sfExport(list = bastaIntVars)
+        sfExport(list = c(bastaIntVars, ".Random.seed"))
         sfLibrary("BaSTA", character.only = TRUE, warn.conflicts = FALSE)
         sfLibrary(msm, warn.conflicts = FALSE)
-        bastaOut <- sfClusterApplyLB(1:nsim, .RunBastaMCMC)
+        bastaOut <- sfClusterApplyLB(1:nsim, .RunBastaMCMC, .algObj, .defTheta, 
+            .CalcMort, .CalcSurv, .dataObj, .covObj, .userPars, .fullParObj, 
+            .agesIni, .parsIni, .priorAgeObj, .parsCovIni, .postIni, .jumps, 
+            .jumpObjIni)
         sfRemoveAll(hidden = TRUE)
         sfStop()
         options(opp)
       }
     } else {
-      bastaOut <- lapply(1:nsim, .RunBastaMCMC)
+      bastaOut <- lapply(1:nsim, .RunBastaMCMC, .algObj, .defTheta, 
+          .CalcMort, .CalcSurv, .dataObj, .covObj, .userPars, .fullParObj, 
+          .agesIni, .parsIni, .priorAgeObj, .parsCovIni, .postIni, .jumps, 
+          .jumpObjIni)
     }
   } else {
     cat("Simulation started...\n\n")
-    bastaOut <- lapply(1:nsim, .RunBastaMCMC)
+    bastaOut <- lapply(1:nsim, .RunBastaMCMC, .algObj, .defTheta, 
+        .CalcMort, .CalcSurv, .dataObj, .covObj, .userPars, .fullParObj, 
+        .agesIni, .parsIni, .priorAgeObj, .parsCovIni, .postIni, .jumps, 
+        .jumpObjIni)
   }
   End <- Sys.time()
   names(bastaOut) <- paste("sim.", 1:nsim, sep = "")
   compTime <- round(as.numeric(End-Start, units = units(End - Start)), 2)
   cat(sprintf("Total MCMC computing time: %.2f %s.\n\n", compTime, 
           units(End - Start)))
-  bastaResults <- .CalcDiagnost(bastaOut)
+  bastaResults <- .CalcDiagnost(bastaOut, .algObj, .covObj, .defTheta, 
+      .fullParObj, .dataObj)
   bastaResults$settings <- c(niter, burnin, thinning, nsim)
   names(bastaResults$settings) <- c("niter", "burnin", "thinning", "nsim")
   bastaResults$modelSpecs <- 
@@ -99,7 +102,8 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0,
           paste(names(.covObj$cont), collapse = ", "))
   names(bastaResults$modelSpecs) <- c("model", "shape", "Covar. structure", 
       "minAge", "Categorical", "Continuous")
-  bastaResults <- .CalcQuants(bastaOut, bastaResults)
+  bastaResults <- .CalcQuants(bastaOut, bastaResults, .defTheta, .fullParObj, 
+      .algObj, .dataObj, .CalcSurv, .CalcMort, .covObj)
   bastaResults$jumpPriors <- 
       cbind(c(.jumps$theta, .jumps$gamma), 
           c(.fullParObj$theta$priorMean, .fullParObj$gamma$priorMean), 
@@ -112,10 +116,10 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0,
     bastaResults$parsForPlot[[pp]] <- 
         bastaOut[[pp]]$par[seq(1, .algObj$niter, .algObj$thinning), ]
   }
-  bastaResults$lifeTable <- .CalcLifeTable(bastaResults, lifeTable, object)
+  bastaResults$lifeTable <- .CalcLifeTable(bastaResults, lifeTable, object,
+      .covObj, .algObj)
   # Define class for output object:
   class(bastaResults) <- "basta"
-  rm(list = bastaIntVars, envir = .GlobalEnv)
   return(bastaResults)
 }
 
