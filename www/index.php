@@ -93,14 +93,14 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 													<p class="parag"><b>BaSTA</b> is an R package (R Development Core Team 2012) that allows users to draw inference on age-specific survival and mortality patterns from capture-recapture/recovery data when a large number of individuals (or all) have missing age information (Colchero, Jones and Rebke 2012). <b>BaSTA</b> is based on a model developed by Colchero and Clark (2012), which extends inference from parameter estimates to the estimation of unknown (i.e. latent) times of birth and death. The package also allows testing the effect of categorical and continuous individual covariates on mortality and survival (for an example see Fig. 1).</p>
 													<p style="text-align:center"><br><img style="margin:0px;padding:0px;border:none" width="400px" align="middle" src="Sheep.png"><br></p>
 													<p class="caption">Fig. 1. <b>BaSTA</b> model output for sex differences in Soay sheep mortality using a Siler survival model (Colchero & Clark 2012). The left panel shows posterior distributions for the survival and recapture parameters while the right panel shows the resulting survival probabilities and the mortality rates for males and females.</p>
-													<p class="parag">Version 1.6 of the package is now availale on CRAN and can be installed by typing the following line of code into the R console: <br></p>
+													<p class="parag">Version 1.7 of the package is now availale on CRAN and can be installed by typing the following line of code into the R console: <br></p>
 													<p style="font-size:16px;padding-left:60px;padding-right:60px"><code style="color:#006600">&nbsp;&nbsp;&nbsp;&nbsp;install.packages("BaSTA")</code><br></p>
 													<!--<p class="parag">However, we strongly recomend users to install the latest stable version, <b>BaSTA</b> (vers. 1.5), which should be available on CRAN in the next few days. This last version can be currently installed either from from R forge by typing:<br></p>
 													<p style="font-size:16px;padding-left:60px;padding-right:60px"><code style="color:#006600">&nbsp;&nbsp;&nbsp;&nbsp;install.packages("BaSTA", repos="http://R-Forge.R-project.org",</code><br></p>
 													<p style="font-size:16px;padding-left:60px;padding-right:60px"><code style="color:#006600">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type = "source")</code><br></p> -->
-													<p class="parag"><b>BaSTA 1.6 has important updates and improvements, so we stronlgy recomend users to install it</b>.<br></p>
-													<p class="parag">The latest version, BaSTA 1.7 can be downloaded by clicking <a href="BaSTA_1.7.tar.gz" rel="nofollow" style="color:#84002E;font-family:verdana" target="_blank">here</a>. Save the file in a folder of your choice, say ''C:/Documents/BaSTAtemp/'' for windows users, and then type on the R console:<br></p>
-													<p style="font-size:16px;padding-left:60px;padding-right:60px"><code style="color:#006600">&nbsp;&nbsp;&nbsp;&nbsp;install.packages("C:/Documents/BaSTAtemp/BaSTA_1.7.tar.gz", type = "source")</code><br></p>
+													<p class="parag"><b>BaSTA 1.7 has important updates and improvements, so we stronlgy recomend users to install it.</b><br></p>
+													<!--<p class="parag">The latest version, BaSTA 1.7 can be downloaded by clicking <a href="BaSTA_1.7.tar.gz" rel="nofollow" style="color:#84002E;font-family:verdana" target="_blank">here</a>. Save the file in a folder of your choice, say ''C:/Documents/BaSTAtemp/'' for windows users, and then type on the R console:<br></p>
+													<p style="font-size:16px;padding-left:60px;padding-right:60px"><code style="color:#006600">&nbsp;&nbsp;&nbsp;&nbsp;install.packages("C:/Documents/BaSTAtemp/BaSTA_1.7.tar.gz", type = "source")</code><br></p>-->
 													<p class="parag">We have set up a <a href="http://lists.r-forge.r-project.org/mailman/listinfo/basta-users"  rel="nofollow" style="color:#84002E">BaSTA Users mailing list</a> so users can ask questions or provide comments, suggestions or criticism that can help us improve the package. Users can register by <a href="https://lists.r-forge.r-project.org/cgi-bin/mailman/listinfo/basta-users"  rel="nofollow" class="intext">clicking here</a>. Also, you can see below a video hosted by the journal <a href="http://www.methodsinecologyandevolution.org/" rel="nofollow" style="color:#84002E;font-family:verdana" target="_blank">Methods in Ecology and Evolution</a> where we explain the rational behind the package and some general applications.<br></p>
 													<p><br></p>
 													<p style="text-align:center"><iframe width="480" height="270" src="http://www.youtube.com/embed/OLFzY3vHVOQ" frameborder="0" allowfullscreen style="display:block;margin:5px auto"></iframe></p>
@@ -185,13 +185,13 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 													<p></p>
 													<a name="bugs"></a>
 													<img alt="Upgrades" border="0" width="900px" src="bugs.jpg?">
-													<p class="parag">The latest version, <b>BaSTA 1.7</b>, available by clicking <a href="BaSTA_1.7.tar.gz" rel="nofollow" style="color:#84002E;font-family:verdana" target="_blank">here</a>, includes the following update: <br></p>
+													<p class="parag">The current version in CRAN, <b>BaSTA 1.7</b>, includes the following update: <br></p>
 													<ul>
 														<li>Fixed a major bug that over-estimated ages at death and underestimated recapture probabilities with proportional hazards models.</li>
 													</ul>
 													<p></p>
 													<hr>
-													<p class="parag">The current version in CRAN, <b>BaSTA 1.6</b>, includes the following updates: <br></p>
+													<p class="parag"><b>BaSTA 1.6</b>: <br></p>
 													<ul>
 														<li>Fixed a bug that prevented to calculate quantiles for predicted mortality and survival when only continuous covariates were included.</li>
 														<li>Fixed a series of bugs when evaluating only continuous covariates inMort.</li>
