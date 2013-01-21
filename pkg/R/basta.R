@@ -12,204 +12,204 @@ basta <-
           thinning = thinning, updJump = updateJumps, nsim = nsim))
 }
 
-.CreateUserPar <- function(.covObj, argList) {
-  .userPars <- list()
+.CreateUserPar <- function(covObj, argList) {
+  userPars <- list()
   genParName <- c("theta", "gamma")
   parTypes <- c("Start", "Jumps", "PriorMean", "PriorSd")
   parTypesList <- c("start", "jump", "priorMean", "priorSd")
   for (genPp in 1:2) {
-    if (all(genPp == 2 & class(.covObj)[1] %in% c("fused", "propHaz")) |
+    if (all(genPp == 2 & class(covObj)[1] %in% c("fused", "propHaz")) |
         genPp == 1) {
-      .userPars[[genParName[genPp]]] <- list()
+      userPars[[genParName[genPp]]] <- list()
       for (pp in 1:4) {
         usrPar <- paste(genParName[genPp], parTypes[pp], sep = "")
         if (usrPar %in% names(argList)) {
-          .userPars[[genParName[genPp]]][[parTypesList[pp]]] <- 
+          userPars[[genParName[genPp]]][[parTypesList[pp]]] <- 
               argList[[usrPar]]
         } else {
-          .userPars[[genParName[genPp]]][[parTypesList[pp]]] <- NULL 
+          userPars[[genParName[genPp]]][[parTypesList[pp]]] <- NULL 
         }
       }
     }    
   }
-  return(.userPars)
+  return(userPars)
 }
 
 
-.FindErrors <- function(object, .algObj) {
-  data.check <- DataCheck(object, .algObj$start, .algObj$end, silent = TRUE)
+.FindErrors <- function(object, algObj) {
+  data.check <- DataCheck(object, algObj$start, algObj$end, silent = TRUE)
   if (!data.check[[1]]) {
     stop("You have an error in Dataframe 'object',\nplease use function ", 
         "'DataCheck'\n", call. = FALSE)
   }
   
 # 2.2 Check that niter, burnin, and thinning are compatible.
-  if (.algObj$burnin > .algObj$niter) {
-    stop("Object '.algObj$burnin' larger than '.algObj$niter'.", call. = FALSE)
+  if (algObj$burnin > algObj$niter) {
+    stop("Object 'algObj$burnin' larger than 'algObj$niter'.", call. = FALSE)
   }
-  if (.algObj$thinning > .algObj$niter) {
-    stop("Object '.algObj$thinning' larger than '.algObj$niter'.", call. = FALSE)
+  if (algObj$thinning > algObj$niter) {
+    stop("Object 'algObj$thinning' larger than 'algObj$niter'.", call. = FALSE)
   }
   
-# 2.3 Model type, .algObj$shape and covariate structure:
-  if (!is.element(.algObj$model, c("EX", "GO", "WE", "LO"))) {
+# 2.3 Model type, algObj$shape and covariate structure:
+  if (!is.element(algObj$model, c("EX", "GO", "WE", "LO"))) {
     stop("Model misspecification: specify available models", 
         " (i.e. 'EX', 'GO', 'WE' or 'LO')\n", call. = FALSE)
   }
-  if (!is.element(.algObj$shape, c("simple", "Makeham", "bathtub"))) {
-    stop(".algObj$shape misspecification. Appropriate arguments are:", 
+  if (!is.element(algObj$shape, c("simple", "Makeham", "bathtub"))) {
+    stop("algObj$shape misspecification. Appropriate arguments are:", 
         " 'simple', 'Makeham' or 'bathtub'.\n", call. = FALSE)
   }
-  if (!is.element(.algObj$covStruc, c("fused", "prop.haz", "all.in.mort"))) {
+  if (!is.element(algObj$covStruc, c("fused", "prop.haz", "all.in.mort"))) {
     stop("Covariate structure misspecification. Appropriate arguments are:", 
         " 'fused', 'prop.haz' or 'all.in.mort'.\n", call. = FALSE)
   }
-  if (.algObj$model == "EX" & .algObj$shape != "simple") {
-    stop("Model misspecification: EX .algObj$model can only be fitted with a", 
-        " simple .algObj$shape", call. = FALSE)
+  if (algObj$model == "EX" & algObj$shape != "simple") {
+    stop("Model misspecification: EX algObj$model can only be fitted with a", 
+        " simple algObj$shape", call. = FALSE)
   }
-  if (.algObj$model == "EX" & .algObj$covStruc != "fused") {
-    stop("Model misspecification: EX .algObj$model can only be fitted with a", 
+  if (algObj$model == "EX" & algObj$covStruc != "fused") {
+    stop("Model misspecification: EX algObj$model can only be fitted with a", 
         " fused covariate structure", call. = FALSE)
   }
-  if (.algObj$covStruc == "all.in.mort" & sum(.algObj$model == "GO", 
-      .algObj$shape == "simple") < 2) {
+  if (algObj$covStruc == "all.in.mort" & sum(algObj$model == "GO", 
+      algObj$shape == "simple") < 2) {
     stop("Model misspecification: all.in.mort is only available with", 
-        " Gompertz (GO) models and simple .algObj$shape.", call. = FALSE)
+        " Gompertz (GO) models and simple algObj$shape.", call. = FALSE)
   }
 }
 
 
-.PrepDataObj <- function(object, .algObj) {
-  .dataObj <- list()
-  .dataObj$study <- .algObj$start:.algObj$end
-  .dataObj$studyLen <- length(.dataObj$study)
-  .dataObj$n <- nrow(object)
-  .dataObj$Y <- as.matrix(object[, 1:.dataObj$studyLen + 3])
-  colnames(.dataObj$Y) <- .dataObj$study
+.PrepDataObj <- function(object, algObj) {
+  dataObj <- list()
+  dataObj$study <- algObj$start:algObj$end
+  dataObj$studyLen <- length(dataObj$study)
+  dataObj$n <- nrow(object)
+  dataObj$Y <- as.matrix(object[, 1:dataObj$studyLen + 3])
+  colnames(dataObj$Y) <- dataObj$study
   bd <- as.matrix(object[, 2:3])
-  .dataObj$bi <- bd[, 1]
-  .dataObj$di <- bd[, 2]
-  bi0 <- which(.dataObj$bi == 0)
+  dataObj$bi <- bd[, 1]
+  dataObj$di <- bd[, 2]
+  bi0 <- which(dataObj$bi == 0)
   if (length(bi0) > 0) {
-    .dataObj$idNoB <- bi0
-    .dataObj$updB <- TRUE
+    dataObj$idNoB <- bi0
+    dataObj$updB <- TRUE
   } else {
-    .dataObj$updB <- FALSE
+    dataObj$updB <- FALSE
   }
-  di0 <- which(.dataObj$di == 0)
+  di0 <- which(dataObj$di == 0)
   if (length(di0) > 0) {
-    .dataObj$idNoD <- di0
-    .dataObj$updD <- TRUE
+    dataObj$idNoD <- di0
+    dataObj$updD <- TRUE
   } else {
-    .dataObj$updD <- FALSE
+    dataObj$updD <- FALSE
   }
   
-  if (!.dataObj$updB & !.dataObj$updD) {
-    class(.dataObj) <- "noAgeUpd"
+  if (!dataObj$updB & !dataObj$updD) {
+    class(dataObj) <- "noAgeUpd"
   } else {
-    .dataObj$idNoA <- sort(unique(c(.dataObj$idNoB, .dataObj$idNoD)))
+    dataObj$idNoA <- sort(unique(c(dataObj$idNoB, dataObj$idNoD)))
     # 4.1.2 Calculate first and last time observed 
     #       and total number of times observed:
-    ytemp <- t(t(.dataObj$Y) * .dataObj$study)
-    .dataObj$lastObs <- c(apply(ytemp, 1, max))
+    ytemp <- t(t(dataObj$Y) * dataObj$study)
+    dataObj$lastObs <- c(apply(ytemp, 1, max))
     ytemp[ytemp == 0] <- 10000
-    .dataObj$firstObs <- c(apply(ytemp, 1, min))
-    .dataObj$firstObs[.dataObj$firstObs == 10000] <- 0
-    .dataObj$oi <- .dataObj$Y %*% rep(1, .dataObj$studyLen)
+    dataObj$firstObs <- c(apply(ytemp, 1, min))
+    dataObj$firstObs[dataObj$firstObs == 10000] <- 0
+    dataObj$oi <- dataObj$Y %*% rep(1, dataObj$studyLen)
     
     # 4.1.3 Define study duration:
-    .dataObj$Tm <- matrix(.dataObj$study, .dataObj$n, 
-        .dataObj$studyLen, byrow = TRUE)
-    fii <- .dataObj$firstObs
-    fii[.dataObj$bi > 0 & .dataObj$bi >= .algObj$start] <- 
-        .dataObj$bi[.dataObj$bi > 0 & .dataObj$bi >= .algObj$start] + 1
-    fii[.dataObj$bi > 0 & .dataObj$bi < .algObj$start]  <- .algObj$start
-    lii <- .dataObj$lastObs
-    lii[.dataObj$di > 0 & .dataObj$di <= .algObj$end] <- 
-        .dataObj$di[.dataObj$di > 0 & .dataObj$di <= .algObj$end] - 1
-    lii[.dataObj$di > 0 & .dataObj$di > .algObj$end] <- .algObj$end
-    .dataObj$obsMat <- .BuildAliveMatrix(fii, lii, .dataObj)
-    .dataObj$obsMat[lii == 0 | fii == 0, ] <- 0
-    class(.dataObj) <- "ageUpd"
-  }  
-  .dataObj$Dx <- 1 #(study.years[2] - study.years[1])
-  return(.dataObj)
+    dataObj$Tm <- matrix(dataObj$study, dataObj$n, 
+        dataObj$studyLen, byrow = TRUE)
+    fii <- dataObj$firstObs
+    fii[dataObj$bi > 0 & dataObj$bi >= algObj$start] <- 
+        dataObj$bi[dataObj$bi > 0 & dataObj$bi >= algObj$start] + 1
+    fii[dataObj$bi > 0 & dataObj$bi < algObj$start]  <- algObj$start
+    lii <- dataObj$lastObs
+    lii[dataObj$di > 0 & dataObj$di <= algObj$end] <- 
+        dataObj$di[dataObj$di > 0 & dataObj$di <= algObj$end] - 1
+    lii[dataObj$di > 0 & dataObj$di > algObj$end] <- algObj$end
+    dataObj$obsMat <- .BuildAliveMatrix(fii, lii, dataObj)
+    dataObj$obsMat[lii == 0 | fii == 0, ] <- 0
+    class(dataObj) <- "ageUpd"
+  }
+  dataObj$Dx <- 1 #(study.years[2] - study.years[1])
+  return(dataObj)
 }
 
 
-.PrepAgeObj <- function(.dataObj, .algObj) {
+.PrepAgeObj <- function(dataObj, algObj) {
   ageObj <- list()
-  birth  <- .dataObj$bi
-  if (.dataObj$updB) {
-    idBi0Fi1 <- which(.dataObj$bi == 0 & .dataObj$firstObs > 0)
-    birth[idBi0Fi1] <- .dataObj$firstObs[idBi0Fi1] - 
+  birth  <- dataObj$bi
+  if (dataObj$updB) {
+    idBi0Fi1 <- which(dataObj$bi == 0 & dataObj$firstObs > 0)
+    birth[idBi0Fi1] <- dataObj$firstObs[idBi0Fi1] - 
         sample(1:6, length(idBi0Fi1), replace = TRUE)
-    idBi0Fi0 <- which(.dataObj$bi == 0 & .dataObj$firstObs == 0 & .dataObj$di > 0)
-    birth[idBi0Fi0] <- .dataObj$di[idBi0Fi0] - 
+    idBi0Fi0 <- which(dataObj$bi == 0 & dataObj$firstObs == 0 & dataObj$di > 0)
+    birth[idBi0Fi0] <- dataObj$di[idBi0Fi0] - 
         sample(0:6, length(idBi0Fi0), replace = TRUE)
   }
-  death <- .dataObj$di
-  if (.dataObj$updD) {
-    idDi0Li1 <- which(.dataObj$di == 0 & .dataObj$lastObs > 0)
-    death[idDi0Li1] <- .dataObj$lastObs[idDi0Li1] + 
+  death <- dataObj$di
+  if (dataObj$updD) {
+    idDi0Li1 <- which(dataObj$di == 0 & dataObj$lastObs > 0)
+    death[idDi0Li1] <- dataObj$lastObs[idDi0Li1] + 
         sample(0:6, length(idDi0Li1), replace = TRUE)
-    idDi0Li0 <- which(.dataObj$di == 0 & .dataObj$lastObs == 0) 
-    death[idDi0Li0] <- .dataObj$bi[idDi0Li0] + 
+    idDi0Li0 <- which(dataObj$di == 0 & dataObj$lastObs == 0) 
+    death[idDi0Li0] <- dataObj$bi[idDi0Li0] + 
         sample(0:6, length(idDi0Li0), replace = TRUE)
-    idDiNeg <- which(death < .algObj$start)
-    death[idDiNeg]<- .algObj$start + 
+    idDiNeg <- which(death < algObj$start)
+    death[idDiNeg]<- algObj$start + 
         sample(1:6, length(idDiNeg), replace = TRUE)
   }
   age <- death - birth
   ageObj$ages <- cbind(birth, death, age)
   
   # 5.5 Full observation matrix:
-  firstObs <- c(apply(cbind(.algObj$start, birth + 1), 1, max))
-  lastObs <- c(apply(cbind(.algObj$end, death), 1, min))
-  alive <- .BuildAliveMatrix(firstObs, lastObs, .dataObj)
+  firstObs <- c(apply(cbind(algObj$start, birth + 1), 1, max))
+  lastObs <- c(apply(cbind(algObj$end, death), 1, min))
+  alive <- .BuildAliveMatrix(firstObs, lastObs, dataObj)
   ageObj$alive <- alive
-  class(ageObj) <- c(class(.dataObj), "noMinAge")
+  class(ageObj) <- c(class(dataObj), "noMinAge")
   
-  if (.algObj$minAge > 0) {
+  if (algObj$minAge > 0) {
     # Juvenile and adult ages:
-    indAd <- rep(0, .dataObj$n)
+    indAd <- rep(0, dataObj$n)
     indJu <- indAd
-    indAd[age >= .algObj$minAge] <- 1
-    indJu[age < .algObj$minAge] <- 1
+    indAd[age >= algObj$minAge] <- 1
+    indJu[age < algObj$minAge] <- 1
     ageJu <- age
-    ageJu[age > .algObj$minAge] <- .algObj$minAge
-    ageAd <- age - .algObj$minAge
-    ageAd[age < .algObj$minAge] <- 0
+    ageJu[age > algObj$minAge] <- algObj$minAge
+    ageAd <- age - algObj$minAge
+    ageAd[age < algObj$minAge] <- 0
     ageJuTr <- age * 0
-    idtr <- which(birth < .algObj$start & 
-            .algObj$start - birth < .algObj$minAge)
-    ageJuTr[idtr] <- .algObj$start - birth[idtr]
+    idtr <- which(birth < algObj$start & 
+            algObj$start - birth < algObj$minAge)
+    ageJuTr[idtr] <- algObj$start - birth[idtr]
     ageAdTr <- age * 0
-    idtr <- which(birth + .algObj$minAge < .algObj$start)
-    ageAdTr[idtr] <- .algObj$start - (birth[idtr] + .algObj$minAge)
+    idtr <- which(birth + algObj$minAge < algObj$start)
+    ageAdTr[idtr] <- algObj$start - (birth[idtr] + algObj$minAge)
     ageObj$ages <- cbind(ageObj$ages, ageAd, ageAdTr, indAd, 
         ageJu, ageJuTr, indJu)
     class(ageObj)[2] <- "minAge"
   } else {
-    idtr <- which(birth < .algObj$start)
+    idtr <- which(birth < algObj$start)
     ageTr <- age * 0
-    ageTr[idtr] <- .algObj$start - birth[idtr]
+    ageTr[idtr] <- algObj$start - birth[idtr]
     ageObj$ages <- cbind(ageObj$ages, ageTr)
   }
   return(ageObj)
 }
 
 
-.CreateCovObj <- function(object, .dataObj, .algObj) {
+.CreateCovObj <- function(object, dataObj, algObj) {
   covObj <- list()
   covClass <- c("noCov", "noCovType")
-  if (ncol(object) > .dataObj$studyLen + 3) {
+  if (ncol(object) > dataObj$studyLen + 3) {
     covMat <- as.matrix(object[, 
-            (.dataObj$studyLen + 4):ncol(object)])
-    colnames(covMat) <- colnames(object)[(.dataObj$studyLen + 4):ncol(object)]
+            (dataObj$studyLen + 4):ncol(object)])
+    colnames(covMat) <- colnames(object)[(dataObj$studyLen + 4):ncol(object)]
     covType <- .FindCovType(covMat)
-    if (.algObj$covStruc == "fused") {
+    if (algObj$covStruc == "fused") {
       covClass[1] <- "fused"
       if (!is.null(covType$cat)) {
         covObj$inMort <- covMat[, covType$cat]
@@ -225,7 +225,7 @@ basta <-
       } else {
         covClass[1] <- "inMort"
       }
-    } else if (.algObj$covStruc == "all.in.mort") {
+    } else if (algObj$covStruc == "all.in.mort") {
       if (is.null(covType$int) & is.null(covType$cat)) {
         covObj$inMort <- cbind(1, covMat)
         colnames(covObj$inMort) <- c("Intercept", colnames(covMat))
@@ -236,11 +236,11 @@ basta <-
       covClass[1] <- "inMort"
     } else {
       if (!is.null(covType$int)) {
-        covObj$propHaz <- matrix(covMat[, -covType$int], .dataObj$n,
+        covObj$propHaz <- matrix(covMat[, -covType$int], dataObj$n,
             ncol(covMat) -1, dimnames = list(NULL, 
                 colnames(covMat)[-covType$int]))
       } else if (!is.null(covType$cat)) {
-        covObj$propHaz <- matrix(covMat[, -covType$cat[1]], .dataObj$n,
+        covObj$propHaz <- matrix(covMat[, -covType$cat[1]], dataObj$n,
             ncol(covMat) -1, dimnames = list(NULL, 
                 colnames(covMat)[-covType$cat[1]]))
       } else {
@@ -297,8 +297,8 @@ basta <-
 
 
 # Define model functions and parameter objects:
-.SetDefaultTheta  <- function(.algObj) {
-  if (.algObj$model == "EX") {
+.SetDefaultTheta  <- function(algObj) {
+  if (algObj$model == "EX") {
     nTh <- 1
     startTh <- 0.2 
     jumpTh <- 0.1
@@ -307,7 +307,7 @@ basta <-
     nameTh <- "b0"
     lowTh <- 0
     jitter <- 0.5
-  } else if (.algObj$model == "GO") {
+  } else if (algObj$model == "GO") {
     nTh <- 2 
     startTh <- c(-2, 0.01) 
     jumpTh <- c(0.1, 0.1)
@@ -316,10 +316,10 @@ basta <-
     nameTh <- c("b0", "b1")
     lowTh <- c(-Inf, -Inf)
     jitter <- c(0.5, 0.2) 
-    if (.algObj$shape == "bathtub") {
+    if (algObj$shape == "bathtub") {
       lowTh <- c(-Inf, 0)
     }
-  } else if (.algObj$model == "WE") {
+  } else if (algObj$model == "WE") {
     nTh <- 2
     startTh <- c(1.5, 0.2) 
     jumpTh <- c(.01, 0.1)
@@ -328,7 +328,7 @@ basta <-
     nameTh <- c("b0", "b1")
     lowTh <- c(0, 0)
     jitter <- c(0.5, 0.2) 
-  } else if (.algObj$model == "LO") {
+  } else if (algObj$model == "LO") {
     nTh <- 3 
     startTh <- c(-2, 0.01, 1e-04) 
     jumpTh <- c(0.1, 0.1, 0.1) 
@@ -338,7 +338,7 @@ basta <-
     lowTh <- c(-Inf, 0, 0)
     jitter <- c(0.5, 0.2, 0.5) 
   }
-  if (.algObj$shape == "Makeham") {
+  if (algObj$shape == "Makeham") {
     nTh <- nTh + 1 
     startTh <- c(0, startTh) 
     jumpTh <- c(0.1, jumpTh) 
@@ -347,7 +347,7 @@ basta <-
     nameTh <- c("c", nameTh)
     lowTh <- c(0, lowTh)
     jitter <- c(0.25, jitter) 
-  } else if (.algObj$shape == "bathtub") {
+  } else if (algObj$shape == "bathtub") {
     nTh <- nTh + 3 
     startTh <- c(-0.1, 0.6, 0, startTh)
     jumpTh <- c(0.1, 0.1, 0.1, jumpTh) 
@@ -360,63 +360,63 @@ basta <-
   defaultTheta  <- list(length = nTh, start = startTh, jump = jumpTh, 
       priorMean = priorMean, priorSd = priorSd, name = nameTh, 
       low = lowTh, jitter = jitter)
-  attr(defaultTheta, ".algObj$model") = .algObj$model
-  attr(defaultTheta, ".algObj$shape") = .algObj$shape
+  attr(defaultTheta, "algObj$model") = algObj$model
+  attr(defaultTheta, "algObj$shape") = algObj$shape
   return(defaultTheta)
 }
 
 
-.DefineMort <- function(.algObj) {
-  if (.algObj$model == "EX") {
-    .CalcMort <- function(x, theta) c(theta) * rep(1, length(x))
-  } else if (.algObj$model == "GO") {
-    if (.algObj$shape == "simple") {
-      .CalcMort <- function(x, theta) {
+.DefineMort <- function(algObj) {
+  if (algObj$model == "EX") {
+    CalcMort <- function(x, theta) c(theta) * rep(1, length(x))
+  } else if (algObj$model == "GO") {
+    if (algObj$shape == "simple") {
+      CalcMort <- function(x, theta) {
         exp(theta[ ,"b0"] + theta[, "b1"] * x)
       }
-    } else if (.algObj$shape == "Makeham") {
-      .CalcMort <- function(x, theta) {
+    } else if (algObj$shape == "Makeham") {
+      CalcMort <- function(x, theta) {
         theta[, "c"] + exp(theta[, "b0"] + theta[, "b1"] * x)
       }
     } else {
-      .CalcMort <- function(x, theta) {
+      CalcMort <- function(x, theta) {
         exp(theta[, "a0"] - theta[, "a1"] * x) + theta[, "c"] + 
             exp(theta[, "b0"] + theta[, "b1"] * x)
       }
     }
-  } else if (.algObj$model == "WE") {
-    if (.algObj$shape == "simple") {
-      .CalcMort <- function(x, theta) {
+  } else if (algObj$model == "WE") {
+    if (algObj$shape == "simple") {
+      CalcMort <- function(x, theta) {
         theta[, "b0"] * theta[, "b1"]^theta[, "b0"] * 
             x^(theta[, "b0"] - 1)
       }
-    } else if (.algObj$shape == "Makeham") {
-      .CalcMort <- function(x, theta) {
+    } else if (algObj$shape == "Makeham") {
+      CalcMort <- function(x, theta) {
         theta[, "c"] + theta[, "b0"] * theta[, "b1"]^theta[, "b0"] * 
             x^(theta[, "b0"] - 1)
       }
     } else {
-      .CalcMort <- function(x, theta) {
+      CalcMort <- function(x, theta) {
         exp(theta[, "a0"] - theta[, "a1"] * x) + theta[, "c"] + 
             theta[, "b0"] * theta[, "b1"]^theta[, "b0"] * 
             x^(theta[, "b0"] - 1)
       }
     }
-  } else if (.algObj$model == "LO") {
-    if (.algObj$shape == "simple") {
-      .CalcMort <- function(x, theta) {
+  } else if (algObj$model == "LO") {
+    if (algObj$shape == "simple") {
+      CalcMort <- function(x, theta) {
         exp(theta[, "b0"] + theta[, "b1"] * x) / 
             (1 + theta[, "b2"] * exp(theta[, "b0"]) / 
               theta[, "b1"] * (exp(theta[, "b1"] * x) - 1))
       }
-    } else if (.algObj$shape == "Makeham") {
-      .CalcMort <- function(x, theta) {
+    } else if (algObj$shape == "Makeham") {
+      CalcMort <- function(x, theta) {
         theta[, "c"] + exp(theta[, "b0"] + theta[, "b1"] * x) / 
             (1 + theta[, "b2"] * exp(theta[, "b0"]) / 
               theta[, "b1"] * (exp(theta[, "b1"] * x) - 1))
       }
     } else {
-      .CalcMort <- function(x, theta) {
+      CalcMort <- function(x, theta) {
         exp(theta[, "a0"] - theta[, "a1"] * x) + theta[, "c"] + 
             exp(theta[, "b0"] + theta[, "b1"] * x) / 
             (1 + theta[, "b2"] * exp(theta[, "b0"]) / 
@@ -424,59 +424,59 @@ basta <-
       }
     }
   }
-  return(.CalcMort)
+  return(CalcMort)
 }
 
 
-.DefineSurv <- function(.algObj) {
-  if (.algObj$model == "EX") {
-    .CalcSurv <- function(x, theta) exp(- c(theta) * x)
-  } else if (.algObj$model == "GO") {
-    if (.algObj$shape == "simple") {
-      .CalcSurv <- function(x, theta) {
+.DefineSurv <- function(algObj) {
+  if (algObj$model == "EX") {
+    CalcSurv <- function(x, theta) exp(- c(theta) * x)
+  } else if (algObj$model == "GO") {
+    if (algObj$shape == "simple") {
+      CalcSurv <- function(x, theta) {
         exp(exp(theta[, "b0"]) / theta[, "b1"] * 
                 (1 - exp(theta[, "b1"] * x)))
       }
-    } else if (.algObj$shape == "Makeham") {
-      .CalcSurv <- function(x, theta) {
+    } else if (algObj$shape == "Makeham") {
+      CalcSurv <- function(x, theta) {
         exp(-theta[, "c"] * x + exp(theta[, "b0"]) / theta[, "b1"] * 
                 (1 - exp(theta[, "b1"] * x)))
       }
     } else {
-      .CalcSurv <- function(x, theta) {
+      CalcSurv <- function(x, theta) {
         exp(exp(theta[, "a0"]) / theta[, "a1"] * (exp(-theta[, "a1"] * x) - 1) - 
                 theta[, "c"] * x + exp(theta[, "b0"]) / theta[, "b1"] * 
                 (1 - exp(theta[, "b1"] * x)))
       }
     }
-  } else if (.algObj$model == "WE") {
-    if (.algObj$shape == "simple") {
-      .CalcSurv <- function(x, theta) {
+  } else if (algObj$model == "WE") {
+    if (algObj$shape == "simple") {
+      CalcSurv <- function(x, theta) {
         exp(-(theta[, "b1"] * x)^theta[, "b0"])
       }      
-    } else if (.algObj$shape == "Makeham") {
-      .CalcSurv <- function(x, theta) {
+    } else if (algObj$shape == "Makeham") {
+      CalcSurv <- function(x, theta) {
         exp(-theta[, "c"] * x - (theta[, "b1"] * x)^theta[, "b0"])
       }
     } else {
-      .CalcSurv <- function(x, theta) {
+      CalcSurv <- function(x, theta) {
         exp(exp(theta[, "a0"]) / theta[, "a1"] * (exp(-theta[, "a1"] * x) - 1) -
                 theta[, "c"] * x - (theta[, "b1"] * x)^theta[, "b0"])
       }
     }
-  } else if (.algObj$model == "LO") {
-    if (.algObj$shape == "simple") {
-      .CalcSurv <- function(x, theta) {
+  } else if (algObj$model == "LO") {
+    if (algObj$shape == "simple") {
+      CalcSurv <- function(x, theta) {
         (1 + theta[, "b2"] * exp(theta[, "b0"]) / theta[, "b1"] * 
               (exp(theta[, "b1"] * x) - 1))^(-1 / theta[, "b2"])
       }
-    } else if (.algObj$shape == "Makeham") {
-      .CalcSurv <- function(x, theta) {
+    } else if (algObj$shape == "Makeham") {
+      CalcSurv <- function(x, theta) {
         exp(-theta[, "c"] * x) * (1 + theta[, "b2"] * exp(theta[, "b0"]) / 
               theta[, "b1"] * (exp(theta[, "b1"] * x) - 1))^(-1 / theta[, "b2"])
       }
     } else {
-      .CalcSurv <- function(x, theta) {
+      CalcSurv <- function(x, theta) {
         exp(exp(theta[, "a0"]) / theta[, "a1"] * (exp(-theta[, "a1"] * x) - 1) -
                     theta[, "c"] * x) * (1 + theta[, "b2"] * 
               exp(theta[, "b0"]) / theta[, "b1"] * 
@@ -484,108 +484,108 @@ basta <-
       }
     }
   }
-  return(.CalcSurv)
+  return(CalcSurv)
 }
 
 
-.BuildFullParObj <- function(.covObj, .defTheta, .algObj, 
-    .userPars, .dataObj) {
-  .fullParObj <- list()
-  .fullParObj$theta <- list()
+.BuildFullParObj <- function(covObj, defTheta, algObj, 
+    userPars, dataObj) {
+  fullParObj <- list()
+  fullParObj$theta <- list()
   parNames <- c("start", "priorMean", "priorSd", "jump")
   for (i in 1:4) {
-    if (class(.covObj)[1] %in% c("inMort", "fused")) {
-      if (is.null(.userPars$theta[[parNames[i]]])) {
-        thetaMat <- matrix(.defTheta[[parNames[i]]], .covObj$imLen, 
-            .defTheta$length, byrow = TRUE, 
-            dimnames = list(colnames(.covObj$inMort), .defTheta$name))
+    if (class(covObj)[1] %in% c("inMort", "fused")) {
+      if (is.null(userPars$theta[[parNames[i]]])) {
+        thetaMat <- matrix(defTheta[[parNames[i]]], covObj$imLen, 
+            defTheta$length, byrow = TRUE, 
+            dimnames = list(colnames(covObj$inMort), defTheta$name))
         if (i %in% c(1, 2)) {
-          if (class(.covObj)[1] == "inMort" & 
-              class(.covObj)[2] %in% c("contCov", "bothCov")) {
-            thetaMat[names(.covObj$cont), ] <- 0
+          if (class(covObj)[1] == "inMort" & 
+              class(covObj)[2] %in% c("contCov", "bothCov")) {
+            thetaMat[names(covObj$cont), ] <- 0
           }
         }
-        .fullParObj$theta[[parNames[[i]]]] <- thetaMat
+        fullParObj$theta[[parNames[[i]]]] <- thetaMat
       } else {
-        if (is.element(length(.userPars$theta[[parNames[i]]]), 
-            c(.defTheta$length, .defTheta$length * .covObj$imLen))) {
-          if (length(.userPars$theta[[parNames[i]]]) == .defTheta$length) {
-            .fullParObj$theta[[parNames[[i]]]] <- 
-                matrix(.userPars$theta[[parNames[i]]], .covObj$imLen, 
-                    .defTheta$length, byrow = TRUE, 
-                    dimnames = list(colnames(.covObj$inMort), .defTheta$name))
+        if (is.element(length(userPars$theta[[parNames[i]]]), 
+            c(defTheta$length, defTheta$length * covObj$imLen))) {
+          if (length(userPars$theta[[parNames[i]]]) == defTheta$length) {
+            fullParObj$theta[[parNames[[i]]]] <- 
+                matrix(userPars$theta[[parNames[i]]], covObj$imLen, 
+                    defTheta$length, byrow = TRUE, 
+                    dimnames = list(colnames(covObj$inMort), defTheta$name))
           } else {
-            .fullParObj$theta[[parNames[[i]]]] <- .userPars$theta[[parNames[i]]]
-            dimnames(.fullParObj$theta[[parNames[[i]]]]) <- 
-                list(colnames(.covObj$inMort), .defTheta$name)
+            fullParObj$theta[[parNames[[i]]]] <- userPars$theta[[parNames[i]]]
+            dimnames(fullParObj$theta[[parNames[[i]]]]) <- 
+                list(colnames(covObj$inMort), defTheta$name)
           }
         } else {
           stop(paste("\nDimensions of theta ", parNames[i], 
                   " matrix are incorrect.\n",
-                  "Provide a single vector of length ", .defTheta$length,
-                  "\nor a matrix of dimensions ", .covObj$imLen ," times ", 
-                  .defTheta$length, 
+                  "Provide a single vector of length ", defTheta$length,
+                  "\nor a matrix of dimensions ", covObj$imLen ," times ", 
+                  defTheta$length, 
                   ".\n(i.e. number of covariates times number", 
                   " of\n parameters for model ", 
-                  .algObj$model," with ", .algObj$shape, " shape).", sep = ""), 
+                  algObj$model," with ", algObj$shape, " shape).", sep = ""), 
               call. = FALSE)
         }
       }
-      allParNames <- paste(rep(.defTheta$name, 
-              each = ncol(.covObj$inMort)), 
-          rep(colnames(.covObj$inMort), .defTheta$len), sep = ".")
+      allParNames <- paste(rep(defTheta$name, 
+              each = ncol(covObj$inMort)), 
+          rep(colnames(covObj$inMort), defTheta$len), sep = ".")
     } else {
-      if (is.null(.userPars$theta[[parNames[i]]])) {
-        .fullParObj$theta[[parNames[[i]]]] <- 
-            matrix(.defTheta[[parNames[i]]], 1, .defTheta$length, 
-                dimnames = list(NULL, .defTheta$name))
+      if (is.null(userPars$theta[[parNames[i]]])) {
+        fullParObj$theta[[parNames[[i]]]] <- 
+            matrix(defTheta[[parNames[i]]], 1, defTheta$length, 
+                dimnames = list(NULL, defTheta$name))
       } else {
-        if (length(.userPars$theta[[parNames[i]]]) == .defTheta$length) {
-          .fullParObj$theta[[parNames[[i]]]] <- 
-              matrix(.userPars$theta[[parNames[i]]], 1, .defTheta$length, 
-                  dimnames = list(NULL, .defTheta$name))
+        if (length(userPars$theta[[parNames[i]]]) == defTheta$length) {
+          fullParObj$theta[[parNames[[i]]]] <- 
+              matrix(userPars$theta[[parNames[i]]], 1, defTheta$length, 
+                  dimnames = list(NULL, defTheta$name))
         } else {
           stop(paste("\nLength of theta ", parNames[i], " is incorrect.\n",
-                  "Provide a single vector of length ", .defTheta$length,
+                  "Provide a single vector of length ", defTheta$length,
                   ".\n(i.e. number of parameters for model ", 
-                  .algObj$model," with ", .algObj$shape, " shape).", sep = ""), 
+                  algObj$model," with ", algObj$shape, " shape).", sep = ""), 
               call. = FALSE)
         }
       }
-      allParNames <- .defTheta$name
+      allParNames <- defTheta$name
     }
   }
-  .fullParObj$theta$low <- t(t(.fullParObj$theta$start) * 0 + .defTheta$low)
-  .fullParObj$theta$len <- length(.fullParObj$theta$start)
-  if (class(.covObj)[1] %in% c("propHaz", "fused")) {
-    .fullParObj$gamma <- list()
+  fullParObj$theta$low <- t(t(fullParObj$theta$start) * 0 + defTheta$low)
+  fullParObj$theta$len <- length(fullParObj$theta$start)
+  if (class(covObj)[1] %in% c("propHaz", "fused")) {
+    fullParObj$gamma <- list()
     for (i in 1:4) {
-      if (is.null(.userPars$gamma[[parNames[i]]])) {
-        .fullParObj$gamma[[parNames[i]]] <- rep(c(0.01, 0, 1, 0.1)[i],
-            .covObj$phLen)
-        names(.fullParObj$gamma[[parNames[i]]]) <- colnames(.covObj$propHaz)
+      if (is.null(userPars$gamma[[parNames[i]]])) {
+        fullParObj$gamma[[parNames[i]]] <- rep(c(0.01, 0, 1, 0.1)[i],
+            covObj$phLen)
+        names(fullParObj$gamma[[parNames[i]]]) <- colnames(covObj$propHaz)
       } else {
-        if (length(.userPars$gamma[[parNames[i]]]) == .covObj$phLen) {
-          .fullParObj$gamma[[parNames[i]]] <- .userPars$gamma[[parNames[i]]]
-          names(.fullParObj$gamma[[parNames[i]]]) <- colnames(.covObj$propHaz)
+        if (length(userPars$gamma[[parNames[i]]]) == covObj$phLen) {
+          fullParObj$gamma[[parNames[i]]] <- userPars$gamma[[parNames[i]]]
+          names(fullParObj$gamma[[parNames[i]]]) <- colnames(covObj$propHaz)
         } else {
           stop(paste("\nLength of gamma parameters is incorrect.\n",
-                  "Provide a single vector of length ", .covObj$phLen,
+                  "Provide a single vector of length ", covObj$phLen,
                   ".\n(i.e. number of proportional hazards covariates).", 
                   sep = ""), call. = FALSE)
         }
       }
     }
-    .fullParObj$gamma$len <- length(.fullParObj$gamma$start)
-    allParNames <- c(allParNames, paste("gamma", colnames(.covObj$propHaz), 
+    fullParObj$gamma$len <- length(fullParObj$gamma$start)
+    allParNames <- c(allParNames, paste("gamma", colnames(covObj$propHaz), 
             sep = "."))
   }
-  Classes <- ifelse(class(.covObj)[1] %in% c("inMort", "noCov"), "theta",  
+  Classes <- ifelse(class(covObj)[1] %in% c("inMort", "noCov"), "theta",  
       "theGam")
   
   # Minimum age's lambda:
-  if (.algObj$minAge > 0) {
-    .fullParObj$lambda <- list(start = 0.01, priorMean = 0.01, priorSd = 1, 
+  if (algObj$minAge > 0) {
+    fullParObj$lambda <- list(start = 0.01, priorMean = 0.01, priorSd = 1, 
         jump = 0.01)
     Classes <- c(Classes, "lambda")
   } else {
@@ -593,64 +593,64 @@ basta <-
   }
   
   # Detection probability:
-  if (class(.dataObj) == "ageUpd") {
-    .fullParObj$pi <- list()
-    idpi <- findInterval(.algObj$start:.algObj$end, .algObj$recap)
-    names(idpi) <- .algObj$start:.algObj$end
+  if (class(dataObj) == "ageUpd") {
+    fullParObj$pi <- list()
+    idpi <- findInterval(algObj$start:algObj$end, algObj$recap)
+    names(idpi) <- algObj$start:algObj$end
     npi <- length(unique(idpi))
-    .fullParObj$pi$start <- rep(0.5, npi)
-    names(.fullParObj$pi$start) <- .algObj$recap
-    .fullParObj$pi$idpi <- idpi
-    .fullParObj$pi$n <- npi
-    .fullParObj$pi$prior2 <- 0.1
-    .fullParObj$pi$Prior1 <- tapply(0.1 + t(t(.dataObj$Y) %*% rep(1, .dataObj$n)),
+    fullParObj$pi$start <- rep(0.5, npi)
+    names(fullParObj$pi$start) <- algObj$recap
+    fullParObj$pi$idpi <- idpi
+    fullParObj$pi$n <- npi
+    fullParObj$pi$prior2 <- 0.1
+    fullParObj$pi$Prior1 <- tapply(0.1 + t(t(dataObj$Y) %*% rep(1, dataObj$n)),
         idpi, sum)
     
-    .fullParObj$pi$len <- length(.fullParObj$pi$start)
-    .fullParObj$allNames <- c(allParNames, paste("pi", .algObj$recap, sep = "."))
+    fullParObj$pi$len <- length(fullParObj$pi$start)
+    fullParObj$allNames <- c(allParNames, paste("pi", algObj$recap, sep = "."))
     Classes <- c(Classes, "pi", "noEta")
   } else {
-    .fullParObj$allNames <- allParNames
+    fullParObj$allNames <- allParNames
     Classes <- c(Classes, "noPi", "noEta")
   }
-  .fullParObj$class <- Classes
-  return(.fullParObj)
+  fullParObj$class <- Classes
+  return(fullParObj)
 }
 
 
-.DefineIniParObj <- function(.fullParObj) {
+.DefineIniParObj <- function(fullParObj) {
   iniParObj <- list()
-  iniParObj$theta <- .fullParObj$theta$start
-  if (.fullParObj$class[1] %in% c("theGam")) {
-    iniParObj$gamma <- .fullParObj$gamma$start
+  iniParObj$theta <- fullParObj$theta$start
+  if (fullParObj$class[1] %in% c("theGam")) {
+    iniParObj$gamma <- fullParObj$gamma$start
   }
-  if (.fullParObj$class[2] == "lambda") {
-    iniParObj$lambda <- .fullParObj$lambda$start
+  if (fullParObj$class[2] == "lambda") {
+    iniParObj$lambda <- fullParObj$lambda$start
   }
-  if (.fullParObj$class[3] %in% c("pi", "piEta")) {
-    iniParObj$pi <- .fullParObj$pi$start
+  if (fullParObj$class[3] %in% c("pi", "piEta")) {
+    iniParObj$pi <- fullParObj$pi$start
   }
-  class(iniParObj) <- .fullParObj$class
+  class(iniParObj) <- fullParObj$class
   return(iniParObj)
 }
 
 
-.BuildPostObj <- function(ageObj, parObj, parCovObj, .dataObj, 
-    .CalcSurv, .priorAgeObj, .fullParObj, .covObj) {
+.BuildPostObj <- function(ageObj, parObj, parCovObj, dataObj, 
+    CalcSurv, priorAgeObj, fullParObj, covObj) {
   postObj <- list()
-  postObj$mat <- matrix(0, .dataObj$n, 6, 
+  postObj$mat <- matrix(0, dataObj$n, 6, 
       dimnames = list(NULL, c("fx", "Sx", "vx", "lx", "px", "postX")))
-  postObj <- .CalcPostX(ageObj, parObj, postObj, parCovObj, 1:.dataObj$n, 
-      .CalcSurv, .priorAgeObj, .fullParObj, .covObj, .dataObj)  
+  postObj <- .CalcPostX(ageObj, parObj, postObj, parCovObj, 1:dataObj$n, 
+      CalcSurv, priorAgeObj, fullParObj, covObj, dataObj)  
   return(postObj)
 }
 
 
-.BuildAliveMatrix <- function(f, l, .dataObj) {
-  Fm <- .dataObj$Tm - f
+.BuildAliveMatrix <- function(f, l, dataObj) {
+  Fm <- dataObj$Tm - f
   Fm[Fm >= 0] <- 1
   Fm[Fm < 0] <- 0
-  Lm <- .dataObj$Tm - l
+  Lm <- dataObj$Tm - l
   Lm[Lm <= 0] <- -1
   Lm[Lm > 0] <- 0
   return(Fm * (-Lm))
@@ -658,39 +658,39 @@ basta <-
 
 
 # Sample ages:
-.ProposeAges <- function(ageObj, .dataObj, .algObj) {
+.ProposeAges <- function(ageObj, dataObj, algObj) {
   ageObjNew <- ageObj
-  if (.dataObj$updB) {
-    ageObjNew$ages[.dataObj$idNoB, 'birth'] <- 
-        ageObj$ages[.dataObj$idNoB, 'birth'] + 
-        sample(-1:1, length(.dataObj$idNoB), replace = TRUE)
-    idOi <- .dataObj$idNoB[.dataObj$oi[.dataObj$idNoB] > 0]
+  if (dataObj$updB) {
+    ageObjNew$ages[dataObj$idNoB, 'birth'] <- 
+        ageObj$ages[dataObj$idNoB, 'birth'] + 
+        sample(-1:1, length(dataObj$idNoB), replace = TRUE)
+    idOi <- dataObj$idNoB[dataObj$oi[dataObj$idNoB] > 0]
     ageObjNew$ages[idOi, 'birth'] <- 
         apply(cbind(ageObjNew$ages[idOi, 'birth'],
-                .dataObj$firstObs[idOi] - 1), 1, min)
-    idOi0 <- .dataObj$idNoB[.dataObj$oi[.dataObj$idNoB] == 0]
+                dataObj$firstObs[idOi] - 1), 1, min)
+    idOi0 <- dataObj$idNoB[dataObj$oi[dataObj$idNoB] == 0]
     ageObjNew$ages[idOi0, 'birth'] <- 
         apply(cbind(ageObjNew$ages[idOi0, 'birth'],
                 ageObj$ages[idOi0, 'death']), 1, min)
   }
-  if (.dataObj$updD) {
-    ageObjNew$ages[.dataObj$idNoD, 'death'] <- 
-        ageObj$ages[.dataObj$idNoD, 'death'] +
-        sample(-1:1, length(.dataObj$idNoD), replace = TRUE) 
-    ageObjNew$ages[.dataObj$idNoD, 'death'] <- 
-        apply(cbind(ageObjNew$ages[.dataObj$idNoD, 'death'],
-                ageObjNew$ages[.dataObj$idNoD, 'birth'], 
-                .dataObj$lastObs[.dataObj$idNoD]), 1, max) 
+  if (dataObj$updD) {
+    ageObjNew$ages[dataObj$idNoD, 'death'] <- 
+        ageObj$ages[dataObj$idNoD, 'death'] +
+        sample(-1:1, length(dataObj$idNoD), replace = TRUE) 
+    ageObjNew$ages[dataObj$idNoD, 'death'] <- 
+        apply(cbind(ageObjNew$ages[dataObj$idNoD, 'death'],
+                ageObjNew$ages[dataObj$idNoD, 'birth'], 
+                dataObj$lastObs[dataObj$idNoD]), 1, max) 
     
   }
-  ageObjNew$ages[.dataObj$idNoA, "age"] <- 
-      ageObjNew$ages[.dataObj$idNoA, "death"] - 
-      ageObjNew$ages[.dataObj$idNoA, "birth"]
-  firstAlive <- c(apply(cbind(.algObj$start, 
+  ageObjNew$ages[dataObj$idNoA, "age"] <- 
+      ageObjNew$ages[dataObj$idNoA, "death"] - 
+      ageObjNew$ages[dataObj$idNoA, "birth"]
+  firstAlive <- c(apply(cbind(algObj$start, 
               ageObjNew$ages[, "birth"] + 1), 1, max))
-  lastAlive <- c(apply(cbind(.algObj$end, 
+  lastAlive <- c(apply(cbind(algObj$end, 
               ageObjNew$ages[, "death"]), 1, min))
-  alive <- .BuildAliveMatrix(firstAlive, lastAlive, .dataObj)
+  alive <- .BuildAliveMatrix(firstAlive, lastAlive, dataObj)
   ageObjNew$alive <- alive
   return(ageObjNew)
 }
@@ -698,35 +698,35 @@ basta <-
 
 .SampleAges <- function(ageObj, ...) UseMethod(".SampleAges")
 
-.SampleAges.noMinAge <- function(ageObj, .dataObj, .algObj) {
-  ageObjNew <- .ProposeAges(ageObj, .dataObj, .algObj)
-  idtr <- which(ageObjNew$ages[.dataObj$idNoA, "birth"] < .algObj$start)
-  ageObjNew$ages[.dataObj$idNoA[idtr], "ageTr"] <- 
-      .algObj$start - ageObjNew$ages[.dataObj$idNoA[idtr], "birth"]
+.SampleAges.noMinAge <- function(ageObj, dataObj, algObj) {
+  ageObjNew <- .ProposeAges(ageObj, dataObj, algObj)
+  idtr <- which(ageObjNew$ages[dataObj$idNoA, "birth"] < algObj$start)
+  ageObjNew$ages[dataObj$idNoA[idtr], "ageTr"] <- 
+      algObj$start - ageObjNew$ages[dataObj$idNoA[idtr], "birth"]
   return(ageObjNew)
 }
 
-.SampleAges.minAge <- function(ageObj, .dataObj, .algObj) {
-  ageObjNew <- .ProposeAges(ageObj, .dataObj, .algObj)
-  ageObjNew$ages[.dataObj$idNoA, ] <- 
-      .SplitByMinAge(ageObjNew$ages[.dataObj$idNoA, ], .algObj)
+.SampleAges.minAge <- function(ageObj, dataObj, algObj) {
+  ageObjNew <- .ProposeAges(ageObj, dataObj, algObj)
+  ageObjNew$ages[dataObj$idNoA, ] <- 
+      .SplitByMinAge(ageObjNew$ages[dataObj$idNoA, ], algObj)
   return(ageObjNew)
 }
 
-.SplitByMinAge <- function(ages, .algObj) {
+.SplitByMinAge <- function(ages, algObj) {
   ages[, "indAd"] <- 0
   ages[, "indJu"] <- 0
-  ages[ages[, "age"] >= .algObj$minAge, "indAd"] <- 1
-  ages[ages[, "age"] < .algObj$minAge, "indJu"] <- 1
-  ages[ages[, "age"] > .algObj$minAge, "ageJu"] <- .algObj$minAge
-  ages[, "ageAd"] <- ages[, "age"] - .algObj$minAge
+  ages[ages[, "age"] >= algObj$minAge, "indAd"] <- 1
+  ages[ages[, "age"] < algObj$minAge, "indJu"] <- 1
+  ages[ages[, "age"] > algObj$minAge, "ageJu"] <- algObj$minAge
+  ages[, "ageAd"] <- ages[, "age"] - algObj$minAge
   ages[, "ageAd"] <- ages[, "ageAd"] * ages[, "indAd"]
-  idtr <- which(ages[, "birth"] < .algObj$start & 
-          .algObj$start - ages[, "birth"] < .algObj$minAge)
-  ages[idtr, "ageJuTr"] <- .algObj$start - ages[idtr, "birth"]
-  idtr <- which(ages[, "birth"] + .algObj$minAge < .algObj$start)
-  ages[idtr, "ageAdTr"] <- .algObj$start - (ages[idtr, "birth"] + 
-        .algObj$minAge)
+  idtr <- which(ages[, "birth"] < algObj$start & 
+          algObj$start - ages[, "birth"] < algObj$minAge)
+  ages[idtr, "ageJuTr"] <- algObj$start - ages[idtr, "birth"]
+  idtr <- which(ages[, "birth"] + algObj$minAge < algObj$start)
+  ages[idtr, "ageAdTr"] <- algObj$start - (ages[idtr, "birth"] + 
+        algObj$minAge)
   return(ages)
 }
 
@@ -742,25 +742,25 @@ basta <-
 }
 
 # Sample parameters:
-.JitterPars <- function(.parsIni, .defTheta, .fullParObj, .agesIni,
-    .parsCovIni, .postIni, .covObj, .dataObj, .CalcSurv) {
-  parObjNew <- .parsIni
+.JitterPars <- function(parsIni, defTheta, fullParObj, agesIni,
+    parsCovIni, postIni, covObj, dataObj, CalcSurv) {
+  parObjNew <- parsIni
   negMort <- TRUE
-  theJitter <- matrix(.defTheta$jitter, nrow(.parsIni$theta), 
-      ncol(.parsIni$theta), dimnames = dimnames(.parsIni$theta), 
+  theJitter <- matrix(defTheta$jitter, nrow(parsIni$theta), 
+      ncol(parsIni$theta), dimnames = dimnames(parsIni$theta), 
       byrow = TRUE)
   while(negMort) {
-    parObjNew$theta <- matrix(rtnorm(length(.parsIni$theta), .parsIni$theta, 
-            theJitter, lower = .fullParObj$theta$low), 
-        nrow(.parsIni$theta), ncol(.parsIni$theta), 
-        dimnames = dimnames(.parsIni$theta))
-    xRange <- ceiling(0:max(.agesIni$ages[, "age"]) * 2)
-    if (class(.parsIni)[1] == "theGam") {
-      parObjNew$gamma <- rnorm(length(.parsIni$gamma), .parsIni$gamma, 0.25)
+    parObjNew$theta <- matrix(rtnorm(length(parsIni$theta), parsIni$theta, 
+            theJitter, lower = fullParObj$theta$low), 
+        nrow(parsIni$theta), ncol(parsIni$theta), 
+        dimnames = dimnames(parsIni$theta))
+    xRange <- ceiling(0:max(agesIni$ages[, "age"]) * 2)
+    if (class(parsIni)[1] == "theGam") {
+      parObjNew$gamma <- rnorm(length(parsIni$gamma), parsIni$gamma, 0.25)
     }
-    parsCovNew <- .CalcParCovObj(.covObj, parObjNew, .parsCovIni)
-    postNew <- .CalcLike(.agesIni, parObjNew, .postIni, parsCovNew, 
-        1:.dataObj$n, .fullParObj, .CalcSurv, .dataObj)
+    parsCovNew <- .CalcParCovObj(covObj, parObjNew, parsCovIni)
+    postNew <- .CalcLike(agesIni, parObjNew, postIni, parsCovNew, 
+        1:dataObj$n, fullParObj, CalcSurv, dataObj)
     negMort <- ifelse(postNew$mortPars == -Inf | is.na(postNew$mortPars), 
         TRUE, FALSE)
   }
@@ -768,10 +768,10 @@ basta <-
 }
 
 
-.ProposeThetaPars <- function(parObj, ageObj, jumps, .fullParObj, idPar) {
+.ProposeThetaPars <- function(parObj, ageObj, jumps, fullParObj, idPar) {
   parObjNew <- parObj
   parObjNew$theta[idPar] <- rtnorm(1, parObj$theta[idPar], 
-      jumps$theta[idPar], lower = .fullParObj$theta$low[idPar])
+      jumps$theta[idPar], lower = fullParObj$theta$low[idPar])
   return(parObjNew)
 }
 
@@ -787,18 +787,18 @@ basta <-
 # Propose all mortality parameters:
 .ProposeMortPars <- function(parObj, ...) UseMethod(".ProposeMortPars")
 
-.ProposeMortPars.theta <- function(parObj, ageObj, jumps, .fullParObj, idPar) {
-  parObjNew <- .ProposeThetaPars(parObj, ageObj, jumps, .fullParObj, idPar)
+.ProposeMortPars.theta <- function(parObj, ageObj, jumps, fullParObj, idPar) {
+  parObjNew <- .ProposeThetaPars(parObj, ageObj, jumps, fullParObj, idPar)
   return(parObjNew)
 }
 
 
-.ProposeMortPars.theGam <- function(parObj, ageObj, jumps, .fullParObj, idPar) {
-  if (idPar <= .fullParObj$theta$len) {
-    parObjNew <- .ProposeThetaPars(parObj, ageObj, jumps, .fullParObj, idPar)
+.ProposeMortPars.theGam <- function(parObj, ageObj, jumps, fullParObj, idPar) {
+  if (idPar <= fullParObj$theta$len) {
+    parObjNew <- .ProposeThetaPars(parObj, ageObj, jumps, fullParObj, idPar)
   } else {
     parObjNew <- .ProposeGammaPars(parObj, jumps, idPar - 
-            .fullParObj$theta$len)
+            fullParObj$theta$len)
   }
   return(parObjNew)
 }
@@ -806,11 +806,11 @@ basta <-
 # Propose pi's:
 .SamplePiPars <- function(parObj, ...) UseMethod(".SamplePiPars")
 
-.SamplePiPars.pi <- function(parObj, ageObj, .fullParObj, .dataObj) {
-  rho2 <- .fullParObj$pi$prior2 + 
-      t(t(ageObj$alive - .dataObj$Y) %*% rep(1, .dataObj$n))
-  Rho2 <- tapply(rho2, .fullParObj$pi$idpi, sum)
-  piNew <- rbeta(.fullParObj$pi$n, .fullParObj$pi$Prior1, Rho2)
+.SamplePiPars.pi <- function(parObj, ageObj, fullParObj, dataObj) {
+  rho2 <- fullParObj$pi$prior2 + 
+      t(t(ageObj$alive - dataObj$Y) %*% rep(1, dataObj$n))
+  Rho2 <- tapply(rho2, fullParObj$pi$idpi, sum)
+  piNew <- rbeta(fullParObj$pi$n, fullParObj$pi$Prior1, Rho2)
   if (1 %in% piNew) {
     piNew[piNew == 1] <- 1-1e-5
     warning("Some recapture probabilities are equal to 1.",
@@ -827,9 +827,9 @@ basta <-
 
 .ProposeLambda <- function(parObj, ...) UseMethod(".ProposeLambda")
 
-.ProposeLambda.lambda <- function(parObj, .fullParObj) {
+.ProposeLambda.lambda <- function(parObj, fullParObj) {
   parObj$lambda <- rtnorm(n = 1, mean = parObj$lambda, 
-      sd = .fullParObj$lambda$jump, lower = 0)
+      sd = fullParObj$lambda$jump, lower = 0)
   return(parObj)
 }
 
@@ -838,104 +838,104 @@ basta <-
 }
 
 # Calculate link function only for theta parameters:
-.BuildParCovObj <- function(.covObj, ...) UseMethod(".BuildParCovObj")
+.BuildParCovObj <- function(covObj, ...) UseMethod(".BuildParCovObj")
 
-.BuildParCovObj.noCov <- function(.covObj, parObj) {
+.BuildParCovObj.noCov <- function(covObj, parObj) {
   parCovObj <- list()
   parCovObj$theta <- parObj$theta
   class(parCovObj) <- 'noParCov'
   return(parCovObj)
 }
 
-.BuildParCovObj.inMort <- function(.covObj, parObj) {
+.BuildParCovObj.inMort <- function(covObj, parObj) {
   parCovObj <- list()
-  parCovObj$theta <- .covObj$inMort %*% parObj$theta
+  parCovObj$theta <- covObj$inMort %*% parObj$theta
   class(parCovObj) <- "inMortParCov"
   return(parCovObj)
 }
 
-.BuildParCovObj.propHaz <- function(.covObj, parObj) {
+.BuildParCovObj.propHaz <- function(covObj, parObj) {
   parCovObj <- list()
   parCovObj$theta <- parObj$theta
-  parCovObj$gamma <- .covObj$propHaz %*% parObj$gamma
+  parCovObj$gamma <- covObj$propHaz %*% parObj$gamma
   class(parCovObj) <- "propHazParCov"
   return(parCovObj)
 }
 
-.BuildParCovObj.fused <- function(.covObj, parObj) {
+.BuildParCovObj.fused <- function(covObj, parObj) {
   parCovObj <- list()
-  parCovObj$theta <- .covObj$inMort %*% parObj$theta
-  parCovObj$gamma <- .covObj$propHaz %*% parObj$gamma
+  parCovObj$theta <- covObj$inMort %*% parObj$theta
+  parCovObj$gamma <- covObj$propHaz %*% parObj$gamma
   class(parCovObj) <- "fusedParCov"
   return(parCovObj)
 }
 
-.CalcParCovObj <- function(.covObj, ...) UseMethod(".CalcParCovObj")
+.CalcParCovObj <- function(covObj, ...) UseMethod(".CalcParCovObj")
 
-.CalcParCovObj.noCov <- function(.covObj, parObj, parCovObj) {
+.CalcParCovObj.noCov <- function(covObj, parObj, parCovObj) {
   parCovObj$theta <- parObj$theta 
   return(parCovObj)
 }
 
-.CalcParCovObj.inMort <- function(.covObj, parObj, parCovObj) {
-  parCovObj$theta <- .covObj$inMort %*% parObj$theta
+.CalcParCovObj.inMort <- function(covObj, parObj, parCovObj) {
+  parCovObj$theta <- covObj$inMort %*% parObj$theta
   return(parCovObj)
 }
 
-.CalcParCovObj.propHaz <- function(.covObj, parObj, parCovObj) {
+.CalcParCovObj.propHaz <- function(covObj, parObj, parCovObj) {
   parCovObj$theta <- parObj$theta 
-  parCovObj$gamma <- .covObj$propHaz %*% parObj$gamma
+  parCovObj$gamma <- covObj$propHaz %*% parObj$gamma
   return(parCovObj)
 }
 
-.CalcParCovObj.fused <- function(.covObj, parObj, parCovObj) {
-  parCovObj$theta <- .covObj$inMort %*% parObj$theta
-  parCovObj$gamma <- .covObj$propHaz %*% parObj$gamma
+.CalcParCovObj.fused <- function(covObj, parObj, parCovObj) {
+  parCovObj$theta <- covObj$inMort %*% parObj$theta
+  parCovObj$gamma <- covObj$propHaz %*% parObj$gamma
   return(parCovObj)
 }
 
 # Calculate pdf of ages at death:
 .CalcPdf <- function(parCovObj, ...) UseMethod(".CalcPdf")
 
-.CalcPdf.noParCov <- function(parCovObj, x, ind, .CalcSurv, .dataObj) {
-  .CalcSurv(x[ind], parCovObj$theta) - .CalcSurv(x[ind] + .dataObj$Dx, 
+.CalcPdf.noParCov <- function(parCovObj, x, ind, CalcSurv, dataObj) {
+  CalcSurv(x[ind], parCovObj$theta) - CalcSurv(x[ind] + dataObj$Dx, 
       parCovObj$theta)
 }
 
-.CalcPdf.inMortParCov <- function(parCovObj, x, ind, .CalcSurv, .dataObj) {
-  .CalcSurv(x[ind], parCovObj$theta[ind, ]) - 
-      .CalcSurv(x[ind] + .dataObj$Dx, parCovObj$theta[ind, ])
+.CalcPdf.inMortParCov <- function(parCovObj, x, ind, CalcSurv, dataObj) {
+  CalcSurv(x[ind], parCovObj$theta[ind, ]) - 
+      CalcSurv(x[ind] + dataObj$Dx, parCovObj$theta[ind, ])
 }
 
-.CalcPdf.propHazParCov <- function(parCovObj, x, ind, .CalcSurv, .dataObj) {
-  .CalcSurv(x[ind], parCovObj$theta)^exp(parCovObj$gamma[ind]) - 
-      .CalcSurv(x[ind] + .dataObj$Dx, 
+.CalcPdf.propHazParCov <- function(parCovObj, x, ind, CalcSurv, dataObj) {
+  CalcSurv(x[ind], parCovObj$theta)^exp(parCovObj$gamma[ind]) - 
+      CalcSurv(x[ind] + dataObj$Dx, 
           parCovObj$theta)^exp(parCovObj$gamma[ind])
 }
 
-.CalcPdf.fusedParCov <- function(parCovObj, x, ind, .CalcSurv, .dataObj) {
-  .CalcSurv(x[ind], parCovObj$theta[ind, ])^exp(parCovObj$gamma[ind]) - 
-      .CalcSurv(x[ind] + .dataObj$Dx, 
+.CalcPdf.fusedParCov <- function(parCovObj, x, ind, CalcSurv, dataObj) {
+  CalcSurv(x[ind], parCovObj$theta[ind, ])^exp(parCovObj$gamma[ind]) - 
+      CalcSurv(x[ind] + dataObj$Dx, 
           parCovObj$theta[ind, ])^exp(parCovObj$gamma[ind])
 }
 
 # Survival at age at truncation:
 .CalcTruSurv <- function(parCovObj, ...) UseMethod(".CalcTruSurv")
 
-.CalcTruSurv.noParCov <- function(parCovObj, x, ind, .CalcSurv) {
-  .CalcSurv(x[ind], parCovObj$theta)
+.CalcTruSurv.noParCov <- function(parCovObj, x, ind, CalcSurv) {
+  CalcSurv(x[ind], parCovObj$theta)
 }
 
-.CalcTruSurv.inMortParCov <- function(parCovObj, x, ind, .CalcSurv) {
-  .CalcSurv(x[ind], parCovObj$theta[ind, ])
+.CalcTruSurv.inMortParCov <- function(parCovObj, x, ind, CalcSurv) {
+  CalcSurv(x[ind], parCovObj$theta[ind, ])
 }
 
-.CalcTruSurv.propHazParCov <- function(parCovObj, x, ind, .CalcSurv) {
-  .CalcSurv(x[ind], parCovObj$theta)^exp(parCovObj$gamma[ind])
+.CalcTruSurv.propHazParCov <- function(parCovObj, x, ind, CalcSurv) {
+  CalcSurv(x[ind], parCovObj$theta)^exp(parCovObj$gamma[ind])
 }
 
-.CalcTruSurv.fusedParCov <- function(parCovObj, x, ind, .CalcSurv) {
-  .CalcSurv(x[ind], parCovObj$theta[ind, ])^exp(parCovObj$gamma[ind])
+.CalcTruSurv.fusedParCov <- function(parCovObj, x, ind, CalcSurv) {
+  CalcSurv(x[ind], parCovObj$theta[ind, ])^exp(parCovObj$gamma[ind])
 }
 
 
@@ -945,57 +945,57 @@ basta <-
 
 
 .CalcLike.minAge <- function(ageObj, parObj, postObj, parCovObj, ind, 
-    .fullParObj, .CalcSurv, .dataObj) {
+    fullParObj, CalcSurv, dataObj) {
   postObj$mat[ind, "fx"] <- log(.CalcPdf(parCovObj, ageObj$ages[, "ageAd"], 
-          ind, .CalcSurv, .dataObj)) * ageObj$ages[ind, "indAd"]
+          ind, CalcSurv, dataObj)) * ageObj$ages[ind, "indAd"]
   postObj$mat[ind, "Sx"] <- log(.CalcTruSurv(parCovObj, 
-          ageObj$ages[, "ageAdTr"], ind, .CalcSurv)) * ageObj$ages[ind, "indAd"]
-  postObj$mortPars <- .CalcPostMortPars(parObj, postObj, .fullParObj)
+          ageObj$ages[, "ageAdTr"], ind, CalcSurv)) * ageObj$ages[ind, "indAd"]
+  postObj$mortPars <- .CalcPostMortPars(parObj, postObj, fullParObj)
   return(postObj)
 }
 
 .CalcLike.noMinAge <- function(ageObj, parObj, postObj, parCovObj, ind, 
-    .fullParObj, .CalcSurv, .dataObj) {
+    fullParObj, CalcSurv, dataObj) {
   postObj$mat[ind, "fx"] <- log(.CalcPdf(parCovObj, ageObj$ages[, "age"], 
-          ind, .CalcSurv, .dataObj))
+          ind, CalcSurv, dataObj))
   postObj$mat[ind, "Sx"] <- log(.CalcTruSurv(parCovObj, 
-          ageObj$ages[, "ageTr"], ind, .CalcSurv))
-  postObj$mortPars <- .CalcPostMortPars(parObj, postObj, .fullParObj)
+          ageObj$ages[, "ageTr"], ind, CalcSurv))
+  postObj$mortPars <- .CalcPostMortPars(parObj, postObj, fullParObj)
   return(postObj)
 }
 
 .CalcPostMortPars <- function(parObj, ...) UseMethod(".CalcPostMortPars")
 
-.CalcPostMortPars.theta <- function(parObj, postObj, .fullParObj) {
+.CalcPostMortPars.theta <- function(parObj, postObj, fullParObj) {
   parPost <- sum(postObj$mat[, "fx"] -
               postObj$mat[, "Sx"]) + 
-      sum(dtnorm(c(parObj$theta), c(.fullParObj$theta$priorMean), 
-              c(.fullParObj$theta$priorSd), 
-              lower = c(.fullParObj$theta$low), log = TRUE)) 
+      sum(dtnorm(c(parObj$theta), c(fullParObj$theta$priorMean), 
+              c(fullParObj$theta$priorSd), 
+              lower = c(fullParObj$theta$low), log = TRUE)) 
   return(parPost)
 }
 
-.CalcPostMortPars.theGam <- function(parObj, postObj, .fullParObj) {
+.CalcPostMortPars.theGam <- function(parObj, postObj, fullParObj) {
   parPost <- sum(postObj$mat[, "fx"] -
               postObj$mat[, "Sx"]) + 
-      sum(dtnorm(c(parObj$theta), c(.fullParObj$theta$priorMean), 
-              c(.fullParObj$theta$priorSd), 
-              lower = c(.fullParObj$theta$low), log = TRUE)) +
-      sum(dnorm(parObj$gamma, .fullParObj$gamma$priorMean, 
-              .fullParObj$gamma$priorSd, log = TRUE))
+      sum(dtnorm(c(parObj$theta), c(fullParObj$theta$priorMean), 
+              c(fullParObj$theta$priorSd), 
+              lower = c(fullParObj$theta$low), log = TRUE)) +
+      sum(dnorm(parObj$gamma, fullParObj$gamma$priorMean, 
+              fullParObj$gamma$priorSd, log = TRUE))
   return(parPost)
 }
 
 .CalcPostLambda <- function(parObj, ...) UseMethod(".CalcPostLambda") 
 
-.CalcPostLambda.lambda <- function(parObj, postObj, ageObj, ind, .fullParObj) {
+.CalcPostLambda.lambda <- function(parObj, postObj, ageObj, ind, fullParObj) {
   postObj$mat[ind, "lx"] <- 
       log(parObj$lambda) * ageObj$ages[ind, "indJu"] - 
       parObj$lambda * ageObj$ages[ind, "ageJu"] + 
       parObj$lambda * ageObj$ages[ind, "ageJuTr"]
   postObj$lambda <- sum(postObj$mat[, "lx"]) + 
-      dtnorm(parObj$lambda, mean = .fullParObj$lambda$priorMean, 
-          sd = .fullParObj$lambda$priorSd, lower = 0)
+      dtnorm(parObj$lambda, mean = fullParObj$lambda$priorMean, 
+          sd = fullParObj$lambda$priorSd, lower = 0)
   return(postObj)
 }
 
@@ -1007,10 +1007,10 @@ basta <-
 .CalcPostPi <- function(parObj, ...) UseMethod(".CalcPostPi")
 
 .CalcPostPi.pi <- function(parObj, postObj, ageObj, ind, 
-    .fullParObj, .dataObj) {
+    fullParObj, dataObj) {
   postObj$mat[ind, "px"] <- 
-      (ageObj$alive - .dataObj$obsMat)[ind, ] %*% 
-      log(1 - parObj$pi[.fullParObj$pi$idpi])
+      (ageObj$alive - dataObj$obsMat)[ind, ] %*% 
+      log(1 - parObj$pi[fullParObj$pi$idpi])
   return(postObj)
 }
 
@@ -1024,141 +1024,141 @@ basta <-
   return(postObj)
 }
 
-.CalcPostX <- function(ageObj, parObj, postObj, parCovObj, ind, .CalcSurv,
-    .priorAgeObj, .fullParObj, .covObj, .dataObj) {
-  postObj <- .CalcLike(ageObj, parObj, postObj, parCovObj, ind, .fullParObj, 
-      .CalcSurv, .dataObj)
-  postObj <- .CalcPostPi(parObj, postObj, ageObj, ind, .fullParObj, .dataObj)
-  postObj <- .CalcPostLambda(parObj, postObj, ageObj, ind, .fullParObj)  
+.CalcPostX <- function(ageObj, parObj, postObj, parCovObj, ind, CalcSurv,
+    priorAgeObj, fullParObj, covObj, dataObj) {
+  postObj <- .CalcLike(ageObj, parObj, postObj, parCovObj, ind, fullParObj, 
+      CalcSurv, dataObj)
+  postObj <- .CalcPostPi(parObj, postObj, ageObj, ind, fullParObj, dataObj)
+  postObj <- .CalcPostLambda(parObj, postObj, ageObj, ind, fullParObj)  
   postObj$mat[ind, "vx"] <- 
-      .CalcPriorAgeDist(.covObj, ageObj, ind, .CalcSurv, .priorAgeObj)
+      .CalcPriorAgeDist(covObj, ageObj, ind, CalcSurv, priorAgeObj)
   postObj <- .SumPosts(postObj, ind)
   return(postObj)
 }
 
 # Prior age distribution
-.SetPriorAgeDist <- function(.fullParObj, .CalcSurv, .dataObj, .covObj, 
-    .parsIni, .parsCovIni) {
+.SetPriorAgeDist <- function(fullParObj, CalcSurv, dataObj, covObj, 
+    parsIni, parsCovIni) {
   dxx <- 0.001
   xx <- seq(0,100,dxx)
   parsPrior <- list()
-  parsPrior$theta <- .fullParObj$theta$priorMean
-  if (class(.parsIni)[1] == "theGam") {
-    parsPrior$gamma <- .fullParObj$gamma$priorMean
+  parsPrior$theta <- fullParObj$theta$priorMean
+  if (class(parsIni)[1] == "theGam") {
+    parsPrior$gamma <- fullParObj$gamma$priorMean
   }
   parsPriorCov <- list()
-  if (class(.covObj)[1] == "noCov") {
-    Ex <- sum(.CalcSurv(xx, parsPrior$theta) * dxx)
-    lifeExp <- rep(Ex, .dataObj$n)
-  } else if (class(.covObj)[1] == "inMort") {
-    if (class(.covObj)[2] %in% c("bothCov", "contCov")) {
-      meanCont <- apply(matrix(.covObj$inMort[, names(.covObj$cont)], 
-              ncol = length(.covObj$cont)), 2, mean)
-      thetaCont <- meanCont %*% matrix(parsPrior$theta[names(.covObj$cont), ], 
-          nrow = length(.covObj$cont))
-      colnames(thetaCont) <- colnames(.fullParObj$theta$priorMean)
+  if (class(covObj)[1] == "noCov") {
+    Ex <- sum(CalcSurv(xx, parsPrior$theta) * dxx)
+    lifeExp <- rep(Ex, dataObj$n)
+  } else if (class(covObj)[1] == "inMort") {
+    if (class(covObj)[2] %in% c("bothCov", "contCov")) {
+      meanCont <- apply(matrix(covObj$inMort[, names(covObj$cont)], 
+              ncol = length(covObj$cont)), 2, mean)
+      thetaCont <- meanCont %*% matrix(parsPrior$theta[names(covObj$cont), ], 
+          nrow = length(covObj$cont))
+      colnames(thetaCont) <- colnames(fullParObj$theta$priorMean)
     } else {
       thetaCont <- t(as.matrix(parsPrior$theta[1, ] * 0))
     }
-    Ex <- sapply(1:(ncol(.covObj$inMort) - length(.covObj$cont)), 
-        function(pp) sum(.CalcSurv(xx, parsPrior$theta[pp, ] + thetaCont) * 
+    Ex <- sapply(1:(ncol(covObj$inMort) - length(covObj$cont)), 
+        function(pp) sum(CalcSurv(xx, parsPrior$theta[pp, ] + thetaCont) * 
                   dxx))
-    if (is.null(.covObj$cat)) {
-      lifeExp <- rep(Ex, .dataObj$n)
+    if (is.null(covObj$cat)) {
+      lifeExp <- rep(Ex, dataObj$n)
     } else {
-      names(Ex) <- names(.covObj$cat)
-      lifeExp <- .covObj$inMor[, names(.covObj$cat)] %*% Ex
+      names(Ex) <- names(covObj$cat)
+      lifeExp <- covObj$inMor[, names(covObj$cat)] %*% Ex
     }
-  } else if (class(.covObj)[1] == "fused") {
-    meanCont <- apply(.covObj$propHaz, 2, mean)
+  } else if (class(covObj)[1] == "fused") {
+    meanCont <- apply(covObj$propHaz, 2, mean)
     gam <- sum(parsPrior$gamma * meanCont)
-    Ex <- sapply(1:length(.covObj$cat), 
+    Ex <- sapply(1:length(covObj$cat), 
         function(pp) 
-          sum(.CalcSurv(xx, t(parsPrior$theta[pp, ]))^exp(gam) * dxx))
-    names(Ex) <- names(.covObj$cat)
-    lifeExp <- .covObj$inMor %*% Ex
+          sum(CalcSurv(xx, t(parsPrior$theta[pp, ]))^exp(gam) * dxx))
+    names(Ex) <- names(covObj$cat)
+    lifeExp <- covObj$inMor %*% Ex
   } else {
-    if (class(.covObj)[2] == "bothCov") {
-      meanCont <- apply(matrix(.covObj$propHaz[, names(.covObj$cont)], 
-              ncol = length(.covObj$cont)), 2, mean)
-      gam <- c(0, parsPrior$gamma[names(.covObj$cat)[-1]]) + 
+    if (class(covObj)[2] == "bothCov") {
+      meanCont <- apply(matrix(covObj$propHaz[, names(covObj$cont)], 
+              ncol = length(covObj$cont)), 2, mean)
+      gam <- c(0, parsPrior$gamma[names(covObj$cat)[-1]]) + 
           sum(parsPrior$gamma * meanCont)
       Ex <- sapply(1:(length(gam)), 
           function(pp) 
-            sum(.CalcSurv(xx, parsPrior$theta)^exp(gam[pp]) * dxx))
-      names(Ex) <- names(.covObj$cat[-1])
-      if (.covObj$phLen == 1) {
-        intercept <- 1 - .covObj$propHaz[, names(.covObj$cat[-1])]
+            sum(CalcSurv(xx, parsPrior$theta)^exp(gam[pp]) * dxx))
+      names(Ex) <- names(covObj$cat)
+      if (covObj$phLen - length(covObj$cont) == 1) {
+        intercept <- 1 - covObj$propHaz[, names(covObj$cat)[-1]]
       } else {
         intercept <- 1 - 
-            apply(.covObj$propHaz[, names(.covObj$cat[-1])], 1, sum)
+            apply(covObj$propHaz[, names(covObj$cat)[-1]], 1, sum)
       }
       lifeExp <- 
-          cbind(intercept, .covObj$propHaz[, names(.covObj$cat[-1])]) %*% Ex
-    } else if (class(.covObj)[2] == "cateCov"){
-      gam <- c(0, parsPrior$gamma[names(.covObj$cat)[-1]])
+          cbind(intercept, covObj$propHaz[, names(covObj$cat)[-1]]) %*% Ex
+    } else if (class(covObj)[2] == "cateCov"){
+      gam <- c(0, parsPrior$gamma[names(covObj$cat)[-1]])
       Ex <- sapply(1:(length(gam)), 
           function(pp) 
-            sum(.CalcSurv(xx, parsPrior$theta)^exp(gam[pp]) * dxx))
-      names(Ex) <- names(.covObj$cat)
-      if (.covObj$phLen == 1) {
-        intercept <- 1 - .covObj$propHaz[, names(.covObj$cat[-1])]
+            sum(CalcSurv(xx, parsPrior$theta)^exp(gam[pp]) * dxx))
+      names(Ex) <- names(covObj$cat)
+      if (covObj$phLen == 1) {
+        intercept <- 1 - covObj$propHaz[, names(covObj$cat)[-1]]
       } else {
         intercept <- 1 - 
-            apply(.covObj$propHaz[, names(.covObj$cat[-1])], 1, sum)
+            apply(covObj$propHaz[, names(covObj$cat)[-1]], 1, sum)
       }
       lifeExp <- 
-          cbind(intercept, .covObj$propHaz[, names(.covObj$cat[-1])]) %*% Ex
+          cbind(intercept, covObj$propHaz[, names(covObj$cat)[-1]]) %*% Ex
     } else {
-      meanCont <- apply(matrix(.covObj$propHaz[, names(.covObj$cont)], 
-              ncol = length(.covObj$cont)), 2, mean)
+      meanCont <- apply(matrix(covObj$propHaz[, names(covObj$cont)], 
+              ncol = length(covObj$cont)), 2, mean)
       gam <- sum(parsPrior$gamma * meanCont)
-      Ex <- sum(.CalcSurv(xx, parsPrior$theta)^exp(gam) * dxx)
-      lifeExp <- rep(Ex, .dataObj$n)
+      Ex <- sum(CalcSurv(xx, parsPrior$theta)^exp(gam) * dxx)
+      lifeExp <- rep(Ex, dataObj$n)
     }
   }
-  class(parsPrior) <- class(.parsIni)
-  priorCov <- .CalcParCovObj(.covObj, parsPrior, .parsCovIni)
+  class(parsPrior) <- class(parsIni)
+  priorCov <- .CalcParCovObj(covObj, parsPrior, parsCovIni)
   priorAgeObj <- list(lifeExp = lifeExp, theta = priorCov$theta)
-  if (class(.covObj)[1] %in% c("fused", "propHaz")) {
+  if (class(covObj)[1] %in% c("fused", "propHaz")) {
     priorAgeObj$gamma <- priorCov$gamma
   }
   return(priorAgeObj)
 }
 
-.CalcPriorAgeDist <- function(.covObj, ...) UseMethod(".CalcPriorAgeDist")
+.CalcPriorAgeDist <- function(covObj, ...) UseMethod(".CalcPriorAgeDist")
 
-.CalcPriorAgeDist.noCov <- function(.covObj, ageObj, ind, .CalcSurv,
-    .priorAgeObj) {
+.CalcPriorAgeDist.noCov <- function(covObj, ageObj, ind, CalcSurv,
+    priorAgeObj) {
   ageList <- .ExtractAgesForPad(ageObj, ind)
-  priorAgeDist <- .CalcSurv(ageList$age, .priorAgeObj$theta) / 
-      .priorAgeObj$lifeExp[ind] * ageList$idAd
+  priorAgeDist <- CalcSurv(ageList$age, priorAgeObj$theta) / 
+      priorAgeObj$lifeExp[ind] * ageList$idAd
   return(priorAgeDist)
 } 
 
-.CalcPriorAgeDist.fused <- function(.covObj, ageObj, ind, .CalcSurv,
-    .priorAgeObj) {
+.CalcPriorAgeDist.fused <- function(covObj, ageObj, ind, CalcSurv,
+    priorAgeObj) {
   ageList <- .ExtractAgesForPad(ageObj, ind)
-  priorAgeDist <- (.CalcSurv(ageList$age, 
-            .priorAgeObj$theta[ind, ])^exp(.priorAgeObj$gamma[ind, ])) / 
-      .priorAgeObj$lifeExp[ind] * ageList$idAd
+  priorAgeDist <- (CalcSurv(ageList$age, 
+            priorAgeObj$theta[ind, ])^exp(priorAgeObj$gamma[ind, ])) / 
+      priorAgeObj$lifeExp[ind] * ageList$idAd
   return(priorAgeDist)
 } 
 
-.CalcPriorAgeDist.inMort <- function(.covObj, ageObj, ind, .CalcSurv,
-    .priorAgeObj) {
+.CalcPriorAgeDist.inMort <- function(covObj, ageObj, ind, CalcSurv,
+    priorAgeObj) {
   ageList <- .ExtractAgesForPad(ageObj, ind)
-  priorAgeDist <- .CalcSurv(ageList$age, .priorAgeObj$theta[ind, ]) / 
-      .priorAgeObj$lifeExp[ind] * ageList$idAd
+  priorAgeDist <- CalcSurv(ageList$age, priorAgeObj$theta[ind, ]) / 
+      priorAgeObj$lifeExp[ind] * ageList$idAd
   return(priorAgeDist)
 } 
 
-.CalcPriorAgeDist.propHaz <- function(.covObj, ageObj, ind, .CalcSurv,
-    .priorAgeObj) {
+.CalcPriorAgeDist.propHaz <- function(covObj, ageObj, ind, CalcSurv,
+    priorAgeObj) {
   ageList <- .ExtractAgesForPad(ageObj, ind)
-  priorAgeDist <- (.CalcSurv(ageList$age, 
-            .priorAgeObj$theta)^exp(.priorAgeObj$gamma[ind, ])) / 
-      .priorAgeObj$lifeExp[ind] * ageList$idAd
+  priorAgeDist <- (CalcSurv(ageList$age, 
+            priorAgeObj$theta)^exp(priorAgeObj$gamma[ind, ])) / 
+      priorAgeObj$lifeExp[ind] * ageList$idAd
   return(priorAgeDist)
 } 
 
@@ -1189,39 +1189,39 @@ basta <-
 }
 
 # MCMC function:
-.RunBastaMCMC <- function(sim, .algObj, .defTheta, .CalcMort, .CalcSurv, 
-    .dataObj, .covObj, .userPars, .fullParObj, .agesIni, .parsIni, 
-    .priorAgeObj, .parsCovIni, .postIni, .jumps, .jumpObjIni) {
+.RunBastaMCMC <- function(sim, algObj, defTheta, CalcMort, CalcSurv, 
+    dataObj, covObj, userPars, fullParObj, agesIni, parsIni, 
+    priorAgeObj, parsCovIni, postIni, jumps) {
   rm(".Random.seed", envir = .GlobalEnv); runif(1)
-  agesNow <- .agesIni
-  parsNow <- .JitterPars(.parsIni, .defTheta, .fullParObj, .agesIni,
-      .parsCovIni, .postIni, .covObj, .dataObj, .CalcSurv)
-  parsCovNow <- .CalcParCovObj(.covObj, parsNow, .parsCovIni)
-  postNow <- .CalcLike(agesNow, parsNow, .postIni, parsCovNow, 1:.dataObj$n, 
-      .fullParObj, .CalcSurv, .dataObj)
-  niter <- .algObj$niter
-  burnin <- .algObj$burnin
-  thinning <- .algObj$thinning
+  agesNow <- agesIni
+  parsNow <- .JitterPars(parsIni, defTheta, fullParObj, agesIni,
+      parsCovIni, postIni, covObj, dataObj, CalcSurv)
+  parsCovNow <- .CalcParCovObj(covObj, parsNow, parsCovIni)
+  postNow <- .CalcLike(agesNow, parsNow, postIni, parsCovNow, 1:dataObj$n, 
+      fullParObj, CalcSurv, dataObj)
+  niter <- algObj$niter
+  burnin <- algObj$burnin
+  thinning <- algObj$thinning
   outObj <- list()
-  outObj$par <- matrix(0, niter, length(.fullParObj$allNames), 
-      dimnames = list(NULL, .fullParObj$allNames))
+  outObj$par <- matrix(0, niter, length(fullParObj$allNames), 
+      dimnames = list(NULL, fullParObj$allNames))
   outObj$par[1, ] <- .FillParMat(parsNow)
   outObj$post <- rep(0, niter)
   outObj$post[1] <- sum(postNow$mat[, 'fx'] - postNow$mat[, 'Sx'] + 
           postNow$mat[, 'px'] + postNow$mat[, 'vx'])
   thinSeq <- seq(burnin, niter, thinning)
   lenThin <- length(thinSeq)
-  if (class(.dataObj) == "ageUpd") {
-    if (length(.dataObj$idNoB) > 0) {
-      outObj$birth <- matrix(NA, 0, length(.dataObj$idNoB))
+  if (class(dataObj) == "ageUpd") {
+    if (length(dataObj$idNoB) > 0) {
+      outObj$birth <- matrix(NA, 0, length(dataObj$idNoB))
     }
-    if (length(.dataObj$idNoD) > 0) {
-      outObj$death <- matrix(NA, 0, length(.dataObj$idNoD))
+    if (length(dataObj$idNoD) > 0) {
+      outObj$death <- matrix(NA, 0, length(dataObj$idNoD))
     }
   }
-  idMp <- which(substr(.fullParObj$allNames, 1, 2) != "pi")
-  if (.algObj$shape != "simple") {
-    idC <- which(substr(.fullParObj$allNames, 1, 1) ==  "c")
+  idMp <- which(substr(fullParObj$allNames, 1, 2) != "pi")
+  if (algObj$shape != "simple") {
+    idC <- which(substr(fullParObj$allNames, 1, 1) ==  "c")
     idMp <- c(idMp[-idC], idMp[idC]) 
   }
   nMp <- length(idMp)
@@ -1230,12 +1230,12 @@ basta <-
   for (m in 2:niter) {
     # Sample theta (and gamma) parameters:
     for (mp in idMp) {
-      parsNew <- .ProposeMortPars(parsNow, agesNow, .jumps, .fullParObj, mp)
+      parsNew <- .ProposeMortPars(parsNow, agesNow, jumps, fullParObj, mp)
       newPar <- ifelse(c(parsNew$theta, parsNew$gamma)[mp] != 
               c(parsNow$theta, parsNow$gamma)[mp], TRUE, FALSE)
-      parsCovNew <- .CalcParCovObj(.covObj, parsNew, parsCovNow)
-      postNew <- .CalcLike(agesNow, parsNew, postNow, parsCovNew, 1:.dataObj$n, 
-          .fullParObj, .CalcSurv, .dataObj)
+      parsCovNew <- .CalcParCovObj(covObj, parsNew, parsCovNow)
+      postNew <- .CalcLike(agesNow, parsNew, postNow, parsCovNew, 1:dataObj$n, 
+          fullParObj, CalcSurv, dataObj)
       if (!is.na(postNew$mortPars) & newPar) {
         acceptCrit <- exp(postNew$mortPars - postNow$mortPars)
         acceptProb <- runif(1)
@@ -1249,15 +1249,15 @@ basta <-
     outObj$par[m, ] <- .FillParMat(parsNow)
     
     # Sample recapture parameters:
-    parsNow <- .SamplePiPars(parsNow, agesNow, .fullParObj, .dataObj)
-    postNow <- .CalcPostPi(parsNow, postNow, agesNow, 1:.dataObj$n, 
-        .fullParObj, .dataObj)
+    parsNow <- .SamplePiPars(parsNow, agesNow, fullParObj, dataObj)
+    postNow <- .CalcPostPi(parsNow, postNow, agesNow, 1:dataObj$n, 
+        fullParObj, dataObj)
     
     # Sample early age parameter:
     if (class(parsNow)[2] == "lambda") {
-      parsNew <- .ProposeLambda(parsNow, .fullParObj)
-      postNew <- .CalcPostLambda(parsNew, postNow, agesNow, 1:.dataObj$n, 
-          .fullParObj)
+      parsNew <- .ProposeLambda(parsNow, fullParObj)
+      postNew <- .CalcPostLambda(parsNew, postNow, agesNow, 1:dataObj$n, 
+          fullParObj)
       acceptCrit <- exp(postNew$lambda - postNow$lambda)
       acceptProb <- runif(1)
       if (acceptCrit > acceptProb) {
@@ -1267,34 +1267,34 @@ basta <-
     }
     
     # Sum up columns:
-    postNow <- .SumPosts(postNow, 1:.dataObj$n)
+    postNow <- .SumPosts(postNow, 1:dataObj$n)
     
     # Sample Missing ages at death:
-    if (class(.dataObj) == "ageUpd") {
-      agesNew <- .SampleAges(agesNow, .dataObj, .algObj)
+    if (class(dataObj) == "ageUpd") {
+      agesNew <- .SampleAges(agesNow, dataObj, algObj)
       idNew <- which(agesNew$ages[, 'birth'] != agesNow$ages[, 'birth'] | 
               agesNew$ages[, 'death'] != agesNow$ages[, 'death'])
       postNew <- .CalcPostX(agesNew, parsNow, postNow, parsCovNow, 
-          .dataObj$idNoA, .CalcSurv, .priorAgeObj, .fullParObj, .covObj, 
-          .dataObj) 
+          dataObj$idNoA, CalcSurv, priorAgeObj, fullParObj, covObj, 
+          dataObj) 
       idAccept <- .AcceptAges(postNow, postNew, idNew)
       postNow$mat[idAccept, ] <- postNew$mat[idAccept, ]
       agesNow$ages[idAccept, ] <- agesNew$ages[idAccept, ]
       agesNow$alive[idAccept, ] <- agesNew$alive[idAccept, ]
-      postNow$mortPars <- .CalcPostMortPars(parsNow, postNow, .fullParObj)
+      postNow$mortPars <- .CalcPostMortPars(parsNow, postNow, fullParObj)
       if (class(parsNow)[2] == "lambda") {
         postNow$lambda <- sum(postNow$mat[, "lx"]) + 
-            dtnorm(parsNow$lambda, mean = .fullParObj$lambda$priorMean, 
-                sd = .fullParObj$lambda$priorSd, lower = 0)
+            dtnorm(parsNow$lambda, mean = fullParObj$lambda$priorMean, 
+                sd = fullParObj$lambda$priorSd, lower = 0)
       }
       if (m %in% thinSeq) {
-        if (length(.dataObj$idNoB) > 0) {
+        if (length(dataObj$idNoB) > 0) {
           outObj$birth <- rbind(outObj$birth, 
-              agesNow$ages[.dataObj$idNoB, "birth"])
+              agesNow$ages[dataObj$idNoB, "birth"])
         }
-        if (length(.dataObj$idNoD) > 0) {
+        if (length(dataObj$idNoD) > 0) {
           outObj$death <- rbind(outObj$death, 
-              agesNow$ages[.dataObj$idNoD, "death"])
+              agesNow$ages[dataObj$idNoD, "death"])
         }
       }
     }
@@ -1320,10 +1320,10 @@ basta <-
 }
 
 
-.PrepJumpObj <- function(.fullParObj, .covObj) {
-  jump <- c(.fullParObj$theta$jump)
-  if (.fullParObj$class[1] == "theGam") {
-    jump <- c(jump, .fullParObj$gamma$jump)
+.PrepJumpObj <- function(fullParObj, covObj) {
+  jump <- c(fullParObj$theta$jump)
+  if (fullParObj$class[1] == "theGam") {
+    jump <- c(jump, fullParObj$gamma$jump)
   }
   nPar <- length(jump)
   return(list(jump = jump, jumpsMat = matrix(NA, 0, nPar), 
@@ -1331,27 +1331,27 @@ basta <-
 }
 
 
-.RunIniUpdJump <- function(argList, .algObj, .defTheta, 
-    .CalcMort, .CalcSurv, .dataObj, .covObj, .userPars, .fullParObj, 
-    .agesIni, .parsIni, .priorAgeObj, .parsCovIni, .postIni, .jumps, 
+.RunIniUpdJump <- function(argList, algObj, defTheta, 
+    CalcMort, CalcSurv, dataObj, covObj, userPars, fullParObj, 
+    agesIni, parsIni, priorAgeObj, parsCovIni, postIni, jumps, 
     .jumpObjIni) {
   cat("Starting simulation to find jump sd's... ")
   jumpObj <- .jumpObjIni
-  parsNow <- .parsIni
-  agesNow <- .agesIni
-  parsCovNow <- .parsCovIni
-  postNow <- .postIni
+  parsNow <- parsIni
+  agesNow <- agesIni
+  parsCovNow <- parsCovIni
+  postNow <- postIni
   newJumps <- list()
-  newJumps$theta <- .fullParObj$theta$jump
-  if (class(.parsIni)[1] == "theGam") {
-    newJumps$gamma <- .fullParObj$gamma$jump
+  newJumps$theta <- fullParObj$theta$jump
+  if (class(parsIni)[1] == "theGam") {
+    newJumps$gamma <- fullParObj$gamma$jump
   }
-  idMp <- which(substr(.fullParObj$allNames, 1, 2) != "pi")
-  if (.algObj$shape != "simple") {
-    idC <- which(substr(.fullParObj$allNames, 1, 1) ==  "c")
+  idMp <- which(substr(fullParObj$allNames, 1, 2) != "pi")
+  if (algObj$shape != "simple") {
+    idC <- which(substr(fullParObj$allNames, 1, 1) ==  "c")
     idMp <- c(idMp[-idC], idMp[idC]) 
   }
-  idGam <- which(substr(.fullParObj$allNames, 1, 2) == "ga")
+  idGam <- which(substr(fullParObj$allNames, 1, 2) == "ga")
   nMp <- length(idMp)
   updObj <- list(len = 50)
   updObj$targ <- ifelse("updateRate" %in% names(argList), 
@@ -1364,12 +1364,12 @@ basta <-
   for (m in 1:niter) {
     # Sample theta (and gamma) parameters:
     for (mp in idMp) {
-      parsNew <- .ProposeMortPars(parsNow, agesNow, newJumps, .fullParObj, mp)
+      parsNew <- .ProposeMortPars(parsNow, agesNow, newJumps, fullParObj, mp)
       newPar <- ifelse(c(parsNew$theta, parsNew$gamma)[mp] != 
               c(parsNow$theta, parsNow$gamma)[mp], TRUE, FALSE)
-      parsCovNew <- .CalcParCovObj(.covObj, parsNew, parsCovNow)
-      postNew <- .CalcLike(agesNow, parsNew, postNow, parsCovNew, 1:.dataObj$n, 
-          .fullParObj, .CalcSurv, .dataObj)
+      parsCovNew <- .CalcParCovObj(covObj, parsNew, parsCovNow)
+      postNew <- .CalcLike(agesNow, parsNew, postNow, parsCovNew, 1:dataObj$n, 
+          fullParObj, CalcSurv, dataObj)
       if (!is.na(postNew$mortPars) & newPar) {
         acceptCrit <- exp(postNew$mortPars - postNow$mortPars)
         acceptProb <- runif(1)
@@ -1383,15 +1383,15 @@ basta <-
     }
     
     # Sample recapture parameters:
-    parsNow <- .SamplePiPars(parsNow, agesNow, .fullParObj, .dataObj)
-    postNow <- .CalcPostPi(parsNow, postNow, agesNow, 1:.dataObj$n, 
-        .fullParObj, .dataObj)
+    parsNow <- .SamplePiPars(parsNow, agesNow, fullParObj, dataObj)
+    postNow <- .CalcPostPi(parsNow, postNow, agesNow, 1:dataObj$n, 
+        fullParObj, dataObj)
     
     # Sample early age parameter:
     if (class(parsNow)[2] == "lambda") {
-      parsNew <- .ProposeLambda(parsNow, .fullParObj)
-      postNew <- .CalcPostLambda(parsNew, postNow, agesNow, 1:.dataObj$n, 
-          .fullParObj)
+      parsNew <- .ProposeLambda(parsNow, fullParObj)
+      postNew <- .CalcPostLambda(parsNew, postNow, agesNow, 1:dataObj$n, 
+          fullParObj)
       acceptCrit <- exp(postNew$lambda - postNow$lambda)
       acceptProb <- runif(1)
       if (acceptCrit > acceptProb) {
@@ -1401,42 +1401,42 @@ basta <-
     }
     
     # Sum up columns:
-    postNow <- .SumPosts(postNow, 1:.dataObj$n)
+    postNow <- .SumPosts(postNow, 1:dataObj$n)
     
     # Sample Missing ages at death:
-    if (class(.dataObj) == "ageUpd") {
-      agesNew <- .SampleAges(agesNow, .dataObj, .algObj)
+    if (class(dataObj) == "ageUpd") {
+      agesNew <- .SampleAges(agesNow, dataObj, algObj)
       idNew <- which(agesNew$ages[, 'birth'] != agesNow$ages[, 'birth'] | 
               agesNew$ages[, 'death'] != agesNow$ages[, 'death'])
       postNew <- .CalcPostX(agesNew, parsNow, postNow, parsCovNow, 
-          .dataObj$idNoA, .CalcSurv, .priorAgeObj, .fullParObj, .covObj,
-          .dataObj) 
+          dataObj$idNoA, CalcSurv, priorAgeObj, fullParObj, covObj,
+          dataObj) 
       idAccept <- .AcceptAges(postNow, postNew, idNew)
       postNow$mat[idAccept, ] <- postNew$mat[idAccept, ]
       agesNow$ages[idAccept, ] <- agesNew$ages[idAccept, ]
       agesNow$alive[idAccept, ] <- agesNew$alive[idAccept, ]
-      postNow$mortPars <- .CalcPostMortPars(parsNow, postNow, .fullParObj)
+      postNow$mortPars <- .CalcPostMortPars(parsNow, postNow, fullParObj)
       if (class(parsNow)[2] == "lambda") {
         postNow$lambda <- sum(postNow$mat[, "lx"]) + 
-            dtnorm(parsNow$lambda, mean = .fullParObj$lambda$priorMean, 
-                sd = .fullParObj$lambda$priorSd, lower = 0)
+            dtnorm(parsNow$lambda, mean = fullParObj$lambda$priorMean, 
+                sd = fullParObj$lambda$priorSd, lower = 0)
       }
     }
     # Update jumps:
     if (m %in% updObj$int) {
       jumpObj <- .UpdateJumps(jumpObj, updObj, m)
-      newJumps$theta[1:.fullParObj$theta$len] <- 
-          jumpObj$jump[1:.fullParObj$theta$len]
+      newJumps$theta[1:fullParObj$theta$len] <- 
+          jumpObj$jump[1:fullParObj$theta$len]
       if (class(parsNow)[1] == "theGam") {
-        newJumps$gamma <- jumpObj$jump[-c(1:.fullParObj$theta$len)]
+        newJumps$gamma <- jumpObj$jump[-c(1:fullParObj$theta$len)]
       }
     }
   }
   options(op)
   aveJumps <- apply(matrix(jumpObj$jumpsMat[nrow(jumpObj$jumpsMat) -
                   c(100:0), ], ncol = ncol(jumpObj$jumpsMat)), 2, mean)
-  newJumps$theta[1:.fullParObj$theta$len] <- aveJumps[1:.fullParObj$theta$len]
-  if (class(.parsIni)[1] == "theGam") {
+  newJumps$theta[1:fullParObj$theta$len] <- aveJumps[1:fullParObj$theta$len]
+  if (class(parsIni)[1] == "theGam") {
     newJumps$gamma <- aveJumps[idGam]
   }
   cat(" done.\n\n")
@@ -1445,18 +1445,18 @@ basta <-
 
 
 # Diagnostics:
-.CalcDiagnost <- function(bastaOut, .algObj, .covObj, .defTheta, .fullParObj,
-    .dataObj) {
-  thinned <- seq(.algObj$burnin, .algObj$niter, .algObj$thinning)
+.CalcDiagnost <- function(bastaOut, algObj, covObj, defTheta, fullParObj,
+    dataObj) {
+  thinned <- seq(algObj$burnin, algObj$niter, algObj$thinning)
   nthin <- length(thinned)
   parMat <- bastaOut[[1]]$par[thinned, ]
-  fullParMat <- bastaOut[[1]]$par[.algObj$burnin:.algObj$niter, ]
+  fullParMat <- bastaOut[[1]]$par[algObj$burnin:algObj$niter, ]
   posterior <- bastaOut[[1]]$post[thinned]
-  if (.algObj$nsim > 1) {
-    for (ii in 2:.algObj$nsim) {
+  if (algObj$nsim > 1) {
+    for (ii in 2:algObj$nsim) {
       parMat <- rbind(parMat, bastaOut[[ii]]$par[thinned, ])
       fullParMat <- rbind(fullParMat, 
-          bastaOut[[ii]]$par[.algObj$burnin:.algObj$niter, ])
+          bastaOut[[ii]]$par[algObj$burnin:algObj$niter, ])
       posterior <- c(posterior, bastaOut[[ii]]$post[thinned])
     }
   }
@@ -1471,15 +1471,15 @@ basta <-
       "SerAutocor", "UpdateRate")
   
   # Calculate convergence if more than 1 simulations were run:
-  if (.algObj$nsim > 1) {
-    idSims <- rep(1:.algObj$nsim, each = nthin)
+  if (algObj$nsim > 1) {
+    idSims <- rep(1:algObj$nsim, each = nthin)
     Means <- apply(parMat, 2, function(x) 
           tapply(x, idSims, mean))
     Vars <- apply(parMat, 2, function(x) 
           tapply(x, idSims, var))
     meanall <- apply(Means, 2, mean)
-    B <- nthin / (.algObj$nsim - 1) * apply(t((t(Means) - meanall)^2), 2, sum)
-    W <- 1 / .algObj$nsim * apply(Vars, 2, sum)
+    B <- nthin / (algObj$nsim - 1) * apply(t((t(Means) - meanall)^2), 2, sum)
+    W <- 1 / algObj$nsim * apply(Vars, 2, sum)
     Varpl <- (nthin - 1) / nthin * W + 1 / nthin * B
     Rhat <- sqrt(Varpl / W)
     Rhat[Varpl==0] <- 1
@@ -1502,8 +1502,8 @@ basta <-
       names(modSel) <- c("D.ave", "D.mode", "pD", "k", "DIC")
       cat("Survival parameters converged appropriately.",
           "\nDIC was calculated.\n")
-      kulLeib <- .CalcKulbackLeibler(coef, .covObj, .defTheta, .fullParObj, 
-          .algObj, .dataObj)
+      kulLeib <- .CalcKulbackLeibler(coef, covObj, defTheta, fullParObj, 
+          algObj, dataObj)
     } else {
       warning("Convergence not reached for some survival parameters.",
           "\nDIC could not be calculated.\n", call. = FALSE)
@@ -1520,21 +1520,21 @@ basta <-
   return(diagObj)
 }
 
-.CalcKulbackLeibler <- function(coef, .covObj, .defTheta, .fullParObj, .algObj,
-    .dataObj) {
-  if (!is.null(.covObj$cat) & 
-      !(length(.covObj$cat) == 2 & class(.covObj)[1] == "propHaz")) {
-    if (length(.covObj$cat) > 1) {
-      if (class(.covObj)[1] %in% c("fused", "inMort")) {
-        parNames <- .defTheta$name
-        nPar <- .defTheta$length
-        low <- .defTheta$low
-        nCat <- length(.covObj$cat)
-        namesCat <- names(.covObj$cat)
+.CalcKulbackLeibler <- function(coef, covObj, defTheta, fullParObj, algObj,
+    dataObj) {
+  if (!is.null(covObj$cat) & 
+      !(length(covObj$cat) == 2 & class(covObj)[1] == "propHaz")) {
+    if (length(covObj$cat) > 1) {
+      if (class(covObj)[1] %in% c("fused", "inMort")) {
+        parNames <- defTheta$name
+        nPar <- defTheta$length
+        low <- defTheta$low
+        nCat <- length(covObj$cat)
+        namesCat <- names(covObj$cat)
       } else {
         parNames <- "gamma"
-        nCat <- length(.covObj$cat) - 1
-        namesCat <- names(.covObj$cat)[-1]
+        nCat <- length(covObj$cat) - 1
+        namesCat <- names(covObj$cat)[-1]
         nPar <- 1
         low <- -Inf
       }
@@ -1554,7 +1554,7 @@ basta <-
                 sprintf("%s - %s", namesCat[j], namesCat[i]))
             for (p in 1:nPar) {
               idP <- sapply(c(i, j), function(ij) 
-                    which(.fullParObj$allNames == 
+                    which(fullParObj$allNames == 
                             sprintf("%s.%s", parNames[p], namesCat[ij])))
               parRan <- range(sapply(1:2, function(pp) qtnorm(c(0.001, 0.999), 
                             coef[idP[pp], 1], coef[idP[pp], 2], 
@@ -1588,102 +1588,102 @@ basta <-
   return(outList)
 }
 
-.CalcQuants <- function(bastaOut, bastaResults, .defTheta, .fullParObj, .algObj,
-    .dataObj, .CalcSurv, .CalcMort, .covObj, .agesIni) {
-  if (class(.agesIni)[1] == "ageUpd") {
-    nthin <- ceiling((.algObj$niter - .algObj$burnin + 1) / .algObj$thinning)
-    bMat <- array(matrix(.dataObj$bi, nthin, .dataObj$n, byrow = TRUE), 
-        dim = list(nthin, .dataObj$n, .algObj$nsim))
-    if (.dataObj$updB) {
-      for (sim in 1:.algObj$nsim) {
-        bMat[, .dataObj$idNoB, sim] <- bastaOut[[sim]]$birth
+.CalcQuants <- function(bastaOut, bastaResults, defTheta, fullParObj, algObj,
+    dataObj, CalcSurv, CalcMort, covObj, agesIni) {
+  if (class(agesIni)[1] == "ageUpd") {
+    nthin <- ceiling((algObj$niter - algObj$burnin + 1) / algObj$thinning)
+    bMat <- array(matrix(dataObj$bi, nthin, dataObj$n, byrow = TRUE), 
+        dim = list(nthin, dataObj$n, algObj$nsim))
+    if (dataObj$updB) {
+      for (sim in 1:algObj$nsim) {
+        bMat[, dataObj$idNoB, sim] <- bastaOut[[sim]]$birth
       }
     }
-    dMat <- array(matrix(.dataObj$di, nthin, .dataObj$n, byrow = TRUE), 
-        dim = list(nthin, .dataObj$n, .algObj$nsim))
-    if (.dataObj$updD) {
-      for (sim in 1:.algObj$nsim) {
-        dMat[, .dataObj$idNoD, sim] <- bastaOut[[sim]]$death
+    dMat <- array(matrix(dataObj$di, nthin, dataObj$n, byrow = TRUE), 
+        dim = list(nthin, dataObj$n, algObj$nsim))
+    if (dataObj$updD) {
+      for (sim in 1:algObj$nsim) {
+        dMat[, dataObj$idNoD, sim] <- bastaOut[[sim]]$death
       }
     }
     qdMat <- apply(dMat, 2, quantile, c(0.5, 0.025, 0.975))
     qbMat <- apply(bMat, 2, quantile, c(0.5, 0.025, 0.975))
     qxMat <- apply(dMat - bMat, 2, quantile, c(0.5, 0.025, 0.975))
   } else {
-    qbMat <- matrix(.dataObj$bi, nrow = 1)
-    qdMat <- matrix(.dataObj$di, nrow = 1)
+    qbMat <- matrix(dataObj$bi, nrow = 1)
+    qdMat <- matrix(dataObj$di, nrow = 1)
     qxMat <- qdMat - qbMat
   }
-  ageRan <- range(qxMat[1, qxMat[1, ] >= .algObj$minAge]) - .algObj$minAge
+  ageRan <- range(qxMat[1, qxMat[1, ] >= algObj$minAge]) - algObj$minAge
   ageVec <- seq(0.001, ageRan[2], length = 100)
   mxq <- Sxq <- list()
-  if (is.null(.covObj$cat)) {
+  if (is.null(covObj$cat)) {
     covNames <- c("noCov")
   } else {
-    covNames <- paste(".", names(.covObj$cat), sep = "")
+    covNames <- paste(".", names(covObj$cat), sep = "")
   }
   for (cov in covNames) {
     # Set theta parameters:
-    if (class(.covObj)[1] %in% c('noCov', 'propHaz')) {
-      thPars <- matrix(bastaResults$params[, .defTheta$name], 
-          ncol = .defTheta$length)
-    } else if (class(.covObj)[1] == "fused") {
-      idTh <- grep(cov, .fullParObj$allNames, fixed = TRUE)
+    if (class(covObj)[1] %in% c('noCov', 'propHaz')) {
+      thPars <- matrix(bastaResults$params[, defTheta$name], 
+          ncol = defTheta$length)
+    } else if (class(covObj)[1] == "fused") {
+      idTh <- grep(cov, fullParObj$allNames, fixed = TRUE)
       thPars <- matrix(bastaResults$params[, idTh], 
           ncol = length(idTh))
     } else {
-      if (class(.covObj)[2] %in% c("cateCov", "bothCov")) {
-        idTh <- grep(cov, .fullParObj$allNames, fixed = TRUE)
+      if (class(covObj)[2] %in% c("cateCov", "bothCov")) {
+        idTh <- grep(cov, fullParObj$allNames, fixed = TRUE)
       } else {
-        idTh <- grep("Intercept", .fullParObj$allNames, fixed = TRUE)
+        idTh <- grep("Intercept", fullParObj$allNames, fixed = TRUE)
       }
       thPars <- matrix(bastaResults$params[, idTh], ncol = length(idTh))
-      if (!is.null(.covObj$cont)) {
-        for (pp in names(.covObj$cont)) {
-          idCon <- which(substr(.fullParObj$allNames, 
-                  nchar(.fullParObj$allNames) - (nchar(pp)-1), 
-                  nchar(.fullParObj$allNames)) == pp)
+      if (!is.null(covObj$cont)) {
+        for (pp in names(covObj$cont)) {
+          idCon <- which(substr(fullParObj$allNames, 
+                  nchar(fullParObj$allNames) - (nchar(pp)-1), 
+                  nchar(fullParObj$allNames)) == pp)
           thPars <- thPars + 
               matrix(bastaResults$params[, idCon], ncol = length(idCon)) *
-              mean(.covObj$inMort[, .covObj$cont[pp]])
+              mean(covObj$inMort[, covObj$cont[pp]])
         }
       }
     }
-    colnames(thPars) <- .defTheta$name
+    colnames(thPars) <- defTheta$name
     # Set gamma parameters:
-    if (class(.covObj)[1] %in% c('noCov', 'inMort')) {
+    if (class(covObj)[1] %in% c('noCov', 'inMort')) {
       gamPar <- rep(0, nrow(bastaResults$params))
-    } else if (class(.covObj)[1] == "fused") {
-      idGam <- grep("gamma", .fullParObj$allNames)
+    } else if (class(covObj)[1] == "fused") {
+      idGam <- grep("gamma", fullParObj$allNames)
       gamPar <- matrix(bastaResults$params[, idGam], ncol = length(idGam)) %*% 
-          c(apply(.covObj$propHaz, 2, mean, na.rm = TRUE))
+          c(apply(covObj$propHaz, 2, mean, na.rm = TRUE))
     } else {
-      if (is.null(.covObj$cat)) {
+      if (is.null(covObj$cat)) {
         gamPar <- rep(0, nrow(bastaResults$params))
-      } else if (cov == sprintf(".%s", names(.covObj$cat)[1])) {
+      } else if (cov == sprintf(".%s", names(covObj$cat)[1])) {
         gamPar <- rep(0, nrow(bastaResults$params))
       } else {
-        gamPar <- bastaResults$params[, grep(cov, .fullParObj$allNames, 
+        gamPar <- bastaResults$params[, grep(cov, fullParObj$allNames, 
                 fixed = TRUE)]
       }
-      if (!is.null(.covObj$cont)) {
-        idGam <- grep("gamma", .fullParObj$allNames)
-        idCon <- idGam[which(substr(.fullParObj$allNames[idGam], 7, 
-                        nchar(.fullParObj$allNames[idGam])) %in% 
-                    names(.covObj$cont))]
+      if (!is.null(covObj$cont)) {
+        idGam <- grep("gamma", fullParObj$allNames)
+        idCon <- idGam[which(substr(fullParObj$allNames[idGam], 7, 
+                        nchar(fullParObj$allNames[idGam])) %in% 
+                    names(covObj$cont))]
         gamPar <- gamPar + t(t(as.matrix(bastaResults$params[, idCon])) * 
-                apply(as.matrix(.covObj$propHaz[, names(.covObj$cont)]), 2, 
+                apply(as.matrix(covObj$propHaz[, names(covObj$cont)]), 2, 
                     mean, na.rm = TRUE))
       }
     }
     mxq[[cov]] <- apply(sapply(1:nrow(thPars), function(pp) 
-              .CalcMort(ageVec, t(thPars[pp, ])) * exp(gamPar[pp])), 1, 
+              CalcMort(ageVec, t(thPars[pp, ])) * exp(gamPar[pp])), 1, 
         quantile, c(0.5, 0.025, 0.975))
-    colnames(mxq[[cov]]) <- ageVec + .algObj$minAge
+    colnames(mxq[[cov]]) <- ageVec + algObj$minAge
     Sxq[[cov]] <- apply(sapply(1:nrow(thPars), function(pp) 
-              .CalcSurv(ageVec, t(thPars[pp, ]))^exp(gamPar[pp])), 1, 
+              CalcSurv(ageVec, t(thPars[pp, ]))^exp(gamPar[pp])), 1, 
         quantile, c(0.5, 0.025, 0.975))
-    colnames(Sxq[[cov]]) <- ageVec + .algObj$minAge
+    colnames(Sxq[[cov]]) <- ageVec + algObj$minAge
   }
   bastaResults$birthQuant <- qbMat
   bastaResults$deathQuant <- qdMat
@@ -1693,24 +1693,24 @@ basta <-
   return(bastaResults)
 }
 
-.CalcLifeTable <- function(bastaResults, lifeTable, object, .covObj, .algObj) {
+.CalcLifeTable <- function(bastaResults, lifeTable, object, covObj, algObj) {
   if (lifeTable) {
     LT  <- list()
-    if (is.null(.covObj$cat)) {
+    if (is.null(covObj$cat)) {
       covNames <- c("noCov")
     } else {
-      covNames <- names(.covObj$cat)
+      covNames <- names(covObj$cat)
     }
     for (cov in covNames) {
       if (cov == "noCov") {
         x <- bastaResults$agesQuant[1, 
-            bastaResults$birthQuant[1, ] >= .algObj$start]
+            bastaResults$birthQuant[1, ] >= algObj$start]
       } else {
         x <- bastaResults$agesQuant[1, object[, cov] == 1 & 
-                bastaResults$birthQuant[1, ] >= .algObj$start]
+                bastaResults$birthQuant[1, ] >= algObj$start]
       }
       tempLT <- MakeLifeTable(x, ax = 0.5, n = 1)
-      tempLT <- subset(tempLT, tempLT$StartAge >= .algObj$minAge)
+      tempLT <- subset(tempLT, tempLT$StartAge >= algObj$minAge)
       rownames(tempLT) <- NULL
       LT[[cov]] <- tempLT
     }
