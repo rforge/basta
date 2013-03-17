@@ -165,8 +165,10 @@ basta <-
   ageObj$ages <- cbind(birth, death, age)
   
   # 5.5 Full observation matrix:
-  firstObs <- c(apply(cbind(algObj$start, birth + 1), 1, max))
-  lastObs <- c(apply(cbind(algObj$end, death), 1, min))
+#  firstObs <- c(apply(cbind(algObj$start, birth + 1), 1, max))
+#  lastObs <- c(apply(cbind(algObj$end, death), 1, min))
+  firstObs <- birth + 1
+  lastObs <- death
   alive <- .BuildAliveMatrix(firstObs, lastObs, dataObj)
   ageObj$alive <- alive
   class(ageObj) <- c(class(dataObj), "noMinAge")
@@ -190,6 +192,8 @@ basta <-
     ageAdTr[idtr] <- algObj$start - (birth[idtr] + algObj$minAge)
     ageObj$ages <- cbind(ageObj$ages, ageAd, ageAdTr, indAd, 
         ageJu, ageJuTr, indJu)
+    ageObj$asJuv <- .BuildAliveMatrix(birth, birth + 
+            algObj$minAge - 1, dataObj)
     class(ageObj)[2] <- "minAge"
   } else {
     idtr <- which(birth < algObj$start)
@@ -603,9 +607,12 @@ basta <-
     fullParObj$pi$idpi <- idpi
     fullParObj$pi$n <- npi
     fullParObj$pi$prior2 <- 0.1
-    fullParObj$pi$Prior1 <- tapply(0.1 + t(t(dataObj$Y) %*% rep(1, dataObj$n)),
-        idpi, sum)
-    
+    if (algObj$minAge == 0) {
+      fullParObj$pi$Prior1 <- tapply(0.1 + t(t(dataObj$Y) %*% rep(1, dataObj$n)),
+          idpi, sum)
+    } else {
+      fullParObj$piJu <- 0.5
+    }
     fullParObj$pi$len <- length(fullParObj$pi$start)
     fullParObj$allNames <- c(allParNames, paste("pi", algObj$recap, sep = "."))
     Classes <- c(Classes, "pi", "noEta")
@@ -629,6 +636,9 @@ basta <-
   }
   if (fullParObj$class[3] %in% c("pi", "piEta")) {
     iniParObj$pi <- fullParObj$pi$start
+    if (!is.null(fullParObj$piJu)) {
+      iniParObj$piJu <- fullParObj$piJu
+    }
   }
   class(iniParObj) <- fullParObj$class
   return(iniParObj)
@@ -638,8 +648,8 @@ basta <-
 .BuildPostObj <- function(ageObj, parObj, parCovObj, dataObj, 
     CalcSurv, priorAgeObj, fullParObj, covObj) {
   postObj <- list()
-  postObj$mat <- matrix(0, dataObj$n, 6, 
-      dimnames = list(NULL, c("fx", "Sx", "vx", "lx", "px", "postX")))
+  postObj$mat <- matrix(0, dataObj$n, 7, 
+      dimnames = list(NULL, c("fx", "Sx", "vx", "lx", "px", "pxJu", "postX")))
   postObj <- .CalcPostX(ageObj, parObj, postObj, parCovObj, 1:dataObj$n, 
       CalcSurv, priorAgeObj, fullParObj, covObj, dataObj)  
   return(postObj)
@@ -686,10 +696,12 @@ basta <-
   ageObjNew$ages[dataObj$idNoA, "age"] <- 
       ageObjNew$ages[dataObj$idNoA, "death"] - 
       ageObjNew$ages[dataObj$idNoA, "birth"]
-  firstAlive <- c(apply(cbind(algObj$start, 
-              ageObjNew$ages[, "birth"] + 1), 1, max))
-  lastAlive <- c(apply(cbind(algObj$end, 
-              ageObjNew$ages[, "death"]), 1, min))
+#  firstAlive <- c(apply(cbind(algObj$start, 
+#              ageObjNew$ages[, "birth"] + 1), 1, max))
+#  lastAlive <- c(apply(cbind(algObj$end, 
+#              ageObjNew$ages[, "death"]), 1, min))
+  firstAlive <- ageObjNew$ages[, "birth"] + 1
+  lastAlive <- ageObjNew$ages[, "death"]
   alive <- .BuildAliveMatrix(firstAlive, lastAlive, dataObj)
   ageObjNew$alive <- alive
   return(ageObjNew)
@@ -710,6 +722,8 @@ basta <-
   ageObjNew <- .ProposeAges(ageObj, dataObj, algObj)
   ageObjNew$ages[dataObj$idNoA, ] <- 
       .SplitByMinAge(ageObjNew$ages[dataObj$idNoA, ], algObj)
+  ageObjNew$asJuv <- .BuildAliveMatrix(ageObjNew$ages[, "birth"], 
+      ageObjNew$ages[, "birth"] + algObj$minAge - 1, dataObj)
   return(ageObjNew)
 }
 
@@ -806,7 +820,19 @@ basta <-
 # Propose pi's:
 .SamplePiPars <- function(parObj, ...) UseMethod(".SamplePiPars")
 
+.SamplePiPars.noPi <- function(parObj, ...) {
+  return(parObj)
+}
+
+
 .SamplePiPars.pi <- function(parObj, ageObj, fullParObj, dataObj) {
+  parObj <- .CalcPiConjPriors(ageObj, parObj, fullParObj, dataObj) 
+  return(parObj)
+}
+
+.CalcPiConjPriors <- function(ageObj) UseMethod(".CalcPiConjPriors")
+
+.CalcPiConjPriors.noMinAge <- function(ageObj, parObj, fullParObj, dataObj) {
   rho2 <- fullParObj$pi$prior2 + 
       t(t(ageObj$alive - dataObj$Y) %*% rep(1, dataObj$n))
   Rho2 <- tapply(rho2, fullParObj$pi$idpi, sum)
@@ -821,9 +847,32 @@ basta <-
   return(parObj)
 }
 
-.SamplePiPars.noPi <- function(parObj, ...) {
+.CalcPiConjPriors.minAge <- function(ageObj, parObj, fullParObj, dataObj) {
+  Rho1Ad <- tapply(0.1 + t(t(dataObj$Y * (ageObj$asJuv - 1) * (-1)) %*% 
+              rep(1, dataObj$n)), fullParObj$pi$idpi, sum)
+  rho2 <- fullParObj$pi$prior2 + 
+      t(t((ageObj$alive - dataObj$Y) * (ageObj$asJuv - 1) * (-1)) %*% 
+              rep(1, dataObj$n))
+  Rho2Ad <- tapply(rho2, fullParObj$pi$idpi, sum)
+  piAdNew <- rbeta(fullParObj$pi$n, Rho1Ad, Rho2Ad)
+  if (1 %in% piAdNew) {
+    piAdNew[piAdNew == 1] <- 1-1e-5
+    warning("Some recapture probabilities are equal to 1.",
+        "\nThey have been constraint to be fractionally less than 1 ",
+        "for computational reasons\n", call. = FALSE)
+  }
+  rho1Ju <- 0.1 + sum(t((dataObj$Y * ageObj$asJuv)) %*% rep(1, dataObj$n))
+  rho2Ju <- 0.1 + sum(t((ageObj$alive - dataObj$Y) * ageObj$asJuv) %*% 
+          rep(1, dataObj$n))
+  piJuNew <- rbeta(fullParObj$pi$n, rho1Ju, rho2Ju)
+  if (piJuNew == 1) {
+    piJuNew <- 1-1e-5
+  }
+  parObj$pi <- piAdNew
+  parObj$piJu <- piJuNew
   return(parObj)
 }
+
 
 .ProposeLambda <- function(parObj, ...) UseMethod(".ProposeLambda")
 
@@ -1006,7 +1055,32 @@ basta <-
 
 .CalcPostPi <- function(parObj, ...) UseMethod(".CalcPostPi")
 
+.CalcPostPi.noPi <- function(parObj, postObj, ...) {
+  return(postObj)
+}
+
 .CalcPostPi.pi <- function(parObj, postObj, ageObj, ind, 
+    fullParObj, dataObj) {
+  postObjNew <- .CalcPostPiJuAd(ageObj, parObj, postObj, ind, fullParObj, 
+      dataObj)
+  return(postObj)
+}
+
+.CalcPostPiJuAd <- function(ageObj, ...) UseMethod(".CalcPostPiJuAd")
+
+.CalcPostPiJuAd.minAge <- function(ageObj, parObj, postObj, ind, 
+    fullParObj, dataObj) {
+  postObj$mat[ind, "px"] <- 
+      (ageObj$alive * ((ageObj$asJuv - 1) * (-1)) - 
+        dataObj$obsMat)[ind, ] %*% 
+      log(1 - parObj$pi[fullParObj$pi$idpi])
+  postObj$mat[ind, "pxJu"] <- 
+      ((ageObj$alive - dataObj$obsMat) * ageObj$asJuv)[ind, ] %*% 
+      log(1 - rep(parObj$piJu, dataObj$studyLen))
+  return(postObj)
+}
+
+.CalcPostPiJuAd.noMinAge <- function(ageObj, parObj, postObj, ind, 
     fullParObj, dataObj) {
   postObj$mat[ind, "px"] <- 
       (ageObj$alive - dataObj$obsMat)[ind, ] %*% 
@@ -1014,13 +1088,10 @@ basta <-
   return(postObj)
 }
 
-.CalcPostPi.noPi <- function(parObj, postObj, ...) {
-  return(postObj)
-}
 
 .SumPosts <- function(postObj, ind) {
   postObj$mat[ind, "postX"] <- 
-      postObj$mat[ind, c("fx", "vx", "lx", "px")] %*% rep(1, 4)
+      postObj$mat[ind, c("fx", "vx", "lx", "px", "pxJu")] %*% rep(1, 5)
   return(postObj)
 }
 
