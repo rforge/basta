@@ -34,6 +34,7 @@ function(object, studyStart, studyEnd, autofix = rep(0, 7), silent=TRUE) {
       Y            <- Y[-type1, ]
       idnames      <- idnames[-type1]
       Z            <- Z[-type1, ]
+      Tm           <- Tm[-type1, ]
       n            <- nrow(Y)
       cat("These records have been removed from the Dataframe\n")
     }
@@ -51,6 +52,7 @@ function(object, studyStart, studyEnd, autofix = rep(0, 7), silent=TRUE) {
       Y            <- Y[-type2, ]
       idnames      <- idnames[-type2]
       Z            <- Z[-type2, ]
+      Tm           <- Tm[-type2, ]
       n            <- nrow(Y)
       cat("These records have been removed from the Dataframe\n")
     }
