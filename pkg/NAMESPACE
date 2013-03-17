@@ -50,3 +50,8 @@ S3method(".SampleAges", "minAge")
 S3method(".SampleAges", "noMinAge")
 S3method(".SamplePiPars", "noPi")
 S3method(".SamplePiPars", "pi")
+S3method(".CalcPiConjPriors", "minAge")
+S3method(".CalcPiConjPriors", "noMinAge")
+S3method(".CalcPostPiJuAd", "minAge")
+S3method(".CalcPostPiJuAd", "noMinAge")
+
