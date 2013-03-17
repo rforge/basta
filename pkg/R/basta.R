@@ -830,7 +830,7 @@ basta <-
   return(parObj)
 }
 
-.CalcPiConjPriors <- function(ageObj) UseMethod(".CalcPiConjPriors")
+.CalcPiConjPriors <- function(ageObj, ...) UseMethod(".CalcPiConjPriors")
 
 .CalcPiConjPriors.noMinAge <- function(ageObj, parObj, fullParObj, dataObj) {
   rho2 <- fullParObj$pi$prior2 + 
