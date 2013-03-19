@@ -717,7 +717,9 @@ basta <-
   ages[, "indAd"] <- 0
   ages[, "indJu"] <- 0
   ages[ages[, "age"] >= algObj$minAge, "indAd"] <- 1
-  ages[ages[, "age"] < algObj$minAge, "indJu"] <- 1
+#  ages[ages[, "age"] < algObj$minAge, "indJu"] <- 1
+  ages[ages[, "age"] <= algObj$minAge, "indJu"] <- 1
+  ages[, "ageJu"] <- ages[, "age"]
   ages[ages[, "age"] > algObj$minAge, "ageJu"] <- algObj$minAge
   ages[, "ageAd"] <- ages[, "age"] - algObj$minAge
   ages[, "ageAd"] <- ages[, "ageAd"] * ages[, "indAd"]
@@ -725,8 +727,8 @@ basta <-
           algObj$start - ages[, "birth"] < algObj$minAge)
   ages[idtr, "ageJuTr"] <- algObj$start - ages[idtr, "birth"]
   idtr <- which(ages[, "birth"] + algObj$minAge < algObj$start)
-  ages[idtr, "ageAdTr"] <- algObj$start - (ages[idtr, "birth"] + 
-        algObj$minAge)
+  ages[idtr, "ageAdTr"] <- (algObj$start - (ages[idtr, "birth"] + 
+        algObj$minAge)) * ages[idtr, "indAd"]
   return(ages)
 }
 
@@ -991,6 +993,7 @@ basta <-
 .CalcPostLambda.lambda <- function(parObj, postObj, ageObj, ind, fullParObj) {
   postObj$mat[ind, "lx"] <- 
       log(parObj$lambda) * ageObj$ages[ind, "indJu"] - 
+#      log(parObj$lambda) - 
       parObj$lambda * ageObj$ages[ind, "ageJu"] + 
       parObj$lambda * ageObj$ages[ind, "ageJuTr"]
   postObj$lambda <- sum(postObj$mat[, "lx"]) + 
