@@ -1617,8 +1617,7 @@ basta <-
     qdMat <- matrix(dataObj$di, nrow = 1)
     qxMat <- qdMat - qbMat
   }
-  ageRan <- range(qxMat[1, qxMat[1, ] >= algObj$minAge]) - algObj$minAge
-  ageVec <- seq(0.001, ageRan[2], length = 100)
+  ageVec <- seq(0.001, max(qxMat[1, ])*5, 0.1)
   mxq <- Sxq <- list()
   if (is.null(covObj$cat)) {
     covNames <- c("noCov")
@@ -1679,15 +1678,18 @@ basta <-
                     mean, na.rm = TRUE))
       }
     }
-    mxq[[cov]] <- apply(sapply(1:nrow(thPars), function(pp) 
-              CalcMort(ageVec, t(thPars[pp, ])) * exp(gamPar[pp])), 1, 
-        quantile, c(0.5, 0.025, 0.975))
-    colnames(mxq[[cov]]) <- ageVec + algObj$minAge
     Sxq[[cov]] <- apply(sapply(1:nrow(thPars), function(pp) 
               CalcSurv(ageVec, t(thPars[pp, ]))^exp(gamPar[pp])), 1, 
         quantile, c(0.5, 0.025, 0.975))
     colnames(Sxq[[cov]]) <- ageVec + algObj$minAge
-  }
+    id01 <- which(Sxq[[cov]][1, ] < 0.01)[1]
+    Sxq[[cov]] <- Sxq[[cov]][, 1:id01]
+    mxq[[cov]] <- apply(sapply(1:nrow(thPars), function(pp) 
+              CalcMort(ageVec, t(thPars[pp, ])) * exp(gamPar[pp])), 1, 
+        quantile, c(0.5, 0.025, 0.975))
+    colnames(mxq[[cov]]) <- ageVec + algObj$minAge
+    mxq[[cov]] <- mxq[[cov]][, 1:id01]
+    }
   bastaResults$birthQuant <- qbMat
   bastaResults$deathQuant <- qdMat
   bastaResults$agesQuant <- qxMat
