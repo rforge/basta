@@ -93,8 +93,8 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0,
   bastaResults$settings <- c(niter, burnin, thinning, nsim)
   names(bastaResults$settings) <- c("niter", "burnin", "thinning", "nsim")
   bastaResults$modelSpecs <- 
-      c(unlist(algObj)[c("model", "shape", "covStruc", "minAge")],
-          paste(names(covObj$cat), collapse = ", "), 
+    c(model, shape, covarsStruct, minAge,
+        paste(names(covObj$cat), collapse = ", "), 
           paste(names(covObj$cont), collapse = ", "))
   names(bastaResults$modelSpecs) <- c("model", "shape", "Covar. structure", 
       "minAge", "Categorical", "Continuous")
