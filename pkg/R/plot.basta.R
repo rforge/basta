@@ -163,27 +163,28 @@ plot.basta <-
       
       # NEW VERSION:  
     } else {
-      if (length(x$survQuant) <= 8) {
+      ncovs <- length(x$survQuant)
+      if (ncovs <= 8) {
         Bord <- c('#E41A1C', '#377EB8', '#4DAF4A', '#984EA3', '#FF7F00', 
             '#A65628', '#F781BF', '#999999')[round(seq(1, 8, 
                     length = length(x$mortQuant)))]
       } else {
-        Bord <- rainbow(length(x$survQuant))
+        Bord <- rainbow(ncovs)
       }
       Cols <- Bord
       for(cl in 1:length(Cols)) {
         Cols[cl] <- adjustcolor(Bord[cl], alpha.f = seq(0.1, 0.4, 
-                length = length(x$mortQuant))[cl])
+                length = ncovs)[cl])
       }
       op <- par(mfrow = c(2, 1), mar = c(4, 4, 3, 2))
-      xv <- as.numeric(colnames(x$mortQuant[[1]]))
+      xv <- lapply(1:ncovs, function(idcovs) as.numeric(colnames(x$mortQuant[[idcovs]])))
       if (!("xlim" %in% names(list(...)))) {
-        xlim <- c(0, max(xv))
-        idRange <- length(xv)
+        xlim <- c(0, max(unlist(xv)))
+        idRange <- lapply(1:ncovs, function(idcovs) length(xv[[idcovs]]))
       } else {
         xlim <- list(...)$xlim
-        idRange <- which(abs(xv - xlim[2]) == min(abs(xv - xlim[2])))[1]
-        xv <- xv[1:idRange]
+        idRange <- lapply(1:ncovs, function(idcovs) which(abs(xv[[idcovs]] - xlim[2]) == min(abs(xv[[idcovs]] - xlim[2])))[1])
+        xv <- lapply(1:ncovs, function(idcovs) xv[[idcovs]][1:idRange[[idcovs]]])
       }
       if ("noCI" %in% names(list(...))) {
         noCI <- list(...)$noCI
@@ -200,7 +201,7 @@ plot.basta <-
           idQuants <- 1:3
         }
         ylim <- c(0, max(sapply(1:length(x[[dem]]), function(idem) 
-                      max(x[[dem]][[idem]][idQuants, 2:idRange]))))
+                      max(x[[dem]][[idem]][idQuants, 2:idRange[[idem]]]))))
         xlab <- ifelse(dem == "mortQuant", "Age", "")
         ylab <- ifelse(dem == "mortQuant", expression(mu(x)), expression(S(x)))
         main <- ifelse(dem == "mortQuant", "Mortality", "Survival")
@@ -208,14 +209,14 @@ plot.basta <-
             frame.plot = FALSE, main = main, ylim = c(0, ylim[2]))
         if (!noCI) {
           for (cov in 1:length(x$mortQuant)) {
-            polygon(c(xv[1:idRange], rev(xv[1:idRange])), 
-                c(x[[dem]][[cov]][2, 1:idRange], 
-                    rev(x[[dem]][[cov]][3, 1:idRange])),
+            polygon(c(xv[[cov]][1:idRange[[cov]]], rev(xv[[cov]][1:idRange[[cov]]])), 
+                c(x[[dem]][[cov]][2, 1:idRange[[cov]]], 
+                    rev(x[[dem]][[cov]][3, 1:idRange[[cov]]])),
                 col = Cols[cov], border = Bord[cov], lwd = 0.5, lty = 1)
           }
         }
         for (cov in 1:length(x$mortQuant)) {
-          lines(xv[1:idRange], x[[dem]][[cov]][1, 1:idRange], col = Bord[cov],
+          lines(xv[[cov]][1:idRange[[cov]]], x[[dem]][[cov]][1, 1:idRange[[cov]]], col = Bord[cov],
               lwd = 3)
         }
         if (dem == "survQuant" & length(x$mortQuant) > 1) {
