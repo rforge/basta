@@ -186,7 +186,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 													<p style="font-size:16px;padding-left:60px;padding-right:60px"><code style="color:#006600">&nbsp;&nbsp;&nbsp;&nbsp;plotFancyBaSTA(out)</code><br></p>
 													<p class="parag">which should produce a plot similar to Fig. 9 below.</p>
 													<p style="text-align:center"><img align="center" style="margin:0px;padding:0px;border:none;width:400px" align="middle" src="fancyBaSTA.jpg?"></p>
-													<p class="caption">Fig. 9. Density plots for a bathtub-logistic model and survival and mortality profiles for adult rooks (<i>Corvus frugilegus</i>) in locations X1 and X2 plotted using function <code style="color:#006600">plotFancyBaSTA()</code>.</p>
+													<p class="caption">Fig. 9. Density plots for a bathtub-logistic model and survival and mortality profiles for adult rooks (<i>Corvus frugilegus</i>) in locations X1 and X2 plotted using function <code style="color:#006600">plotFancyBaSTA()</code> (Jones and Colchero <i>in prep.</i>).</p>
 													<p class="parag">Note that this function is compatible with outputs from BaSTA version 1.5 and higher. Also, it is meant to plot outputs from models that used values of <code  style="color:#006600">all.in.mort</code> and <code  style="color:#006600">fused</code> for the <code  style="color:#006600"><b>shape</b></code> argument.</p>
 
 													<p></p>
