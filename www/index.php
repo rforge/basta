@@ -179,6 +179,15 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 													<p style="text-align:center"><img align="center" style="margin:0px;padding:0px;border:none;width:400px" align="middle" src="kestrelTrajsNoCI.jpg?"></p>
 													<p class="caption">Fig. 8. Zoom in on the survival probability and mortality trajectories for male (M) and female (F) kestrels (<i>Falco tinnunculus</i>).</p>
 													<p class="parag">In case models are not working properly or you have any doubts or problems, please contact us by registering to the <a href="http://lists.r-forge.r-project.org/mailman/listinfo/basta-users"  rel="nofollow" style="color:#84002E">BaSTA Users mailing list</a>.<br></p></p>
+													<hr>
+														<p class="parag">We have also produced an additional function to create plots as in Fig. 9 that include the density plots for the different parameters as well as the resulting survival and mortality profiles. This code can be downloaded by clicking <a href="plotFancyBaSTA.R" rel="nofollow" style="color:#84002E;font-family:verdana" target="_blank">here</a>. To produce the plot, save the function in a folder, say "C:/Documents/BaSTAtemp/", and load the function by typing into the R console:</p> 
+													<p style="font-size:16px;padding-left:60px;padding-right:60px"><code style="color:#006600">&nbsp;&nbsp;&nbsp;&nbsp;source("C:/Documents/BaSTAtemp/plotFancyBaSTA.R")</code><br></p>
+													<p class="parag">Then, to produce a plot from a given BaSTA output, say, <code style="color:#006600">out</code>, type the folowing command into the R console:</p>
+													<p style="font-size:16px;padding-left:60px;padding-right:60px"><code style="color:#006600">&nbsp;&nbsp;&nbsp;&nbsp;plotFancyBaSTA(out)</code><br></p>
+													<p class="parag">which should produce a plot similar to Fig. 9 below.</p>
+													<p style="text-align:center"><img align="center" style="margin:0px;padding:0px;border:none;width:400px" align="middle" src="fancyBaSTA.jpg?"></p>
+													<p class="caption">Fig. 9. Density plots for a bathtub-logistic model and survival and mortality profiles for adult rooks (<i>Corvus frugilegus</i>) in locations X1 and X2 plotted using function <code style="color:#006600">plotFancyBaSTA()</code>.</p>
+													<p class="parag">Note that this function is compatible with outputs from BaSTA version 1.5 and higher. Also, it is meant to plot outputs from models that used values of <code  style="color:#006600">all.in.mort</code> and <code  style="color:#006600">fused</code> for the <code  style="color:#006600"><b>shape</b></code> argument.</p>
 
 													<p></p>
 													<a href="#top" class="totop">Back to top</a>
