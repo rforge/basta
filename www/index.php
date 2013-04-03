@@ -60,6 +60,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 													<td class="button"><a href="#summary" class="button">SUMMARY</a></td>
 													<td class="button"><a href="#description" class="button">PACKAGE</a></td>
 													<td class="button"><a href="#use" class="button">APPLICATION</a></td>
+													<td class="button"><a href="#extra" class="button">EXTRA CODE</a></td>
 													<td class="button"><a href="#bugs" class="button">BUG FIXES</a></td>
 													<td class="button"><a href="#refs" class="button">REFERENCES</a></td>
 												</tr>
@@ -76,7 +77,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 													</td>
 													<td width="500" valign="top" style="padding-right:40px">
 														<p align="left" style="font-size:16px;line-height:1.25"><b>Authors:</b><br><a href="http://www.colchero.com" rel="nofollow" style="color:#84002E;font-family:verdana" target="_blank">Fernando Colchero</a><br><a href="http://www.owenjon.es" rel="nofollow" style="color:#84002E;font-family:verdana" target="_blank">Owen R. Jones</a><br><a href="http://www.demogr.mpg.de/en/institute/staff_directory_1899/maren_rebke_1430.htm" rel="nofollow" style="color:#84002E;font-family:verdana" target="_blank">Maren Rebke</a><br></p>
-														<p align="left" style="font-size:14px;line-height:1.25;text-align:justify"><br><b>Developed at:</b><br><a href="http://www.sdu.dk/en/Om_SDU/Institutter_centre/MaxO" rel="nofollow" style="color:#84002E;font-family:verdana" target="_blank">Max-Planck Odense Center on the Biodemography of Aging (MaxO)</a><br><a href="http://www.sdu.dk/en/Om_SDU/Institutter_centre/Imada_matematik_og_datalogi" rel="nofollow" style="color:#84002E;font-family:verdana" target="_blank">Institute of Mathematics and Computer Sciences (IMADA)</a><br><a href="http://www.sdu.dk/en/Om_SDU/Institutter_centre/I_Biologi" rel="nofollow" style="color:#84002E;font-family:verdana" target="_blank">Institute of Biology</a><br><a href="http://www.sdu.dk/en/" rel="nofollow" style="color:#84002E;font-family:verdana" target="_blank"><img alt="SDU" border="0" width="250px" align="right" style="vertical-align:top;outline-width:0px" src="sdulogo.gif"></a><br><br></p>
+														<p align="left" style="font-size:14px;line-height:1.25;text-align:justify"><br><b>Developed at:</b><br><a href="http://www.sdu.dk/en/Om_SDU/Institutter_centre/MaxO" rel="nofollow" style="color:#84002E;font-family:verdana" target="_blank">Max-Planck Odense Center on the Biodemography of Aging (MaxO)</a><br><a href="http://www.sdu.dk/en/Om_SDU/Institutter_centre/Imada_matematik_og_datalogi" rel="nofollow" style="color:#84002E;font-family:verdana" target="_blank">Institute of Mathematics and Computer Science (IMADA)</a><br><a href="http://www.sdu.dk/en/Om_SDU/Institutter_centre/I_Biologi" rel="nofollow" style="color:#84002E;font-family:verdana" target="_blank">Institute of Biology</a><br><a href="http://www.sdu.dk/en/" rel="nofollow" style="color:#84002E;font-family:verdana" target="_blank"><img alt="SDU" border="0" width="250px" align="right" style="vertical-align:top;outline-width:0px" src="sdulogo.gif"></a><br><br></p>
 														<p align="left" style="font-size:14px;line-height:1.25;text-align:justify"><br><b>Mailing list:</b><br>For enquiries, comments or bug reports,<br>please register to the <a href="http://lists.r-forge.r-project.org/mailman/listinfo/basta-users"  rel="nofollow" style="color:#84002E">BaSTA Users mailing list</a></p>
 														<p align="left" style="font-size:14px;line-height:1.25;text-align:justify"><br><b>Cite as:</b><br>Colchero, F., Jones, O.R and Rebke, M. (2012) BaSTA: an R package for Bayesian estimation of age-specific survival from incomplete mark-recapture/recovery data with covariates. <i>Methods in Ecology and Evolution</i>. 3: 466-470.</p>
 														<p></p>
@@ -93,14 +94,14 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 													<p class="parag"><b>BaSTA</b> is an R package (R Development Core Team 2012) that allows users to draw inference on age-specific survival and mortality patterns from capture-recapture/recovery data when a large number of individuals (or all) have missing age information (Colchero, Jones and Rebke 2012). <b>BaSTA</b> is based on a model developed by Colchero and Clark (2012), which extends inference from parameter estimates to the estimation of unknown (i.e. latent) times of birth and death. The package also allows testing the effect of categorical and continuous individual covariates on mortality and survival (for an example see Fig. 1).</p>
 													<p style="text-align:center"><br><img style="margin:0px;padding:0px;border:none" width="400px" align="middle" src="Sheep.png"><br></p>
 													<p class="caption">Fig. 1. <b>BaSTA</b> model output for sex differences in Soay sheep mortality using a Siler survival model (Colchero & Clark 2012). The left panel shows posterior distributions for the survival and recapture parameters while the right panel shows the resulting survival probabilities and the mortality rates for males and females.</p>
-													<p class="parag">Version 1.7 of the package is now availale on CRAN and can be installed by typing the following line of code into the R console: <br></p>
+													<p class="parag">Version 1.8 of the package is now availale on CRAN and can be installed by typing the following line of code into the R console: <br></p>
 													<p style="font-size:16px;padding-left:60px;padding-right:60px"><code style="color:#006600">&nbsp;&nbsp;&nbsp;&nbsp;install.packages("BaSTA")</code><br></p>
 													<!-- <p class="parag">However, we strongly recomend users to install the latest stable version, <b>BaSTA</b> (vers. 1.8), which should be available on CRAN in the next few days. This last version can be currently installed either from from R forge by typing:<br></p>
 													<p style="font-size:16px;padding-left:60px;padding-right:60px"><code style="color:#006600">&nbsp;&nbsp;&nbsp;&nbsp;install.packages("BaSTA", repos="http://R-Forge.R-project.org",</code><br></p>
 													<p style="font-size:16px;padding-left:60px;padding-right:60px"><code style="color:#006600">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type = "source")</code><br></p> -->
-													<p class="parag"><b>BaSTA 1.7 has important updates and improvements, so we stronlgy recomend users to install it.</b><br></p>
-													<p class="parag">However, we advise users to install the latest stable version, <b>BaSTA 1.8</b>, which should be available on CRAN in the next few days. This version can be downloaded by clicking <a href="BaSTA_1.8.tar.gz" rel="nofollow" style="color:#84002E;font-family:verdana" target="_blank">here</a>. Save the file in a folder of your choice, say ''C:/Documents/BaSTAtemp/'' for windows users, and then type on the R console:<br></p>
-													<p style="font-size:16px;padding-left:60px;padding-right:60px"><code style="color:#006600">&nbsp;&nbsp;&nbsp;&nbsp;install.packages("C:/Documents/BaSTAtemp/BaSTA_1.8.tar.gz", type = "source")</code><br></p>
+													<p class="parag"><b>BaSTA 1.8 has important updates and improvements, so we stronlgy recomend users to install it.</b><br></p>
+													<!-- <p class="parag">However, we advise users to install the latest stable version, <b>BaSTA 1.8</b>, which should be available on CRAN in the next few days. This version can be downloaded by clicking <a href="BaSTA_1.8.tar.gz" rel="nofollow" style="color:#84002E;font-family:verdana" target="_blank">here</a>. Save the file in a folder of your choice, say ''C:/Documents/BaSTAtemp/'' for windows users, and then type on the R console:<br></p>
+													<p style="font-size:16px;padding-left:60px;padding-right:60px"><code style="color:#006600">&nbsp;&nbsp;&nbsp;&nbsp;install.packages("C:/Documents/BaSTAtemp/BaSTA_1.8.tar.gz", type = "source")</code><br></p> -->
 													<p class="parag">We have set up a <a href="http://lists.r-forge.r-project.org/mailman/listinfo/basta-users"  rel="nofollow" style="color:#84002E">BaSTA Users mailing list</a> so users can ask questions or provide comments, suggestions or criticism that can help us improve the package. Users can register by <a href="https://lists.r-forge.r-project.org/cgi-bin/mailman/listinfo/basta-users"  rel="nofollow" class="intext">clicking here</a>. Also, you can see below a video hosted by the journal <a href="http://www.methodsinecologyandevolution.org/" rel="nofollow" style="color:#84002E;font-family:verdana" target="_blank">Methods in Ecology and Evolution</a> where we explain the rational behind the package and some general applications.<br></p>
 													<p><br></p>
 													<p style="text-align:center"><iframe width="480" height="270" src="http://www.youtube.com/embed/OLFzY3vHVOQ" frameborder="0" allowfullscreen style="display:block;margin:5px auto"></iframe></p>
@@ -156,7 +157,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 													<p style="font-size:16px;padding-left:60px;padding-right:60px"><code style="color:#006600">&nbsp;&nbsp;&nbsp;&nbsp;out &lt;- basta(object = myDataset, studyStart = 1995, studyEnd = 2005,</code><br></p>
 													<p style="font-size:16px;padding-left:60px;padding-right:60px"><code style="color:#006600">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>model = "LO", shape = "bathtub"</b>, nsim = 4, parallel = TRUE, </code></p>
 													<p style="font-size:16px;padding-left:60px;padding-right:60px"><code style="color:#006600">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ncpus = 4, updateJumps = TRUE)</code><br></p>
-													<p class="parag">If covariates were included in the dataset, the default is to run them as "fused" (see Fig. 4). To test different covariate effects, the user only needs to change argument <code style="color:#006600;font-size:18px">covarsStruct</code>. For example, to test the same model as above under a proportional hazards covariate structure the code should be modified as folows:<br></p>
+													<p class="parag">If covariates are included in the dataset, the default is to run them as "fused" (see Fig. 4). To test different covariate effects, the user only needs to change argument <code style="color:#006600;font-size:18px">covarsStruct</code>. For example, to test the same model as above under a proportional hazards covariate structure the code should be modified as folows:<br></p>
 													<p style="font-size:16px;padding-left:60px;padding-right:60px"><code style="color:#006600">&nbsp;&nbsp;&nbsp;&nbsp;out &lt;- basta(object = myDataset, studyStart = 1995, studyEnd = 2005, </code><br></p>
 													<p style="font-size:16px;padding-left:60px;padding-right:60px"><code style="color:#006600">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;model = "LO", shape = "bathtub", <b>covarsStruct = "prop.haz"</b>, </code><br></p>
 													<p style="font-size:16px;padding-left:60px;padding-right:60px"><code style="color:#006600">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;nsim = 4, parallel = TRUE, ncpus = 4, updateJumps = TRUE)</code><br></p>
@@ -179,8 +180,13 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 													<p style="text-align:center"><img align="center" style="margin:0px;padding:0px;border:none;width:400px" align="middle" src="kestrelTrajsNoCI.jpg?"></p>
 													<p class="caption">Fig. 8. Zoom in on the survival probability and mortality trajectories for male (M) and female (F) kestrels (<i>Falco tinnunculus</i>).</p>
 													<p class="parag">In case models are not working properly or you have any doubts or problems, please contact us by registering to the <a href="http://lists.r-forge.r-project.org/mailman/listinfo/basta-users"  rel="nofollow" style="color:#84002E">BaSTA Users mailing list</a>.<br></p></p>
-													<hr>
-														<p class="parag">We have also produced an additional function to create plots as in Fig. 9 that include the density plots for the different parameters as well as the resulting survival and mortality profiles. This code can be downloaded by clicking <a href="plotFancyBaSTA.R" rel="nofollow" style="color:#84002E;font-family:verdana" target="_blank">here</a>. To produce the plot, save the function in a folder, say "C:/Documents/BaSTAtemp/", and load the function by typing into the R console:</p> 
+													<p></p>
+													<a href="#top" class="totop">Back to top</a>
+													<p></p>
+													<a name="extra"></a>
+													<img alt="Upgrades" border="0" width="900px" src="extra.jpg?">
+                            <p class="parag"><a href="plotFancyBaSTA.R" rel="nofollow" style="color:#84002E;font-family:verdana" target="_blank"><b>PlotFancyBaSTA()</b></a>:<br></p>
+														<p class="parag">We have produced an additional function to create plots as in Fig. 9 that include the density plots for the different parameters as well as the resulting survival and mortality profiles. This code can be downloaded by clicking <a href="plotFancyBaSTA.R" rel="nofollow" style="color:#84002E;font-family:verdana" target="_blank">here</a>. To produce the plot, save the function in a folder, say "C:/Documents/BaSTAtemp/", and load the function by typing into the R console:</p> 
 													<p style="font-size:16px;padding-left:60px;padding-right:60px"><code style="color:#006600">&nbsp;&nbsp;&nbsp;&nbsp;source("C:/Documents/BaSTAtemp/plotFancyBaSTA.R")</code><br></p>
 													<p class="parag">Then, to produce a plot from a given BaSTA output, say, <code style="color:#006600">out</code>, type the folowing command into the R console:</p>
 													<p style="font-size:16px;padding-left:60px;padding-right:60px"><code style="color:#006600">&nbsp;&nbsp;&nbsp;&nbsp;plotFancyBaSTA(out)</code><br></p>
@@ -188,20 +194,20 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 													<p style="text-align:center"><img align="center" style="margin:0px;padding:0px;border:none;width:400px" align="middle" src="fancyBaSTA.jpg?"></p>
 													<p class="caption">Fig. 9. Density plots for a bathtub-logistic model and survival and mortality profiles for adult rooks (<i>Corvus frugilegus</i>) in locations X1 and X2 plotted using function <code style="color:#006600">plotFancyBaSTA()</code> (Jones and Colchero <i>in prep.</i>).</p>
 													<p class="parag">Note that this function is compatible with outputs from BaSTA version 1.5 and higher. Also, it is meant to plot outputs from models that used values of <code  style="color:#006600">all.in.mort</code> and <code  style="color:#006600">fused</code> for the <code  style="color:#006600"><b>shape</b></code> argument.</p>
-
+													<!--<hr>-->
 													<p></p>
 													<a href="#top" class="totop">Back to top</a>
 													<p></p>
 													<a name="bugs"></a>
 													<img alt="Upgrades" border="0" width="900px" src="bugs.jpg?">
-													<p class="parag">The latest version, <b>BaSTA 1.8</b>, available in CRAN in the next few days or by clicking <a href="BaSTA_1.8.tar.gz" rel="nofollow" style="color:#84002E;font-family:verdana" target="_blank">here</a>, includes the following update: <br></p>
+													<p class="parag"><b>BaSTA 1.8</b> (latest stable version available in CRAN): <br></p>
 													<ul>
 														<li>Fixed a major bug that lumped deaths at the minAge for individuals not seen after birth.</li>
 														<li>Changed the range of ages plotted in the surival and mortality plots to show the curves for ages such that S(x) > 0.01, this is, until only 1% of the cohort is still alive.</li>
 													</ul>
 													<p></p>
 													<hr>
-													<p class="parag">The current version in CRAN, <b>BaSTA 1.7</b>, includes the following update: <br></p>
+													<p class="parag"><b>BaSTA 1.7</b>: <br></p>
 													<ul>
 														<li>Fixed a major bug that over-estimated ages at death and underestimated recapture probabilities with proportional hazards models.</li>
 													</ul>
