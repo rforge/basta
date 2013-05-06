@@ -20,7 +20,7 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0,
   defTheta <- .SetDefaultTheta(algObj)
   CalcMort <- .DefineMort(algObj)
   CalcSurv <- .DefineSurv(algObj)
-  covObj <- .CreateCovObj(object, dataObj, algObj)#S; print(class(covObj))
+  covObj <- .CreateCovObj(object, dataObj, algObj)
   algObj$covStruc <- class(covObj)[1]
   userPars <- .CreateUserPar(covObj, argList)
   fullParObj <- .BuildFullParObj(covObj, defTheta, algObj, userPars, 
