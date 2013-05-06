@@ -5,7 +5,7 @@ plot.basta <-
     Palette <- c('#E41A1C', '#377EB8', '#4DAF4A', '#984EA3', '#FF7F00', 
         '#A65628', '#F781BF', '#999999')
   } else {
-    Palette <- grey(x$settings['nsim'])
+    Palette <- grey(1:x$settings['nsim'] / x$settings['nsim'])
   }
   # 1. Trace plots for parameters:
   if(plot.trace){
