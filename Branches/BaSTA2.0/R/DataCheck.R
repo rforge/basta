@@ -1,19 +1,18 @@
 DataCheck <-
-function(object, studyStart, studyEnd, autofix = rep(0, 7), silent=TRUE) {
+function(object, autofix = rep(0, 7), silent=TRUE) {
 
   if (length(autofix) < 7) {
     stop("Autofix specification should be a numerical vector of length 7.", 
           call. = FALSE)
   }
-  Ti               <- studyStart
-  Tf               <- studyEnd
-  st               <- Ti:Tf
-  nt               <- length(st)
-  idnames          <- object[, 1]
-  n                <- nrow(object)
-  bd               <- as.matrix(object[, 2:3])
-  Y                <- as.matrix(object[,1:nt+3]); colnames(Y) = st
-  Tm               <- matrix(st, n, nt, byrow=TRUE)
+  studyEnd <- ncol(object) - 3
+  st <- studyStart:studyEnd
+  nt <- length(st)
+  idnames <- object[, 1]
+  n <- nrow(object)
+  bd <- as.matrix(object[, 2:3])
+  Y <- as.matrix(object[,1:nt+3]); colnames(Y) = st
+  Tm <- matrix(st, n, nt, byrow=TRUE)
 	
   if(ncol(object) > nt + 3){
     Z              <- as.matrix(object[, (nt + 4):ncol(object)])
@@ -23,7 +22,7 @@ function(object, studyStart, studyEnd, autofix = rep(0, 7), silent=TRUE) {
 
   
   # 1. Death before observations start
-  type1            <- which(bd[, 2] < Ti & bd[, 2] != 0)
+  type1            <- which(bd[, 2] < studyStart & bd[, 2] != 0)
   if (length(type1) != 0) {
     cat("The following rows deaths occur before observations start:\n")
     print(type1)
@@ -42,7 +41,8 @@ function(object, studyStart, studyEnd, autofix = rep(0, 7), silent=TRUE) {
   # 2. No birth/death AND no obervations
   type2            <- which(rowSums(bd) + rowSums(Y) == 0)
     if (length(type2) != 0) {
-      cat("The following rows have no object (unknown birth, unknown death, and no observations):\n")
+      cat("The following rows have no object (unknown birth, unknown death,",
+              " and no observations):\n")
       print(type2)
         
       #Actions - remove those rows from bd, Y and Z
@@ -62,7 +62,8 @@ function(object, studyStart, studyEnd, autofix = rep(0, 7), silent=TRUE) {
 
   type3 = which(bd[, 1] > bd[, 2] & bd[, 1] != 0 & bd[, 2] != 0)    
   if (length(type3) != 0) {
-    cat("The following rows have birth dates that are later than their death dates:\n")
+    cat("The following rows have birth dates that are later than their",
+        " death dates:\n")
     print(type3)
         
     # Actions - remove the death, birth, both records?
@@ -71,22 +72,24 @@ function(object, studyStart, studyEnd, autofix = rep(0, 7), silent=TRUE) {
     } else if (autofix[3] == 2) {
     	bd[type3,1] = 0; cat("The birth records have been replaced with 0\n")
     } else if (autofix[3] == 3) {
-    	bd[type3,1:2] = 0; cat("The birth and death records have been replaced with 0\n")
+    	bd[type3,1:2] = 0; cat("The birth and death records have been replaced",
+          " with 0\n")
     }
   }
     
   # 4. Observations after death
   # Calculate first and last time observed: 
-  st               <- Ti:Tf
+  st               <- studyStart:studyEnd
   ytemp            <- t(t(Y) * st)
   lastObs          <- c(apply(ytemp, 1, max))
   tempDeath        <- bd[,2]
   tempDeath[tempDeath==0] <- Inf
-  type4            <- which(lastObs > tempDeath & tempDeath >= Ti)
+  type4            <- which(lastObs > tempDeath & tempDeath >= studyStart)
   rm(tempDeath)
     
   if (length(type4) != 0) {
-    cat("The following rows have observations that occur after the year of death:\n")
+    cat("The following rows have observations that occur after the year of",
+        " death:\n")
     print(type4)
         
     # Actions - remove spurious post-death observations
@@ -105,7 +108,8 @@ function(object, studyStart, studyEnd, autofix = rep(0, 7), silent=TRUE) {
   type5            <- which(firstObs < bd[, 1])
     
   if (length(type5) != 0) {
-    cat("The following rows have observations that occur before the year of birth:\n")
+    cat("The following rows have observations that occur before the year of",
+        " birth:\n")
     print(type5)
         
     # Actions - remove spurious pre-birth observations
@@ -119,13 +123,14 @@ function(object, studyStart, studyEnd, autofix = rep(0, 7), silent=TRUE) {
   }
     
   # 6. Year of birth should be a zero in recapture matrix Y
-  idb              <- which(bd[, 1] > 0 & bd[, 1] >= Ti & bd[, 1] <= Tf)
-  bcol             <- bd[idb, 1] - Ti
+  idb              <- which(bd[, 1] > 0 & bd[, 1] >= studyStart & bd[, 1] <= studyEnd)
+  bcol             <- bd[idb, 1] - studyStart
   bpos             <- bcol * n + idb
   type6            <- idb[which(Y[bpos] == 1)]
 
   if (length(type6) != 0) {
-    cat("The following rows have a one in the recapture matrix in the birth year:\n")
+    cat("The following rows have a one in the recapture matrix in the birth",
+        " year:\n")
     print(type6)
         
     # Actions - put a zero.
@@ -133,12 +138,13 @@ function(object, studyStart, studyEnd, autofix = rep(0, 7), silent=TRUE) {
   }
     
   # 7. Year of death should be a zero in recapture matrix Y
-  idd              <- which(bd[, 2] > 0 & bd[, 2] >= Ti)
-  dcol             <- bd[idd, 2] - Ti
+  idd              <- which(bd[, 2] > 0 & bd[, 2] >= studyStart)
+  dcol             <- bd[idd, 2] - studyStart
   dpos             <- dcol * n + idd
   type7            <- idd[which(Y[dpos] == 1)]
   if (length(type7) != 0) {
-    cat("The following rows have a one in the recapture matrix in the death year:\n")
+    cat("The following rows have a one in the recapture matrix in the death",
+        " year:\n")
     print(type7)
         
     # Actions - put a zero.

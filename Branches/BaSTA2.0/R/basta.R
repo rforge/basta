@@ -1,130 +1,1151 @@
+# TODO: Add comment
+# 
+# Author: fernando
+###############################################################################
 basta <-
-function(object, ... ) UseMethod("basta")
+    function(object, ... ) UseMethod("basta")
 
-# 1. Survival analysis functions:
-# 1.1. Mortality and survival functions:
-.CalculateMort <- function(model, shape) {
-  nIniTh <- if (shape == "simple") 0 else if (shape == "Makeham") 1 else 3
-    if (model == "EX") {
-      CalcBasicMort <- function(x, theta) theta[, 1]
-    } else if (model == "GO") {
-      CalcBasicMort <- function(x, theta) {
-        exp(theta[, nIniTh + 1] + theta[, nIniTh + 2] * x)
+# 0.- FIND ERRORS (unfinished):
+.FindErrors <- function(model, shape, covarsStruct, 
+    niter, burnin, thinning) {
+  # a) Data errors:
+#	data.check  <- DataCheck(object, studyStart, autofix = rep(0, 7), 
+#      silent = TRUE)
+#	if (!data.check[[1]]) {
+#		stop("\nYou have an error in Dataframe 'object',\nplease use function ",
+#				"'DataCheck'\n", call. = FALSE)
+#	}
+  
+  # b) Check that niter, burnin, and thinning are compatible.
+  if (burnin > niter) {
+    stop("Object 'burnin' larger than 'niter'.", call. = FALSE)
+  }
+  if (thinning > niter) {
+    stop("Object 'thinning' larger than 'niter'.", call. = FALSE)
+  }
+  
+  # c) Model type, shape and covariate structure:
+  if (!is.element(model, c("EX", "GO", "WE", "LO"))) {
+    stop("Model misspecification: specify available models", 
+        " (i.e. 'EX', 'GO', 'WE' or 'LO')\n", call. = FALSE)
+  }
+  if (!is.element(shape, c("simple", "Makeham", "bathtub"))) {
+    stop("shape misspecification. Appropriate arguments are:", 
+        " 'simple', 'Makeham' or 'bathtub'.\n", call. = FALSE)
+  }
+  if (!is.element(covarsStruct, c("fused", "prop.haz", "all.in.mort"))) {
+    stop("Covariate structure misspecification. Appropriate arguments are:", 
+        " 'fused', 'prop.haz' or 'all.in.mort'.\n", call. = FALSE)
+  }
+  if (model == "EX" & shape != "simple") {
+    stop("Model misspecification: EX model can only be fitted with a", 
+        " simple shape", call. = FALSE)
+  }
+  if (model == "EX" & covarsStruct != "fused") {
+    stop("Model misspecification: EX model can only be fitted with a", 
+        " fused covariate structure", call. = FALSE)
+  }
+  if (covarsStruct == "all.in.mort" & sum(model == "GO", shape == 
+          "simple") < 2) {
+    stop("Model misspecification: all.in.mort is only available with", 
+        " Gompertz (GO) models and simple shape.", call. = FALSE)
+  }
+}
+
+# 1.- PREPARE MORTALITY DATA AND COVARIATES:
+# 1.1.- Mortality Data:
+.PrepMortDat <- 
+    function(object) UseMethod(".PrepMortDat")
+
+.PrepMortDat.fullCens <- function(object) {
+  # 1. Extract times of birth and death:
+  bi <- object$birthDeath[, 1]
+  di <- object$birthDeath[, 2]
+  classAge <- ifelse(any(di - bi != round(di - bi)), 
+      "contAge", "discAge")
+  
+  # 2. Construct data list:
+  mortDat <- list(birth = bi, death = di, N = object$N)
+  class(mortDat) <- c(classAge, "fullCens")
+  return(mortDat)
+}
+
+.PrepMortDat.census <- function(object) {
+  # 1. Extract times of birth and death:
+  bi <- object$birthDeath[, 1]
+  di <- object$birthDeath[, 2]
+  classAge <- ifelse(any(di - bi != round(di - bi)), 
+      "contAge", "discAge")
+  
+  # 2. Calculate first and last time observed 
+  #    and total number of times observed:
+  firstObs <- object$capHistMat[, 1]
+  lastObs <- object$capHistMat[, 2]
+  
+  # 3. Construct data list and define class:
+  idNoB <- which(bi == 0)
+  idNoD <- which(di == 0)
+  mortDat <- list(birth = bi, death = di, N = object$N, 
+      firstObs = firstObs, lastObs = lastObs, 
+      start = object$studyStart, end = object$studyEnd, 
+      idNoB = idNoB, idNoD = idNoD)
+  class(mortDat) <- c(classAge, "census")
+  return(mortDat)
+}
+
+.PrepMortDat.capRecov <- function(object) {
+  # 1. Extract times of birth and death:
+  bi <- object$birthDeath[, 1]
+  di <- object$birthDeath[, 2]
+  classAge <- ifelse(any(di - bi != round(di - bi)), 
+      "contAge", "discAge")
+  
+  # 2. Calculate first and last time observed 
+  #    and total number of times observed:
+  firstObs <- object$capHistMat[, 1]
+  lastObs <- object$capHistMat[, 2]
+  idNoB <- which(bi == 0)
+  idNoD <- which(di == 0)
+  mortDat <- list(birth = bi, death = di, N = object$N, 
+      firstObs = firstObs, lastObs = lastObs, 
+      start = object$studyStart, end = object$studyEnd, 
+      idNoB = idNoB, idNoD = idNoD)
+  class(mortDat) <- c(classAge, "capRecov") 
+  return(mortDat)
+}
+
+.PrepMortDat.capRecap <- function(object) {
+  # 1. Extract times of birth and death:
+  bi <- object$birthDeath[, 1]
+  di <- object$birthDeath[, 2]
+  classAge <- ifelse(any(di - bi != round(di - bi)), 
+      "contAge", "discAge")
+  
+  # 2. Calculate first and last time observed 
+  #    and total number of times observed:
+  Y <- as.matrix(object$capHistMat)
+  nTimes <- ncol(Y)
+  times <- object$studyStart + 1:nTimes - 1
+  ytemp <- t(t(Y) * times)
+  lastObs <- c(apply(ytemp, 1, max))
+  ytemp[ytemp == 0] <- max(times) * 2
+  firstObs <- c(apply(ytemp, 1, min))
+  firstObs[firstObs == max(times) * 2]  <- 0
+  nCaps <- Y %*% rep(1, nTimes)
+  
+  # 3. Define study duration:
+  Dx <- (times[2] - times[1])
+  Tm <- matrix(times, object$N, nTimes, byrow=TRUE)
+  knownFirstObs <- firstObs
+  id <- which(bi > 0 & bi >= object$studyStart)
+  knownFirstObs[id] <- bi[id] + 1
+  id <- which(bi > 0 & bi < object$studyStart)
+  knownFirstObs[id]  <- object$studyStart
+  knownLastObs <- lastObs
+  id <- which(di > 0 & di <= object$studyEnd)
+  knownLastObs[id] <- di[id] - 1
+  id <- which(di > 0 & di > object$studyEnd)
+  knownLastObs[id] <- object$studyEnd
+  detectIdentMat <- .MakeIndicatorMat(firstObs, lastObs, 
+      Tm)
+  idNoB <- which(bi == 0)
+  idNoD <- which(di == 0)
+  mortDat <- list(birth = bi, death = di, N = object$N, 
+      firstObs = firstObs, lastObs = lastObs, Y = Y, 
+      nCaps = nCaps, Dx = Dx, studyTimeMat = Tm, 
+      detecMat = detectIdentMat, start = object$studyStart, 
+      end = object$studyEnd, idNoB = idNoB, idNoD = idNoD)
+  class(mortDat) <- c(classAge, "capRecap") 
+  return(mortDat)
+}
+
+# 1.2.- List of Covariates:
+# Note: rename to ".CreateCovObj"
+.CreateCovList <- function(object, form = NULL) {
+  if (class(object)[2] == "noCovs") {
+    covars <- list(names = 'nc', length = 1, class = "intercept")
+    class(covars) <- c("covars", "noCovs")
+  } else {
+    if (is.null(form)) {
+      if (class(object)[2] == "fixedCovs") {
+        form <- paste("~", paste(colnames(object$fixedCovs), collapse = "+"))
+      } else if (class(object)[2] == "timeCovs") {
+        form <- paste("~", paste(names(object$timeCovs), collapse = "+"))
+      } else {
+        form <- as.formula(paste("~", paste(c(colnames(object$fixedCovs), 
+                        names(object$timeCovs)), collapse = "+")))
       }
-    } else if (model == "WE") {
-      CalcBasicMort <- function(x, theta) {
-        theta[, nIniTh + 1] * theta[, nIniTh + 2]^theta[, nIniTh + 1] * 
-        x^(theta[, nIniTh + 1] - 1)
-      }
-	  } else if (model == "LO") {
-      CalcBasicMort <- function(x, theta) {
-        exp(theta[, nIniTh + 1] + theta[, nIniTh + 2] * x) / 
-  				(1 + theta[, nIniTh + 3] * exp(theta[, nIniTh + 1]) / 
-          theta[, nIniTh + 2] * (exp(theta[, nIniTh + 2] * x) - 1))
     }
-	}
+    .VerifyCovsInForm(object, form)
+    covars <- .CreateModelList(object, x = form)
+    covars$names <- c(colnames(covars$fixedCovs), names(covars$timeCovs))
+    covars$length <- length(covars$names)
+    covars$class <- .FindCovarsClass(covars)
+    class(covars) <- c("covars", class(covars))
+  }
+  return(covars)
+}
+
+.VerifyCovsInForm <- function(object, form = NULL) {
+  allCovNames <- c(object$nameFCovs, object$nameTCovs)
+  nCovs <- length(allCovNames)
+  if (is.null(form)) {
+    covNames <- allCovNames
+  } else {
+    if (is.numeric(form)) {
+      if (!all(form <= nCovs)) {
+        stop("Some arguments in 'form' do not match the number of covariates",
+            "in 'object'.\n", call. = FALSE)
+      } else {
+        covNames <- allCovNames[form]
+      }
+    } else if (is.character(form)) {
+      if (!all(form %in% allCovNames)) {
+        stop("Some arguments in 'form' do not match the covariate names in ",
+            "'object'.\n", call. = FALSE)
+      }
+      covNames <- form
+    } else if (class(form) == 'formula') {
+      covNames <- labels(terms(form))
+      covNames <- unique(unlist(strsplit(covNames, split = ":")))
+      if (!all(covNames %in% allCovNames)) {
+        stop("Some arguments in 'form' do not match the covariate names in ",
+            "'object'.\n", call. = FALSE)
+      } else {
+        covNames <- allCovNames[which(allCovNames %in% covNames)]
+      }
+    }
+  }
+}
+
+.CreateModelList <- function(object, ...) UseMethod(".CreateModelList")
+
+.CreateModelList.fixedCovs <- function(object, x) {
+  fixedCovsMat <- model.matrix(object = x, data = object$fixedCovs)
+  allCovList <- list(fixedCovs = cbind(fixedCovsMat))
+  class(allCovList) <- "fixedCovs"
+  return(allCovList)
+}
+
+.CreateModelList.timeCovs <- function(object, x) {
+  modFrame <- .ExtractModelFrame(object, x)
+  modelNames <- colnames(model.matrix(x, 
+          data = data.frame(modFrame$basicCovList)))
+  modelNameList <- strsplit(modelNames, split = ":")
+  
+  timeCovList <- list()
+  for (i in 1:length(modelNames)) {
+    localCovs <- modelNameList[[i]]
+    nLocCovs <- length(localCovs)
+    if (nLocCovs == 1) {
+      if (localCovs == "(Intercept)") {
+        timeCovList[["(Intercept)"]] <- object$timeCovs[[1]] * 0 + 1
+      } else {
+        idCov <- which(modFrame$covNames == localCovs)
+        timeCovList[[localCovs]] <- modFrame$covList[[idCov]]
+      }
+    } else {
+      timeCovList[[modelNames[i]]] <- modFrame$covList[[1]] * 
+          0 + 1
+      for(jj in 1:nLocCovs) {
+        timeCovList[[modelNames[i]]] <- timeCovList[[modelNames[i]]] *
+            modFrame$covList[[localCovs[jj]]]
+      }
+    }
+  }
+  ncolTime <- ncol(timeCovList[[1]])
+  colnamesTime <- colnames(timeCovList[[1]])
+  cumMat <- matrix(t(apply(diag(1, ncolTime, ncolTime), 1, cumsum)), 
+      ncolTime, ncolTime, dimnames = list(colnamesTime, colnamesTime))
+  timeMat <- t(t(timeCovList[[1]] * 0) + 
+          0:(ncolTime - 1) + object$firstCohort)
+  allCovList <- list(timeCovs = timeCovList, cumMat = cumMat, 
+      timeMat = timeMat, start = object$firstCohort)
+  class(allCovList) <- "timeCovs"
+  return(allCovList)
+}
+
+.CreateModelList.bothCovs <- function(object, x) {
+  modFrame <- .ExtractModelFrame(object, x)
+  if (!("time" %in% modFrame$covType)) {
+    fixedCovsMat <- model.matrix(object = x, data = object$fixedCovs)
+    allCovList <- list(fixedCovs = cbind(fixedCovsMat))
+    class(allCovList) <- "fixedCovs"
+  } else {
+    modelNames <- colnames(model.matrix(object = x, 
+            data = data.frame(modFrame$basicCovList)))
+    modelNameList <- strsplit(modelNames, split = ":")
+    fixedCovMat <- matrix(0, object$N, 0)
+    timeCovList <- list()
+    for (i in 1:length(modelNames)) {
+      localCovs <- modelNameList[[i]]
+      nLocCovs <- length(localCovs)
+      if (nLocCovs == 1) {
+        if (localCovs == "(Intercept)") {
+          if (("fixed" %in% modFrame$covType)) {
+            fixedCovMat <- matrix(1, object$N, ncol(fixedCovMat) + 1)
+            colnames(fixedCovMat) <- "(Intercept)"
+          } else {
+            timeCovList[["(Intercept)"]] <- object$timeCovs[[1]] * 0 + 1 
+          }
+        } else {
+          idCov <- which(modFrame$covNames == localCovs)
+          if (modFrame$covType[idCov] == "fixed") {
+            namesFixed <- colnames(fixedCovMat)
+            fixedCovMat <- cbind(fixedCovMat, modFrame$covList[[idCov]])
+            colnames(fixedCovMat) <- c(namesFixed, localCovs)
+          } else {
+            timeCovList[[localCovs]] <- modFrame$covList[[idCov]]
+          }
+        }
+      } else {
+        logicTcov <- which(modFrame$covType[localCovs] == "time")
+        if(length(logicTcov) > 0) {
+          timeCovList[[modelNames[i]]] <- modFrame$covList[[logicTcov[1]]] * 
+              0 + 1
+          for(jj in 1:nLocCovs) {
+            timeCovList[[modelNames[i]]] <- timeCovList[[modelNames[i]]] *
+                modFrame$covList[[localCovs[jj]]]
+          }
+        } else {
+          fixedInt <- rep(1, object$N)
+          for(jj in 1:nLocCovs) {
+            fixedInt <- fixedInt * modFrame$covList[[localCovs[jj]]]
+          }
+          fixedCovMat <- cbind(fixedCovMat, fixedInt)
+          colnames(fixedCovMat) <- c(colnames(fixedCovMat)[-ncol(fixedCovMat)], 
+              modelNames[i])
+        }
+      }
+    }
+    if (length(timeCovList) > 0) {
+      ncolTime <- ncol(timeCovList[[1]])
+      colnamesTime <- colnames(timeCovList[[1]])
+      cumMat <- matrix(t(apply(diag(1, ncolTime, ncolTime), 1, cumsum)), 
+          ncolTime, ncolTime, dimnames = list(colnamesTime, colnamesTime))
+      timeMat <- t(t(timeCovList[[1]] * 0) + 
+              1:ncolTime - 1 + object$firstCohort)
+    }
+    if (ncol(fixedCovMat) == 0) {
+      allCovList <- list(timeCovs = timeCovList, cumMat = cumMat, 
+          timeMat = timeMat)
+      class(allCovList) <- "fixedCovs"
+    } else {
+      allCovList <- list(fixedCovs = fixedCovMat, timeCovs = timeCovList, 
+          cumMat = cumMat, timeMat = timeMat, start = object$firstCohort)
+      class(allCovList) <- "bothCovs"
+    }
+  }
+  return(allCovList)
+}
+
+.ExtractModelFrame <- function(object, x) {
+  labelsCov <- labels(terms(x))
+  uniqueCov <- unique(unlist(strsplit(labels(terms(x)), split = ":")))
+  covList <- list()
+  basicCovList <- list()
+  covType <- c()
+  for (i in 1:length(uniqueCov)) {
+    idCovType <- which(c(is.element(uniqueCov[i], object$nameFCovs), 
+            is.element(uniqueCov[i], object$nameTCovs)))
+    if (idCovType == 1) {
+      tempCov <- object$fixedCov[, uniqueCov[i]]
+      basicCovList[[uniqueCov[i]]] <- tempCov
+      if (is.factor(tempCov) | is.character(tempCov)) {
+        tempCov <- tapply(rep(1, length(tempCov)), 
+            data.frame(id = 1:length(tempCov), tempCov), sum)
+        tempCov[is.na(tempCov)] <- 0
+        colnames(tempCov) <- paste(uniqueCov[i], colnames(tempCov), sep = "")
+        for (jj in 1:ncol(tempCov)) {
+          covList[[colnames(tempCov)[jj]]] <- tempCov[, jj]
+          covType <- c(covType, "fixed")
+        }
+      } else {
+        covList[[uniqueCov[i]]] <- tempCov
+        covType <- c(covType, "fixed")
+      }
+    } else {
+      covType <- c(covType, "time")
+      covList[[uniqueCov[i]]] <- object$timeCovs[[uniqueCov[i]]]
+      basicCovList[[uniqueCov[i]]] <- object$timeCovs[[uniqueCov[i]]][, 1]
+    }
+  }
+  covNames <- names(covList)
+  names(covType) <- covNames
+  return(list(covList = covList, basicCovList = basicCovList, 
+          covType = covType, covNames = covNames))
+}
+
+.FindCovarsClass <- function(covars) {
+  covClass <- rep("categorical", covars$length)
+  names(covClass) <- covars$names
+  if (class(covars) %in% c("fixedCovs", "bothCovs")) {
+    nUniCovs  <- apply(covars$fixedCovs, 2, function(x) length(unique(x)))
+    idint <- which(nUniCovs == 1)
+    idcon <- which(nUniCovs > 2)
+    if (length(idint) > 0) covClass[names(idint)] <- "intercept"
+    if (length(idcon) > 0) covClass[names(idcon)] <- "numeric"
+  }
+  if (class(covars) %in% c("timeCovs", "bothCovs")) {
+    nTimeCovs <- length(covars$timeCovs)
+    nUniCovs  <- sapply(1:nTimeCovs, function(x) 
+          length(unique(covars$timeCovs[[x]])))
+    names(nUniCovs) <- names(covars$timeCovs)
+    idint <- which(nUniCovs == 1)
+    idcon <- which(nUniCovs > 2)
+    if (length(idint) > 0) covClass[names(idint)] <- "intercept"
+    if (length(idcon) > 0) covClass[names(idcon)] <- "numeric"
+  }
+  return(covClass)
+}
+
+# 2.- DEFINE PARAMETERS:
+# 2.1.- User Defined or Default Parameter Values:
+.DefineParams <- function(covars, model, shape, covarsStruct, 
+    default = TRUE, cohortCov) {
+  defaultTheta <- .SetDefaultTheta(model, shape)
+  if (!default) {
+    cat("\n----------------------------------------------------------\n",
+        "Here you will be asked to define starting values, jumps\n",
+        "and priors for the parameters in your BaSTA analysis.\n",
+        "(If you wish to stop this function simply click 'esc').",
+        "\n----------------------------------------------------------\n")
+    # a) theta:
+    cat("\n1. THETA PARAMETERS (IN MORTALITY):", 
+        "\n-----------------------------------")
+  }
+  thetaPars <- .AssignPars(covars, defaultTheta, "theta", 
+      covarsStruct, default)
+  parList <- list(theta = thetaPars)
+  if (covarsStruct == "prop.haz" & class(covars)[2] != "noCovs") {
+    if (!default) {
+      cat("\n2. GAMMA PARAMETERS (PROPORTIONAL HAZARDS):", 
+          "\n-------------------------------------------")
+    }
+    defaultGamma <- list(start = 0.1, jump = 0.01, priorMean = 0, 
+        priorSd = 0.001, length = 1)
+    gammaPars <- .AssignPars(covars, defaultGamma, "gamma", 
+        covarsStruct, default)
+    parList$gamma <- gammaPars
+  }
+  parList$theta$indExp <- defaultTheta$indExp
+  class(parList) <- ifelse(class(covars)[2] == "noCovs", 
+      "noCovs", ifelse(covarsStruct == "prop.haz", "propHaz", "inMort"))
+  return(parList)
+}
+
+.AssignPars <- function(covars, defaultPar, genParName, 
+    covarsStruct, default) {
+  parCats <- c("start", "jump", "priorMean", "priorSd")
+  parCatsText <- c("starting", "jump", "prior mean", "prior sd")
+  if (genParName == "theta") {
+    if (covarsStruct == "all.in.mort") {
+      parMat <- data.frame(matrix(0, covars$length, defaultPar$length, 
+              dimnames = list(covars$names, defaultPar$name)))
+      nCovRows <- covars$length
+    } else {
+      parMat <- data.frame(matrix(0, 1, defaultPar$length, 
+              dimnames = list(NULL, defaultPar$name)))
+      nCovRows <- 1
+    }
+  } else if (covarsStruct == "prop.haz" | class(covars)[2] == "noCovs"){
+    parMat <- matrix(0, covars$length, 1, 
+        dimnames = list(covars$names, "gamma"))
+    nCovRows <- covars$length
+  }
+  parList <- list(start = parMat, jump = parMat, priorMean = parMat, 
+      priorSd = parMat)  
+  if (!default) {
+    specAllPar <- .AskYesNo(paste("Use default ",
+            genParName, " parameters", sep = ""))
+  } else {
+    specAllPar <- "y"
+  }
+  for (nCovs in 1:nCovRows) {
+    if (specAllPar == "n") {
+      if (nCovRows == 1) {
+        specCovPar <- "n"
+      } else {
+        specCovPar <- .AskYesNo(paste("Use default values for", 
+                covars$names[nCovs]))
+      }
+    } else {
+      specCovPar <- "y"
+    }
+    for (par in 1:4) {
+      if (specCovPar == "n") {
+        specPar <- .AskYesNo(paste("Use default", parCatsText[par], 
+                "values"))
+      } else {
+        specPar <- "y"
+      }
+      if (specPar == "y") {
+        if (covars$class[nCovs] == "intercept") {
+          indPar <- 1
+        } else if (covars$class[nCovs] == "categorical") {
+          indPar <- ifelse(par %in% c(1, 3), 
+              ifelse("intercept" %in% covars$class, 0, 1), 1)
+        } else {
+          indPar <- ifelse(par %in% c(1, 3), 0, 1)
+        }
+        parList[[parCats[par]]][nCovs, ] <- defaultPar[[parCats[par]]] * 
+            indPar
+      } else {
+        parUser <- .SpecifyParNum(defaultPar$length, parCatsText[par],
+            ":")
+        parList[[par]][nCovs, ] <- parUser
+      }
+    }
+  }
+  return(parList)
+}
+
+.SpecifyParNum <- function(length, cat, name) {
+  parNum <- readline(paste("Type ", 
+          length, " ", cat, 
+          " parameter(s) (use comas between parameters)", name, sep = ""))
+  op <- options()
+  options(warn = -1)
+  parNum <- as.numeric(unlist(strsplit(parNum, split = ",")))
+  options(op)
+  while (length(parNum) != length | any(is.na(parNum))) {
+    if (any(is.na(parNum))) {
+      cat("\nSpecify numerical values.\n")
+    } else {
+      cat("\nWrong number of parameters.\n")
+    }
+    parNum <- readline(paste("Type ", 
+            length, " ", cat, 
+            " parameter(s) (use comas between parameters)", name, sep = ""))
+    op <- options()
+    options(warn = -1)
+    parNum <- as.numeric(unlist(strsplit(parNum, split = ",")))
+  }
+  return(parNum)
+}
+
+.AskYesNo <- function(question) {
+  answer <- readline(paste("\n", question, "? (y or n): ", sep = ""))
+  while(!is.element(answer, c("y", "n"))) {
+    answer <- readline(paste("Please, type 'y' or 'n' or use the esc",
+            "key to terminate: "))
+  }
+  return(answer)
+}
+
+.DefineGamma <- function(type, length, parmat, parCatsText) {
+  default <- .AskYesNo(paste("Use default values for", 
+          type, "covariates"))
+  if (default == 'n') {
+    for (par in 1:3) {
+      defaultPar <- .AskYesNo(paste("Use default", parCatsText[par], 
+              "values"))
+      if (defaultPar == 'n') {
+        parGa <- .SpecifyParNum(length, 
+            parCatsText[par], ":")
+        parmat[par, ] <- parGa
+      }
+    }
+  }
+  return(parmat)
+}
+
+.SetDefaultTheta  <- function(model, shape) {
+  if (model == "EX") {
+    nTh <- 1
+    startTh <- -2 
+    jumpTh <- 0.01 
+    priorMean <- -4
+    priorSd <- 0.1
+    nameTh <- "b"
+    indExp <- "b"
+  } else if (model == "GO") {
+    nTh <- 2 
+    startTh <- c(-2, 0.01) 
+    jumpTh <- c(0.05, 0.025)
+    priorMean <- c(-3, 0.01)
+    priorSd <- c(0.1, 0.001)
+    nameTh <- c("b0", "b1")
+    indExp <- c()
+  } else if (model == "WE") {
+    nTh <- 2
+    startTh <- c(0.4, -2.5) 
+    jumpTh <- c(0.05, 0.01)
+    priorMean <- c(0.2, -4)
+    priorSd <- c(0.01, 0.1)
+    nameTh <- c("b0", "b1")
+    indExp = c("b0", "b1")
+  } else if (model == "LO") {
+    nTh <- 3 
+    startTh <- c(-3, -4, -10) 
+    jumpTh <- c(0.001, 0.001, 0.001) 
+    priorMean <- c(-3, -4, -20)
+    priorSd <- c(0.1, 0.1, 0.5)
+    nameTh <- c("b0", "b1", "b2")
+    indExp <- c("b1", "b2")
+  }
+  if (shape == "Makeham") {
+    nTh <- nTh + 1 
+    startTh <- c(0, startTh) 
+    jumpTh <- c(0.01, jumpTh) 
+    priorMean <- c(0, priorMean)
+    priorSd <- c(0.1, priorSd)
+    nameTh <- c("c", nameTh)
+  } else if (shape == "bathtub") {
+    nTh <- nTh + 3 
+    startTh <- c(-0.1, -0.6, 0, startTh)
+    jumpTh <- c(0.001, 0.001, 0.01, jumpTh) 
+    priorMean <- c(-2, -2, 0, priorMean)
+    priorSd <- c(0.1, 0.1, 0.1, priorSd)
+    nameTh <- c("a0", "a1", "c", nameTh)
+    indExp <- c("a1", indExp)
+  }
+  defaultTheta  <- list(length = nTh, start = startTh, jump = jumpTh, 
+      priorMean = priorMean, priorSd = priorSd, name = nameTh, 
+      indExp = indExp)
+  attr(defaultTheta, "model") = model
+  attr(defaultTheta, "shape") = shape
+  return(defaultTheta)
+}
+
+# 2.2.- Extract Parameters for Analysis:
+.DefineParsG <- function(params) {
+  parsG <- list(theta = params$theta$start, indExp = params$theta$indExp)
+  if (class(params) == "propHaz") {
+    parsG$gamma <- params$gamma$start
+  }
+  class(parsG) <- class(params)
+  return(parsG)
+}
+
+# 3.- DEFINE MORTALITY AND SURVIVAL FUNCTIONAL FORMS:
+.DefineSimpleMort <- function(model) {
+  if (model == "EX") {
+    function(x, theta) theta$b0
+  } else if (model == "GO") {
+    CalcSimpleMort <- function(x, theta) {
+      exp(theta$b0 + theta$b1 * x)
+    }
+  } else if (model == "WE") {
+    function(x, theta) {
+      theta$b0 * theta$b1^theta$b0 * 
+          x^(theta$b0 - 1)
+    }
+  } else if (model == "LO") {
+    function(x, theta) {
+      exp(theta$b0 + theta$b1 * x) / 
+          (1 + theta$b2 * exp(theta$b0) / 
+            theta$b1 * (exp(theta$b1 * x) - 1))
+    }
+  }
+}
+
+.DefineMort <- function(shape, CalcSimpleMort) {
   if (shape == "simple") {
     function(x, theta) {
-      CalcBasicMort(x, theta)
+      CalcSimpleMort(x, theta)
     }
-	} else if (shape == "Makeham") {
+  } else if (shape == "Makeham") {
     function(x, theta) {
-      theta[, 1] + CalcBasicMort(x, theta)
+      theta$c + CalcSimpleMort(x, theta)
     }
-	} else if (shape == "bathtub") {
+  } else if (shape == "bathtub") {
     function(x, theta) {
-      exp(theta[, 1] - theta[, 2] * x) + theta[, 3] + 
-      CalcBasicMort(x, theta)
+      exp(theta$a0 - theta$a1 * x) + theta$c + 
+          CalcSimplecMort(x, theta)
     }
-	}
+  }
 }
 
-.CalculateSurv <- function(model, shape) {
-  nIniTh <- if (shape == "simple") 0 else if (shape == "Makeham") 1 else 3
+.DefineSimpleSurv <- function(model, shape) {
   if (model == "EX") {
-  	CalcBasicSurv <- function(x, theta) exp(- theta[, 1] * x)
-	} else if (model == "GO") {
-		CalcBasicSurv <- function(x, theta) {
-			exp(exp(theta[, nIniTh + 1]) / theta[, nIniTh + 2] * 
-        (1 - exp(theta[, nIniTh + 2] * x)))
-		}
-	} else if (model == "WE") {
-		CalcBasicSurv <- function(x, theta) {
-			theta[, nIniTh + 1] * theta[, nIniTh + 2]^theta[, nIniTh + 1] * 
-        x^(theta[, nIniTh + 1] - 1)
-		}
-	} else if (model == "LO") {
-		CalcBasicSurv <- function(x, theta) {
-			(1 + theta[, nIniTh + 3] * exp(theta[, nIniTh + 1]) / 
-        theta[, nIniTh + 2] * 
-        (exp(theta[, nIniTh + 2] * x) - 1))^(-1 / theta[, nIniTh + 3])
-		}
-	}
-	if (shape == "simple") {
-		function(x, theta) {
-			CalcBasicSurv(x, theta)
-		}
-	} else if (shape == "Makeham") {
-		function(x, theta) {
-			exp(-theta[, 1] * x) * 
-						CalcBasicSurv(x, theta)
-		}
-	} else if (shape == "bathtub") {
-		function(x, theta) {
-			exp(exp(theta[, 1]) / theta[, 2] * (exp(-theta[, 2] * x) - 1) - 
-									theta[, 3] * x) * 
-						CalcBasicSurv(x, theta)
-		}
-	}
+    function(x, theta) exp(- theta[, 1] * x)
+  } else if (model == "GO") {
+    CalcBasicSurv <- function(x, theta) {
+      exp(exp(theta$b0) / theta$b1 * 
+              (1 - exp(theta$b1 * x)))
+    }
+  } else if (model == "WE") {
+    function(x, theta) {
+      exp(-(theta$b1 * x)^theta$b0)
+    }
+  } else if (model == "LO") {
+    function(x, theta) {
+      (1 + theta$b2 * exp(theta$b0) / theta$b1 * 
+            (exp(theta$b1 * x) - 1))^(-1 / theta$b2)
+    }
+  }
 }
 
-# 1.2. Main survival analysis function:
-.CalcAges <- function(covars, ...) UseMethod(".CalcAges")
-
-.CalcAges.noCovs <- function(covars, b, d) {
-  x <- d - b
-  idTr <- which(b < studyStart)
-  xTr <- x * 0
-  xTr[idTr] <- studyStart - b[idTr]
-  return(list(x = x, xTr = xTr, idTr = idTr))
+.DefineSurv <- function(shape, CalcSimpleSurv) {
+  if (shape == "simple") {
+    function(x, theta) {
+      CalcSimpleSurv(x, theta)
+    }
+  } else if (shape == "Makeham") {
+    function(x, theta) {
+      exp(-theta$c * x) * 
+          CalcSimpleSurv(x, theta)
+    }
+  } else if (shape == "bathtub") {
+    function(x, theta) {
+      exp(exp(theta$a0) / theta$a1 * (exp(-theta$a0 * x) - 1) - 
+              theta$c * x) * CalcSimpleSurv(x, theta)
+    }
+  }
 }
 
-.CalcAges.fixedCovs <- function(covars, b, d) {
-  x <- d - b
-  idTr <- which(b < studyStart)
-  xTr <- x * 0
-  xTr[idTr] <- studyStart - b[idTr]
-  return(list(x = x, xTr = xTr, idTr = idTr))
+# 4.- FUNCTION TO CALCULATE PARAMETER VALUES WITH OR WITHOUT COVARIATES:
+.CalcParams <- function(params, ...) UseMethod(".CalcParams")
+
+.CalcParams.propHaz <- function(params, covars) {
+  thetaPars <- params$theta
+  if (!is.null(params$indExp)) {
+    thetaPars[params$indExp] <- exp(thetaPars[params$indExp])
+  }
+  gammaPars <- .CalcGamma(covars, params$gamma)
+  parList <- list(theta = data.frame(thetaPars), gamma = gammaPars)
+  class(parList) <- class(params)
+  return(parList)
 }
 
-.CalcAges.timeCovs <- function(covars, b, d) {
-  aliveMat <- .MakeAliveMatrix(b, d + 1, covars$timeMat)
-  x <- (aliveMat %*% covars$cumMat - 1) * aliveMat
-  x[x<0] = 0
-  idTr <- which(b < studyStart)
-  xTr <- x * 0
-  xTr[idTr] <- studyStart - b[idTr]
-  idb <- (b - timeCovStart) * n + 1:n
-  idd <- (d - timeCovStart) * n + 1:n
-  return(list(x = x, xTr = xTr, idTr = idTr, aliveMat = aliveMat, 
-          idb = idb, idd = idd))
+.CalcParams.inMort <- function(params, covars) {
+  thetaPars <- .CalcThetaInMort(covars, params$theta, params$indExp)
+  parList <- list(theta = .CalcThetaInMort(covars, params$theta, 
+          params$indExp))
+  class(parList) <- class(params)
+  return(parList)
 }
 
-.CalcAges.bothCovs <- function(covars, b, d) {
-  aliveMat <- .MakeAliveMatrix(b, d + 1, covars$timeMat)
-  x <- (aliveMat %*% covars$cumMat - 1) * aliveMat
-  x[x<0] = 0
-  idTr <- which(b < studyStart)
-  xTr <- x * 0
-  xTr[idTr] <- studyStart - b[idTr]
-  idb <- (b - timeCovStart) * n + 1:n
-  idd <- (d - timeCovStart) * n + 1:n
-  return(list(x = x, xTr = xTr, idTr = idTr, aliveMat = aliveMat, 
-          idb = idb, idd = idd))
+# 4.1.- Calculate Thetas:
+.CalcThetaInMort <- function(covars, ...) UseMethod(".CalcThetaInMort")
+
+.CalcThetaInMort.noCovs <- function(covars, theta, indExp) {
+  if (!is.null(indExp)) {
+    theta[, indExp] <- exp(theta[, indExp])
+  }
+  return(theta)
 }
 
+.CalcThetaInMort.fixedCovs <- function(covars, theta, indExp) {
+  theta <- as.matrix(theta)
+  thetaPars <- covars$fixedCovs %*% theta
+  if ("c" %in% colnames(theta)) {
+    cVec <- theta[1, "c"] * 
+        exp(covars$fixedCovs[, -1] %*% theta[-1, "c"])
+    thetaPars[, "c"] <- cVec
+  }
+  if (!is.null(indExp)) {
+    thetaPars[, indExp] <- exp(thetaPars[, indExp])
+  }
+  thetaPars <- data.frame(thetaPars)
+  return(thetaPars)
+}
 
+.CalcThetaInMort.timeCovs <- function(covars, theta, indExp) {
+  thetaPars <- list()
+  thetaNames <- colnames(theta)
+  for (iTh in thetaNames[which(thetaNames != "c")]) {
+    thetaPars[[iTh]] <- covars$timeCovs[[1]] * 0
+    for (jCov in 1:length(covars$timeCovs)) {
+      thetaPars[[iTh]] <- thetaPars[[iTh]] + 
+          covars$timeCovs[[jCov]] * theta[jCov, iTh]
+    }
+    if (iTh %in% indExp) {
+      thetaPars[[thName]] <- exp(thetaPars[[thName]])
+    }
+  }
+  if ("c" %in% thetaNames) {
+    thetaPars[["c"]] <- covars$timeCovs[[1]] * 0
+    for (jCov in 2:length(covars$timeCovs)) {
+      thetaPars[["c"]] <- thetaPars[["c"]] + 
+          covars$timeCovs[[jCov]] * theta[jCov, "c"]
+    }
+    thetaPars[["c"]] <- theta[1, "c"] * exp(thetaPars[["c"]])
+  }
+  return(thetaPars)
+}
 
+.CalcThetaInMort.bothCovs <- function(covars, theta, indExp) {
+  thetaPars <- list()
+  thetaNames <- colnames(theta)
+  fThetaPars <- covars$fixedCovs %*% 
+      as.matrix(theta[colnames(covars$fixedCovs), ])
+  if ("c" %in% thetaNames) {
+    fThetaPars[, "c"] <- covars$fixedCovs[, -1] %*% 
+        as.matrix(theta[colnames$fixedCovs[-1], "c"])
+  }
+  for (iTh in thetaNames[which(thetaNames != "c")]) {
+    thName <- colnames(theta)[iTh]
+    thetaPars[[iTh]] <- covars$timeCovs[[1]] * 0 + fThetaPars[, iTh]
+    tCovNames <- names(covars$timeCovs)
+    for (jCov in tCovNames) {
+      thetaPars[[iTh]] <- thetaPars[[iTh]] + 
+          covars$timeCovs[[jCov]] * theta[jCov, iTh]
+    }
+    if (iTh %in% indExp) {
+      thetaPars[[iTh]] <- exp(thetaPars[[iTh]])
+    }
+  }
+  if ("c" %in% thetaNames) {
+    thetaPars[["c"]] <- covars$timeCovs[[1]] * 0 + fThetaPars[, "c"]
+    for (jCov in 1:length(covars$timeCovs)) {
+      thetaPars[["c"]] <- thetaPars[["c"]] + 
+          covars$timeCovs[[jCov]] * theta[jCov, "c"]
+    }
+    thetaPars[["c"]] <- theta[1, "c"] * exp(thetaPars[["c"]])
+  }
+  return(thetaPars)
+}
+
+# 4.2.- Calculate Gammas:
+.CalcGamma <- function(covars, ...) UseMethod(".CalcGamma")
+
+.CalcGamma.fixedCovs <- function(covars, gamma) {
+  gammaPars <- covars$fixedCovs %*% c(gamma)
+  return(exp(gammaPars))
+}
+
+.CalcGamma.timeCovs <- function(covars, gamma) {
+  gammaPars <- covars$timeCovs[[1]] * 0
+  for (iGa in names(covars$timeCovs)) {
+    gammaPars <- gammaPars + covars$timeCovs[[iGa]] * gamma[iGa, ]
+  }
+  return(exp(gammaPars))
+}
+
+.CalcGamma.bothCovs <- function(covars, gamma) {
+  fGammaPars <- covars$fixedCovs %*% c(gamma[colnames(covars$fixedCovs), ])
+  gammaPars <- covars$timeCovs[[1]] * 0 + c(fGammaPars)
+  for (iGa in names(covars$timeCovs)) {
+    gammaPars <- gammaPars + covars$timeCovs[[iGa]] * gamma[iGa, ]
+  }
+  return(exp(gammaPars))
+}
+
+# 5.- FUNCTIONS TO CALCULATE PRIOR AGE DISTRIBUTION:
+.SetPriorAgeDist <- function(params) {
+  priorRange <- list()
+  priorMean <- params$theta$priorMean[1, ]
+  priorSd <- params$theta$priorSd[1, ]
+  nPriors <- ncol(params$theta$priorMean)
+  Dprior <- rep(0, nPriors)
+  names(Dprior) <- colnames(priorMean)
+  priorRange <- lapply(1:nPriors, function(th) 
+        seq(qnorm(0.001, mean = priorMean[1, th], sd = priorSd[1, th]),
+            qnorm(0.999, mean = priorMean[1, th], sd = priorSd[1, th]), 
+            length = 100))
+  Dprior <- sapply(1:nPriors, function(th) priorRange[[th]][2] -
+            priorRange[[1]][1])
+  
+  priorCombs <- expand.grid(priorRange)
+  if (!is.null(params$indExp)) {
+    priorCombs[, params$indExp] <- exp(priorCombs[, params$indExp])
+  }
+  colnames(priorCombs) <- colnames(priorMean)
+  dx   <- 0.5
+  xv   <- seq(0, 1000, dx)
+  meanLifeExpec <- sapply(1:nrow(priorCombs), 
+      function(ii) 
+        sum(CalcSurv(xv, priorCombs[ii, ]) * dx))
+  
+  priorDens <- priorCombs * 0
+  for(i in 1:nPriors) {
+    priorDens[, i] <- dnorm(priorCombs[, i], mean = priorMean[1, i], 
+        sd = priorSd[1, i])
+  }
+  
+  xvdisc <- 0:1000
+  xMat <- matrix(xvdisc, nrow(priorCombs), length(xvdisc), byrow = TRUE)
+  vxMat <- CalcSurv(xMat, priorCombs) / meanLifeExpec * 
+      apply(priorDens, 1, prod) 
+  priorAgeDist <- apply(vxMat, 2, sum) * prod(Dprior)
+  priorAgeDist <- priorAgeDist / sum(priorAgeDist)
+  return(priorAgeDist)
+}
+
+.CalcPriorAgeDist <- function(x, priorAgeDist) priorAgeDistr[x + 1]
+
+# 6.- SET INITIAL VALUES FOR TIMES OF BIRTH AND DEATH, AGES, ETC.:
+# 6.1.- Main method:
+.SetIniTimeDat <- function(covars, ...) UseMethod(".SetIniTimeDat") 
+
+.SetIniTimeDat.noCovs <- function(covars, mortdat, minAge) {
+  iniTimesDat <- .SetIniTimes(mortdat, minAge)
+  class(iniTimesDat) <- c(class(iniTimesDat)[2:3], class(covars)[2])
+  return(iniTimesDat)
+}
+
+.SetIniTimeDat.fixedCovs <- .SetIniTimeDat.noCovs
+
+.SetIniTimeDat.timeCovs <- function(covars, mortdat, minAge) {
+  iniTimesDat <- .SetIniTimes(mortdat, minAge)
+  idb <- (iniTimesDat$times$birth - covars$start) * 
+      mortdat$N + 1:mortdat$N
+  idd <- (iniTimesDat$times$death - covars$start) * 
+      mortdat$N + 1:mortdat$N
+  iniTimesDat$times <- data.frame(cbind(iniTimesDat$times, idb, idd))
+  timeMat <- .MakeIndicatorMat(iniTimesDat$time$birth, iniTimesDat$time$death, 
+      covars$timeMat)
+  iniTimesDat$timeMat <- timeMat
+  class(iniTimesDat) <- c(class(iniTimesDat)[2:3], class(covars)[2])
+  return(iniTimesDat)
+}
+
+.SetIniTimeDat.bothCovs <- .SetIniTimeDat.timeCovs
+
+# 6.2.- Method to set initial times of birth and death, 
+#       and detection indicator matrix for capRecap data.
+.SetIniTimes <- function(mortdat, ...) UseMethod(".SetIniTimes")
+
+.SetIniTimes.fullCens <- function(mortdat, minAge) {
+  idTr <- mortdat$birth * 0
+  idTr[mortdat$birth < mortdat$start] <- 1
+  iniTimes <- data.frame(birth = mortdat$birth, death = mortdat$death, 
+      age = mortdat$death - mortdat$birth, idTr = idTr)
+  if (minAge > 0) {
+    iniTimes <- .SplitByMinAgeIni(iniTimes, mortdat, minAge)
+    iniTimesClass <- c(class(mortdat), "minAge")
+  } else {
+    iniTimesClass <- c(class(mortdat), "noMinAge")
+  }
+  iniTimesList <- list(times = iniTimes)
+  class(iniTimesList) <- iniTimesClass
+  return(iniTimesList)
+}
+
+.SetIniTimes.census <- function(mortdat, minAge) {
+  iniTimes <- .SetIniBirthDeath(mortdat)
+  if (minAge > 0) {
+    iniTimes <- .SplitByMinAgeIni(iniTimes, mortdat, minAge)
+    iniTimesClass <- c(class(mortdat), "minAge")
+  } else {
+    iniTimesClass <- c(class(mortdat), "noMinAge")
+  }
+  iniTimes$idNew <- c()
+  class(iniTimes) <- iniTimesClass
+  return(iniTimes)
+}
+
+.SetIniTimes.capRecov <- .SetIniTimes.census
+
+.SetIniTimes.capRecap <- function(mortdat, minAge) {
+  iniTimes <- .SetIniBirthDeath(mortdat)
+  if (minAge > 0) {
+    iniTimes <- .SplitByMinAgeIni(iniTimes, mortdat, minAge)
+    iniTimesClass <- c(class(mortdat), "minAge")
+  } else {
+    iniTimesClass <- c(class(mortdat), "noMinAge")
+  }
+  firstTimeInStudy <- c(apply(cbind(mortdat$start, iniTimes$times$birth + 1), 
+          1, max))
+  lastTimeInStudy <- c(apply(cbind(mortdat$end, iniTimes$times$death - 1), 
+          1, min))
+  aliveIdentMat <- .MakeIndicatorMat(firstTimeInStudy, lastTimeInStudy, 
+      mortdat$studyTimeMat)
+  iniTimes$idNew <- c()
+  iniTimes$aliveMat <- aliveIdentMat
+  class(iniTimes) <- iniTimesClass
+  return(iniTimes)
+}
+
+# 6.3.- Function to set initial times of birth and death:
+.SetIniBirthDeath <- function(mortdat) {
+  birth <- mortdat$birth
+  if (length(mortdat$idNoB) > 0) {
+    idFirstObs <- mortdat$idNoB[mortdat$firstObs[mortdat$idNoB] > 0]
+    if (length(idFirstObs) > 0) {
+      birth[idFirstObs] <- mortdat$firstObs[idFirstObs] - 1
+    }
+    idDeath <- mortdat$idNoB[mortdat$firstObs[mortdat$idNoB] == 0 & 
+            mortdat$death[mortdat$idNoB] > 0]
+    if (length(idDeath) > 0) {
+      birth[idDeath] <- mortdat$death[idDeath] - 1
+    }
+  }
+  death <- mortdat$death
+  if (length(mortdat$idNoD) > 0) {
+    idLastObs <- mortdat$idNoD[mortdat$lastObs[mortdat$idNoD] > 0]
+    if (length(idLastObs) > 0) {
+      death[idLastObs] <- mortdat$lastObs[idLastObs] + 1
+    }
+    idBirth <- mortdat$idNoD[mortdat$lastObs[mortdat$idNoD] == 0]
+    if (length(idBirth) > 0) {
+      death[idBirth] <- birth[idBirth] + 1
+    }
+  }
+  idTr <- which(birth < mortdat$start)
+  iniBD <- list(times = data.frame(birth = birth, death = death, 
+          ages = death - birth), idTr = idTr)
+  return(iniBD)
+}
+
+# 6.4.- Function to separate juveniles from adults:
+.SplitByMinAgeIni <- function(times, mortdat, minAge) {
+  baseTimes <- times$times
+  indAd <- baseTimes$birth * 0
+  indJu <- indAd
+  ageAdTrunc <- indAd
+  ageJuTrunc <- indAd
+  indAd[baseTimes$age >= minAge] <- 1
+  indJu[baseTimes$age < minAge] <- 1
+  ageAd <- baseTimes$age - minAge
+  ageAd[baseTimes$age < minAge] <- 0
+  ageJu <- baseTimes$age
+  ageJu[baseTimes$age > minAge] <- minAge
+  idTrAd <- which(baseTimes$birth + minAge < mortdat$start)
+  if (length(idTrAd) > 0) {
+    ageAdTrunc[idTrAd] <- mortdat$start - 
+        (baseTimes$birth[idTrAd] + minAge)
+  }
+  idTrJu <- which(baseTimes$birth < mortdat$start &
+              mortdat$start - baseTimes$birth < minAge)
+  if (length(idTrJu) > 0) {
+    ageJuTrunc[idTrJu] <- mortdat$start - baseTimes$birth[idTrJu]
+  }
+  timesMinAge <- data.frame(baseTimes, ageAd = ageAd, ageJu = ageJu, 
+      ageAdTr = ageAdTrunc, ageJuTr = ageJuTrunc, indAd = indAd, indJu = indJu)
+  times$times <- timesMinAge
+  times$idTrAd <- idTrAd
+  times$idTrJu <- idTrJu
+  return(times)
+}
+
+# 7.- UPDATE TIMES OF BIRTH & DEATH:
+# 7.1.- Main function:
+.SampleTimeDat <- function(times, ...) UseMethod(".SampleTimeDat") 
+
+.SampleTimeDat.noCovs <- function(times, mortdat, minAge, covars) {
+  times <- .UpdateTimes(times, mortdat, minAge)
+  return(times)
+}
+
+.SampleTimeDat.fixedCovs <- .SampleTimeDat.noCovs
+
+.SampleTimeDat.timeCovs <- function(times, mortdat, minAge, covars) {
+  times <- .UpdateTimes(times, mortdat, minAge)
+  if (length(times$idNew) > 0) {
+    times$times$idb[times$idNew] <- (times$times$birth[times$idNew] - 
+          covars$start) * mortdat$N + c(1:mortdat$N)[times$idNew]
+    times$times$idd[times$idNew] <- (times$times$death[times$idNew] - 
+          covars$start) * mortdat$N + c(1:mortdat$N)[times$idNew]
+    times$timeMat[times$idNew, ] <- 
+        .MakeIndicatorMat(times$times$birth[times$idNew], 
+            times$times$death[times$idNew], covars$timeMat[times$idNew, ])
+  }
+  return(times)
+}
+
+.SampleTimeDat.bothCovs <- .SampleTimeDat.timeCovs
+
+# 7.2.- Functions to update additional data based on proposed ages:
+.UpdateTimes <- function(times, ...) UseMethod(".UpdateTimes")
+
+.UpdateTimes.fullCens <- function(times, ...) {
+  return(times)
+}
+
+.UpdateTimes.census <- function(times, mortdat, minAge) {
+  times <- .ProposeTimes(times, mortdat, minAge)
+  return(times)
+}
+
+.UpdateTimes.capRecov <- .UpdateTimes.census
+
+.UpdateTimes.capRecap <- function(times, mortdat, minAge) {
+  times <- .ProposeTimes(times, mortdat, minAge)
+  if (length(times$idNew) > 0) {
+    firstTimeInStudy <- c(apply(cbind(mortdat$start, 
+                times$times$birth[times$idNew] + 1), 1, max))
+    lastTimeInStudy <- c(apply(cbind(mortdat$end, 
+                times$times$death[times$idNew] - 1), 1, min))
+    times$aliveMat[times$idNew, ] <- .MakeIndicatorMat(firstTimeInStudy, 
+        lastTimeInStudy, mortdat$studyTimeMat[times$idNew, ])
+  }
+  return(times)
+}
+
+# 7.3.- Functions to sample ages and recalculate min ages:
+.ProposeTimes <- function(times, ...) UseMethod(".ProposeTimes")
+
+.ProposeTimes.noMinAge <- function(times, mortdat, ...) {
+  newTimes <- .ProposeAges(times, mortdat)
+  return(newTimes)
+}
+
+.ProposeTimes.minAge <- function(times, mortdat, minAge) {
+  newTimes <- .ProposeAges(times, mortdat)
+  newTimes <- .SplitByMinAge(newTimes, mortdat, minAge)
+  return(newTimes)
+}
+
+# 7.4.- Function to propose ages:
+.ProposeAges <- function(times, mortdat) {
+  if (length(mortdat$idNoB) > 0) {
+    birthNew <- times$times$birth
+    birthNew[mortdat$idNoB] <- times$times$birth[mortdat$idNoB] + sample(-1:1, 
+        length(mortdat$idNoB), replace = TRUE)
+    idCap <- mortdat$idNoB[which(mortdat$nCaps[mortdat$idNoB] > 0)]
+    birthNew[idCap] <- apply(cbind(birthNew[idCap], 
+            mortDat$firstObs[idCap] - 1), 1, min)
+    idNCap <- mortdat$idNoB[which(mortdat$nCaps[mortdat$idNoB] == 0)]
+    birthNew[idNCap] <- apply(cbind(birthNew[idNCap], 
+            mortDat$death[idNCap] - 1), 1, min)
+    idNew <- mortdat$idNoB[which(times$times$birth[mortdat$idNoB] != 
+                birthNew[mortdat$idNoB])]
+    times$times$birth[mortdat$idNoB] <- birthNew[mortdat$idNoB]
+  }
+  if (length(mortdat$idNoD) > 0) {
+    deathNew <- times$times$death
+    deathNew[mortdat$idNoD] <- times$times$death[mortdat$idNoD] + sample(-1:1,
+        length(mortdat$idNoD), replace = TRUE)
+    idCh <- mortdat$idNoD[which(deathNew[mortdat$idNoD] != 
+                times$death[mortdat$idNoD])]
+    deathNew[idCh] <- apply(cbind(deathNew[idCh], birthNew[idCh], 
+            mortdat$lastObs[idCh] + 1), 1, max)
+    idNew <- sort(unique(c(idNew, 
+                mortdat$idNoD[which(times$times$death[mortdat$idNoD] != 
+                            deathNew[mortdat$idNoD])])))
+    times$times$death[mortdat$idNoD] <- deathNew[mortdat$idNoD]
+  }
+  if (length(idNew) > 0) {
+    times$idNew <- idNew
+    times$times$ages[idNew] <- deathNew[idNew] - birthNew[idNew]
+  }
+  return(times)
+}
+
+# 7.5.- Function to update adults and juveniles:
+.SplitByMinAge <- function(times, mortdat, minAge) {
+  if (length(times$idNew) > 0) {
+    splitTimes <- times$times[times$idNew, ]
+    splitTimes[, c("ageAd", "ageJu", "ageAdTr", "ageJuTr", 
+            "indAd", "indJu")] <- 0
+    splitTimes$indAd[splitTimes$ages >= minAge] <- 1
+    splitTimes$indJu[splitTimes$ages < minAge] <- 1
+    splitTimes$ageAd <- splitTimes$ages - minAge
+    splitTimes$ageAd[splitTimes$ages < minAge] <- 0
+    splitTimes$ageJu <- splitTimes$ages
+    splitTimes$ageJu[splitTimes$ages > minAge] <- minAge
+    idTrAdNew <- which(splitTimes$birth + minAge < mortdat$start)
+    splitTimes$ageAdTr[idTrAdNew] <- mortdat$start - 
+        (splitTimes$birth[idTrAdNew] + minAge)
+    idTrJuNew <- which(splitTimes$birth < mortdat$start &
+            mortdat$start - splitTimes$birth < minAge)
+    splitTimes$ageJuTr[idTrJuNew] <- mortdat$start - 
+        splitTimes$birth[idTrJuNew]
+    times$times[times$idNew, ] <- splitTimes
+    times$idTrAd <- 
+        sort(unique(c(times$idTrAd[!(times$idTrAd %in% times$idNew)], 
+                    idTrAdNew)))
+    times$idTrJu <- 
+        sort(unique(c(times$idTrJu[!(times$idTrJu %in% times$idNew)], 
+                    idTrJuNew)))
+  }
+  return(times)
+}
+
+# CALCULATE INDIVIDUAL SURVIVAL AND MORTALITY (unfinished):
 .CalcMortFuns <- function(pars, ...) UseMethod(".CalcMortFuns")
 
 .CalcMortFuns.parnoCovs <- function(parMats, ages) {
@@ -139,7 +1160,7 @@ function(object, ... ) UseMethod("basta")
 .CalcMortFuns.parfixedCovs <- function(parMats, ages) {
 #  hazRate <- CalcMort(ages$x, parMats$theta) * exp(parMats$gamma)
   intCensMort <- (CalcuSurv(ages$x, parMats$theta) - 
-      CalcuSurv(ages$x + Dx, parMats$theta))^exp(parMats$gamma)
+        CalcuSurv(ages$x + Dx, parMats$theta))^exp(parMats$gamma)
   survProbTr <- CalcSurv(ages$xTr, parMats$theta)^exp(parMats$gamma)
   survProbTr[-ages$idTr] <- 1
   return(cbind(intCensMort, survProbTr))
@@ -161,564 +1182,97 @@ function(object, ... ) UseMethod("basta")
   return(cbind(hazRate[ages$idd], survProb, survProbTr))
 }
 
-# 1.3. Function to calculate lower bounds for 'c' parameter 
-# (only relevant for 'Makeham' and 'bathtub' shapes):
+# MAKE ALIVE MATRIX (unfinished):
+.MakeIndicatorMat <- function(first, last, timeMat) {
+  firstMat <- timeMat - first
+  firstMat[firstMat >= 0] <- 1
+  firstMat[firstMat < 0] <- 0
+  lastMat <- timeMat - last
+  lastMat[lastMat <= 0] <- -1
+  lastMat[lastMat > 0]  <- 0
+  return(firstMat * (-lastMat))	
+}
+
+# CALCULATE LOWER BOUND FOR c PARAMETER 
+# (unfinished and possibly deprecated):
 .CalculateLowC              <- function(theta) {
   if (shape == "Makeham") {
-		if (model == "GO") {
-			c.low <- ifelse(theta[3] > 0, -exp(theta[2]), 0)
-		} else if (model == "WE") {
-			c.low <- 0
-		} else if (model == "LO") {
-			c.low <- ifelse(theta[2] > theta[3] * exp(theta[1]), 
-					-exp(theta[2]), 0)
-		} 
-	}
-	if (shape == "bathtub") {
-		if (model == "GO") {
-			x.min <- (theta[1] + log(theta[2]) - theta[4] - 
-						log(theta[5])) / (theta[2] + theta[5])
-		} else if (model == "LO" | model == "WE") {
-			x.vec <- seq(0, 100, 0.1)
-			mort  <- .CalculateMort(x.vec, matrix(theta, 
-							length(x.vec), lengthTheta, 
-							byrow = TRUE), 0)
-			x.min <- x.vec[which(mort == min(mort))[1]]
-		}
-		c.low <- -exp(theta[1] - theta[2] * x.min) - 
-				.CalculateBasicMort(x.min, 
-						matrix(theta[-c(1:3)], 
-								1, lengthBasicTheta))
-	}
-	return(c.low)
-}
-
-# 1.4. Matrix of yearly indicators for time alive:
-.MakeAliveMatrix <- function(f, l, Tm) {
-  Fm <- Tm - f
-	Fm[Fm >= 0] <- 1
-	Fm[Fm < 0] <- 0
-	Lm <- Tm - l
-	Lm[Lm <= 0] <- -1
-	Lm[Lm > 0]  <- 0
-	return(Fm * (-Lm))	
-}
-
-# 2. Parameter functions:
-# 2.1. Default values for theta parameters:
-.SetDefaultTheta  <- function(model, shape) {
-	if (model == "EX") {
-		basicTheta <- list(length = 1, 
-				low = -Inf, 
-				start = 0.01, 
-				jump = 0.005, 
-				prior = 0.01,
-				name = "b")
-	} else if (model == "GO") {
-		basicTheta <- list(length = 2, 
-				low = c(-Inf, -Inf), 
-				start = c(-3, 0.01), 
-				jump = c(0.05, 0.025), 
-				prior = c(-3, 0.01),
-				name = paste("b", (1:2) - 1, sep=""))
-	} else if (model == "WE") {
-		basicTheta <- list(length = 2, 
-				low = c(0, 0), 
-				start = c(1.5, 0.1), 
-				jump = c(0.01, 0.001), 
-				prior = c(1, 0.01),
-				name = paste("b", (1:2) - 1, sep=""))
-	} else if (model == "LO") {
-		basicTheta <- list(length = 3, 
-				low = c(-Inf, 0, 0), 
-				start = c(-3, 0.01, 0.0001), 
-				jump = c(0.001, 0.001, 0.001), 
-				prior = c(-3, 0.01, 1e-10),
-				name = paste("b", (1:3) - 1, sep=""))
-	}
-	
-	if (shape == "simple") {
-		defaultTheta  <- basicTheta
-	} else if (shape == "Makeham") {
-		defaultTheta  <- list(length = basicTheta$length + 1, 
-				low = c(-Inf, basicTheta$low), 
-				start = c(0, basicTheta$start), 
-				jump = c(0.01, basicTheta$jump), 
-				prior = c(0, basicTheta$prior),
-				name = c("c", basicTheta$name))
-		if (model == "GO") {
-			defaultTheta$low <- c(-Inf, -Inf, 0)
-		}
-	} else if (shape == "bathtub") {
-		defaultTheta  <- list(length = basicTheta$length + 3, 
-				low = c(-Inf, 0, -Inf, basicTheta$low), 
-				start = c(-0.1, 0.5, 0, basicTheta$start), 
-				jump = c(0.001, 0.001, 0.01, basicTheta$jump), 
-				prior = c(-2, 0.01, 0, basicTheta$prior),
-				name = c("a0", "a1", "c", basicTheta$name))
-		if (model == "GO") {
-			defaultTheta$low <- c(-Inf, 0, -Inf, -Inf, 0)
-		}
-	}
-  attr(defaultTheta, "model") = model
-  attr(defaultTheta, "shape") = shape
-	return(defaultTheta)
-}
-
-# 2.2. Check if input values for parameters, jumps and priors are consistent:
-# a) Check and returns mortality parameters:
-.CheckParsMort <- function(userPars, covars, 
-    model, shape) {
-  if (!("defaultTheta" %in% ls())) {
-    defaultTheta <- .SetDefaultTheta(model, shape)
+    if (model == "GO") {
+      c.low <- ifelse(theta[3] > 0, -exp(theta[2]), 0)
+    } else if (model == "WE") {
+      c.low <- 0
+    } else if (model == "LO") {
+      c.low <- ifelse(theta[2] > theta[3] * exp(theta[1]), 
+          -exp(theta[2]), 0)
+    } 
   }
-  parNames <- c("start", "jump", "prior")
-  parId <- c("starting", "jumps", "priors")
-  parValAllInMort <- c(0, 0.001, 0)
-  parMat <- list()
-  par <- 0
-  Error <- FALSE
-  while(!Error & par <= 2) {
-    par <- par + 1
-    if (is.null(userPars[[par]])) {
-      par.mat <- matrix(defaultTheta[[parNames[par]]], covars$inMort$length, 
-          defaultTheta$le, byrow = TRUE, 
-          dimnames = list(covars$inMort$name, 
-              defaultTheta$name))
-      if (class(covars)[2] %in% c("inMort", "fused")) {
-        covType <- .FindCovariateType(covars$inMort$mat)
-        if (!is.null(covType$cont)) {
-          par.mat[covType$cont, ] = parValAllInMort[par]
-        }
-      }
-    } else {
-      lengthPar <- length(userPars[[par]])
-      if (!is.element(lengthPar, 
-          c(defaultTheta$length, defaultTheta$length * 
-                  covars$inMort$length))) {
-        par.mat <- NULL
-        if (class(covars)[2] != "inMort") {
-          stop(paste("\nIncorrect length or dimensions for ", parId[par],
-                  " parameters\nfor the mortality model. Provide a single\n",
-                  " vector of length ",
-                  defaultTheta$length, " (number of parameters\n",
-                  " for model = '", model,"' and shape = '",shape, "').",
-                  sep = ""), call. = FALSE)
-        } else {
-          if (!is.null(dim(userPars[[par]]))) {
-            stop(paste("\nDimensions of ", parId[par], 
-                    " matrix for the mortality model\nparameters ",
-                    "are incorrect. Provide a single vector\nof",
-                    " length ", defaultTheta$length, " or a matrix of",
-                    " dimensions ", covars$inMort$length ," times ", 
-                    defaultTheta$length, "\n(i.e. number of fixed covariates ", 
-                    "in mortality section times number\nof parameters",
-                    " for model = '", model,"' and shape = '",shape, "').",
-                    sep = ""), call. = FALSE)
-          } else {
-            stop(paste("\nLength of ", parId[par], 
-                    " vector for the mortality model\nparameters is",
-                    " incorrect. Provide a single vector\nof",
-                    " length ", defaultTheta$length, " or a matrix of",
-                    " dimensions ", covars$inMort$length ," times ", 
-                    defaultTheta$length, "\n(i.e. number of fixed covariates ", 
-                    "in mortality section times number\nof parameters",
-                    " for model = '", model,"' and shape = '",shape, "').",
-                    sep=""), call. = FALSE)
-          }
-       }
-       Erro <- TRUE
-     } else {
-        if (!is.null(dim(userPars))) {
-          par.mat <- userPars[[par]]
-        } else {
-          par.mat <- matrix(userPars[[par]], covars$inMort$length, 
-              defaultTheta$length, byrow = TRUE)
-        }
-        dimnames(par.mat) <- list(covars$inMort$names, 
-            defaultTheta$name)
-      }
+  if (shape == "bathtub") {
+    if (model == "GO") {
+      x.min <- (theta[1] + log(theta[2]) - theta[4] - 
+            log(theta[5])) / (theta[2] + theta[5])
+    } else if (model == "LO" | model == "WE") {
+      x.vec <- seq(0, 100, 0.1)
+      mort  <- .CalculateMort(x.vec, matrix(theta, 
+              length(x.vec), lengthTheta, 
+              byrow = TRUE), 0)
+      x.min <- x.vec[which(mort == min(mort))[1]]
     }
-    parMat[[parNames[par]]] <- par.mat
+    c.low <- -exp(theta[1] - theta[2] * x.min) - 
+        .CalculateBasicMort(x.min, 
+            matrix(theta[-c(1:3)], 
+                1, lengthBasicTheta))
   }
-  return(parMat)
+  return(c.low)
 }
 
-# b) Check and return proportional hazards parameters:
-.CheckParsPH <- function(userPars, covars){
-  if(class(covars)[1] == "noCovs" | 
-      (class(covars)[1] == "fixedCovs" & class(covars)[2] == "inMort")) {
-    parList <- NULL
+# DYNAMIC UPDATE OF JUMP SD'S (verify):
+UpdateJumps <- function(jObject, updateVec, targetUpdate, g, 
+    updateInt, nPar, updateLen) {
+  gUpdate <- which(updateInt == g)
+  if (nPar > 1) {
+    parCount <- seq(nPar, nPar * 100, nPar) - gUpdate
+    parCount <- nPar - parCount[which(parCount >= 0)][1]
   } else {
-    parNames <- c("start", "jumps", "priors")
-    parId <- c("starting", "jump", "prior")
-    parList <- list()
-    if (class(covars)[1] == "fixedCovs") {
-      covTypeVec <- 1
-    } else if (class(covars)[1] == "timeCovs") {
-      covTypeVec <- 2
-    } else {
-      if (class(covars)[2] %in% c("propHaz", "fused")) {
-        covTypeVec <- 1:2
-      } else {
-        covTypeVec <- 2
-      }
-    }
-    for (covt in covTypeVec) {
-      nGam <- covars[[covt + 1]]$length
-      namesCovs <- covars[[covt + 1]]$name
-      if (is.null(namesCovs)) {
-        namesCovs <- paste("Cov", 1:nGam, sep = "")
-      }
-      parMat <- matrix(0, 3, nGam, dimnames = list(parNames, namesCovs))
-      for (par in 1:3) {
-        if (is.null(userPars[[covt]][[par]])) {
-          parVec <- rep(c(0, 0.001, 0)[par], nGam)
-        } else {
-          if (length(userPars[[covt]][[par]]) != nGam) {
-            stop(paste("\nLength of ", parId[par], 
-                    " parameters for ", c("fixed", "time")[covt], 
-                    " covariates\nin prop. hazards section is not ",
-                    "equal to number\nof covariates (n = ", nGam, ").", 
-                    sep = ""), call. = FALSE)
-          } else {
-            parVec <- userPars[[covt]][[par]]
-          }
-        }
-        parMat[par, ] = parVec
-      }
-      parList[[c("fixed", "time")[covt]]] = parMat
-    }
+    parCount <- 1
   }
-  return(parList)
-}
-
-# Construct final parameter matrices:
-# a) For fixed covariates:
-.CalcFixPars <- function(object, ...) UseMethod(".CalcFixPars")
-
-.CalcFixPars.fused <- function(object, params) {
-  thetaMat <- object$inMort$mat %*% params$theta
-  gaMatFix <- c(object$prHazFix$mat %*% params$gamma$fixed)
-  return(list(theta = thetaMat, gamma = gaMatFix))
-}
-
-.CalcFixPars.inMort <- function(object, params) {
-  thetaMat <- object$inMort$mat %*% params$theta
-  return(list(theta = thetaMat, gamma = 0))
-}
-
-.CalcFixPars.propHaz <- function(object, params) {
-  thetaMat <- matrix(params$theta, 1, length(params$theta), 
-      dimnames = list(NULL, names(params$theta)))
-  gaMatFix <- c(object$prHazFix$mat %*% params$gamma$fixed)
-  return(list(theta = thetaMat, gamma = gaMatFix))
-}
-
-
-# b) all parameters:
-.CalcParMats <- function(object, ...) UseMethod(".CalcParMats")
-
-.CalcParMats.noCovs <- function(object, params) {
-  parmat <- list(theta = matrix(params$theta, 1, length(params$theta), 
-      dimnames = list(NULL, names(params$theta))))
-  class(parmat) <- paste("par", class(object)[1], sep = "")
-  return(parmat)
-}
-
-.CalcParMats.fixedCovs <- function(object, params) {
-  parmat<- .CalcFixPars(object, params)
-  class(parmat) <- paste("par", class(object)[1], sep = "")
-  return(parmat)
-}
-
-.CalcParMats.timeCovs <- function(object, params) {
-  thetaMat <- object$inMort$mat %*% params$theta
-  gamMat <- object$prHazTime$mat[, , 1] * 0
-  for(ga in 1:object$prHazTime$length){
-    gamMat <- gamMat + object$prHazTime$mat[, , ga] * params$gamma$time[ga]
-  }
-  parmat <- list(theta = thetaMat, gamma = gamMat)
-  class(parmat) <- paste("par", class(object)[1], sep = "")
-  return(parmat)
-}
-
-.CalcParMats.bothCovs <- function(object, params) {
-  parList <- .CalcFixPars(object, params)
-  gamMat <- object$prHazTime$mat[, , 1] * 0
-  for(ga in 1:object$prHazTime$length){
-    gamMat <- gamMat + object$prHazTime$mat[, , ga] * params$gamma$time[ga]
-  }
-  gamMat <- gamMat + parList$gamma
-  parmat <- list(theta = parList$theta, gamma = gamMat)
-  class(parmat) <- paste("par", class(object)[1], sep = "")
-  return(parmat)
-}
-
-# 2.3. Final parameter names:
-.DefineParNames <- function(defaultTheta, covars, recaptTrans) {
-  nameTheta  <- paste(rep(defaultTheta$name, 
-                              each = covars$inMort$length), 
-                          "[", rep(colnames(covars$inMortMat),
-                                   defaultTheta$length), 
-                          "]", sep = "")
-  if (covars$inMort$length == 1) {
-    nameTheta <- defaultTheta$name
-	}
-	nThetaFull <- length(nameTheta)
-	nameFixedGamma <- paste("gamma[", colnames(covars$prHazFix$mat), "]", sep="")
-	if (covars$nGamFixed == 1) {
-		nameFixedGamma  <- "gamma"
-	}
-  if (class(covars) == "fixedCovs") {
-    nameTimeGamma <- NULL
+  updateRate <- sum(updateVec[g + c(-(updateLen - 1):0)]) / updateLen
+  if (updateRate == 0) updateRate <- 1e-3
+  if (gUpdate == 1) {
+    jObject$jumpsMat <- jObject$startJump
+    jObject$updateRateVec <- updateRate
   } else {
-    nameTimeGamma <- colnames(covars$prHazTime$mat)
+    jObject$jumpsMat <- rbind(jObject$jumpsMat, jObject$jump)
+    jObject$updateRateVec <- c(jObject$updateRateVec, updateRate)
   }
-	namePi <- ifelse(length(recaptTrans) == 1, "pi", 
-			paste("pi[", recaptTrans, "]", sep = ""))
-	namePost <- c("post[theta,gamma]", "post[X0]", "post[full]")
-  return(list(theta = nameTheta,
-              gamFixed = nameFixedGamma,
-              gamTime = nameTimeGamma,
-              pi = namePi,
-              post = namePost))
-}
-
-
-# 3. Data handling functions:
-.CreateBastaData <- function(object, studyStart, fixedCovs = NULL, 
-    timeCovs = NULL, ...) {
-  bd <- as.matrix(object[, 2:3])
-  colnames(bd) <- c("birth", "death")
-  Y <- as.matrix(object[, 4:ncol(object)])
-  nt <- ncol(Y)
-  colnames(Y) <- 1:nt + studyStart - 1
-  bastadat <- list (bd = bd,
-      Y = Y,
-      fixedCovs = fixedCovs,
-      timeCovs = timeCovs,
-      n = nrow(object), 
-      studyEnd = nt + studyStart - 1,
-      years = 1:nt + studyStart - 1,
-      nYears = nt)
-  if (is.null(fixedCovs) & is.null(timeCovs)) {
-    class(bastadat) <- "datNoCovs"
+  if (gUpdate > nPar) {
+    idTarget <- which(jObject$updateRateVec[gUpdate - (nPar - 1):0] > 
+            targetUpdate * 0.9 &
+            jObject$updateRateVec[gUpdate - (nPar - 1):0] < 
+            targetUpdate * 1.1)
   } else {
-    if (is.null(timeCovs)) {
-      class(bastadat) <- "datFixedCovs"
-    } else if (is.null(fixedCovs)) {
-      class(bastadat) <- "datTimeCovs"
-    } else {
-      class(bastadat) <- "datBothCovs"
-    }
+    idTarget <- 0
   }
-  return(bastadat)
-}
-
-# 3.1. Covariate type (i.e. categorical and continuous):
-.FindCovariateType   <- function(covMat) {
-	lu  <- apply(covMat, 2, function(x) length(unique(x)))
-	ru  <- apply(covMat, 2, range)
-	idcat <- which(lu == 2 & apply(ru, 2, sum) == 1)
-	if (length(idcat) == 0) {
-		idcat <- NULL
-	}
-	idint <- which(lu == 1)
-	if (length(idint) == 0) {
-		idint <- NULL
-	}
-	idcon <- which(lu > 2)
-	if (length(idcon) == 0) {
-		idcon <- NULL
-	}
-	return(list(int  = idint, 
-					cat  = idcat, 
-					cont = idcon))
-}
-
-# 3.2. Build final list of covariates and their attributes:
-.PrepCovs <- function(object, ...) UseMethod(".PrepCovs")
-
-.PrepCovs.datNoCovs <- function(object, ...) {
-  covars <- 0
-  class(covars) <- c("noCovs", "noClass")
-}
-
-.PrepCovs.datFixedCovs <- function(object, covarsStruct) {
-  covars <- .PrepCovsFixed(object, covarsStruct)
-  covClass <- class(covars)
-  class(covars) <- c("fixedCovs", covClass)
-  return(covars)
-}
-
-.PrepCovs.datBothCovs <- function(object, covarsStruct) {
-  covars <- .PrepCovsFixed(object, covarsStruct)
-  covClass <- class(covars)
-  covars$prHazTime$mat <- object$timeCovs
-  if (is.array(object$timeCovs)) {
-    covars$prHazTime$length <- dim(object$timeCovs)[3]
-    covars$prHazTime$names <- unlist(dimnames(object$timeCovs)[3])
+  if (length(idTarget) < 3) {
+    if (parCount == 1) {
+      updateDiff <- abs(targetUpdate - jObject$shortUpdVec)
+      jObject$updateOrder <- sort.int(updateDiff, index.return = TRUE)$ix
+    }
+    if (gUpdate <= nPar) {
+      jObject$jump <- jObject$startJump
+    } 
+    if (gUpdate > 1) {
+      jObject$shortUpdVec[jObject$parNum] <- updateRate
+    }
+    jObject$parNum <- jObject$updateOrder[parCount]
+    jObject$jump[jObject$parNum] <- jObject$jump[jObject$parNum] * 
+        updateRate / targetUpdate
+    jObject$gUpdate <- gUpdate
   } else {
-    covars$prHazTime$length <- 1
-    covars$prHazTime$names <- "TimeCov"
+    jObject$update <- FALSE
   }
-  covars$timeMat <- matrix(1:ncol(object$timeCovs) + (timeCovStart - 1),
-      nrow = nrow(object$timeCovs), ncol = ncol(object$timeCovs), 
-      byrow = TRUE)
-  covars$cumMat <- matrix(t(apply(diag(1, ncol(object$timeCovs), 
-                  ncol(object$timeCovs)), 1, cumsum)), ncol(object$timeCovs), 
-      ncol(object$timeCovs), 
-      dimnames = list(colnames(object$timeCovs), colnames(object$timeCovs)))
-  class(covars) <- c("bothCovs", covClass)
-  return(covars)
-}
-
-.PrepCovs.datTimeCovs <- function(object, ...) {
-  covars <- list(inMort = list(mat = matrix(0, 1, 1, 
-              dimnames = list(NULL, "NoCov")),
-          length = 1,
-          names = "NoCov"),
-      prHazFix = list(mat = matrix(0, 1, 1, 
-              dimnames = list(NULL, "NoCov")),
-          length = 1,
-          names = "NoCov"))
-  covars$prHazTime$mat <- object$timeCovs
-  if (is.array(object$timeCovs)) {
-    covars$prHazTime$length <- dim(object$timeCovs)[3]
-    covars$prHazTime$names <- unlist(dimnames(object$timeCovs)[3])
-  } else {
-    covars$prHazTime$length <- 1
-    covars$prHazTime$names <- "TimeCov"
-  }
-  covars$timeMat <- matrix(1:ncol(object$timeCovs) + (timeCovStart - 1),
-      nrow = nrow(object$timeCovs), ncol = ncol(object$timeCovs), 
-      byrow = TRUE)
-  covars$cumMat <- matrix(t(apply(diag(1, ncol(object$timeCovs), 
-                  ncol(object$timeCovs)), 1, cumsum)), ncol(object$timeCovs), 
-      ncol(object$timeCovs), 
-      dimnames = list(colnames(object$timeCovs), colnames(object$timeCovs)))
-  class(covars) <- c("timeCovs", "noClass")
-  return(covars)
-}
-
-.PrepCovsFixed <- function(object, covarsStruct) {
-  covMat <- object$fixedCovs
-  covarsType <- .FindCovariateType(covMat)
-  if (!is.null(covarsType$cont)) {
-    rangeCont <- apply(matrix(covMat[, covarsType$cont],
-            ncol = length(covarsType$cont)), 2, range)
-    idChange <- which(rangeCont[1, ] * rangeCont[2, ] > 0)
-    if (length(idChange) > 0) {
-      for (i in covarsType$cont[idChange]) {
-        covMat[, i] <- covMat[, i] - mean(covMat[, i])
-      }
-    }
-  }
-  if (covarsStruct == "fused") {
-    if (is.null(covarsType$cat)) {
-      covMatInMort <- matrix(0, 1, 1, dimnames = list(NULL, "NoCov"))
-    } else {
-      covMatInMort <- covMat[, covarsType$cat]
-    }
-    if (is.null(covarsType$cont)) {
-      covMatPrHaz <- matrix(0, 1, 1, dimnames = list(NULL, "NoCov"))
-    } else {
-      covMatPrHaz <- covMat[, covarsType$cont]
-    }
-    covars <- list(inMort = list(mat = covMatInMort,
-            length = ncol(covMatInMort),
-            names = colnames(covMatInMort)),
-        prHazFix = list(mat = covMatPrHaz,
-            length = ncol(covMatPrHaz),
-            names = colnames(covMatPrHaz)))
-    if (is.null(covarsType$cat)) {
-      class(covars) <- "propHaz"
-    } else if (is.null(covarsType$cont)) {
-      class(covars) <- "inMort"
-    } else {
-      class(covars) <- "fused"
-    }
-  } else if (covarsStruct == "prop.haz") {
-    covars <- list(inMort = list(mat = matrix(1, 1, 1, 
-                dimnames = list(NULL, "NoCov")),
-            length = 1,
-            names = "NoCov"), 
-        prHazFix = list(mat = covMat,
-            length = ncol(covMat),
-            names = colnames(covMat)))
-    class(covars) = "propHaz"
-  } else {
-    covars <- list(inMort = list(mat = covMat,
-            length = ncol(covMat),
-            names = colnames(covMat)),
-        prHazFix = list(mat = matrix(0, 1, 1, 
-                dimnames = list(NULL, "NoCov")),
-            length = 1,
-            names = "NoCov"))
-    class(covars) = "inMort"
-  }
-  return(covars)
+  return(jObject)
 }
 
 
-# 4. Error checking:
-.FindErrors <- function(model, shape, covarsStruct, niter, burnin, thinning) {
-# a) Data errors:
-	data.check  <- DataCheck(object, studyStart, 
-			studyStart + (ncol(object) - 3), 
-			silent = TRUE)
-	if (!data.check[[1]]) {
-		stop("\nYou have an error in Dataframe 'object',\nplease use function ",
-				"'DataCheck'\n", call. = FALSE)
-	}
-	
-# b) Check that niter, burnin, and thinning are compatible.
-	if (burnin > niter) {
-		stop("\nObject 'burnin' larger than 'niter'.", call. = FALSE)
-	}
-	if (thinning > niter) {
-		stop("\nObject 'thinning' larger than 'niter'.", call. = FALSE)
-	}
-	
-# c) Model type, shape and covariate structure:
-	if (!is.element(model, c("EX","GO","WE","LO"))) {
-		stop("\nModel misspecification: specify available models", 
-				"(i.e. 'EX', 'GO', 'WE' or 'LO')\n", call. = FALSE)
-	}
-	if (model == "EX" & shape != "simple") {
-		warning("\nArgument 'shape' must be 'simple' with model 'EX'.",
-				"\nArgument 'shape' was changed accordingly.\n", call. = FALSE)
-		shape <- 'simple'
-	}
-	if (!is.element(shape, c("simple","Makeham","bathtub"))) {
-		stop("\nshape misspecification. Appropriate arguments are:",
-				" 'simple', 'Makeham' or 'bathtub'.\n", call. = FALSE)
-	}
-	if (!is.element(covarsStruct, c("fused", "prop.haz", "all.in.mort"))) {
-		stop("\nCovariate structure misspecification. Appropriate arguments are:",
-				" 'fused', 'prop.haz' or 'all.in.mort'.\n", call. = FALSE)
-	}
-	
-	
-# d) Check when all covariates in mortality:
-	if (covarsStruct == "all.in.mort") {
-		if (!is.null(covariateType$cont)) {
-			if (model != "GO") {
-				warning("For effects of all covariate types on mortality parameters ",
-						"only simple Gompertz (GO) model can be used. ",
-						"Model and shape arguments were changed to 'GO' and 'simple',",
-						" respectively.\n", call. = FALSE)
-			}
-			model <- "GO"
-			shape <- "simple"
-		} else {
-			warning("No continuous covariates were included in the data. Argument",
-					" 'covarsStruct' will be set to 'fused'.\n", call. = FALSE)
-			covarsStruct  <- 'fused'
-		}
-	}
-	return(list(mod = model, sha = shape, cov = covarsStruct))
-}
 
 
