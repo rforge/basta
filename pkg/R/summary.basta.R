@@ -13,6 +13,9 @@ summary.basta <-
   if ("ModelSpecs" %in% names(object)) {
     object$modelSpecs <- object$ModelSpecs
   }
+  if ("version" %in% names(object)) {
+    cat(sprintf("\nOutput from BaSTA version %s\n", object$version))
+  }
   cat("\nCall:\n")
   cat(paste("Model             \t\t: ", object$modelSpecs[1], "\n", sep = ""))
   cat(paste("Shape             \t\t: ", object$modelSpecs[2], "\n", sep = ""))
