@@ -90,6 +90,7 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0,
           units(End - Start)))
   bastaResults <- .CalcDiagnost(bastaOut, algObj, covObj, defTheta, 
       fullParObj, dataObj)
+  version <- packageDescription("BaSTA")$Version
   bastaResults$settings <- c(niter, burnin, thinning, nsim)
   names(bastaResults$settings) <- c("niter", "burnin", "thinning", "nsim")
   bastaResults$modelSpecs <- 
@@ -114,6 +115,7 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0,
   }
   bastaResults$lifeTable <- .CalcLifeTable(bastaResults, lifeTable, object,
       covObj, algObj)
+  bastaResults$version <- packageDescription("BaSTA")$Version
   # Define class for output object:
   class(bastaResults) <- "basta"
   return(bastaResults)

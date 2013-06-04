@@ -1228,6 +1228,8 @@ basta <-
     idMp <- c(idMp[-idC], idMp[idC]) 
   }
   nMp <- length(idMp)
+  lamVec <- rep(0, niter)
+  lamVec[1] <- parsNow$lambda
   op <- options()
   options(warn = -1)
   for (m in 2:niter) {
@@ -1268,6 +1270,7 @@ basta <-
         postNow <- postNew
       }
     }
+    lamVec[m] <- parsNow$lambda
     
     # Sum up columns:
     postNow <- .SumPosts(postNow, 1:dataObj$n)
