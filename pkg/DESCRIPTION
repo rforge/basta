@@ -1,8 +1,8 @@
 Package: BaSTA
 Type: Package
 Title: A package for estimating age-specific survival from incomplete capture-recapture/recovery data
-Version: 1.8
-Date: 2013-01-15
+Version: 1.9
+Date: 2013-06-04
 Author: Fernando Colchero, Owen Jones, Maren Rebke
 Maintainer: Fernando Colchero <colchero@demogr.mpg.de>
 Depends: R (>= 2.10), msm
