@@ -176,7 +176,7 @@ basta <-
     indAd <- rep(0, dataObj$n)
     indJu <- indAd
     indAd[age >= algObj$minAge] <- 1
-    indJu[age < algObj$minAge] <- 1
+    indJu[age <= algObj$minAge] <- 1 # just changed this 13/06/2013
     ageJu <- age
     ageJu[age > algObj$minAge] <- algObj$minAge
     ageAd <- age - algObj$minAge
@@ -314,7 +314,8 @@ basta <-
     priorMean <- c(-3, 0.01)
     priorSd <- c(1, 1)
     nameTh <- c("b0", "b1")
-    lowTh <- c(-Inf, -Inf)
+#    lowTh <- c(-Inf, -Inf)
+    lowTh <- c(-Inf, 0)
     jitter <- c(0.5, 0.2) 
     if (algObj$shape == "bathtub") {
       lowTh <- c(-Inf, 0)
@@ -993,10 +994,13 @@ basta <-
 .CalcPostLambda.lambda <- function(parObj, postObj, ageObj, ind, fullParObj) {
   postObj$mat[ind, "lx"] <- 
       log(parObj$lambda) * ageObj$ages[ind, "indJu"] - 
-#      log(parObj$lambda) - 
-      parObj$lambda * ageObj$ages[ind, "ageJu"] + 
-      parObj$lambda * ageObj$ages[ind, "ageJuTr"]
-  postObj$lambda <- sum(postObj$mat[, "lx"]) + 
+      parObj$lambda * ageObj$ages[ind, "ageJu"] 
+#      log(parObj$lambda) * ageObj$ages[ind, "indJu"] + 
+#      parObj$lambda * (ageObj$ages[ind, "ageJuTr"] - 
+#        ageObj$ages[ind, "ageJu"]) 
+#  postObj$lambda <- sum(postObj$mat[, "lx"]) + 
+  postObj$lambda <- sum(postObj$mat[, "lx"] + 
+              parObj$lambda * ageObj$ages[, "ageJuTr"]) + 
       dtnorm(parObj$lambda, mean = fullParObj$lambda$priorMean, 
           sd = fullParObj$lambda$priorSd, lower = 0)
   return(postObj)
@@ -1209,6 +1213,8 @@ basta <-
   outObj$par <- matrix(0, niter, length(fullParObj$allNames), 
       dimnames = list(NULL, fullParObj$allNames))
   outObj$par[1, ] <- .FillParMat(parsNow)
+#  outObj$lambda <- rep(0, niter)
+#  outObj$lambda[1] <- parsNow$lambda
   outObj$post <- rep(0, niter)
   outObj$post[1] <- sum(postNow$mat[, 'fx'] - postNow$mat[, 'Sx'] + 
           postNow$mat[, 'px'] + postNow$mat[, 'vx'])
@@ -1228,8 +1234,6 @@ basta <-
     idMp <- c(idMp[-idC], idMp[idC]) 
   }
   nMp <- length(idMp)
-  lamVec <- rep(0, niter)
-  lamVec[1] <- parsNow$lambda
   op <- options()
   options(warn = -1)
   for (m in 2:niter) {
@@ -1269,8 +1273,8 @@ basta <-
         parsNow <- parsNew
         postNow <- postNew
       }
+#      outObj$lambda[m] <- parsNow$lambda
     }
-    lamVec[m] <- parsNow$lambda
     
     # Sum up columns:
     postNow <- .SumPosts(postNow, 1:dataObj$n)
@@ -1614,7 +1618,10 @@ basta <-
     }
     qdMat <- apply(dMat, 2, quantile, c(0.5, 0.025, 0.975))
     qbMat <- apply(bMat, 2, quantile, c(0.5, 0.025, 0.975))
-    qxMat <- apply(dMat - bMat, 2, quantile, c(0.5, 0.025, 0.975))
+#    qxMat <- apply(dMat - bMat, 2, quantile, c(0.5, 0.025, 0.975))
+    xMat <- dMat - bMat
+    qxMat <- rbind(round(apply(xMat, 2, mean)), 
+        apply(xMat, 2, quantile, c(0.025, 0.975)))
   } else {
     qbMat <- matrix(dataObj$bi, nrow = 1)
     qdMat <- matrix(dataObj$di, nrow = 1)
@@ -1686,6 +1693,7 @@ basta <-
         quantile, c(0.5, 0.025, 0.975))
     colnames(Sxq[[cov]]) <- ageVec + algObj$minAge
     id01 <- which(Sxq[[cov]][1, ] < 0.01)[1]
+    if (is.na(id01) | length(id01) == 0) id01 <- length(ageVec)
     Sxq[[cov]] <- Sxq[[cov]][, 1:id01]
     mxq[[cov]] <- apply(sapply(1:nrow(thPars), function(pp) 
               CalcMort(ageVec, t(thPars[pp, ])) * exp(gamPar[pp])), 1, 
