@@ -25,11 +25,6 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0,
   userPars <- .CreateUserPar(covObj, argList)
   fullParObj <- .BuildFullParObj(covObj, defTheta, algObj, userPars, 
       dataObj)
-  jumps <- list()
-  jumps$theta <- fullParObj$theta$jump
-  if (fullParObj$class[1] == "theGam") {
-    jumps$gamma <- fullParObj$gamma$jump
-  }
   agesIni <- .PrepAgeObj(dataObj, algObj)
   parsIni <- .DefineIniParObj(fullParObj)
   parsCovIni <- .BuildParCovObj(covObj, parsIni)
@@ -37,6 +32,11 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0,
       parsIni, parsCovIni)
   postIni <- .BuildPostObj(agesIni, parsIni, parsCovIni, dataObj, 
       CalcSurv, priorAgeObj, fullParObj, covObj)
+  jumps <- list()
+  jumps$theta <- fullParObj$theta$jump
+  if (fullParObj$class[1] == "theGam") {
+    jumps$gamma <- fullParObj$gamma$jump
+  }
   Start <- Sys.time()
   if(updateJumps) {
     .jumpObjIni <- .PrepJumpObj(fullParObj, covObj)
@@ -64,6 +64,7 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0,
         sfInit(parallel = TRUE, cpus = ncpus)
         sfExport(list = c(bastaIntVars, ".Random.seed"))
         sfLibrary("BaSTA", character.only = TRUE, warn.conflicts = FALSE)
+        sfSource("/Users/fernando/FERNANDO/PROJECTS/4.PACKAGES/BaSTA/workspace/developBasta/code/loadBaSTA.R")
         sfLibrary(msm, warn.conflicts = FALSE)
         bastaOut <- sfClusterApplyLB(1:nsim, .RunBastaMCMC, algObj, defTheta, 
             CalcMort, CalcSurv, dataObj, covObj, userPars, fullParObj, 
@@ -90,7 +91,6 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0,
           units(End - Start)))
   bastaResults <- .CalcDiagnost(bastaOut, algObj, covObj, defTheta, 
       fullParObj, dataObj)
-  version <- packageDescription("BaSTA")$Version
   bastaResults$settings <- c(niter, burnin, thinning, nsim)
   names(bastaResults$settings) <- c("niter", "burnin", "thinning", "nsim")
   bastaResults$modelSpecs <- 
