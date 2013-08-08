@@ -992,10 +992,8 @@ basta <-
 
 .CalcPostLambda.lambda <- function(parObj, postObj, ageObj, ind, fullParObj) {
   postObj$mat[ind, "lx"] <- 
-      log(parObj$lambda) * ageObj$ages[ind, "ageJu"] * 
-      ageObj$ages[ind, "indJu"] -
-      parObj$lambda * (ageObj$ages[, "ageJuTr"] - ageObj$ages[ind, "ageJu"]) * 
-      (1 - ageObj$ages[ind, "indJu"])
+      log(parObj$lambda) * ageObj$ages[ind, "indJu"] +
+      parObj$lambda * (ageObj$ages[ind, "ageJuTr"] - ageObj$ages[ind, "ageJu"])
   postObj$lambda <- sum(postObj$mat[, "lx"]) + 
       dtnorm(parObj$lambda, mean = fullParObj$lambda$priorMean, 
           sd = fullParObj$lambda$priorSd, lower = 0)
