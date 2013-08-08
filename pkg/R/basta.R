@@ -176,7 +176,7 @@ basta <-
     indAd <- rep(0, dataObj$n)
     indJu <- indAd
     indAd[age >= algObj$minAge] <- 1
-    indJu[age <= algObj$minAge] <- 1 # just changed this 13/06/2013
+    indJu[age < algObj$minAge] <- 1
     ageJu <- age
     ageJu[age > algObj$minAge] <- algObj$minAge
     ageAd <- age - algObj$minAge
@@ -314,8 +314,7 @@ basta <-
     priorMean <- c(-3, 0.01)
     priorSd <- c(1, 1)
     nameTh <- c("b0", "b1")
-#    lowTh <- c(-Inf, -Inf)
-    lowTh <- c(-Inf, 0)
+    lowTh <- c(-Inf, -Inf)
     jitter <- c(0.5, 0.2) 
     if (algObj$shape == "bathtub") {
       lowTh <- c(-Inf, 0)
@@ -993,14 +992,11 @@ basta <-
 
 .CalcPostLambda.lambda <- function(parObj, postObj, ageObj, ind, fullParObj) {
   postObj$mat[ind, "lx"] <- 
-      log(parObj$lambda) * ageObj$ages[ind, "indJu"] - 
-      parObj$lambda * ageObj$ages[ind, "ageJu"] 
-#      log(parObj$lambda) * ageObj$ages[ind, "indJu"] + 
-#      parObj$lambda * (ageObj$ages[ind, "ageJuTr"] - 
-#        ageObj$ages[ind, "ageJu"]) 
-#  postObj$lambda <- sum(postObj$mat[, "lx"]) + 
-  postObj$lambda <- sum(postObj$mat[, "lx"] + 
-              parObj$lambda * ageObj$ages[, "ageJuTr"]) + 
+      log(parObj$lambda) * ageObj$ages[ind, "ageJu"] * 
+      ageObj$ages[ind, "indJu"] -
+      parObj$lambda * (ageObj$ages[, "ageJuTr"] - ageObj$ages[ind, "ageJu"]) * 
+      (1 - ageObj$ages[ind, "indJu"])
+  postObj$lambda <- sum(postObj$mat[, "lx"]) + 
       dtnorm(parObj$lambda, mean = fullParObj$lambda$priorMean, 
           sd = fullParObj$lambda$priorSd, lower = 0)
   return(postObj)
