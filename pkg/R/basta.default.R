@@ -64,7 +64,6 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0,
         sfInit(parallel = TRUE, cpus = ncpus)
         sfExport(list = c(bastaIntVars, ".Random.seed"))
         sfLibrary("BaSTA", character.only = TRUE, warn.conflicts = FALSE)
-#        sfSource("/Users/fernando/FERNANDO/PROJECTS/4.PACKAGES/BaSTA/workspace/developBasta/code/loadBaSTA.R")
         sfLibrary(msm, warn.conflicts = FALSE)
         bastaOut <- sfClusterApplyLB(1:nsim, .RunBastaMCMC, algObj, defTheta, 
             CalcMort, CalcSurv, dataObj, covObj, userPars, fullParObj, 
