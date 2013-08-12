@@ -77,14 +77,16 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 													</td>
 													<td width="500" valign="top" style="padding-right:40px">
 														<p align="left" style="font-size:16px;line-height:1.25"><b>Authors:</b><br><a href="http://www.colchero.com" rel="nofollow" style="color:#84002E;font-family:verdana" target="_blank">Fernando Colchero</a><br><a href="http://www.owenjon.es" rel="nofollow" style="color:#84002E;font-family:verdana" target="_blank">Owen R. Jones</a><br><a href="http://www.demogr.mpg.de/en/institute/staff_directory_1899/maren_rebke_1430.htm" rel="nofollow" style="color:#84002E;font-family:verdana" target="_blank">Maren Rebke</a><br></p>
-														<p align="left" style="font-size:14px;line-height:1.25;text-align:justify"><br><b>Developed at:</b><br><a href="http://www.sdu.dk/en/Om_SDU/Institutter_centre/MaxO" rel="nofollow" style="color:#84002E;font-family:verdana" target="_blank">Max-Planck Odense Center on the Biodemography of Aging (MaxO)</a><br><a href="http://www.sdu.dk/en/Om_SDU/Institutter_centre/Imada_matematik_og_datalogi" rel="nofollow" style="color:#84002E;font-family:verdana" target="_blank">Institute of Mathematics and Computer Science (IMADA)</a><br><a href="http://www.sdu.dk/en/Om_SDU/Institutter_centre/I_Biologi" rel="nofollow" style="color:#84002E;font-family:verdana" target="_blank">Institute of Biology</a><br><a href="http://www.sdu.dk/en/" rel="nofollow" style="color:#84002E;font-family:verdana" target="_blank"><img alt="SDU" border="0" width="250px" align="right" style="vertical-align:top;outline-width:0px" src="sdulogo.gif"></a><br><br></p>
+														<p align="left" style="font-size:14px;line-height:1.25;text-align:justify"><br><b>Developed at:</b><br><a href="http://www.sdu.dk/en/Om_SDU/Institutter_centre/MaxO" rel="nofollow" style="color:#84002E;font-family:verdana" target="_blank">Max-Planck Odense Center on the Biodemography of Aging (MaxO)</a><br><a href="http://www.sdu.dk/en/Om_SDU/Institutter_centre/Imada_matematik_og_datalogi" rel="nofollow" style="color:#84002E;font-family:verdana" target="_blank">Institute of Mathematics and Computer Science (IMADA)</a><br><a href="http://www.sdu.dk/en/Om_SDU/Institutter_centre/I_Biologi" rel="nofollow" style="color:#84002E;font-family:verdana" target="_blank">Institute of Biology</a><br>University of Southern Denmark</p>
 														<p align="left" style="font-size:14px;line-height:1.25;text-align:justify"><br><b>Mailing list:</b><br>For enquiries, comments or bug reports,<br>please register to the <a href="http://lists.r-forge.r-project.org/mailman/listinfo/basta-users"  rel="nofollow" style="color:#84002E">BaSTA Users mailing list</a></p>
 														<p align="left" style="font-size:14px;line-height:1.25;text-align:justify"><br><b>Cite as:</b><br>Colchero, F., Jones, O.R and Rebke, M. (2012) BaSTA: an R package for Bayesian estimation of age-specific survival from incomplete mark-recapture/recovery data with covariates. <i>Methods in Ecology and Evolution</i>. 3: 466-470.</p>
 														<p></p>
+														<p style="font-size:14px;line-height:1.45;text-align:justify"><b>Latest news:</b><br>- BaSTA 1.9 soon in CRAN! <br>- Check new function <code  style="color:#006600">MultiBaSTA()</code> in the <a href="#extra" rel="nofollow" style="color:#84002E;font-family:verdana" target="_blank">EXTRA CODE</a> section.</p>
 													</td>
 												</tr>
 											</tbody>
 										</table>
+										
 										<table style="table-layout:fixed;background:#FFFFFF">
 											<tbody>
 												<tr>
@@ -99,9 +101,9 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 													<!-- <p class="parag">However, we strongly recomend users to install the latest stable version, <b>BaSTA</b> (vers. 1.8), which should be available on CRAN in the next few days. This last version can be currently installed either from from R forge by typing:<br></p>
 													<p style="font-size:16px;padding-left:60px;padding-right:60px"><code style="color:#006600">&nbsp;&nbsp;&nbsp;&nbsp;install.packages("BaSTA", repos="http://R-Forge.R-project.org",</code><br></p>
 													<p style="font-size:16px;padding-left:60px;padding-right:60px"><code style="color:#006600">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type = "source")</code><br></p> -->
-													<p class="parag"><b>BaSTA 1.8 has important updates and improvements, so we stronlgy recomend users to install it.</b><br></p>
-													<!-- <p class="parag">However, we advise users to install the latest stable version, <b>BaSTA 1.8</b>, which should be available on CRAN in the next few days. This version can be downloaded by clicking <a href="BaSTA_1.8.tar.gz" rel="nofollow" style="color:#84002E;font-family:verdana" target="_blank">here</a>. Save the file in a folder of your choice, say ''C:/Documents/BaSTAtemp/'' for windows users, and then type on the R console:<br></p>
-													<p style="font-size:16px;padding-left:60px;padding-right:60px"><code style="color:#006600">&nbsp;&nbsp;&nbsp;&nbsp;install.packages("C:/Documents/BaSTAtemp/BaSTA_1.8.tar.gz", type = "source")</code><br></p> -->
+													<!--<p class="parag"><b>BaSTA 1.8 has important updates and improvements, so we stronlgy recomend users to install it.</b><br></p>-->
+													<p class="parag">BaSTA 1.9 will soon be available in CRAN. However, if you wish to install it now, you can download it by clicking <a href="BaSTA_1.9.tar.gz" rel="nofollow" style="color:#84002E;font-family:verdana" target="_blank">here</a>. Save the file in a folder of your choice, say ''C:/Documents/BaSTAtemp/'' for windows users, and then type on the R console:<br></p>
+													<p style="font-size:16px;padding-left:60px;padding-right:60px"><code style="color:#006600">&nbsp;&nbsp;&nbsp;&nbsp;install.packages("C:/Documents/BaSTAtemp/BaSTA_1.9.tar.gz", type = "source")</code><br></p>
 													<p class="parag">We have set up a <a href="http://lists.r-forge.r-project.org/mailman/listinfo/basta-users"  rel="nofollow" style="color:#84002E">BaSTA Users mailing list</a> so users can ask questions or provide comments, suggestions or criticism that can help us improve the package. Users can register by <a href="https://lists.r-forge.r-project.org/cgi-bin/mailman/listinfo/basta-users"  rel="nofollow" class="intext">clicking here</a>. Also, you can see below a video hosted by the journal <a href="http://www.methodsinecologyandevolution.org/" rel="nofollow" style="color:#84002E;font-family:verdana" target="_blank">Methods in Ecology and Evolution</a> where we explain the rational behind the package and some general applications.<br></p>
 													<p><br></p>
 													<p style="text-align:center"><iframe width="480" height="270" src="http://www.youtube.com/embed/OLFzY3vHVOQ" frameborder="0" allowfullscreen style="display:block;margin:5px auto"></iframe></p>
@@ -194,26 +196,52 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 													<p style="text-align:center"><img align="center" style="margin:0px;padding:0px;border:none;width:400px" align="middle" src="fancyBaSTA.jpg?"></p>
 													<p class="caption">Fig. 9. Density plots for a bathtub-logistic model and survival and mortality profiles for adult rooks (<i>Corvus frugilegus</i>) in locations X1 and X2 plotted using function <code style="color:#006600">plotFancyBaSTA()</code> (Jones and Colchero <i>in prep.</i>).</p>
 													<p class="parag">Note that this function is compatible with outputs from BaSTA version 1.5 and higher. Also, it is meant to plot outputs from models that used values of <code  style="color:#006600">all.in.mort</code> and <code  style="color:#006600">fused</code> for the <code  style="color:#006600"><b>shape</b></code> argument.</p>
-													<!--<hr>-->
+													<hr>
+                            <p class="parag"><a href="MultiBaSTA.R" rel="nofollow" style="color:#84002E;font-family:verdana" target="_blank"><b>MultiBaSTA()</b></a>:<br></p>
 													<p></p>
+														<p class="parag">We have put together a set of functions that allow BaSTA users to run and compare several (or all) of the models featured in the package. This code can be downloaded by clicking <a href="MultiBaSTA.R" rel="nofollow" style="color:#84002E;font-family:verdana" target="_blank">here</a>. To use these functions, save the function in a folder, say "C:/Documents/BaSTAtemp/", and load the function by typing into the R console:</p> 
+													<p style="font-size:16px;padding-left:60px;padding-right:60px"><code style="color:#006600">&nbsp;&nbsp;&nbsp;&nbsp;source("C:/Documents/BaSTAtemp/MultiBaSTA.R")</code><br></p>
+													<p class="parag">The main function, called <code style="color:#006600">MultiBaSTA()</code> uses the basic arguments as function <code style="color:#006600">basta()</code> but also allows users to specify which models and shapes they wish to compare. To run all the models in BaSTA on a given dataset, say <code style="color:#006600">myData</code> for a study starting in 2000 and finishing in 2010, only type the default commands into the R console:</p>
+													<p style="font-size:16px;padding-left:60px;padding-right:60px"><code style="color:#006600">&nbsp;&nbsp;&nbsp;&nbsp;multiOut &lt;- MultiBaSTA(myData, studyStart = 2000, studyEnd = 2010)</code><br></p>
+													<p class="parag">If you wish to compare only a subset of the models, for example <code style="color:#006600">EX</code> (exponential), <code style="color:#006600">GO</code> (Gompertz) and <code style="color:#006600">WE</code> (Weibull) models with <code style="color:#006600">simple</code> shapes, you can type into the R console the folowing command:</p>
+													<p style="font-size:16px;padding-left:60px;padding-right:60px"><code style="color:#006600">&nbsp;&nbsp;&nbsp;&nbsp;multiOut &lt;- MultiBaSTA(myData, studyStart = 2000, studyEnd = 2010,</code><br></p>
+													<p style="font-size:16px;padding-left:60px;padding-right:60px"><code style="color:#006600">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>models = c("EX", "GO", "WE"), shapes = "simple"</b>)</code><br></p>
+													<p class="parag">To modify the basic BaSTA parameters, such as the number of iterations, the number of runs, etc., just use the same arguments you would use in function <code style="color:#006600">basta()</code>. For instance, if you want to run 4 parallel sets of iterations for each model, just modify the code as follows:</p>
+													<p style="font-size:16px;padding-left:60px;padding-right:60px"><code style="color:#006600">&nbsp;&nbsp;&nbsp;&nbsp;multiOut &lt;- MultiBaSTA(myData, studyStart = 2000, studyEnd = 2010,</code><br></p>
+													<p style="font-size:16px;padding-left:60px;padding-right:60px"><code style="color:#006600">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;models = c("EX", "GO", "WE"), shapes = "simple",</code><br></p>
+													<p style="font-size:16px;padding-left:60px;padding-right:60px"><code style="color:#006600">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>nsim = 4, parallel = TRUE, ncpus = 4</b>)</code><br></p>
+													<p class="parag">The same applies for any other argument. After function <code style="color:#006600">MultiBaSTA()</code> finishes, you can visualise the basic results either by typing the name of the output in the R console, in this case <code style="color:#006600">multiOut</code>, or by using the R function <code style="color:#006600">summary(multiOut)</code>. For example, the summary for a dataset with sex and weight as covariates and the models we specified above prints the following output to the console:</p>
+													<p style="text-align:center"><img align="center" style="margin:0px;padding:0px;border:none;width:750px" align="middle" src="summarMulti.png?"></p>
+													<p class="caption">Fig. 10. Summary of output from function <code style="color:#006600">MultiBaSTA()</code>.</p>
+													<p class="parag"><br>Also, it is possible to print and save the coefficients of any of the functions with the built-in function <code style="color:#006600">coef()</code>. Thus, to print only the coefficients from the model with lowest DIC, only type <code style="color:#006600">coef(multiOut)</code> to the console. In case you wish to print several of the model's coefficients use argument <code style="color:#006600">showAll</code> as:</p>
+													<p style="text-align:center"><img align="center" style="margin:0px;padding:0px;border:none;width:850px" align="middle" src="multiCoefs.png?"></p>
+													<p class="caption">Fig. 11. Output from function <code style="color:#006600">coef()</code> on a <code style="color:#006600">MultiBaSTA</code> object.</p>
+													<p class="parag"><br>Argument <code style="color:#006600">showAll</code> can be modified to show only specific models, for instance, if you whish to print only the two models with lowest DIC, just type <code style="color:#006600">coef(multiOut, <b>showAll = c(1, 2)</b>)</code>. To view models not in consecutive order, only specify their ranking as show in the DIC table aftet typing <code style="color:#006600">multiOut</code> in the R console.</p>
 													<a href="#top" class="totop">Back to top</a>
 													<p></p>
 													<a name="bugs"></a>
 													<img alt="Upgrades" border="0" width="900px" src="bugs.jpg?">
-													<p class="parag"><b>BaSTA 1.8</b> (latest stable version available in CRAN): <br></p>
+													<p class="parag"><b>BaSTA 1.9</b> (Soon in CRAN) (10/08/2013): <br></p>
+													<ul>
+														<li>Fixed a bug when calculating the mean age at death that made mortality at the initial ages equal to 0 for some life tables.</li>
+														<li>Minor bog fixes.</li>
+													</ul>
+													<p></p>
+													<hr>
+													<p class="parag"><b>BaSTA 1.8</b> (In CRAN) (15/01/2013): <br></p>
 													<ul>
 														<li>Fixed a major bug that lumped deaths at the minAge for individuals not seen after birth.</li>
 														<li>Changed the range of ages plotted in the surival and mortality plots to show the curves for ages such that S(x) > 0.01, this is, until only 1% of the cohort is still alive.</li>
 													</ul>
 													<p></p>
 													<hr>
-													<p class="parag"><b>BaSTA 1.7</b>: <br></p>
+													<p class="parag"><b>BaSTA 1.7</b> (28/12/2012): <br></p>
 													<ul>
 														<li>Fixed a major bug that over-estimated ages at death and underestimated recapture probabilities with proportional hazards models.</li>
 													</ul>
 													<p></p>
 													<hr>
-													<p class="parag"><b>BaSTA 1.6</b>: <br></p>
+													<p class="parag"><b>BaSTA 1.6</b> (19/11/2012): <br></p>
 													<ul>
 														<li>Fixed a bug that prevented to calculate quantiles for predicted mortality and survival when only continuous covariates were included.</li>
 														<li>Fixed a series of bugs when evaluating only continuous covariates inMort.</li>
@@ -222,7 +250,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 													</ul>
 													<p></p>
 													<hr>
-													<p class="parag"> <b>BaSTA 1.5</b>: <br></p>
+													<p class="parag"> <b>BaSTA 1.5</b> (20/10/2012): <br></p>
 													<ul>
 														<li>Great improvement on the updateJumps algorithm and the estimation of mortality parameters. This upgrade greatly reduces the number of iterations needed for convergence and the time required to run the analysis.</li>
 														<li>Fixed an issue when assigning times of birth and death that prevented the model to estimate deaths between ages 0 and 1.</li>
@@ -231,7 +259,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 													</ul>
 													<p></p>
 													<hr>
-													<p class="parag"><b>BaSTA 1.4</b>: <br></p>
+													<p class="parag"><b>BaSTA 1.4</b> (25/09/2012): <br></p>
 													<ul>
 														<li>Update jump routine for multiple simulations runs before the main analysis, this improves convergence and consistency between multiple simulations.</li>
 														<li>Improved convergence by fixing several bugs in the MCMC routine.</li>
