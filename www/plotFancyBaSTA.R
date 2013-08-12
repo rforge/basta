@@ -30,20 +30,20 @@ function(x, open.new = FALSE, ...){
 	Bord <- Palette[1:lenCat]
   }
   Cols <- adjustcolor(Bord, alpha.f = 0.5)
-  if (model == "EX") {
+  if (model %in% c("EX", "1")) {
     nTheta          <- 1
     idAllTheta      <- 4
-  } else if (model == "GO" | model == "WE") {
+  } else if (model %in% c("GO", "WE", "2", "3")) {
     nTheta          <- 2
     idAllTheta      <- c(4, 5)
   }  else {
     nTheta          <- 3
     idAllTheta      <- c(4, 5, 6)
   }
-  if (shape == "Makeham") {
+  if (shape %in% c("Makeham", "2")) {
     nTheta          <- nTheta + 1
     idAllTheta      <- c(3, idAllTheta)
-  } else if(shape == "bathtub") {
+  } else if(shape %in% c("bathtub", "3")) {
     nTheta          <- nTheta + 3
     idAllTheta      <- c(1:3, idAllTheta)
   }
@@ -108,7 +108,7 @@ function(x, open.new = FALSE, ...){
         side = 2, line = 3.5, cex = 1.25)
 
   # Plot mortality rates:
-  ylmx            <- c(0, round(max(unlist(x$mortQuant))))
+  ylmx            <- c(0, round(max(unlist(x$mortQuant)), 1))
   plot(x = c(0, mxv), y = ylmx, col = NA, ylim = ylmx, xlab = "", ylab = "",
        axes = FALSE)
   for(i in 1:lenCat){
