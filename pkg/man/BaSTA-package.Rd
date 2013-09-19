@@ -15,8 +15,8 @@ This package estimates survival trajectories with covariates from capture-recapt
 \tabular{ll}{
 Package: \tab BaSTA\cr
 Type: \tab Package\cr
-Version: \tab 1.9\cr
-Date: \tab 2013-06-04\cr
+Version: \tab 1.9.1\cr
+Date: \tab 2013-09-15\cr
 License: \tab GNU General Public Licence\cr
 LazyLoad: \tab yes\cr
 }
@@ -26,7 +26,7 @@ This package estimates survival parameters from capture-recapture data where the
 }
 
 \author{
-Fernando Colchero \email{colchero@mpg.demogr.de}, Owen Jones \email{jones@mpg.demogr.de}, and Maren Rebke \email{rebke@mpg.demogr.de}
+Fernando Colchero \email{colchero@imada.sdu.dk}, Owen Jones \email{jones@biology.sdu.dk}, and Maren Rebke \email{rebke@mpg.demogr.de}
 }
 
 \references{
