@@ -22,7 +22,7 @@ basta <-
         genPp == 1) {
       userPars[[genParName[genPp]]] <- list()
       for (pp in 1:4) {
-        usrPar <- paste(genParName[genPp], parTypes[pp], sep = "")
+        usrPar <- sprintf("%s%s", genParName[genPp], parTypes[pp])
         if (usrPar %in% names(argList)) {
           userPars[[genParName[genPp]]][[parTypesList[pp]]] <- 
               argList[[usrPar]]
@@ -751,12 +751,15 @@ basta <-
   theJitter <- matrix(defTheta$jitter, nrow(parsIni$theta), 
       ncol(parsIni$theta), dimnames = dimnames(parsIni$theta), 
       byrow = TRUE)
+  xRange <- ceiling(0:max(agesIni$ages[, "age"]) * 2)
+  if (max(agesIni$ages[, "age"]) > 100) {
+    theJitter <- theJitter / 10
+  }
   while(negMort) {
     parObjNew$theta <- matrix(rtnorm(length(parsIni$theta), parsIni$theta, 
             theJitter, lower = fullParObj$theta$low), 
         nrow(parsIni$theta), ncol(parsIni$theta), 
         dimnames = dimnames(parsIni$theta))
-    xRange <- ceiling(0:max(agesIni$ages[, "age"]) * 2)
     if (class(parsIni)[1] == "theGam") {
       parObjNew$gamma <- rnorm(length(parsIni$gamma), parsIni$gamma, 0.25)
     }
