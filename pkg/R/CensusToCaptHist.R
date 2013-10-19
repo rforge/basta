@@ -53,5 +53,8 @@ CensusToCaptHist <-
   
   # Remove the dummy row
   mat <- mat[-which(rownames(mat) == "XdummyX"), ]
+  
+  #Remove row names
+  rownames(mat) = NULL
   return(mat)
 }
