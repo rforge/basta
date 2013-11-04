@@ -122,12 +122,12 @@ basta <-
     dataObj$Tm <- matrix(dataObj$study, dataObj$n, 
         dataObj$studyLen, byrow = TRUE)
     fii <- dataObj$firstObs
-    fii[dataObj$bi > 0 & dataObj$bi >= algObj$start] <- 
-        dataObj$bi[dataObj$bi > 0 & dataObj$bi >= algObj$start] + 1
+    id1 <- which(dataObj$bi > 0 & dataObj$bi >= algObj$start)
+    fii[id1] <- dataObj$bi[id1] + 1
     fii[dataObj$bi > 0 & dataObj$bi < algObj$start]  <- algObj$start
     lii <- dataObj$lastObs
-    lii[dataObj$di > 0 & dataObj$di <= algObj$end] <- 
-        dataObj$di[dataObj$di > 0 & dataObj$di <= algObj$end] - 1
+    id2 <- which(dataObj$di > 0 & dataObj$di <= algObj$end)
+    lii[id2] <- dataObj$di[id2] - 1
     lii[dataObj$di > 0 & dataObj$di > algObj$end] <- algObj$end
     dataObj$obsMat <- .BuildAliveMatrix(fii, lii, dataObj)
     dataObj$obsMat[lii == 0 | fii == 0, ] <- 0
@@ -664,32 +664,36 @@ basta <-
     ageObjNew$ages[dataObj$idNoB, 'birth'] <- 
         ageObj$ages[dataObj$idNoB, 'birth'] + 
         sample(-1:1, length(dataObj$idNoB), replace = TRUE)
-    idOi <- dataObj$idNoB[dataObj$oi[dataObj$idNoB] > 0]
-    ageObjNew$ages[idOi, 'birth'] <- 
-        apply(cbind(ageObjNew$ages[idOi, 'birth'],
-                dataObj$firstObs[idOi] - 1), 1, min)
-    idOi0 <- dataObj$idNoB[dataObj$oi[dataObj$idNoB] == 0]
-    ageObjNew$ages[idOi0, 'birth'] <- 
-        apply(cbind(ageObjNew$ages[idOi0, 'birth'],
-                ageObj$ages[idOi0, 'death']), 1, min)
+    idOi <- dataObj$idNoB[dataObj$oi[dataObj$idNoB] > 0 & 
+            ageObjNew$ages[dataObj$idNoB, 'birth'] > 
+            dataObj$firstObs[dataObj$idNoB] - 1]
+    ageObjNew$ages[idOi, 'birth'] <- dataObj$firstObs[idOi] - 1
+    idOi <- dataObj$idNoB[dataObj$oi[dataObj$idNoB] == 0 & 
+            ageObjNew$ages[dataObj$idNoB, 'birth'] - 
+            ageObjNew$ages[dataObj$idNoB, 'death'] > 0] 
+    ageObjNew$ages[dataObj$idNoB[idOi], 'birth'] <-
+        ageObjNew$ages[dataObj$idNoB[idOi], 'death']
   }
   if (dataObj$updD) {
     ageObjNew$ages[dataObj$idNoD, 'death'] <- 
         ageObj$ages[dataObj$idNoD, 'death'] +
         sample(-1:1, length(dataObj$idNoD), replace = TRUE) 
-    ageObjNew$ages[dataObj$idNoD, 'death'] <- 
-        apply(cbind(ageObjNew$ages[dataObj$idNoD, 'death'],
-                ageObjNew$ages[dataObj$idNoD, 'birth'], 
-                dataObj$lastObs[dataObj$idNoD]), 1, max) 
-    
+    idOi <- dataObj$idNoD[dataObj$oi[dataObj$idNoD] > 0 &
+            ageObjNew$ages[dataObj$idNoD, 'death'] <
+            dataObj$lastObs[dataObj$idNoD]]
+    ageObjNew$ages[idOi, 'death'] <- dataObj$lastObs[idOi]
+    idOi <- dataObj$idNoD[dataObj$oi[dataObj$idNoD] == 0 &
+            ageObjNew$ages[dataObj$idNoD, 'death'] <
+            ageObjNew$ages[dataObj$idNoD, 'birth']]
+    ageObjNew$ages[idOi, 'death'] <- ageObjNew$ages[idOi, 'birth']
   }
   ageObjNew$ages[dataObj$idNoA, "age"] <- 
       ageObjNew$ages[dataObj$idNoA, "death"] - 
       ageObjNew$ages[dataObj$idNoA, "birth"]
-  firstAlive <- c(apply(cbind(algObj$start, 
-              ageObjNew$ages[, "birth"] + 1), 1, max))
-  lastAlive <- c(apply(cbind(algObj$end, 
-              ageObjNew$ages[, "death"]), 1, min))
+  firstAlive <- ageObjNew$ages[, "birth"] + 1
+  firstAlive[firstAlive < algObj$start] <- algObj$start
+  lastAlive <- ageObjNew$ages[, "death"]
+  lastAlive[lastAlive > algObj$end] <- algObj$end
   alive <- .BuildAliveMatrix(firstAlive, lastAlive, dataObj)
   ageObjNew$alive <- alive
   return(ageObjNew)
@@ -752,10 +756,14 @@ basta <-
       ncol(parsIni$theta), dimnames = dimnames(parsIni$theta), 
       byrow = TRUE)
   xRange <- ceiling(0:max(agesIni$ages[, "age"]) * 2)
-  if (max(agesIni$ages[, "age"]) > 100) {
-    theJitter <- theJitter / 10
-  }
+  countNegMort <- 0
   while(negMort) {
+    if (countNegMort == 10) {
+      theJitter <- theJitter / 2
+      countNegMort <- 1
+    } else {
+      countNegMort <- countNegMort + 1
+    }
     parObjNew$theta <- matrix(rtnorm(length(parsIni$theta), parsIni$theta, 
             theJitter, lower = fullParObj$theta$low), 
         nrow(parsIni$theta), ncol(parsIni$theta), 
@@ -768,6 +776,7 @@ basta <-
         1:dataObj$n, fullParObj, CalcSurv, dataObj)
     negMort <- ifelse(postNew$mortPars == -Inf | is.na(postNew$mortPars), 
         TRUE, FALSE)
+    
   }
   return(parObjNew)
 }
@@ -1697,7 +1706,7 @@ basta <-
         quantile, c(0.5, 0.025, 0.975))
     colnames(mxq[[cov]]) <- ageVec + algObj$minAge
     mxq[[cov]] <- mxq[[cov]][, 1:id01]
-    }
+  }
   bastaResults$birthQuant <- qbMat
   bastaResults$deathQuant <- qdMat
   bastaResults$agesQuant <- qxMat
