@@ -224,27 +224,27 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 													<img alt="Upgrades" border="0" width="900px" src="bugs.jpg?">
 													<p class="parag"><b>BaSTA 1.9.2</b> In CRAN (25/01/2014): <br></p>
 													<ul>
-														<li>Minor bog fixes.</li>
+														<li>Minor bug fixes.</li>
 													</ul>
 													<p></p>
 													<hr>
 													<p class="parag"><b>BaSTA 1.9</b> (10/08/2013): <br></p>
 													<ul>
 														<li>Fixed a bug when calculating the mean age at death that made mortality at the initial ages equal to 0 for some life tables.</li>
-														<li>Minor bog fixes.</li>
+														<li>Minor bug fixes.</li>
 													</ul>
 													<p></p>
 													<hr>
 													<p class="parag"><b>BaSTA 1.8</b> (15/01/2013): <br></p>
 													<ul>
-														<li>Fixed a major bug that lumped deaths at the minAge for individuals not seen after birth.</li>
+														<li>Fixed bug that lumped deaths at the minAge for individuals not seen after birth.</li>
 														<li>Changed the range of ages plotted in the surival and mortality plots to show the curves for ages such that S(x) > 0.01, this is, until only 1% of the cohort is still alive.</li>
 													</ul>
 													<p></p>
 													<hr>
 													<p class="parag"><b>BaSTA 1.7</b> (28/12/2012): <br></p>
 													<ul>
-														<li>Fixed a major bug that over-estimated ages at death and underestimated recapture probabilities with proportional hazards models.</li>
+														<li>Fixed bug that over-estimated ages at death and underestimated recapture probabilities with proportional hazards models.</li>
 													</ul>
 													<p></p>
 													<hr>
