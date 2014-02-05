@@ -82,8 +82,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 														<p align="left" style="font-size:14px;line-height:1.25;text-align:justify"><br><b>Cite as:</b><br>Colchero, F., Jones, O.R and Rebke, M. (2012) BaSTA: an R package for Bayesian estimation of age-specific survival from incomplete mark-recapture/recovery data with covariates. <i>Methods in Ecology and Evolution</i>. 3: 466-470.</p>
 														<p></p>
 														<p style="font-size:14px;line-height:1.45;text-align:justify"><b>Latest news:</b></p>
-                            <p style="color:#FF0000;font-size:18px;line-height:1.45;text-align:justify">- <b>First BaSTA workshop!</b></p>
-                            <p style="font-size:14px;line-height:1.45;text-align:justify">10 and 11 of October at the <a href="http://www.sdu.dk/en/" rel="nofollow" style="color:#84002E;font-family:verdana" target="_blank">University of Southern Denmark</a> in Odense, after the <a href="http://www.sdu.dk/en/Om_SDU/Institutter_centre/MaxO/EvoDemoS" rel="nofollow" style="color:#84002E;font-family:verdana" target="_blank">Evolutionary Demography Society 1st annual meeting</a> in Odense, Denmark<br><br>- BaSTA 1.9 in CRAN! <br><br>- Check new function <code  style="color:#006600">MultiBaSTA()</code> in the <a href="#extra" rel="nofollow" style="color:#84002E;font-family:verdana" target="_blank">EXTRA CODE</a> section.</p>
+                            <p style="font-size:18px;line-height:1.45;text-align:justify">- BaSTA 1.9.2 in CRAN! <br><br>- Check new function <code  style="color:#006600">MultiBaSTA()</code> in the <a href="#extra" rel="nofollow" style="color:#84002E;font-family:verdana" target="_blank">EXTRA CODE</a> section.</p>
 													</td>
 												</tr>
 											</tbody>
@@ -98,7 +97,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 													<p class="parag"><b>BaSTA</b> is an R package (R Development Core Team 2012) that allows users to draw inference on age-specific survival and mortality patterns from capture-recapture/recovery data when a large number of individuals (or all) have missing age information (Colchero, Jones and Rebke 2012). <b>BaSTA</b> is based on a model developed by Colchero and Clark (2012), which extends inference from parameter estimates to the estimation of unknown (i.e. latent) times of birth and death. The package also allows testing the effect of categorical and continuous individual covariates on mortality and survival (for an example see Fig. 1).</p>
 													<p style="text-align:center"><br><img style="margin:0px;padding:0px;border:none" width="400px" align="middle" src="Sheep.png"><br></p>
 													<p class="caption">Fig. 1. <b>BaSTA</b> model output for sex differences in Soay sheep mortality using a Siler survival model (Colchero & Clark 2012). The left panel shows posterior distributions for the survival and recapture parameters while the right panel shows the resulting survival probabilities and the mortality rates for males and females.</p>
-													<p class="parag">Version 1.9 of the package is now availale on CRAN and can be installed by typing the following line of code into the R console: <br></p>
+													<p class="parag">Version 1.9.2 of the package is now availale on CRAN and can be installed by typing the following line of code into the R console: <br></p>
 													<p style="font-size:16px;padding-left:60px;padding-right:60px"><code style="color:#006600">&nbsp;&nbsp;&nbsp;&nbsp;install.packages("BaSTA")</code><br></p>
 													<!-- <p class="parag">However, we strongly recomend users to install the latest stable version, <b>BaSTA</b> (vers. 1.8), which should be available on CRAN in the next few days. This last version can be currently installed either from from R forge by typing:<br></p>
 													<p style="font-size:16px;padding-left:60px;padding-right:60px"><code style="color:#006600">&nbsp;&nbsp;&nbsp;&nbsp;install.packages("BaSTA", repos="http://R-Forge.R-project.org",</code><br></p>
@@ -223,7 +222,13 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 													<p></p>
 													<a name="bugs"></a>
 													<img alt="Upgrades" border="0" width="900px" src="bugs.jpg?">
-													<p class="parag"><b>BaSTA 1.9</b> In CRAN (10/08/2013): <br></p>
+													<p class="parag"><b>BaSTA 1.9.2</b> In CRAN (25/01/2014): <br></p>
+													<ul>
+														<li>Minor bog fixes.</li>
+													</ul>
+													<p></p>
+													<hr>
+													<p class="parag"><b>BaSTA 1.9</b> (10/08/2013): <br></p>
 													<ul>
 														<li>Fixed a bug when calculating the mean age at death that made mortality at the initial ages equal to 0 for some life tables.</li>
 														<li>Minor bog fixes.</li>
