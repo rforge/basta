@@ -1219,8 +1219,10 @@ basta <-
   outObj$par <- matrix(0, niter, length(fullParObj$allNames), 
       dimnames = list(NULL, fullParObj$allNames))
   outObj$par[1, ] <- .FillParMat(parsNow)
-#  outObj$lambda <- rep(0, niter)
-#  outObj$lambda[1] <- parsNow$lambda
+  if (class(parsNow)[2] == "lambda") {
+    outObj$lambda <- rep(0, niter)
+    outObj$lambda[1] <- parsNow$lambda
+  }
   outObj$post <- rep(0, niter)
   outObj$post[1] <- sum(postNow$mat[, 'fx'] - postNow$mat[, 'Sx'] + 
           postNow$mat[, 'px'] + postNow$mat[, 'vx'])
@@ -1279,7 +1281,7 @@ basta <-
         parsNow <- parsNew
         postNow <- postNew
       }
-#      outObj$lambda[m] <- parsNow$lambda
+      outObj$lambda[m] <- parsNow$lambda
     }
     
     # Sum up columns:
