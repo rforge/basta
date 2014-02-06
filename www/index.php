@@ -115,7 +115,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 													<a name="description"></a>
 													<img alt="Package" border="0" width="900px" src="package.jpg?">
 													<p class="parag">The core of the model is a Monte Carlo Markov Chain (MCMC) algorithm that combines Metropolis sampling for survival parameters and latent states (i.e. unknown times of birth and death) and direct sampling for recapture probabilities (Clark 2007, Colchero and Clark 2012). The main function performs several diagnostics on the user's inputs such as checking that the data is consistent with the model's requirements and verifies that the number of iterations, the burnin sequence and the thinning gap are consistent (Fig. 2).</p>
-													<p style="text-align:center"><br><img style="margin:0px;padding:0px;border:none;width:475px" align="middle" src="BastaGeneralChart.jpg?"><br></p>
+													<p style="text-align:center"><img style="margin:0px;padding:0px;border:none;width:600px" align="middle" src="BastaGeneralChart.jpg?"><br></p>
 													<p class="caption" style="text-align:center">Fig. 2. <b>BaSTA</b> general package chart.<br></p>
 													<p class="parag">After running these diagnostics, <b>BaSTA</b> uses a dynamic procedure to find adequate jump standard deviations for mortality parameters. This procedure runs before the core of the analysis is performed, keeping the user from having to find these jump sd's by trial and error. After apropriate jumps are found, multiple MCMC simulations can be ran either in parallel or in series. In case convergence is not acheived or some or all simulations failed, neither convergence nor model selection diagnostics are calculated.<br><br><b>The current version includes:</b></p>
 													<ul>
