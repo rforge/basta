@@ -1512,9 +1512,8 @@ basta <-
       Dm <- -2 * posterior
       densD <- density(posterior)
       Dmode <- -2 * densD$x[densD$y == max(densD$y)]
-      #Dmode <- -2 * posterior[which(posterior ==  max(posterior))[1]]
       Dave <- mean(Dm)
-      pD <- Dave - Dmode
+      pD <- 1/2 * 1/(L-1) * sum((Dm - Dave)^2)
       k <- ncol(parMat)
       DIC <- 2 * Dave - Dmode
       modSel <- c(Dave, Dmode, pD, k, DIC)
