@@ -671,8 +671,7 @@ basta <-
     idOi <- dataObj$idNoB[dataObj$oi[dataObj$idNoB] == 0 & 
             ageObjNew$ages[dataObj$idNoB, 'birth'] - 
             ageObjNew$ages[dataObj$idNoB, 'death'] > 0] 
-    ageObjNew$ages[dataObj$idNoB[idOi], 'birth'] <-
-        ageObjNew$ages[dataObj$idNoB[idOi], 'death']
+    ageObjNew$ages[idOi, 'birth'] <- ageObjNew$ages[idOi, 'death']
   }
   if (dataObj$updD) {
     ageObjNew$ages[dataObj$idNoD, 'death'] <- 
@@ -1511,7 +1510,9 @@ basta <-
     if (length(idnconv) == 0) {
       L <- length(posterior)
       Dm <- -2 * posterior
-      Dmode <- -2 * posterior[which(posterior ==  max(posterior))[1]]
+      densD <- density(posterior)
+      Dmode <- -2 * densD$x[densD$y == max(densD$y)]
+      #Dmode <- -2 * posterior[which(posterior ==  max(posterior))[1]]
       Dave <- mean(Dm)
       pD <- Dave - Dmode
       k <- ncol(parMat)
