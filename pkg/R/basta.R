@@ -1511,11 +1511,11 @@ basta <-
       L <- length(posterior)
       Dm <- -2 * posterior
       densD <- density(posterior)
-      Dmode <- -2 * densD$x[densD$y == max(densD$y)]
       Dave <- mean(Dm)
       pD <- 1/2 * 1/(L-1) * sum((Dm - Dave)^2)
       k <- ncol(parMat)
-      DIC <- 2 * Dave - Dmode
+      DIC <- Dave + pD
+      Dmode <- 2 * Dave - DIC
       modSel <- c(Dave, Dmode, pD, k, DIC)
       names(modSel) <- c("D.ave", "D.mode", "pD", "k", "DIC")
       cat("Survival parameters converged appropriately.",
