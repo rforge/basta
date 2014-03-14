@@ -223,14 +223,13 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 													<p></p>
 													<a name="bugs"></a>
 													<img alt="Upgrades" border="0" width="900px" src="bugs.jpg?">
-													<p class="parag"><b>BaSTA 1.9.3</b> (01/03/2014): <br></p>
+													<p class="parag"><b>BaSTA 1.9.3</b> In CRAN (01/03/2014): <br></p>
 													<ul>
-														<li>Fixed a bug that in some cases assigned proposed ages at death to the wrong individuals.</li>
+														<li>Fixed a bug in version 1.9.2 that in some cases assigned proposed ages at death to the wrong individuals.</li>
 													</ul>
 													<p></p>
 													<hr>
-													<img alt="Upgrades" border="0" width="900px" src="bugs.jpg?">
-													<p class="parag"><b>BaSTA 1.9.2</b> In CRAN (25/01/2014): <br></p>
+													<p class="parag"><b>BaSTA 1.9.2 (do not use this version)</b> (25/01/2014): <br></p>
 													<ul>
 														<li>Minor bug fixes.</li>
 													</ul>
