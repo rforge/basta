@@ -49,15 +49,8 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0,
   if (nsim > 1) {
     cat("Multiple simulations started...\n\n") 
     if (parallel) {
-      availPkgs <- installed.packages()
-      if (!is.element("snowfall", availPkgs)) {
-        warning("\nPackage 'snowfall' is not installed.\nSimulations ",
-            "will not be ran in parallel (computing time will ",
-            "be longer...)\n")
-        bastaOut <- lapply(1:nsim, .RunBastaMCMC, algObj, defTheta, 
-            CalcMort, CalcSurv, dataObj, covObj, userPars, fullParObj, 
-            agesIni, parsIni, priorAgeObj, parsCovIni, postIni, jumps)
-      } else {
+      #availPkgs <- installed.packages()
+      if (requireNamespace("snowfall", quietly = TRUE)) {
         opp <- options()
         options(warn = -1)
         require(snowfall)
@@ -72,6 +65,14 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0,
         sfRemoveAll(hidden = TRUE)
         sfStop()
         options(opp)
+        #if (!is.element("snowfall", availPkgs)) {
+      } else {
+        warning("\nPackage 'snowfall' is not installed.\nSimulations ",
+            "will not be ran in parallel (computing time will ",
+            "be longer...)\n")
+        bastaOut <- lapply(1:nsim, .RunBastaMCMC, algObj, defTheta, 
+            CalcMort, CalcSurv, dataObj, covObj, userPars, fullParObj, 
+            agesIni, parsIni, priorAgeObj, parsCovIni, postIni, jumps)
       }
     } else {
       bastaOut <- lapply(1:nsim, .RunBastaMCMC, algObj, defTheta, 
