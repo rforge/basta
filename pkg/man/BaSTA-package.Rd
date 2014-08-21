@@ -15,7 +15,7 @@ This package estimates survival trajectories with covariates from capture-recapt
 \tabular{ll}{
 Package: \tab BaSTA\cr
 Type: \tab Package\cr
-Version: \tab 1.9.4\cr
+Version: \tab 1.9.5\cr
 Date: \tab 2014-08-18\cr
 License: \tab GNU General Public Licence\cr
 LazyLoad: \tab yes\cr
