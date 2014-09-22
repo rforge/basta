@@ -49,14 +49,12 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0,
   if (nsim > 1) {
     cat("Multiple simulations started...\n\n") 
     if (parallel) {
-      #availPkgs <- installed.packages()
       if (requireNamespace("snowfall", quietly = TRUE)) {
         opp <- options()
         options(warn = -1)
         require(snowfall)
         sfInit(parallel = TRUE, cpus = ncpus)
         sfExport(list = c(bastaIntVars, ".Random.seed"))
-#        sfSource("/Users/fernando/FERNANDO/PROJECTS/4.PACKAGES/BaSTA/workspace/developBasta/code/loadBaSTA.R")
         sfLibrary("BaSTA", character.only = TRUE, warn.conflicts = FALSE)
         sfLibrary(msm, warn.conflicts = FALSE)
         bastaOut <- sfClusterApplyLB(1:nsim, .RunBastaMCMC, algObj, defTheta, 
@@ -65,7 +63,6 @@ basta.default <- function(object, studyStart, studyEnd, minAge = 0,
         sfRemoveAll(hidden = TRUE)
         sfStop()
         options(opp)
-        #if (!is.element("snowfall", availPkgs)) {
       } else {
         warning("\nPackage 'snowfall' is not installed.\nSimulations ",
             "will not be ran in parallel (computing time will ",
