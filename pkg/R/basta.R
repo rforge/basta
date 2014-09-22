@@ -207,6 +207,7 @@ basta <-
   if (ncol(object) > dataObj$studyLen + 3) {
     covMat <- as.matrix(object[, 
             (dataObj$studyLen + 4):ncol(object)])
+    mode(covMat) <- "numeric"
     colnames(covMat) <- colnames(object)[(dataObj$studyLen + 4):ncol(object)]
     covType <- .FindCovType(covMat)
     if (algObj$covStruc == "fused") {
@@ -1626,7 +1627,6 @@ basta <-
     }
     qdMat <- apply(dMat, 2, quantile, c(0.5, 0.025, 0.975))
     qbMat <- apply(bMat, 2, quantile, c(0.5, 0.025, 0.975))
-#    qxMat <- apply(dMat - bMat, 2, quantile, c(0.5, 0.025, 0.975))
     xMat <- dMat - bMat
     qxMat <- rbind(round(apply(xMat, 2, mean)), 
         apply(xMat, 2, quantile, c(0.025, 0.975)))
