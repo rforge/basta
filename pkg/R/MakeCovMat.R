@@ -60,6 +60,7 @@ function(x, data){
     }
   }
   covmat         <- cbind(ID, model.matrix(covs, data = data))
+  mode(covmat) <- "numeric"
   return(covmat)
 }
 
