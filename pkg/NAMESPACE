@@ -2,9 +2,6 @@
 export("basta", "basta.default", "print.basta", "summary.basta", 
        "DataCheck", "MakeCovMat", "MakeLifeTable", "CensusToCaptHist")
 
-# Import package msm
-import(msm)
-
 # S3 methods for exported functions:
 S3method("print", "basta")
 S3method("summary", "basta")
