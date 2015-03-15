@@ -296,6 +296,39 @@ basta <-
   return(list(int = idint, cat = idcat, cont = idcon))
 }
 
+# Truncated normal:
+.rtnorm <- function(n, mean, sd, lower = -Inf, upper = Inf) {
+  Flow <- pnorm(lower, mean, sd)
+  Fup <- pnorm(upper, mean, sd)
+  ru <- runif(n, Flow, Fup)
+  rx <- qnorm(ru, mean, sd)
+  return(rx)
+}
+
+.dtnorm <- function(x, mean, sd, lower = -Inf, upper = Inf, log = FALSE) {
+  Flow <- pnorm(lower, mean, sd)
+  Fup <- pnorm(upper, mean, sd)
+  densx <- dnorm(x, mean, sd) / (Fup - Flow)
+  if (log) densx <- log(densx)
+  return(densx)
+}
+
+.ptnorm <- function(q, mean, sd, lower = -Inf, upper = Inf, log = FALSE) {
+  p <- (pnorm(q, mean, sd) - pnorm(lower, mean, sd)) / 
+      (pnorm(upper, mean, sd) - pnorm(lower, mean, sd))
+  if (log) {
+    p <- log(p)
+  }
+  return(p)
+}
+
+.qtnorm <- function (p, mean = 0, sd = 1, lower = -Inf, upper = Inf) {
+  p2 <- (p) * (pnorm(upper, mean, sd) - pnorm(lower, mean, sd)) + 
+      pnorm(lower, mean, sd)
+  q <- qnorm(p2, mean, sd)
+  return(q)
+}
+
 
 # Define model functions and parameter objects:
 .SetDefaultTheta  <- function(algObj) {
@@ -596,19 +629,35 @@ basta <-
   # Detection probability:
   if (class(dataObj) == "ageUpd") {
     fullParObj$pi <- list()
-    idpi <- findInterval(algObj$start:algObj$end, algObj$recap)
-    names(idpi) <- algObj$start:algObj$end
+    study <- algObj$start:algObj$end
+    if (length(algObj$recap) == length(study)) {
+      if (all(algObj$recap %in% study)) {
+        idpi <- rep(1, length(study))
+        for (i in 2:length(idpi)) {
+          idpi[i] <- ifelse(algObj$recap[i] == algObj$recap[i - 1], idpi[i - 1], 
+              ifelse(algObj$recap[i] %in% algObj$recap[1:(i-1)], 
+                  idpi[which(algObj$recap[1:(i - 1)] == algObj$recap[i])[1]],
+                  max(idpi[1:(i - 1)] + 1)))
+        }
+      }  else if (all(algObj$recap %in% 1:length(study))) {
+        idpi <- algObj$recap
+      }
+      namespi <- unique(algObj$recap)
+    } else {
+      idpi <- findInterval(study, algObj$recap)
+      namespi <- algObj$recap
+    }
+    names(idpi) <- study
     npi <- length(unique(idpi))
     fullParObj$pi$start <- rep(0.5, npi)
-    names(fullParObj$pi$start) <- algObj$recap
+    names(fullParObj$pi$start) <- namespi
     fullParObj$pi$idpi <- idpi
     fullParObj$pi$n <- npi
-    fullParObj$pi$prior2 <- 0.1
-    fullParObj$pi$Prior1 <- tapply(0.1 + t(t(dataObj$Y) %*% rep(1, dataObj$n)),
+    fullParObj$pi$prior2 <- 1
+    fullParObj$pi$Prior1 <- tapply(1 + t(t(dataObj$Y) %*% rep(1, dataObj$n)),
         idpi, sum)
-    
     fullParObj$pi$len <- length(fullParObj$pi$start)
-    fullParObj$allNames <- c(allParNames, paste("pi", algObj$recap, sep = "."))
+    fullParObj$allNames <- c(allParNames, paste("pi", namespi, sep = "."))
     Classes <- c(Classes, "pi", "noEta")
   } else {
     fullParObj$allNames <- allParNames
@@ -764,7 +813,7 @@ basta <-
     } else {
       countNegMort <- countNegMort + 1
     }
-    parObjNew$theta <- matrix(rtnorm(length(parsIni$theta), parsIni$theta, 
+    parObjNew$theta <- matrix(.rtnorm(length(parsIni$theta), parsIni$theta, 
             theJitter, lower = fullParObj$theta$low), 
         nrow(parsIni$theta), ncol(parsIni$theta), 
         dimnames = dimnames(parsIni$theta))
@@ -784,7 +833,7 @@ basta <-
 
 .ProposeThetaPars <- function(parObj, ageObj, jumps, fullParObj, idPar) {
   parObjNew <- parObj
-  parObjNew$theta[idPar] <- rtnorm(1, parObj$theta[idPar], 
+  parObjNew$theta[idPar] <- .rtnorm(1, parObj$theta[idPar], 
       jumps$theta[idPar], lower = fullParObj$theta$low[idPar])
   return(parObjNew)
 }
@@ -842,7 +891,7 @@ basta <-
 .ProposeLambda <- function(parObj, ...) UseMethod(".ProposeLambda")
 
 .ProposeLambda.lambda <- function(parObj, fullParObj) {
-  parObj$lambda <- rtnorm(n = 1, mean = parObj$lambda, 
+  parObj$lambda <- .rtnorm(n = 1, mean = parObj$lambda, 
       sd = fullParObj$lambda$jump, lower = 0)
   return(parObj)
 }
@@ -983,7 +1032,7 @@ basta <-
 .CalcPostMortPars.theta <- function(parObj, postObj, fullParObj) {
   parPost <- sum(postObj$mat[, "fx"] -
               postObj$mat[, "Sx"]) + 
-      sum(dtnorm(c(parObj$theta), c(fullParObj$theta$priorMean), 
+      sum(.dtnorm(c(parObj$theta), c(fullParObj$theta$priorMean), 
               c(fullParObj$theta$priorSd), 
               lower = c(fullParObj$theta$low), log = TRUE)) 
   return(parPost)
@@ -992,7 +1041,7 @@ basta <-
 .CalcPostMortPars.theGam <- function(parObj, postObj, fullParObj) {
   parPost <- sum(postObj$mat[, "fx"] -
               postObj$mat[, "Sx"]) + 
-      sum(dtnorm(c(parObj$theta), c(fullParObj$theta$priorMean), 
+      sum(.dtnorm(c(parObj$theta), c(fullParObj$theta$priorMean), 
               c(fullParObj$theta$priorSd), 
               lower = c(fullParObj$theta$low), log = TRUE)) +
       sum(dnorm(parObj$gamma, fullParObj$gamma$priorMean, 
@@ -1007,7 +1056,7 @@ basta <-
       log(parObj$lambda) * ageObj$ages[ind, "indJu"] +
       parObj$lambda * (ageObj$ages[ind, "ageJuTr"] - ageObj$ages[ind, "ageJu"])
   postObj$lambda <- sum(postObj$mat[, "lx"]) + 
-      dtnorm(parObj$lambda, mean = fullParObj$lambda$priorMean, 
+      .dtnorm(parObj$lambda, mean = fullParObj$lambda$priorMean, 
           sd = fullParObj$lambda$priorSd, lower = 0)
   return(postObj)
 }
@@ -1302,7 +1351,7 @@ basta <-
       postNow$mortPars <- .CalcPostMortPars(parsNow, postNow, fullParObj)
       if (class(parsNow)[2] == "lambda") {
         postNow$lambda <- sum(postNow$mat[, "lx"]) + 
-            dtnorm(parsNow$lambda, mean = fullParObj$lambda$priorMean, 
+            .dtnorm(parsNow$lambda, mean = fullParObj$lambda$priorMean, 
                 sd = fullParObj$lambda$priorSd, lower = 0)
       }
       if (m %in% thinSeq) {
@@ -1436,7 +1485,7 @@ basta <-
       postNow$mortPars <- .CalcPostMortPars(parsNow, postNow, fullParObj)
       if (class(parsNow)[2] == "lambda") {
         postNow$lambda <- sum(postNow$mat[, "lx"]) + 
-            dtnorm(parsNow$lambda, mean = fullParObj$lambda$priorMean, 
+            .dtnorm(parsNow$lambda, mean = fullParObj$lambda$priorMean, 
                 sd = fullParObj$lambda$priorSd, lower = 0)
       }
     }
@@ -1575,13 +1624,13 @@ basta <-
               idP <- sapply(c(i, j), function(ij) 
                     which(fullParObj$allNames == 
                             sprintf("%s.%s", parNames[p], namesCat[ij])))
-              parRan <- range(sapply(1:2, function(pp) qtnorm(c(0.001, 0.999), 
+              parRan <- range(sapply(1:2, function(pp) .qtnorm(c(0.001, 0.999), 
                             coef[idP[pp], 1], coef[idP[pp], 2], 
                             lower = low[p])))
               parVec <- seq(parRan[1], parRan[2], length = 100)
               dp <- parVec[2] - parVec[1]
               parDens <- sapply(1:2, function(pp) 
-                    dtnorm(seq(parRan[1], parRan[2], length = 100), 
+                    .dtnorm(seq(parRan[1], parRan[2], length = 100), 
                         coef[idP[pp], 1], coef[idP[pp], 2], lower = low[p]))
               klMat1[p, comb] <- sum(parDens[, 1] * 
                       log(parDens[, 1] / parDens[, 2]) * dp)
