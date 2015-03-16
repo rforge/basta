@@ -36,7 +36,7 @@ Function \code{summary} includes all the previous elements, as well as a summary
 
 Function \code{plot} takes objects of class \code{basta} to create trace plots or, if the argument for \code{plot.trace} is set to \code{FALSE}, it plots estimated survival probabilities and mortality rates with their 95\% predictive intervals. If argument \code{plot.trace} is set to \code{FALSE}, argument \code{xlim} can be used to define a range of ages to visualize survival and mortality trends. Also, if logical argument \code{noCI} is set to \code{TRUE}, credible intervals around survival and mortality are not plotted, leaving only the mean trends. This can be handy when several categorical covariates have been evaluated and the plots get too crowded.  
 
-Other arguments for \code{plot} include \code{names.legend} to indicate alternative names for the legend of vital rates plots. Also, when \code{plot.trace} is \code{FALSE}, argument \code{xlim} can be changed to display only a subest of the support. Also, when argument \code{noCI} is \code{TRUE}, then the credible intervals around the vital rates are not displayed.
+Other arguments for \code{plot} include \code{names.legend} to indicate alternative names for the legend of vital rates plots. Also, when \code{plot.trace} is \code{FALSE}, argument \code{xlim} can be changed to display only a subest of the support. When argument \code{noCI} is \code{TRUE}, then the credible intervals around the vital rates are not displayed.
 }
 
 \value{ 
@@ -96,7 +96,26 @@ plot(sim1Out, trace.name = "pi")
 ## Plot predicted mortality and survival:
 plot(sim1Out, plot.trace = FALSE)
 
+## Change the color for each covariate on the predicted vital rates:
+plot(sim1Out, plot.trace = FALSE, col = c("dark green", "dark blue"))
+
+## Change the color and the legend text:
+plot(sim1Out, plot.trace = FALSE, col = c("dark green", "dark blue"),
+     names.legend = c("Females", "Males"))
+
 ## Plot predicted mortality and survival between 2 and 8 years of age:
 plot(sim1Out, plot.trace = FALSE, xlim = c(2, 8))
+
+## Plot predicted mortality and survival between 2 and 8 years of age without
+## credible intervals:
+plot(sim1Out, plot.trace = FALSE, xlim = c(2, 8), noCI = TRUE)
+
+## Plot parameter densities and predicted vital rates in the 
+## same plot (i.e. fancy):
+plot(sim1Out, fancy = TRUE)
+
+## Change colors and legend names for the `fancy' plot:
+plot(sim1Out, fancy = TRUE, col = c("dark green", "dark blue"),
+     names.legend = c("Females", "Males"))
 }
 
