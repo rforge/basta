@@ -59,7 +59,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 											<tbody>
 												<tr>
 													<td align="center" valign="top" width="360"></td>
-														<p style="font-size: 200%;text-align: center">The BaSTA website has been moved here</p>
+														<p style="font-size: 200%;text-align: center">The BaSTA website has been moved <a href="http://www1.imada.sdu.dk/~colchero/basta/" rel="nofollow" style="color:#84002E" target="_blank">here</a></p>
 													</td>
 												</tr>
 											</tbody>
